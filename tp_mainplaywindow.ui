@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TP_MainPlayWindow</class>
+ <widget class="QWidget" name="TP_MainPlayWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>TP_MainPlayWindow</string>
+  </property>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
