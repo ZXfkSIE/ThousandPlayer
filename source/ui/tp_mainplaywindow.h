@@ -18,8 +18,6 @@ public:
     TP_MainPlayWindow(QWidget *parent = nullptr);
     ~TP_MainPlayWindow();
 
-    void show();
-
 private:
     Ui::TP_MainPlayWindow *ui;
 };

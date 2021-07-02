@@ -16,17 +16,6 @@ TP_MainPlayWindow::~TP_MainPlayWindow()
     delete ui;
 }
 
-void
-TP_MainPlayWindow::show()
-{
-    QPropertyAnimation *fadeInAnimation = new QPropertyAnimation(this, "windowOpacity");
-    fadeInAnimation->setDuration(2000);
-    fadeInAnimation->setStartValue(0);
-    fadeInAnimation->setEndValue(1);
-    fadeInAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    QWidget::show();
-}
-
 // *****************************************************************
 // private
 // *****************************************************************
