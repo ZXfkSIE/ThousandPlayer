@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 COMPONENTS Widgets LinguistTools Test REQUIRED)
 
 set(TP_TS_FILES
-    translation/ThousandPlayer_zh_CN.ts
+    ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_zh_CN.ts
     )
 
 add_subdirectory(source)
