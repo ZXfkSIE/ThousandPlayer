@@ -1,4 +1,4 @@
-﻿#include "tp_mainplaywindow.h"
+﻿#include "tp_mainwindow.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    TP_MainPlayWindow w;
+    TP_MainWindow w;
 
     w.show();
     return a.exec();

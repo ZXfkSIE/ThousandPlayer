@@ -7,15 +7,15 @@ set(TP_SOURCE_FILES
     ${TP_TS_FILES}
 )
 
-qt_create_translation(TP_QM_FILES ${CMAKE_SOURCE_DIR} ${TP_TS_FILES})
+qt6_create_translation(TP_QM_FILES ${CMAKE_SOURCE_DIR} ${TP_TS_FILES})
 
-qt_add_executable(ThousandPlayer
+qt6_add_executable(${PROJECT_NAME}
     MANUAL_FINALIZATION
     ${TP_QM_FILES}
     ${TP_SOURCE_FILES}
 )
 
-target_link_libraries(ThousandPlayer PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     TP::ui
 
     Qt${QT_VERSION_MAJOR}::Widgets

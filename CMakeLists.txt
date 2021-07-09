@@ -17,6 +17,12 @@ set(TP_TS_FILES
     ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_zh_CN.ts
     )
 
+set(TP_IMAGE_FILES
+    ${PROJECT_SOURCE_DIR}/image/icon_Minimize.svg
+    ${PROJECT_SOURCE_DIR}/image/icon_Expand.svg
+    ${PROJECT_SOURCE_DIR}/image/icon_Exit.svg
+    )
+
 add_subdirectory(source)
 
 
