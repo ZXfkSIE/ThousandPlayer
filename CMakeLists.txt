@@ -1,5 +1,9 @@
 ﻿cmake_minimum_required(VERSION 3.5)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    message(FATAL "Sorry, macOS is currently not supported.")
+endif()
+
 project(ThousandPlayer VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

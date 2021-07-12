@@ -7,6 +7,7 @@ class QMouseEvent;
 
 class TP_TitleBar : public QFrame
 {
+
     Q_OBJECT
 public:
     TP_TitleBar(QWidget *parent = nullptr);
@@ -17,7 +18,7 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     bool isBeingPressed;
-    QPoint currentPosition;
+    QPoint pressedPosition;
 };
 
 #endif // TP_TITLEBAR_H
