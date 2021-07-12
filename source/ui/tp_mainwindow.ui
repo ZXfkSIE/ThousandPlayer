@@ -54,7 +54,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="frame_Title">
+    <widget class="TP_TitleBar" name="frame_Title">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -63,7 +63,7 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>480</width>
+       <width>0</width>
        <height>36</height>
       </size>
      </property>
@@ -215,6 +215,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TP_TitleBar</class>
+   <extends>QFrame</extends>
+   <header>tp_titlebar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -2,6 +2,9 @@
     tp_mainwindow.h
     tp_mainwindow.cpp
     tp_mainwindow.ui
+
+    tp_titlebar.h
+    tp_titlebar.cpp
 )
 
 add_library(TP_ui ${TP_UI_FILES})
