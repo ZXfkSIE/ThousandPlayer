@@ -1,25 +1,25 @@
-﻿#ifndef TP_MAINWINDOW_H
-#define TP_MAINWINDOW_H
+﻿#ifndef TP_PLAYLIST_H
+#define TP_PLAYLIST_H
 
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class TP_MainWindow; }
-QT_END_NAMESPACE
+namespace Ui {
+class TP_Playlist;
+}
 
-class TP_MainWindow : public QWidget
+class TP_Playlist : public QWidget
 {
     Q_OBJECT
 
 public:
-    TP_MainWindow(QWidget *parent = nullptr);
-    ~TP_MainWindow();
+    explicit TP_Playlist(QWidget *parent = nullptr);
+    ~TP_Playlist();
 
 private slots:
-    void on_pushButton_Exit_clicked();
+    void on_pushButton_Close_clicked();
 
 private:
-    Ui::TP_MainWindow *ui;
+    Ui::TP_Playlist *ui;
 
     static const int TP_LEFT_BORDER = -1, TP_RIGHT_BORDER = 1;
     static const unsigned TP_BORDER_SIZE = 5;
@@ -36,4 +36,5 @@ private:
     int cursorPositionType;
     QPoint pressedGlobalPosition;
 };
-#endif // TP_MAINWINDOW_H
+
+#endif // TP_PLAYLIST_H

@@ -1,26 +1,20 @@
-﻿#include "tp_mainwindow.h"
-#include "./ui_tp_mainwindow.h"
+﻿#include "tp_playlist.h"
+#include "ui_tp_playlist.h"
 
 #include <QMouseEvent>
 
-TP_MainWindow::TP_MainWindow(QWidget *parent) :
+TP_Playlist::TP_Playlist(QWidget *parent) :
     QWidget(parent)
-  , ui(new Ui::TP_MainWindow)
-  , b_isBorderBeingPressed(false)
-  , b_isCursorResize(false)
-  , b_isExpandingDisabled(false)
-  , cursorPositionType(0)
+  , ui(new Ui::TP_Playlist)
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     setMouseTracking(true);
 
-    ui->pushButton_Minimize->setIcon(QIcon{":/image/icon_Minimize.svg"});
-    ui->pushButton_Expand->setIcon(QIcon{":/image/icon_Expand.svg"});
-    ui->pushButton_Exit->setIcon(QIcon{":/image/icon_Exit.svg"});
+    ui->pushButton_Close->setIcon(QIcon{":/image/icon_Exit.svg"});
 }
 
-TP_MainWindow::~TP_MainWindow()
+TP_Playlist::~TP_Playlist()
 {
     delete ui;
 }
@@ -29,9 +23,9 @@ TP_MainWindow::~TP_MainWindow()
 // private slots:
 // *****************************************************************
 
-void TP_MainWindow::on_pushButton_Exit_clicked()
+void TP_Playlist::on_pushButton_Close_clicked()
 {
-    QApplication::exit();
+    hide();
 }
 
 // *****************************************************************
@@ -39,7 +33,7 @@ void TP_MainWindow::on_pushButton_Exit_clicked()
 // *****************************************************************
 
 void
-TP_MainWindow::mousePressEvent(QMouseEvent *event)
+TP_Playlist::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && cursorPositionType)
     {
@@ -52,10 +46,10 @@ TP_MainWindow::mousePressEvent(QMouseEvent *event)
 }
 
 void
-TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
+TP_Playlist::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint eventPosition = event->position().toPoint();
-    if(eventPosition.y() < ui->frame_Title->height())
+    if(eventPosition.y() < 36)
     {
         if(b_isCursorResize)
         {
@@ -127,7 +121,7 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 }
 
 void
-TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
+TP_Playlist::mouseReleaseEvent(QMouseEvent *event)
 {
     b_isBorderBeingPressed = false;
     b_isExpandingDisabled = false;
@@ -139,7 +133,7 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
-int TP_MainWindow::isAtBorder(QPoint I_qpt)
+int TP_Playlist::isAtBorder(QPoint I_qpt)
 {
     if (I_qpt.x() <= TP_BORDER_SIZE)
     {

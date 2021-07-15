@@ -4,41 +4,27 @@
 
 TP_TitleBar::TP_TitleBar(QWidget *parent) :
     QFrame(parent)
-  , pressedPosition(0, 0)
 {
 
 }
 
 // *****************************************************************
-// private
+// private override
 // *****************************************************************
 
 void
 TP_TitleBar::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton)
-    {
-        isBeingPressed = true;
-        pressedPosition = event->globalPosition().toPoint();
-    }
+    if (event->button() == Qt::LeftButton)
+        pressedRelativePosition = event->position().toPoint();
+
     QWidget::mousePressEvent(event);
 }
 
 void
 TP_TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
-    if(isBeingPressed)
-    {
-        QPoint movePoint = event->globalPosition().toPoint() - pressedPosition;
-        pressedPosition = event->globalPosition().toPoint();
-        window()->move(window()->pos() + movePoint);
-    }
-    QWidget::mouseMoveEvent(event);
-}
+    window()->move(event->globalPosition().toPoint() - pressedRelativePosition);
 
-void
-TP_TitleBar::mouseReleaseEvent(QMouseEvent *event)
-{
-    isBeingPressed = false;
-    QWidget::mouseReleaseEvent(event);
+    QWidget::mouseMoveEvent(event);
 }

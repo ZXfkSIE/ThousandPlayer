@@ -15,10 +15,8 @@ public:
 private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
 
-    bool isBeingPressed;
-    QPoint pressedPosition;
+    QPoint pressedRelativePosition;
 };
 
 #endif // TP_TITLEBAR_H

@@ -3,6 +3,13 @@
     tp_mainwindow.cpp
     tp_mainwindow.ui
 
+    tp_playlist.h
+    tp_playlist.cpp
+    tp_playlist.ui
+
+    tp_playlistcontainer.h
+    tp_playlistcontainer.cpp
+
     tp_titlebar.h
     tp_titlebar.cpp
 )
