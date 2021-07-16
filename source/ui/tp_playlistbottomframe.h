@@ -1,17 +1,17 @@
-﻿#ifndef TP_PLAYLISTCONTAINER_H
-#define TP_PLAYLISTCONTAINER_H
+﻿#ifndef TP_PLAYLISTBOTTOMFRAME_H
+#define TP_PLAYLISTBOTTOMFRAME_H
 
-#include <QWidget>
+#include <QFrame>
 
-class TP_PlaylistContainer : public QWidget
+class TP_PlaylistBottomFrame : public QFrame
 {
     Q_OBJECT
 
 public:
-    explicit TP_PlaylistContainer(QWidget *parent = nullptr);
+    explicit TP_PlaylistBottomFrame(QWidget *parent = nullptr);
 
 private:
-    static const int TP_LEFT_BORDER = -1, TP_RIGHT_BORDER = 1;
+    static const int TP_BOTTOM_BORDER = 1;
     static const int TP_BORDER_SIZE = 5;
 
     void mousePressEvent(QMouseEvent *event) override;
@@ -27,4 +27,4 @@ private:
     QPoint pressedGlobalPosition;
 };
 
-#endif // TP_PLAYLISTCONTAINER_H
+#endif // TP_PLAYLISTBOTTOMFRAME_H

@@ -9,8 +9,9 @@ class TP_TitleBar : public QFrame
 {
 
     Q_OBJECT
+
 public:
-    TP_TitleBar(QWidget *parent = nullptr);
+    explicit TP_TitleBar(QWidget *parent = nullptr);
 
 private:
     void mousePressEvent(QMouseEvent *event) override;

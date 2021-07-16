@@ -7,8 +7,14 @@
     tp_playlist.cpp
     tp_playlist.ui
 
+    tp_playlistbottomframe.h
+    tp_playlistbottomframe.cpp
+
     tp_playlistcontainer.h
     tp_playlistcontainer.cpp
+
+    tp_button.h
+    tp_button.cpp
 
     tp_titlebar.h
     tp_titlebar.cpp

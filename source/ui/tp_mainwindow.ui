@@ -105,6 +105,7 @@
        <widget class="QLabel" name="label_Title">
         <property name="font">
          <font>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>

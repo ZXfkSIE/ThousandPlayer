@@ -3,16 +3,14 @@
 
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
 namespace Ui { class TP_MainWindow; }
-QT_END_NAMESPACE
 
 class TP_MainWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    TP_MainWindow(QWidget *parent = nullptr);
+    explicit TP_MainWindow(QWidget *parent = nullptr);
     ~TP_MainWindow();
 
 private slots:
@@ -22,7 +20,7 @@ private:
     Ui::TP_MainWindow *ui;
 
     static const int TP_LEFT_BORDER = -1, TP_RIGHT_BORDER = 1;
-    static const unsigned TP_BORDER_SIZE = 5;
+    static const int TP_BORDER_SIZE = 5;
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

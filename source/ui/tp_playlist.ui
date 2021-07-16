@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>480</width>
-    <height>240</height>
+    <height>360</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -84,13 +84,13 @@
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>2</number>
+       <number>4</number>
       </property>
       <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="label_Playlist">
+       <widget class="QLabel" name="label">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -151,35 +151,35 @@
     </widget>
    </item>
    <item>
-    <widget class="TP_PlaylistContainer" name="widget_Playlist" native="true">
+    <widget class="TP_PlaylistContainer" name="playlistContainer" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="leftMargin">
-       <number>3</number>
+       <number>5</number>
       </property>
       <property name="topMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>3</number>
+       <number>5</number>
       </property>
       <property name="bottomMargin">
-       <number>3</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="QSplitter" name="splitter">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="lineWidth">
-         <number>3</number>
-        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
+        <property name="handleWidth">
+         <number>5</number>
+        </property>
         <widget class="QScrollArea" name="scrollArea_SubPlayList">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="frameShape">
           <enum>QFrame::Panel</enum>
          </property>
@@ -194,13 +194,19 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>229</width>
-            <height>323</height>
+            <width>227</width>
+            <height>290</height>
            </rect>
           </property>
          </widget>
         </widget>
         <widget class="QScrollArea" name="scrollArea_FileList">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>4</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="frameShape">
           <enum>QFrame::Panel</enum>
          </property>
@@ -215,12 +221,199 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>229</width>
-            <height>323</height>
+            <width>226</width>
+            <height>290</height>
            </rect>
           </property>
          </widget>
         </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="TP_PlaylistBottomFrame" name="frame_Bottom">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>36</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>36</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: #666;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="TP_Button" name="pushButton">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Add</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="TP_Button" name="pushButton_2">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="TP_Button" name="pushButton_4">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Sort</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="TP_Button" name="pushButton_5">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Find</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="TP_Button" name="pushButton_6">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Select</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -240,6 +433,17 @@
    <extends>QWidget</extends>
    <header>tp_playlistcontainer.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TP_PlaylistBottomFrame</class>
+   <extends>QFrame</extends>
+   <header>tp_playlistbottomframe.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TP_Button</class>
+   <extends>QPushButton</extends>
+   <header>tp_button.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

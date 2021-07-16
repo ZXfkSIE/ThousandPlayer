@@ -18,7 +18,7 @@ TP_TitleBar::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
         pressedRelativePosition = event->position().toPoint();
 
-    QWidget::mousePressEvent(event);
+    QFrame::mousePressEvent(event);
 }
 
 void
@@ -26,5 +26,5 @@ TP_TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
     window()->move(event->globalPosition().toPoint() - pressedRelativePosition);
 
-    QWidget::mouseMoveEvent(event);
+    QFrame::mouseMoveEvent(event);
 }

@@ -55,7 +55,9 @@ void
 TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint eventPosition = event->position().toPoint();
+
     if(eventPosition.y() < ui->frame_Title->height())
+        // In the area of title frame
     {
         if(b_isCursorResize)
         {
@@ -74,25 +76,25 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
         {
         case TP_LEFT_BORDER:
             if (differenceX < 0 && b_isExpandingDisabled)
-                break;
+                return;
 
             rect_Geometry.setLeft(rect_Geometry.left() + differenceX);
             if(rect_Geometry.width() >= minimumWidth())
                 setGeometry(rect_Geometry);
             pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() > width() - minimumWidth() + 5 )
+            if (event->position().toPoint().x() > width() - minimumWidth() + TP_BORDER_SIZE)
                 b_isExpandingDisabled = true;
 
             break;              //case TP_LEFT_BORDER
 
         case TP_RIGHT_BORDER:
             if (differenceX > 0 && b_isExpandingDisabled)
-                break;
+                return;
 
             rect_Geometry.setRight(rect_Geometry.right() + differenceX);
             setGeometry(rect_Geometry);
             pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() < width() -  5)
+            if (event->position().toPoint().x() < width() - TP_BORDER_SIZE)
                 b_isExpandingDisabled = true;
 
             break;              //case TP_RIGHT_BORDER
@@ -118,7 +120,6 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
                 setCursor(QCursor(Qt::SizeHorCursor));
                 b_isCursorResize = true;
             }
-
             break;
         }
     }
