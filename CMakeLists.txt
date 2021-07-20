@@ -15,7 +15,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.2...6.114514 COMPONENTS Widgets LinguistTools Test REQUIRED)
+find_package(Qt6 6.2...6.114514 COMPONENTS
+    Widgets
+    Multimedia
+    LinguistTools
+    Test
+    REQUIRED)
 
 set(TP_TS_FILES
     ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_zh_CN.ts

@@ -22,7 +22,6 @@ TP_PlaylistContainer::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && cursorPositionType)
     {
-        qDebug() << "Mouse left button pressed.";
         b_isBorderBeingPressed = true;
         b_isExpandingDisabled = false;
         pressedGlobalPosition = event->globalPosition().toPoint();
@@ -99,7 +98,6 @@ TP_PlaylistContainer::mouseMoveEvent(QMouseEvent *event)
 void
 TP_PlaylistContainer::mouseReleaseEvent(QMouseEvent *event)
 {
-    qDebug() << "Mouse left button released.";
     b_isBorderBeingPressed = false;
     b_isExpandingDisabled = false;
 

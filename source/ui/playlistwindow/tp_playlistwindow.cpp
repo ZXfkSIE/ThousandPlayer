@@ -1,11 +1,11 @@
-﻿#include "tp_playlist.h"
-#include "ui_tp_playlist.h"
+﻿#include "tp_playlistwindow.h"
+#include "ui_tp_playlistwindow.h"
 
 #include <QMouseEvent>
 
-TP_Playlist::TP_Playlist(QWidget *parent) :
+TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
     QWidget(parent)
-  , ui(new Ui::TP_Playlist)
+  , ui(new Ui::TP_PlaylistWindow)
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
@@ -13,7 +13,7 @@ TP_Playlist::TP_Playlist(QWidget *parent) :
     ui->pushButton_Close->setIcon(QIcon{":/image/icon_Exit.svg"});
 }
 
-TP_Playlist::~TP_Playlist()
+TP_PlaylistWindow::~TP_PlaylistWindow()
 {
     delete ui;
 }
@@ -22,7 +22,7 @@ TP_Playlist::~TP_Playlist()
 // private slots:
 // *****************************************************************
 
-void TP_Playlist::on_pushButton_Close_clicked()
+void TP_PlaylistWindow::on_pushButton_Close_clicked()
 {
     hide();
 }

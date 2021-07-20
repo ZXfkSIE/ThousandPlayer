@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TP_Playlist</class>
- <widget class="QWidget" name="TP_Playlist">
+ <class>TP_PlaylistWindow</class>
+ <widget class="QWidget" name="TP_PlaylistWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -26,7 +26,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(119, 118, 123);</string>
+   <string notr="true">background-color:#777;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -90,7 +90,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_Title">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -173,7 +173,7 @@
         <property name="handleWidth">
          <number>5</number>
         </property>
-        <widget class="QScrollArea" name="scrollArea_SubPlayList">
+        <widget class="TP_ListOfPlaylistsTableView" name="tableView_ListOfPlaylists">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>1</horstretch>
@@ -186,21 +186,8 @@
          <property name="lineWidth">
           <number>3</number>
          </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>227</width>
-            <height>290</height>
-           </rect>
-          </property>
-         </widget>
         </widget>
-        <widget class="QScrollArea" name="scrollArea_FileList">
+        <widget class="TP_FileListTableView" name="tableView_FileList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>4</horstretch>
@@ -213,19 +200,6 @@
          <property name="lineWidth">
           <number>3</number>
          </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_2">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>226</width>
-            <height>290</height>
-           </rect>
-          </property>
-         </widget>
         </widget>
        </widget>
       </item>
@@ -272,7 +246,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="TP_Button" name="pushButton">
+       <widget class="TP_Button" name="pushButton_Add">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -301,7 +275,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_2">
+       <widget class="TP_Button" name="pushButton_Remove">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -330,7 +304,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_4">
+       <widget class="TP_Button" name="pushButton_Sort">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -359,7 +333,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_5">
+       <widget class="TP_Button" name="pushButton_Find">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -388,7 +362,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_6">
+       <widget class="TP_Button" name="pushButton_Select">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -444,6 +418,16 @@
    <class>TP_Button</class>
    <extends>QPushButton</extends>
    <header>tp_button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_FileListTableView</class>
+   <extends>QTableView</extends>
+   <header>tp_filelisttableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_ListOfPlaylistsTableView</class>
+   <extends>QTableView</extends>
+   <header location="global">tp_listofplayliststableview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

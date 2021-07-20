@@ -15,8 +15,15 @@ qt6_add_executable(${PROJECT_NAME}
     ${TP_SOURCE_FILES}
 )
 
+qt6_add_resources(${PROJECT_NAME} "image"
+    PREFIX "/image"
+    BASE "${PROJECT_SOURCE_DIR}/image"
+    FILES ${TP_IMAGE_FILES}
+    )
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    TP::ui
+    TP::ui::mainwindow
+    TP::ui::playlistwindow
 
     Qt${QT_VERSION_MAJOR}::Widgets
     )

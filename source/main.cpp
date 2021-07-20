@@ -1,5 +1,5 @@
 ﻿#include "tp_mainwindow.h"
-#include "tp_playlist.h"
+#include "tp_playlistwindow.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     }
 
     TP_MainWindow w;
-    TP_Playlist p;
+    TP_PlaylistWindow p;
 
     w.show();
     p.show();
