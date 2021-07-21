@@ -6,8 +6,9 @@
 class TP_ListOfPlaylistsTableView : public QTableView
 {
     Q_OBJECT
+
 public:
-    TP_ListOfPlaylistsTableView(QWidget *parent = nullptr);
+    explicit TP_ListOfPlaylistsTableView(QWidget *parent = nullptr);
 };
 
 #endif // TP_LISTOFPLAYLISTSTABLEVIEW_H

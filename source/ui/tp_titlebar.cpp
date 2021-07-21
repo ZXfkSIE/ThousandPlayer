@@ -4,8 +4,9 @@
 
 TP_TitleBar::TP_TitleBar(QWidget *parent) :
     QFrame(parent)
+  , b_isBeingPressed(false)
 {
-
+    setMouseTracking(true);
 }
 
 // *****************************************************************
@@ -16,7 +17,10 @@ void
 TP_TitleBar::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
+    {
+        b_isBeingPressed = true;
         pressedRelativePosition = event->position().toPoint();
+    }
 
     QFrame::mousePressEvent(event);
 }
@@ -24,7 +28,18 @@ TP_TitleBar::mousePressEvent(QMouseEvent *event)
 void
 TP_TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
-    window()->move(event->globalPosition().toPoint() - pressedRelativePosition);
+    if(b_isBeingPressed)
+    {
+        window()->move(event->globalPosition().toPoint() - pressedRelativePosition);
+        QFrame::mouseMoveEvent(event);
+    }
+    else
+        event->ignore();
+}
 
-    QFrame::mouseMoveEvent(event);
+void
+TP_TitleBar::mouseReleaseEvent(QMouseEvent *event)
+{
+    b_isBeingPressed = false;
+    QWidget::mouseReleaseEvent(event);
 }

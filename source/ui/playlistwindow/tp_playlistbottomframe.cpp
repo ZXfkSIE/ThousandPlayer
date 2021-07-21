@@ -1,5 +1,7 @@
 ﻿#include "tp_playlistbottomframe.h"
 
+#include "tp_globalconst.h"
+
 #include <QMouseEvent>
 
 TP_PlaylistBottomFrame::TP_PlaylistBottomFrame(QWidget *parent) :
@@ -96,9 +98,10 @@ TP_PlaylistBottomFrame::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
-int TP_PlaylistBottomFrame::isAtBorder(QPoint I_qpt)
+int
+TP_PlaylistBottomFrame::isAtBorder(QPoint I_point) const
 {
-    if (height() - I_qpt.y() <= TP_BORDER_SIZE)
+    if (height() - I_point.y() <= TP_BORDER_SIZE)
     {
         return TP_BOTTOM_BORDER;
     }

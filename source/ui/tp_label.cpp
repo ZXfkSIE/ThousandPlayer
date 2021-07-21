@@ -1,9 +1,9 @@
-﻿#include "tp_container.h"
+﻿#include "tp_label.h"
 
 #include <QMouseEvent>
 
-TP_Container::TP_Container(QWidget *parent) :
-    QWidget(parent)
+TP_Label::TP_Label(QWidget *parent) :
+    QLabel(parent)
 {
     setMouseTracking(true);
 }
@@ -13,7 +13,7 @@ TP_Container::TP_Container(QWidget *parent) :
 // *****************************************************************
 
 void
-TP_Container::mouseMoveEvent(QMouseEvent *event)
+TP_Label::mouseMoveEvent(QMouseEvent *event)
 {
     event->ignore();
 }

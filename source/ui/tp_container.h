@@ -15,7 +15,8 @@ class TP_Container : public QWidget
 public:
     explicit TP_Container(QWidget *parent = nullptr);
 
-signals:
+private:
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 };
 

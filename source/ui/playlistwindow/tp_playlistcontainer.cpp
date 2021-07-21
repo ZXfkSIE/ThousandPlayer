@@ -1,5 +1,7 @@
 ﻿#include "tp_playlistcontainer.h"
 
+#include "tp_globalconst.h"
+
 #include <QMouseEvent>
 
 TP_PlaylistContainer::TP_PlaylistContainer(QWidget *parent) :
@@ -108,13 +110,14 @@ TP_PlaylistContainer::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
-int TP_PlaylistContainer::isAtBorder(QPoint I_qpt)
+int
+TP_PlaylistContainer::isAtBorder(QPoint I_point) const
 {
-    if (I_qpt.x() <= TP_BORDER_SIZE)
+    if (I_point.x() <= TP_BORDER_SIZE)
     {
         return TP_LEFT_BORDER;
     }
-    else if (width() - I_qpt.x() <= TP_BORDER_SIZE)
+    else if (width() - I_point.x() <= TP_BORDER_SIZE)
     {
         return TP_RIGHT_BORDER;
     }

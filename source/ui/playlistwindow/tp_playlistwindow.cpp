@@ -22,7 +22,8 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
 // private slots:
 // *****************************************************************
 
-void TP_PlaylistWindow::on_pushButton_Close_clicked()
+void
+TP_PlaylistWindow::on_pushButton_Close_clicked()
 {
     hide();
 }

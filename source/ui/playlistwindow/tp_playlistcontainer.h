@@ -11,14 +11,11 @@ public:
     explicit TP_PlaylistContainer(QWidget *parent = nullptr);
 
 private:
-    static const int TP_LEFT_BORDER = -1, TP_RIGHT_BORDER = 1;
-    static const int TP_BORDER_SIZE = 5;
-
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    int isAtBorder(QPoint I_qpt);
+    int isAtBorder(QPoint I_point) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;

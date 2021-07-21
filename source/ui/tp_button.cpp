@@ -12,7 +12,8 @@ TP_Button::TP_Button(QWidget *parent) :
 // private override
 // *****************************************************************
 
-void TP_Button::mouseMoveEvent(QMouseEvent *event)
+void
+TP_Button::mouseMoveEvent(QMouseEvent *event)
 {
     event->ignore();
 }

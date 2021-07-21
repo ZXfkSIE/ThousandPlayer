@@ -8,6 +8,9 @@ set(TP_UI_FILES
     tp_container.h
     tp_container.cpp
 
+    tp_label.h
+    tp_label.cpp
+
     tp_titlebar.h
     tp_titlebar.cpp
 )

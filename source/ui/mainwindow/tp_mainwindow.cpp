@@ -1,6 +1,8 @@
 ﻿#include "tp_mainwindow.h"
 #include "./ui_tp_mainwindow.h"
 
+#include "tp_globalconst.h"
+
 #include <QMouseEvent>
 
 TP_MainWindow::TP_MainWindow(QWidget *parent) :
@@ -15,9 +17,12 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     setMouseTracking(true);
 
-    ui->pushButton_Minimize->setIcon(QIcon{":/image/icon_Minimize.svg"});
-    ui->pushButton_Expand->setIcon(QIcon{":/image/icon_Expand.svg"});
-    ui->pushButton_Exit->setIcon(QIcon{":/image/icon_Exit.svg"});
+    ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
+    ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
+    ui->pushButton_Exit->setIcon( QIcon{":/image/icon_Exit.svg"} );
+
+    ui->label_VolumeIcon->setIcon(TP_VOLUME);
+    ui->widget_VisualContainer->switchWidget(TP_ALBUM_COVER);
 }
 
 TP_MainWindow::~TP_MainWindow()
@@ -29,7 +34,8 @@ TP_MainWindow::~TP_MainWindow()
 // private slots:
 // *****************************************************************
 
-void TP_MainWindow::on_pushButton_Exit_clicked()
+void
+TP_MainWindow::on_pushButton_Exit_clicked() const
 {
     QApplication::exit();
 }
@@ -55,17 +61,6 @@ void
 TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint eventPosition = event->position().toPoint();
-
-    if(eventPosition.y() < ui->frame_Title->height())
-        // In the area of title frame
-    {
-        if(b_isCursorResize)
-        {
-            setCursor(QCursor(Qt::ArrowCursor));
-            b_isCursorResize = false;
-        }
-        return;
-    }
 
     if (b_isBorderBeingPressed)
     {
@@ -140,13 +135,14 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
-int TP_MainWindow::isAtBorder(QPoint I_qpt)
+int
+TP_MainWindow::isAtBorder(QPoint I_point) const
 {
-    if (I_qpt.x() <= TP_BORDER_SIZE)
+    if (I_point.x() <= TP_BORDER_SIZE)
     {
         return TP_LEFT_BORDER;
     }
-    else if (width() - I_qpt.x() <= TP_BORDER_SIZE)
+    else if (width() - I_point.x() <= TP_BORDER_SIZE)
     {
         return TP_RIGHT_BORDER;
     }

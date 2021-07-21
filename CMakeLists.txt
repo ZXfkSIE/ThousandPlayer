@@ -30,6 +30,9 @@ set(TP_IMAGE_FILES
     ${PROJECT_SOURCE_DIR}/image/icon_Minimize.svg
     ${PROJECT_SOURCE_DIR}/image/icon_Expand.svg
     ${PROJECT_SOURCE_DIR}/image/icon_Exit.svg
+    ${PROJECT_SOURCE_DIR}/image/icon_Volume.svg
+    ${PROJECT_SOURCE_DIR}/image/icon_Mute.svg
+    ${PROJECT_SOURCE_DIR}/image/MusicalNote.svg
     )
 
 add_subdirectory(source)

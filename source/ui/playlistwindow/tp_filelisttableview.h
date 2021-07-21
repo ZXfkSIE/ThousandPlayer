@@ -6,8 +6,9 @@
 class TP_FileListTableView : public QTableView
 {
     Q_OBJECT
+
 public:
-    TP_FileListTableView(QWidget *parent = nullptr);
+    explicit TP_FileListTableView(QWidget *parent = nullptr);
 };
 
 #endif // TP_FILELISTTABLEVIEW_H
