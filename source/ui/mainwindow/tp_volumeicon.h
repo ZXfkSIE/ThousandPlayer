@@ -9,6 +9,8 @@ class TP_VolumeIcon : public TP_Label
 
 public:
     explicit TP_VolumeIcon(QWidget *parent = nullptr);
+
+    void initialize();
     void setIcon(int I);
 
 private:

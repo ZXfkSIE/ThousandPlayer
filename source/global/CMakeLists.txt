@@ -1,5 +1,6 @@
 ﻿set(TP_GLOBAL_FILES
     tp_globalconst.h
+    tp_globalenum.h
 )
 
 add_library(TP_global INTERFACE ${TP_GLOBAL_FILES})

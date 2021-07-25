@@ -21,8 +21,17 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
     ui->pushButton_Exit->setIcon( QIcon{":/image/icon_Exit.svg"} );
 
+    ui->label_VolumeIcon->initialize();
     ui->label_VolumeIcon->setIcon(TP_VOLUME);
+
+    ui->widget_VisualContainer->initialize();
     ui->widget_VisualContainer->switchWidget(TP_ALBUM_COVER);
+
+    ui->pushButton_Previous->setIcon( QIcon{":/image/icon_Previous.svg"} );
+    ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
+    ui->pushButton_Play->setIcon( QIcon{":/image/icon_Play.svg"} );
+    ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
+    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
 }
 
 TP_MainWindow::~TP_MainWindow()
@@ -61,6 +70,7 @@ void
 TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint eventPosition = event->position().toPoint();
+    // qDebug()<< "Main Window cursor position: " << eventPosition;
 
     if (b_isBorderBeingPressed)
     {
@@ -127,6 +137,11 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     b_isBorderBeingPressed = false;
     b_isExpandingDisabled = false;
+    if(!isAtBorder(event->position().toPoint()) && b_isCursorResize)
+    {
+        setCursor(QCursor(Qt::ArrowCursor));
+        b_isCursorResize = false;
+    }
 
     QWidget::mouseReleaseEvent(event);
 }

@@ -102,6 +102,11 @@ TP_PlaylistContainer::mouseReleaseEvent(QMouseEvent *event)
 {
     b_isBorderBeingPressed = false;
     b_isExpandingDisabled = false;
+    if(!isAtBorder(event->position().toPoint()) && b_isCursorResize)
+    {
+        setCursor(QCursor(Qt::ArrowCursor));
+        b_isCursorResize = false;
+    }
 
     QWidget::mouseReleaseEvent(event);
 }

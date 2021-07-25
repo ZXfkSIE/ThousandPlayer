@@ -427,7 +427,7 @@
   <customwidget>
    <class>TP_ListOfPlaylistsTableView</class>
    <extends>QTableView</extends>
-   <header location="global">tp_listofplayliststableview.h</header>
+   <header>tp_listofplayliststableview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

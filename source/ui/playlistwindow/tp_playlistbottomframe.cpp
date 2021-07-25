@@ -9,7 +9,6 @@ TP_PlaylistBottomFrame::TP_PlaylistBottomFrame(QWidget *parent) :
   , b_isBorderBeingPressed(false)
   , b_isCursorResize(false)
   , b_isExpandingDisabled(false)
-  , cursorPositionType(0)
 {
     setMouseTracking(true);
 }
@@ -41,7 +40,7 @@ TP_PlaylistBottomFrame::mouseMoveEvent(QMouseEvent *event)
         int differenceY = event->globalPosition().toPoint().y() - pressedGlobalPosition.y();
         QRect rect_Geometry = window()->geometry();
 
-        if(cursorPositionType == TP_BOTTOM_BORDER)
+        if(cursorPositionType == TP::bottomBorder)
         {
             if (differenceY > 0 && b_isExpandingDisabled)
                 return;
@@ -49,7 +48,7 @@ TP_PlaylistBottomFrame::mouseMoveEvent(QMouseEvent *event)
             rect_Geometry.setBottom(rect_Geometry.bottom() + differenceY);
             window()->setGeometry(rect_Geometry);
             pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().y() < height() -  TP_BORDER_SIZE)
+            if (event->position().toPoint().y() < height() -  TP::borderSize)
                 b_isExpandingDisabled = true;
         }
     }
@@ -58,7 +57,7 @@ TP_PlaylistBottomFrame::mouseMoveEvent(QMouseEvent *event)
         cursorPositionType = isAtBorder(eventPosition);
         switch (cursorPositionType)
         {
-        case 0:
+        case TP::notAtBorder:
             if (b_isCursorResize)
             {
                 setCursor(QCursor(Qt::ArrowCursor));
@@ -66,13 +65,16 @@ TP_PlaylistBottomFrame::mouseMoveEvent(QMouseEvent *event)
             }
             break;
 
-        case TP_BOTTOM_BORDER:
+        case TP::bottomBorder:
             if (! b_isCursorResize)
             {
                 setCursor(QCursor(Qt::SizeVerCursor));
                 b_isCursorResize = true;
             }
 
+            break;
+
+        default:
             break;
         }
     }
@@ -98,12 +100,12 @@ TP_PlaylistBottomFrame::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
-int
+TP::CursorPositionType
 TP_PlaylistBottomFrame::isAtBorder(QPoint I_point) const
 {
-    if (height() - I_point.y() <= TP_BORDER_SIZE)
+    if (height() - I_point.y() <= TP::borderSize)
     {
-        return TP_BOTTOM_BORDER;
+        return TP::bottomBorder;
     }
-    return 0;
+    return TP::notAtBorder;
 }

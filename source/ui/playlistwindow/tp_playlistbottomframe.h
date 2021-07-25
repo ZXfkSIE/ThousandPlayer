@@ -1,6 +1,8 @@
 ﻿#ifndef TP_PLAYLISTBOTTOMFRAME_H
 #define TP_PLAYLISTBOTTOMFRAME_H
 
+#include "tp_globalenum.h"
+
 #include <QFrame>
 
 class TP_PlaylistBottomFrame : public QFrame
@@ -15,12 +17,12 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    int isAtBorder(QPoint I_point) const;
+    TP::CursorPositionType isAtBorder(QPoint I_point) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;
     bool b_isExpandingDisabled;
-    int cursorPositionType;
+    TP::CursorPositionType cursorPositionType;
     QPoint pressedGlobalPosition;
 };
 

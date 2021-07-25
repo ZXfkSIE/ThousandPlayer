@@ -8,19 +8,28 @@
 TP_VisualContainer::TP_VisualContainer(QWidget *parent) :
     TP_Container( parent )
   , layout( new QHBoxLayout{this} )
-  , tp_AlbumCoverLabel( new TP_AlbumCoverLabel{this} )
 {
     layout->setContentsMargins(0, 0, 0, 0);
 }
 
+// Need to be executed manually after the initialization of UI.
 void
-TP_VisualContainer::switchWidget(int I)
+TP_VisualContainer::initialize()
 {
-    switch (I)
+    tp_AlbumCoverLabel = new TP_AlbumCoverLabel{ this, width() };
+}
+
+void
+TP_VisualContainer::switchWidget(TP::VisualContainerType I_type)
+{
+    switch (I_type)
     {
-        case TP_ALBUM_COVER:
+    case TP::albumCover:
         layout->addWidget(tp_AlbumCoverLabel);
         tp_AlbumCoverLabel->setImage();
+        break;
+
+    default:
         break;
     }
 }

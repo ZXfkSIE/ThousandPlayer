@@ -1,7 +1,9 @@
 ﻿#ifndef TP_VISUALCONTAINER_H
 #define TP_VISUALCONTAINER_H
 
-#include <tp_container.h>
+#include "tp_globalenum.h"
+
+#include "tp_container.h"
 
 class TP_AlbumCoverLabel;
 
@@ -13,7 +15,9 @@ class TP_VisualContainer : public TP_Container
 
 public:
     explicit TP_VisualContainer(QWidget *parent = nullptr);
-    void switchWidget(int I);
+
+    void initialize();
+    void switchWidget(TP::VisualContainerType I_type);
 
 private:
     QHBoxLayout *layout;
