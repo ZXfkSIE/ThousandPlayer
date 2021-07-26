@@ -11,6 +11,7 @@ TP_AlbumCoverLabel::TP_AlbumCoverLabel(QWidget *parent, int I_size) :
     setMinimumSize( QSize{size, size} );
 }
 
+// Default musical note image
 void
 TP_AlbumCoverLabel::setImage()
 {

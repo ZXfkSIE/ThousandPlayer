@@ -20,10 +20,10 @@ TP_VolumeIcon::initialize()
 
 
 void
-TP_VolumeIcon::setIcon(int I)
+TP_VolumeIcon::setIcon(bool hasSound)
 {
-    if(I)                           // TP_VOLUME = 1
+    if(hasSound)
         setPixmap(pixmapVolume);
-    else                            // TP_MUTE = 0
+    else
         setPixmap(pixmapMute);
 }

@@ -19,6 +19,8 @@ add_library(TP::ui::mainwindow ALIAS TP_ui_mainwindow)
 target_include_directories(TP_ui_mainwindow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(TP_ui_mainwindow PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
-    TP::global
     TP::ui
+    )
+target_link_libraries(TP_ui_mainwindow PUBLIC
+    TP::global
     )

@@ -11,7 +11,6 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
   , b_isBorderBeingPressed(false)
   , b_isCursorResize(false)
   , b_isExpandingDisabled(false)
-  , cursorPositionType(0)
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
@@ -22,10 +21,10 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Exit->setIcon( QIcon{":/image/icon_Exit.svg"} );
 
     ui->label_VolumeIcon->initialize();
-    ui->label_VolumeIcon->setIcon(TP_VOLUME);
+    ui->label_VolumeIcon->setIcon(true);
 
     ui->widget_VisualContainer->initialize();
-    ui->widget_VisualContainer->switchWidget(TP_ALBUM_COVER);
+    ui->widget_VisualContainer->switchWidget(TP::albumCover);
 
     ui->pushButton_Previous->setIcon( QIcon{":/image/icon_Previous.svg"} );
     ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
@@ -79,7 +78,7 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 
         switch (cursorPositionType)
         {
-        case TP_LEFT_BORDER:
+        case TP::leftBorder:
             if (differenceX < 0 && b_isExpandingDisabled)
                 return;
 
@@ -87,30 +86,33 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
             if(rect_Geometry.width() >= minimumWidth())
                 setGeometry(rect_Geometry);
             pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() > width() - minimumWidth() + TP_BORDER_SIZE)
+            if (event->position().toPoint().x() > width() - minimumWidth() + TP::borderSize)
                 b_isExpandingDisabled = true;
 
-            break;              //case TP_LEFT_BORDER
+            break;              // case TP_LEFT_BORDER
 
-        case TP_RIGHT_BORDER:
+        case TP::rightBorder:
             if (differenceX > 0 && b_isExpandingDisabled)
                 return;
 
             rect_Geometry.setRight(rect_Geometry.right() + differenceX);
             setGeometry(rect_Geometry);
             pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() < width() - TP_BORDER_SIZE)
+            if (event->position().toPoint().x() < width() - TP::borderSize)
                 b_isExpandingDisabled = true;
 
-            break;              //case TP_RIGHT_BORDER
+            break;              // case TP_RIGHT_BORDER
+
+        default:
+            break;
         }
     }
-    else
+    else                        // if (b_isBorderBeingPressed)
     {
         cursorPositionType = isAtBorder(eventPosition);
         switch (cursorPositionType)
         {
-        case 0:
+        case TP::notAtBorder:
             if (b_isCursorResize)
             {
                 setCursor(QCursor(Qt::ArrowCursor));
@@ -118,13 +120,16 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
             }
             break;
 
-        case TP_LEFT_BORDER:
-        case TP_RIGHT_BORDER:
+        case TP::leftBorder:
+        case TP::rightBorder:
             if (! b_isCursorResize)
             {
                 setCursor(QCursor(Qt::SizeHorCursor));
                 b_isCursorResize = true;
             }
+            break;
+
+        default:
             break;
         }
     }
@@ -150,16 +155,16 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
-int
+TP::CursorPositionType
 TP_MainWindow::isAtBorder(QPoint I_point) const
 {
-    if (I_point.x() <= TP_BORDER_SIZE)
+    if (I_point.x() <= TP::borderSize)
     {
-        return TP_LEFT_BORDER;
+        return TP::leftBorder;
     }
-    else if (width() - I_point.x() <= TP_BORDER_SIZE)
+    else if (width() - I_point.x() <= TP::borderSize)
     {
-        return TP_RIGHT_BORDER;
+        return TP::leftBorder;
     }
-    return 0;
+    return TP::notAtBorder;
 }

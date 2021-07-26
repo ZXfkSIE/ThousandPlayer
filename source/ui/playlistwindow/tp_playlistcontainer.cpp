@@ -9,7 +9,6 @@ TP_PlaylistContainer::TP_PlaylistContainer(QWidget *parent) :
   , b_isBorderBeingPressed(false)
   , b_isCursorResize(false)
   , b_isExpandingDisabled(false)
-  , cursorPositionType(0)
 {
     setMouseTracking(true);
 }
@@ -44,7 +43,7 @@ TP_PlaylistContainer::mouseMoveEvent(QMouseEvent *event)
 
         switch (cursorPositionType)
         {
-        case TP_LEFT_BORDER:
+        case TP::leftBorder:
             if (differenceX < 0 && b_isExpandingDisabled)
                 return;
 
@@ -52,22 +51,25 @@ TP_PlaylistContainer::mouseMoveEvent(QMouseEvent *event)
             if(rect_Geometry.width() >= window()->minimumWidth())
                 window()->setGeometry(rect_Geometry);
             pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() > width() - window()->minimumWidth() + TP_BORDER_SIZE)
+            if (event->position().toPoint().x() > width() - window()->minimumWidth() + TP::borderSize)
                 b_isExpandingDisabled = true;
 
             break;              // case TP_LEFT_BORDER
 
-        case TP_RIGHT_BORDER:
+        case TP::rightBorder:
             if (differenceX > 0 && b_isExpandingDisabled)
                 return;
 
             rect_Geometry.setRight(rect_Geometry.right() + differenceX);
             window()->setGeometry(rect_Geometry);
             pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() < width() -  TP_BORDER_SIZE)
+            if (event->position().toPoint().x() < width() -  TP::borderSize)
                 b_isExpandingDisabled = true;
 
             break;              // case TP_RIGHT_BORDER
+
+        default:
+            break;
         }
     }
     else                        // if (b_isBorderBeingPressed)
@@ -75,7 +77,7 @@ TP_PlaylistContainer::mouseMoveEvent(QMouseEvent *event)
         cursorPositionType = isAtBorder(eventPosition);
         switch (cursorPositionType)
         {
-        case 0:
+        case TP::notAtBorder:
             if (b_isCursorResize)
             {
                 setCursor(QCursor(Qt::ArrowCursor));
@@ -83,13 +85,16 @@ TP_PlaylistContainer::mouseMoveEvent(QMouseEvent *event)
             }
             break;
 
-        case TP_LEFT_BORDER:
-        case TP_RIGHT_BORDER:
+        case TP::leftBorder:
+        case TP::rightBorder:
             if (! b_isCursorResize)
             {
                 setCursor(QCursor(Qt::SizeHorCursor));
                 b_isCursorResize = true;
             }
+            break;
+
+        default:
             break;
         }
     }                           // if (b_isBorderBeingPressed)
@@ -115,16 +120,16 @@ TP_PlaylistContainer::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
-int
+TP::CursorPositionType
 TP_PlaylistContainer::isAtBorder(QPoint I_point) const
 {
-    if (I_point.x() <= TP_BORDER_SIZE)
+    if (I_point.x() <= TP::borderSize)
     {
-        return TP_LEFT_BORDER;
+        return TP::leftBorder;
     }
-    else if (width() - I_point.x() <= TP_BORDER_SIZE)
+    else if (width() - I_point.x() <= TP::borderSize)
     {
-        return TP_RIGHT_BORDER;
+        return TP::rightBorder;
     }
-    return 0;
+    return TP::notAtBorder;
 }
