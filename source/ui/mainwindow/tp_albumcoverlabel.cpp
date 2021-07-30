@@ -3,7 +3,7 @@
 #include <QIcon>
 
 TP_AlbumCoverLabel::TP_AlbumCoverLabel(QWidget *parent, int I_size) :
-    TP_Label(parent),
+    QLabel(parent),
     size(I_size)
 {
     setAlignment(Qt::AlignCenter);

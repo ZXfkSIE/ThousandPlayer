@@ -3,6 +3,10 @@
 
 #include <QWidget>
 
+#include <vector>
+
+class QStandardItemModel;
+
 namespace Ui { class TP_PlaylistWindow; }
 
 class TP_PlaylistWindow : public QWidget
@@ -19,6 +23,14 @@ private slots:
 private:
     Ui::TP_PlaylistWindow *ui;
 
+    void initializePlaylist();
+    void storePlaylist();
+
+    QStandardItemModel* model_ListOfPlaylists;
+
+    std::vector<
+        std::pair<std::string, QStandardItemModel*>
+    > vector_model_Playlist;
 };
 
 #endif // TP_PLAYLIST_H

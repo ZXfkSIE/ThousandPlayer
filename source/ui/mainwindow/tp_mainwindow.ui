@@ -31,6 +31,9 @@
     <height>240</height>
    </size>
   </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string notr="true"/>
   </property>
@@ -73,6 +76,9 @@
        <height>36</height>
       </size>
      </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: #666;</string>
      </property>
@@ -110,6 +116,9 @@
           <italic>false</italic>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -152,6 +161,9 @@
           <height>26</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -173,6 +185,9 @@
           <width>26</width>
           <height>26</height>
          </size>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -196,13 +211,16 @@
           <height>26</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="TP_Container" name="widget_InfoContainer" native="true">
+    <widget class="QWidget" name="widget_InfoContainer" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -221,6 +239,9 @@
        <height>47</height>
       </size>
      </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="topMargin">
        <number>6</number>
@@ -229,7 +250,7 @@
        <number>9</number>
       </property>
       <item>
-       <widget class="TP_Label" name="label_Info">
+       <widget class="QLabel" name="label_Info">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -248,6 +269,9 @@
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">background-color: #666;
@@ -271,7 +295,10 @@ color: rgb(255, 255, 255);</string>
     </widget>
    </item>
    <item>
-    <widget class="TP_Container" name="widget_MiddleContainer" native="true">
+    <widget class="QWidget" name="widget_MiddleContainer" native="true">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
        <number>9</number>
@@ -305,10 +332,16 @@ color: rgb(255, 255, 255);</string>
           <height>118</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="TP_Container" name="widget_RightContainer" native="true">
+       <widget class="QWidget" name="widget_RightContainer" native="true">
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="spacing">
           <number>0</number>
@@ -326,7 +359,10 @@ color: rgb(255, 255, 255);</string>
           <number>0</number>
          </property>
          <item>
-          <widget class="TP_Frame" name="frame_TimeContainer">
+          <widget class="QFrame" name="frame_TimeContainer">
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
            </property>
@@ -353,7 +389,7 @@ color: rgb(255, 255, 255);</string>
              <number>4</number>
             </property>
             <item>
-             <widget class="TP_Container" name="widget_FileInfoContainer" native="true">
+             <widget class="QWidget" name="widget_FileInfoContainer" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -372,6 +408,9 @@ color: rgb(255, 255, 255);</string>
                 <height>20</height>
                </size>
               </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <property name="leftMargin">
                 <number>0</number>
@@ -386,7 +425,7 @@ color: rgb(255, 255, 255);</string>
                 <number>0</number>
                </property>
                <item>
-                <widget class="TP_Label" name="label_AudioFormat">
+                <widget class="QLabel" name="label_AudioFormat">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -409,6 +448,9 @@ color: rgb(255, 255, 255);</string>
                   <font>
                    <pointsize>10</pointsize>
                   </font>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>true</bool>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 255, 255);</string>
@@ -425,7 +467,7 @@ color: rgb(255, 255, 255);</string>
                 </widget>
                </item>
                <item>
-                <widget class="TP_Label" name="label_AudioFrequency">
+                <widget class="QLabel" name="label_AudioFrequency">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -448,6 +490,9 @@ color: rgb(255, 255, 255);</string>
                   <font>
                    <pointsize>10</pointsize>
                   </font>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>true</bool>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 255, 255);</string>
@@ -464,7 +509,7 @@ color: rgb(255, 255, 255);</string>
                 </widget>
                </item>
                <item>
-                <widget class="TP_Label" name="label_AudioBits">
+                <widget class="QLabel" name="label_AudioBits">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -487,6 +532,9 @@ color: rgb(255, 255, 255);</string>
                   <font>
                    <pointsize>10</pointsize>
                   </font>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>true</bool>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 255, 255);</string>
@@ -503,7 +551,7 @@ color: rgb(255, 255, 255);</string>
                 </widget>
                </item>
                <item>
-                <widget class="TP_Label" name="label_AudioBitrate">
+                <widget class="QLabel" name="label_AudioBitrate">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -526,6 +574,9 @@ color: rgb(255, 255, 255);</string>
                   <font>
                    <pointsize>10</pointsize>
                   </font>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>true</bool>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 255, 255);</string>
@@ -558,7 +609,10 @@ color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="TP_Container" name="widget_TimeStampContainer" native="true">
+             <widget class="QWidget" name="widget_TimeStampContainer" native="true">
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <property name="leftMargin">
                 <number>0</number>
@@ -573,13 +627,16 @@ color: rgb(255, 255, 255);</string>
                 <number>0</number>
                </property>
                <item>
-                <widget class="TP_Label" name="label_CurrentTime">
+                <widget class="QLabel" name="label_CurrentTime">
                  <property name="font">
                   <font>
                    <pointsize>10</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>true</bool>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 255, 255);</string>
@@ -603,13 +660,16 @@ color: rgb(255, 255, 255);</string>
                 </spacer>
                </item>
                <item>
-                <widget class="TP_Label" name="label_DurationTime">
+                <widget class="QLabel" name="label_DurationTime">
                  <property name="font">
                   <font>
                    <pointsize>10</pointsize>
                    <weight>75</weight>
                    <bold>true</bold>
                   </font>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>true</bool>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 255, 255);</string>
@@ -624,6 +684,9 @@ color: rgb(255, 255, 255);</string>
             </item>
             <item>
              <widget class="QSlider" name="slider_Time">
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -633,7 +696,10 @@ color: rgb(255, 255, 255);</string>
           </widget>
          </item>
          <item>
-          <widget class="TP_Container" name="widget_buttonContainer" native="true">
+          <widget class="QWidget" name="widget_buttonContainer" native="true">
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <property name="spacing">
              <number>0</number>
@@ -651,7 +717,7 @@ color: rgb(255, 255, 255);</string>
              <number>0</number>
             </property>
             <item>
-             <widget class="TP_Button" name="pushButton_Previous">
+             <widget class="QPushButton" name="pushButton_Previous">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -663,6 +729,9 @@ color: rgb(255, 255, 255);</string>
                 <width>32</width>
                 <height>32</height>
                </size>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -679,7 +748,7 @@ color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="TP_Button" name="pushButton_Stop">
+             <widget class="QPushButton" name="pushButton_Stop">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -691,6 +760,9 @@ color: rgb(255, 255, 255);</string>
                 <width>32</width>
                 <height>32</height>
                </size>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -704,7 +776,7 @@ color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="TP_Button" name="pushButton_Play">
+             <widget class="QPushButton" name="pushButton_Play">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -716,6 +788,9 @@ color: rgb(255, 255, 255);</string>
                 <width>32</width>
                 <height>32</height>
                </size>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -729,7 +804,7 @@ color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="TP_Button" name="pushButton_Next">
+             <widget class="QPushButton" name="pushButton_Next">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -741,6 +816,9 @@ color: rgb(255, 255, 255);</string>
                 <width>32</width>
                 <height>32</height>
                </size>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -754,7 +832,7 @@ color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="TP_Button" name="pushButton_Mode">
+             <widget class="QPushButton" name="pushButton_Mode">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -766,6 +844,9 @@ color: rgb(255, 255, 255);</string>
                 <width>32</width>
                 <height>32</height>
                </size>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -788,7 +869,10 @@ color: rgb(255, 255, 255);</string>
     </widget>
    </item>
    <item>
-    <widget class="TP_Frame" name="frame_BottomContainer">
+    <widget class="QFrame" name="frame_BottomContainer">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: #666;</string>
      </property>
@@ -815,7 +899,7 @@ color: rgb(255, 255, 255);</string>
        <number>3</number>
       </property>
       <item>
-       <widget class="TP_Container" name="widget_VolumeBarContainer" native="true">
+       <widget class="QWidget" name="widget_VolumeBarContainer" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -833,6 +917,9 @@ color: rgb(255, 255, 255);</string>
           <width>130</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
@@ -870,6 +957,9 @@ color: rgb(255, 255, 255);</string>
              <height>22</height>
             </size>
            </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
@@ -888,6 +978,9 @@ color: rgb(255, 255, 255);</string>
              <width>16777215</width>
              <height>18</height>
             </size>
+           </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -913,6 +1006,9 @@ color: rgb(255, 255, 255);</string>
              <width>20</width>
              <height>16777215</height>
             </size>
+           </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">color: rgb(255, 255, 255);</string>
@@ -942,7 +1038,7 @@ color: rgb(255, 255, 255);</string>
        </spacer>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_Playlist">
+       <widget class="QPushButton" name="pushButton_Playlist">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -967,6 +1063,9 @@ color: rgb(255, 255, 255);</string>
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -977,7 +1076,7 @@ color: rgb(255, 255, 255);</string>
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_Equalizer">
+       <widget class="QPushButton" name="pushButton_Equalizer">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -1002,6 +1101,9 @@ color: rgb(255, 255, 255);</string>
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -1012,7 +1114,7 @@ color: rgb(255, 255, 255);</string>
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_Lyrics">
+       <widget class="QPushButton" name="pushButton_Lyrics">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -1037,6 +1139,9 @@ color: rgb(255, 255, 255);</string>
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -1059,22 +1164,6 @@ color: rgb(255, 255, 255);</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TP_Button</class>
-   <extends>QPushButton</extends>
-   <header>tp_button.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_Container</class>
-   <extends>QWidget</extends>
-   <header>tp_container.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>TP_Label</class>
-   <extends>QLabel</extends>
-   <header>tp_label.h</header>
-  </customwidget>
-  <customwidget>
    <class>TP_VisualContainer</class>
    <extends>QWidget</extends>
    <header>tp_visualcontainer.h</header>
@@ -1084,12 +1173,6 @@ color: rgb(255, 255, 255);</string>
    <class>TP_VolumeIcon</class>
    <extends>QLabel</extends>
    <header>tp_volumeicon.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_Frame</class>
-   <extends>QFrame</extends>
-   <header>tp_frame.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

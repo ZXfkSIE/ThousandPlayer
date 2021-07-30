@@ -6,7 +6,7 @@
 #include <QHBoxLayout>
 
 TP_VisualContainer::TP_VisualContainer(QWidget *parent) :
-    TP_Container( parent )
+    QWidget( parent )
   , layout( new QHBoxLayout{this} )
 {
     layout->setContentsMargins(0, 0, 0, 0);

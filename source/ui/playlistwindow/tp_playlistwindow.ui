@@ -64,6 +64,9 @@
        <height>28</height>
       </size>
      </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: #666;</string>
      </property>
@@ -98,6 +101,9 @@
           <bold>true</bold>
          </font>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
@@ -108,6 +114,9 @@
       </item>
       <item>
        <spacer name="horizontalSpacer">
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -139,6 +148,9 @@
           <height>18</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="iconSize">
          <size>
           <width>12</width>
@@ -152,6 +164,9 @@
    </item>
    <item>
     <widget class="TP_PlaylistContainer" name="playlistContainer" native="true">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="leftMargin">
        <number>5</number>
@@ -167,18 +182,37 @@
       </property>
       <item>
        <widget class="QSplitter" name="splitter">
+        <property name="font">
+         <font>
+          <family>MT Extra</family>
+         </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="handleWidth">
          <number>5</number>
         </property>
-        <widget class="TP_ListOfPlaylistsTableView" name="tableView_ListOfPlaylists">
+        <widget class="TP_PlaylistsWidget" name="playlistsWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::Panel</enum>
@@ -187,12 +221,15 @@
           <number>3</number>
          </property>
         </widget>
-        <widget class="TP_FileListTableView" name="tableView_FileList">
+        <widget class="TP_FileListWidget" name="fileListWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>4</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
          </property>
          <property name="frameShape">
           <enum>QFrame::Panel</enum>
@@ -220,6 +257,9 @@
        <height>36</height>
       </size>
      </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: #666;</string>
      </property>
@@ -246,7 +286,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="TP_Button" name="pushButton_Add">
+       <widget class="QPushButton" name="pushButton_Add">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -265,6 +305,9 @@
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -275,7 +318,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_Remove">
+       <widget class="QPushButton" name="pushButton_Remove">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -294,6 +337,9 @@
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -304,7 +350,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_Sort">
+       <widget class="QPushButton" name="pushButton_Sort">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -323,6 +369,9 @@
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -333,7 +382,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_Find">
+       <widget class="QPushButton" name="pushButton_Find">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -352,6 +401,9 @@
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -362,7 +414,7 @@
        </widget>
       </item>
       <item>
-       <widget class="TP_Button" name="pushButton_Select">
+       <widget class="QPushButton" name="pushButton_Select">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -381,6 +433,9 @@
           <weight>75</weight>
           <bold>true</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
@@ -415,19 +470,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TP_Button</class>
-   <extends>QPushButton</extends>
-   <header>tp_button.h</header>
+   <class>TP_PlaylistsWidget</class>
+   <extends>QListWidget</extends>
+   <header location="global">tp_playlistswidget.h</header>
   </customwidget>
   <customwidget>
-   <class>TP_FileListTableView</class>
-   <extends>QTableView</extends>
-   <header>tp_filelisttableview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_ListOfPlaylistsTableView</class>
-   <extends>QTableView</extends>
-   <header>tp_listofplayliststableview.h</header>
+   <class>TP_FileListWidget</class>
+   <extends>QListWidget</extends>
+   <header location="global">tp_filelistwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

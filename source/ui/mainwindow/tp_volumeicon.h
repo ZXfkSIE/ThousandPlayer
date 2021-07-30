@@ -1,9 +1,9 @@
 ﻿#ifndef TP_VOLUMEICON_H
 #define TP_VOLUMEICON_H
 
-#include <tp_label.h>
+#include <QLabel>
 
-class TP_VolumeIcon : public TP_Label
+class TP_VolumeIcon : public QLabel
 {
     Q_OBJECT
 

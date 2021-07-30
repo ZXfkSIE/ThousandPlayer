@@ -14,7 +14,6 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-    setMouseTracking(true);
 
     ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
     ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
@@ -164,7 +163,7 @@ TP_MainWindow::isAtBorder(QPoint I_point) const
     }
     else if (width() - I_point.x() <= TP::borderSize)
     {
-        return TP::leftBorder;
+        return TP::rightBorder;
     }
     return TP::notAtBorder;
 }

@@ -3,7 +3,7 @@
 #include <QIcon>
 
 TP_VolumeIcon::TP_VolumeIcon(QWidget *parent) :
-    TP_Label(parent)
+    QLabel(parent)
 {
 
 }

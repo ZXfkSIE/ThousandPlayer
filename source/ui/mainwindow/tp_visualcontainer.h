@@ -3,13 +3,12 @@
 
 #include "tp_globalenum.h"
 
-#include "tp_container.h"
+#include <QWidget>
 
 class TP_AlbumCoverLabel;
-
 class QHBoxLayout;
 
-class TP_VisualContainer : public TP_Container
+class TP_VisualContainer : public QWidget
 {
     Q_OBJECT
 

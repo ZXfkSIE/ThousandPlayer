@@ -1,9 +1,9 @@
 ﻿#ifndef TP_ALBUMCOVERLABEL_H
 #define TP_ALBUMCOVERLABEL_H
 
-#include <tp_label.h>
+#include <QLabel>
 
-class TP_AlbumCoverLabel : public TP_Label
+class TP_AlbumCoverLabel : public QLabel
 {
     Q_OBJECT
 
