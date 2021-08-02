@@ -190,6 +190,9 @@
         <property name="mouseTracking">
          <bool>true</bool>
         </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
         <widget class="TP_PlaylistsWidget" name="playlistsWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -284,21 +287,27 @@
       </property>
       <item>
        <widget class="QPushButton" name="pushButton_Add">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>80</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -316,21 +325,27 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_Remove">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>80</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -348,21 +363,27 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_Sort">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>80</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -380,21 +401,27 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_Find">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>80</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -412,21 +439,27 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_Select">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>80</width>
+          <width>84</width>
           <height>24</height>
          </size>
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -446,6 +479,11 @@
     </widget>
    </item>
   </layout>
+  <action name="action_File">
+   <property name="text">
+    <string>&amp;File...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

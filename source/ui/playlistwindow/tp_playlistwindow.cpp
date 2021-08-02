@@ -4,7 +4,9 @@
 #include "tp_globalconst.h"
 
 #include "tp_filelistwidget.h"
+#include "tp_menu.h"
 
+#include <QMenu>
 #include <QMouseEvent>
 
 #include <filesystem>
@@ -22,6 +24,7 @@ TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
     ui->pushButton_Close->setIcon(QIcon{":/image/icon_Exit.svg"});
 
     initializePlaylist();
+    initializeMenu();
 }
 
 TP_PlaylistWindow::~TP_PlaylistWindow()
@@ -41,6 +44,10 @@ TP_PlaylistWindow::on_pushButton_Close_clicked()
     hide();
 }
 
+void TP_PlaylistWindow::on_action_File_triggered()
+{
+
+}
 
 // *****************************************************************
 // private
@@ -72,8 +79,20 @@ TP_PlaylistWindow::initializePlaylist()
 }
 
 void
+TP_PlaylistWindow::initializeMenu()
+{
+    menu_Add = new TP_Menu {ui->pushButton_Add};
+
+    menu_Add->addAction(ui->action_File);
+
+    ui->pushButton_Add->setMenu(menu_Add);
+}
+
+void
 TP_PlaylistWindow::storePlaylist()
 {
     if( !std::filesystem::exists(TP::configDirectoryPath) )
         std::filesystem::create_directory(TP::configDirectoryPath);
 }
+
+
