@@ -8,22 +8,21 @@ TP_VolumeIcon::TP_VolumeIcon(QWidget *parent) :
 
 }
 
-// Need to be executed manually after the initialization of UI.
+// Must be executed manually after the initialization of UI to get width and height.
 void
 TP_VolumeIcon::initialize()
 {
-    pixmapVolume = QIcon(":/image/icon_Volume.svg")
-                   .pixmap(QSize(width(), height()));
-    pixmapMute = QIcon(":/image/icon_Mute.svg")
-                 .pixmap(QSize(width(), height()));
+    pixmap_Volume = QIcon(":/image/icon_Volume.svg")
+            .pixmap(QSize(width(), height()));
+    pixmap_Mute = QIcon(":/image/icon_Mute.svg")
+            .pixmap(QSize(width(), height()));
 }
 
-
 void
-TP_VolumeIcon::setIcon(bool hasSound)
+TP_VolumeIcon::setIcon(int currentVolume)
 {
-    if(hasSound)
-        setPixmap(pixmapVolume);
+    if(currentVolume)
+        setPixmap(pixmap_Volume);
     else
-        setPixmap(pixmapMute);
+        setPixmap(pixmap_Mute);
 }

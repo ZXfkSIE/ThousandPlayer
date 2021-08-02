@@ -190,12 +190,6 @@
         <property name="mouseTracking">
          <bool>true</bool>
         </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="handleWidth">
-         <number>5</number>
-        </property>
         <widget class="TP_PlaylistsWidget" name="playlistsWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -221,9 +215,9 @@
           <number>3</number>
          </property>
         </widget>
-        <widget class="TP_FileListWidget" name="fileListWidget">
+        <widget class="QFrame" name="frame_FileList">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>4</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -233,6 +227,9 @@
          </property>
          <property name="frameShape">
           <enum>QFrame::Panel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
          </property>
          <property name="lineWidth">
           <number>3</number>
@@ -473,11 +470,6 @@
    <class>TP_PlaylistsWidget</class>
    <extends>QListWidget</extends>
    <header location="global">tp_playlistswidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_FileListWidget</class>
-   <extends>QListWidget</extends>
-   <header location="global">tp_filelistwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

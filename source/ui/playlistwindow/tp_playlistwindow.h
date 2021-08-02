@@ -1,11 +1,13 @@
 ﻿#ifndef TP_PLAYLISTWINDOW_H
 #define TP_PLAYLISTWINDOW_H
 
-#include <QWidget>
+#include <QListWidget>
 
 #include <vector>
 
-class QStandardItemModel;
+class TP_FileListWidget;
+
+class QHBoxLayout;
 
 namespace Ui { class TP_PlaylistWindow; }
 
@@ -26,11 +28,10 @@ private:
     void initializePlaylist();
     void storePlaylist();
 
-    QStandardItemModel* model_ListOfPlaylists;
+    QHBoxLayout *layout_FileListFrame;
 
-    std::vector<
-        std::pair<std::string, QStandardItemModel*>
-    > vector_model_Playlist;
+    TP_FileListWidget *currentListWidget;
+    std::vector<TP_FileListWidget *> vector_FileListWidget;
 };
 
 #endif // TP_PLAYLIST_H

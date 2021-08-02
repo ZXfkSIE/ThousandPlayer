@@ -3,18 +3,21 @@
 
 #include "tp_globalconst.h"
 
+#include "tp_filelistwidget.h"
+
 #include <QMouseEvent>
-#include <QStandardItemModel>
 
 #include <filesystem>
 
 TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
     QWidget(parent)
   , ui( new Ui::TP_PlaylistWindow )
-  , model_ListOfPlaylists( new QStandardItemModel{this} )
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+
+    layout_FileListFrame = new QHBoxLayout {ui->frame_FileList};
+    layout_FileListFrame->setContentsMargins(0, 0, 0, 0);
 
     ui->pushButton_Close->setIcon(QIcon{":/image/icon_Exit.svg"});
 
@@ -53,10 +56,16 @@ TP_PlaylistWindow::initializePlaylist()
     }
     else
     {
-        qDebug() << "Existing playlist not found.";
+        qDebug() << "Existing playlist not found. Create default playlist and filelist.";
         ui->playlistsWidget->addItem(tr("Default"));
-        for (int i {} ; i < 5;  i++)
+        ui->playlistsWidget->setCurrentRow(0);
+
+        for(int i{}; i < 50; i++)
             ui->playlistsWidget->addItem(QString("L%1").arg(i));
+
+        currentListWidget = new TP_FileListWidget{ui->frame_FileList, tr("Default")};
+        vector_FileListWidget.push_back(currentListWidget);
+        layout_FileListFrame->addWidget(currentListWidget);
     }
 
     ui->playlistsWidget->setDragDropMode(QAbstractItemView::InternalMove);

@@ -11,10 +11,10 @@ public:
     explicit TP_VolumeIcon(QWidget *parent = nullptr);
 
     void initialize();
-    void setIcon(bool hasSound);
+    void setIcon(int currentVolume);
 
 private:
-    QPixmap pixmapVolume, pixmapMute;
+    QPixmap pixmap_Volume, pixmap_Mute;
 };
 
 #endif // TP_VOLUMEICON_H
