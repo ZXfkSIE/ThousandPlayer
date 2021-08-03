@@ -63,7 +63,7 @@ TP_PlaylistWindow::initializePlaylist()
     }
     else
     {
-        qDebug() << "Existing playlist not found. Create default playlist and filelist.";
+        qDebug() << "Existing playlist not found. Creating default playlist and filelist.";
         ui->playlistsWidget->addItem(tr("Default"));
         ui->playlistsWidget->setCurrentRow(0);
 
@@ -74,8 +74,6 @@ TP_PlaylistWindow::initializePlaylist()
         vector_FileListWidget.push_back(currentListWidget);
         layout_FileListFrame->addWidget(currentListWidget);
     }
-
-    ui->playlistsWidget->setDragDropMode(QAbstractItemView::InternalMove);
 }
 
 void
