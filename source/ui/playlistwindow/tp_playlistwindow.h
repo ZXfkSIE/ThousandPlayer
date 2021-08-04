@@ -23,7 +23,7 @@ public:
 private slots:
     void on_pushButton_Close_clicked();
 
-    void on_action_File_triggered();
+    void on_action_AddFile_triggered();
 
 private:
     Ui::TP_PlaylistWindow *ui;

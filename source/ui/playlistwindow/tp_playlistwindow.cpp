@@ -6,6 +6,7 @@
 #include "tp_filelistwidget.h"
 #include "tp_menu.h"
 
+#include <QFileDialog>
 #include <QMenu>
 #include <QMouseEvent>
 
@@ -44,9 +45,19 @@ TP_PlaylistWindow::on_pushButton_Close_clicked()
     hide();
 }
 
-void TP_PlaylistWindow::on_action_File_triggered()
+void TP_PlaylistWindow::on_action_AddFile_triggered()
 {
+    QStringList qstrlst_FilePath = QFileDialog::getOpenFileNames(
+                this,                               // QWidget *parent = nullptr
+                tr("Open files"),                   // const QString &caption = QString()
+                QString(),                          // const QString &dir = QString()
+                QString("FLAC files (*.flac)")      // const QString &filter = QString(),
+                );
 
+    foreach (QString qstr_FilePath: qstrlst_FilePath)
+    {
+
+    }
 }
 
 // *****************************************************************
@@ -70,7 +81,7 @@ TP_PlaylistWindow::initializePlaylist()
         for(int i{}; i < 50; i++)
             ui->playlistsWidget->addItem(QString("L%1").arg(i));
 
-        currentListWidget = new TP_FileListWidget{ui->frame_FileList, tr("Default")};
+        currentListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
         vector_FileListWidget.push_back(currentListWidget);
         layout_FileListFrame->addWidget(currentListWidget);
     }
@@ -79,9 +90,13 @@ TP_PlaylistWindow::initializePlaylist()
 void
 TP_PlaylistWindow::initializeMenu()
 {
+    // Initialize menu of "Add" button
     menu_Add = new TP_Menu {ui->pushButton_Add};
 
-    menu_Add->addAction(ui->action_File);
+    menu_Add->addAction(ui->action_AddFile);
+    menu_Add->addAction(ui->action_AddFolder);
+    menu_Add->addSeparator();
+    menu_Add->addAction(ui->action_AddURL);
 
     ui->pushButton_Add->setMenu(menu_Add);
 }
@@ -92,5 +107,3 @@ TP_PlaylistWindow::storePlaylist()
     if( !std::filesystem::exists(TP::configDirectoryPath) )
         std::filesystem::create_directory(TP::configDirectoryPath);
 }
-
-

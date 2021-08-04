@@ -479,9 +479,19 @@
     </widget>
    </item>
   </layout>
-  <action name="action_File">
+  <action name="action_AddFile">
    <property name="text">
     <string>&amp;File...</string>
+   </property>
+  </action>
+  <action name="action_AddFolder">
+   <property name="text">
+    <string>&amp;Folder...</string>
+   </property>
+  </action>
+  <action name="action_AddURL">
+   <property name="text">
+    <string>&amp;URL...</string>
    </property>
   </action>
  </widget>
