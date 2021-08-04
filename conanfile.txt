@@ -1,0 +1,5 @@
+[requires]
+taglib/1.12
+
+[generators]
+cmake

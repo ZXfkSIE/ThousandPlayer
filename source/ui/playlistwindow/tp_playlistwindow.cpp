@@ -3,7 +3,7 @@
 
 #include "tp_globalconst.h"
 
-#include "tp_filelistwidget.h"
+#include "tp_filelisttablewidget.h"
 #include "tp_menu.h"
 
 #include <QFileDialog>
@@ -54,8 +54,9 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
                 QString("FLAC files (*.flac)")      // const QString &filter = QString(),
                 );
 
-    foreach (QString qstr_FilePath: qstrlst_FilePath)
+    for (QString& qstr_FilePath: qstrlst_FilePath)
     {
+        currentFileListTableWidget->insertRow(currentFileListTableWidget->rowCount());
 
     }
 }
@@ -81,9 +82,9 @@ TP_PlaylistWindow::initializePlaylist()
         for(int i{}; i < 50; i++)
             ui->playlistsWidget->addItem(QString("L%1").arg(i));
 
-        currentListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
-        vector_FileListWidget.push_back(currentListWidget);
-        layout_FileListFrame->addWidget(currentListWidget);
+        currentFileListTableWidget = new TP_FileListTableWidget{ ui->frame_FileList, tr("Default") };
+        vector_FileListTableWidget.push_back(currentFileListTableWidget);
+        layout_FileListFrame->addWidget(currentFileListTableWidget);
     }
 }
 

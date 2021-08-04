@@ -5,7 +5,7 @@
 
 #include <vector>
 
-class TP_FileListWidget;
+class TP_FileListTableWidget;
 class TP_Menu;
 
 class QHBoxLayout;
@@ -35,8 +35,8 @@ private:
 
     QHBoxLayout *layout_FileListFrame;
 
-    TP_FileListWidget *currentListWidget;
-    std::vector<TP_FileListWidget *> vector_FileListWidget;
+    TP_FileListTableWidget *currentFileListTableWidget;
+    std::vector<TP_FileListTableWidget *> vector_FileListTableWidget;
 
     TP_Menu *menu_Add;
 };
