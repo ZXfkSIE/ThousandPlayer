@@ -1,6 +1,9 @@
 ﻿#include "tp_filelisttablewidget.h"
 
+#include "tp_globalconst.h"
+
 #include <QHeaderView>
+#include <QScrollBar>
 
 TP_FileListTableWidget::TP_FileListTableWidget(QWidget *parent, QString I_qstr) :
     QTableWidget { parent }
@@ -8,14 +11,25 @@ TP_FileListTableWidget::TP_FileListTableWidget(QWidget *parent, QString I_qstr) 
 {
     setMouseTracking(true);
 
-    verticalHeader()->hide();
-    horizontalHeader()->hide();
-    setColumnCount(6);                  // 0: title , 1: length, 2: artist, 3: album title, 4: filename, 5: path
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
+    setDragDropMode(QAbstractItemView::InternalMove);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    // Hide last 4 columns
-    for(int idx = 2; idx <= columnCount(); idx++)
+    setShowGrid(false);
+    horizontalScrollBar()->hide();
+    verticalHeader()->hide();
+
+    horizontalHeader()->hide();
+    setColumnCount(8);                  // 0: No., 1: description, 2: duration, 3: artist,
+                                        // 4: title, 5: album, 6: filename, 7: path
+
+    // Hide last 5 columns
+    for(int idx = 3; idx <= columnCount(); idx++)
         hideColumn(idx);
 
+    horizontalHeader()->setSectionResizeMode(TP::index_Description, QHeaderView::Stretch);
+
+    setStyleSheet("color: rgb(255, 255, 255);");
 }
 
 void

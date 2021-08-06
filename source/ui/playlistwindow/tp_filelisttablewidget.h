@@ -14,6 +14,8 @@ public:
     QString getListName();
 
 private:
+    //void dropEvent(QDropEvent *event) override;
+
     QString listName;
 };
 

@@ -9,6 +9,7 @@ class TP_FileListTableWidget;
 class TP_Menu;
 
 class QHBoxLayout;
+class QMediaPlayer;
 
 namespace Ui { class TP_PlaylistWindow; }
 
@@ -32,6 +33,8 @@ private:
     void initializeMenu();
 
     void storePlaylist();
+    void refreshNumber();
+    void refreshRowHeight();
 
     QHBoxLayout *layout_FileListFrame;
 

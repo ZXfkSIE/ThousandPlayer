@@ -19,6 +19,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
+message(STATUS "[TP] Conan packages loaded: ${CONAN_LIBS}")
+
 find_package(Qt6 6.2...6.114514 COMPONENTS
     Widgets
     Multimedia
