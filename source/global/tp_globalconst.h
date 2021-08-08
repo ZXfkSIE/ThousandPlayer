@@ -11,17 +11,13 @@ static const int borderSize = 5;
 static const std::string configDirectoryPath = "config";
 static const std::string playlistFilePath = configDirectoryPath + "/playlists.xml";
 
-// 0: No., 1: description, 2: duration, 3: artist,
-// 4: title, 5: album, 6: filename, 7: path
-static const int index_No = 0;
-static const int index_Description = 1;
-static const int index_Duration = 2;
-static const int index_Artist = 3;
-static const int index_Title = 4;
-static const int index_Album = 5;
-static const int index_Filename = 6;
-static const int index_Path = 7;
-
+static const int role_Duration = 0x0100;
+static const int role_Artist = 0x0101;
+static const int role_Title = 0x0102;
+static const int role_Album = 0x0103;
+static const int role_Filename = 0x0104;
+static const int role_Path = 0x0105;
+static const int role_Description = 0x0106;
 }       //namespace TP
 
 #endif // TP_GLOBALCONST_H

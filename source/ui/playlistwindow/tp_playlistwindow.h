@@ -5,7 +5,7 @@
 
 #include <vector>
 
-class TP_FileListTableWidget;
+class TP_FileListWidget;
 class TP_Menu;
 
 class QHBoxLayout;
@@ -21,6 +21,9 @@ public:
     explicit TP_PlaylistWindow(QWidget *parent = nullptr);
     ~TP_PlaylistWindow();
 
+public slots:
+    void slot_refreshAllShowingTitle();
+
 private slots:
     void on_pushButton_Close_clicked();
 
@@ -31,15 +34,15 @@ private:
 
     void initializePlaylist();
     void initializeMenu();
+    void connectCurrentFileListWidget();
 
     void storePlaylist();
-    void refreshNumber();
-    void refreshRowHeight();
+    void refreshShowingTitle(int idx_Min, int idx_Max);
 
     QHBoxLayout *layout_FileListFrame;
 
-    TP_FileListTableWidget *currentFileListTableWidget;
-    std::vector<TP_FileListTableWidget *> vector_FileListTableWidget;
+    TP_FileListWidget *currentFileListWidget;
+    std::vector<TP_FileListWidget *> vector_FileListWidget;
 
     TP_Menu *menu_Add;
 };

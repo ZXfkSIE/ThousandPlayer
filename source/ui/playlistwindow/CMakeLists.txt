@@ -1,7 +1,7 @@
 ﻿set(TP_UI_PLAYLISTWINDOW_FILES
 
-    tp_filelisttablewidget.h
-    tp_filelisttablewidget.cpp
+    tp_filelistwidget.h
+    tp_filelistwidget.cpp
 
     tp_playlistswidget.h
     tp_playlistswidget.cpp

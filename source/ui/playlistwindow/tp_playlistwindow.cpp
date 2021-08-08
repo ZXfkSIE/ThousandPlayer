@@ -1,9 +1,9 @@
-﻿q#include "tp_playlistwindow.h"
+﻿#include "tp_playlistwindow.h"
 #include "ui_tp_playlistwindow.h"
 
 #include "tp_globalconst.h"
 
-#include "tp_filelisttablewidget.h"
+#include "tp_filelistwidget.h"
 #include "tp_menu.h"
 
 // Headers of TagLib
@@ -16,7 +16,7 @@
 
 #include <filesystem>
 
-#include <stdio.h>
+//#include <cmath>
 
 TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
     QWidget(parent)
@@ -32,6 +32,7 @@ TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
 
     initializePlaylist();
     initializeMenu();
+    connectCurrentFileListWidget();
 }
 
 TP_PlaylistWindow::~TP_PlaylistWindow()
@@ -39,6 +40,16 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
     delete ui;
 
     storePlaylist();
+}
+
+// *****************************************************************
+// public slots
+// *****************************************************************
+
+void
+TP_PlaylistWindow::slot_refreshAllShowingTitle()
+{
+    refreshShowingTitle(0, currentFileListWidget->count() - 1);
 }
 
 // *****************************************************************
@@ -52,7 +63,9 @@ TP_PlaylistWindow::on_pushButton_Close_clicked()
 }
 
 void TP_PlaylistWindow::on_action_AddFile_triggered()
-{   
+{
+    int originalCount { currentFileListWidget->count() };
+
     QStringList qstrlst_FilePath = QFileDialog::getOpenFileNames(
                 this,                               // QWidget *parent = nullptr
                 tr("Open files"),                   // const QString &caption = QString()
@@ -72,54 +85,37 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
 
         int duration = fileRef.audioProperties()->lengthInSeconds();
 
-        currentFileListTableWidget->insertRow(currentFileListTableWidget->rowCount());
+        QListWidgetItem *item = new QListWidgetItem {currentFileListWidget};
 
         // set duration
-        currentFileListTableWidget->setItem(
-                    currentFileListTableWidget->rowCount() - 1,
-                    TP::index_Duration,
-                    new QTableWidgetItem( QString("%1:%2")
-                                          .arg(duration / 60, 2, 10, QChar('0'))
-                                          .arg(duration % 60, 2, 10, QChar('0')) )
-                 );
+        item->setData(TP::role_Duration,
+                     QString("%1:%2")
+                     .arg(duration / 60, 2, 10, QChar('0'))
+                     .arg(duration % 60, 2, 10, QChar('0')));
 
         // set path
-        currentFileListTableWidget->setItem(
-                    currentFileListTableWidget->rowCount() - 1,
-                    TP::index_Path,
-                    new QTableWidgetItem( qstr_FilePath )
-                 );
+        item->setData(TP::role_Path, qstr_FilePath);
 
         // set filename
-        currentFileListTableWidget->setItem(
-                    currentFileListTableWidget->rowCount() - 1,
-                    TP::index_Filename,
-                    new QTableWidgetItem( qstr_Filename )
-                 );
+        item->setData(TP::role_Filename, qstr_Filename);
 
         //set descrption, artist, title, album
-
         if(qstr_title.length() == 0)
+        {
             // No title in tag, meaning that no valid tag is contained in the file
-            currentFileListTableWidget->setItem(
-                        currentFileListTableWidget->rowCount() - 1,
-                        TP::index_Description,
-                        new QTableWidgetItem(qstr_Filename)
-                     );
+            item->setData(TP::role_Description, qstr_Filename);
+        }
         else
-            currentFileListTableWidget->setItem(
-                        currentFileListTableWidget->rowCount() - 1,
-                        TP::index_Description,
-                        new QTableWidgetItem(qstr_artist + QString(" - ") + qstr_title) // be able to customized in the future
-                    );
-
-
+        {
+            item->setData(TP::role_Description, qstr_artist + QString(" - ") + qstr_title);    // will be able to customized in the future
+            item->setData(TP::role_Artist, qstr_artist);
+            item->setData(TP::role_Title, qstr_title);
+            item->setData(TP::role_Album, qstr_album);
+        }
+        currentFileListWidget->addItem(item);
     }
 
-    refreshNumber();
-    refreshRowHeight();
-    currentFileListTableWidget->resizeColumnToContents(TP::index_No);
-    currentFileListTableWidget->resizeColumnToContents(TP::index_Duration);
+    refreshShowingTitle(originalCount - 1, currentFileListWidget->count() - 1 );
 }
 
 // *****************************************************************
@@ -142,9 +138,9 @@ TP_PlaylistWindow::initializePlaylist()
         for(int i{}; i < 50; i++)
             ui->playlistsWidget->addItem(QString("L%1").arg(i));
 
-        currentFileListTableWidget = new TP_FileListTableWidget{ ui->frame_FileList, tr("Default") };
-        vector_FileListTableWidget.push_back(currentFileListTableWidget);
-        layout_FileListFrame->addWidget(currentFileListTableWidget);
+        currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
+        vector_FileListWidget.push_back(currentFileListWidget);
+        layout_FileListFrame->addWidget(currentFileListWidget);
     }
 }
 
@@ -163,6 +159,13 @@ TP_PlaylistWindow::initializeMenu()
 }
 
 void
+TP_PlaylistWindow::connectCurrentFileListWidget()
+{
+    if(currentFileListWidget != nullptr)
+        connect(currentFileListWidget, &TP_FileListWidget::signal_dropped, this, &TP_PlaylistWindow::slot_refreshAllShowingTitle);
+}
+
+void
 TP_PlaylistWindow::storePlaylist()
 {
     if( !std::filesystem::exists(TP::configDirectoryPath) )
@@ -170,22 +173,17 @@ TP_PlaylistWindow::storePlaylist()
 }
 
 void
-TP_PlaylistWindow::refreshNumber()
+TP_PlaylistWindow::refreshShowingTitle( int idx_Min, int idx_Max )
 {
-    for( size_t i {}; i < currentFileListTableWidget->rowCount(); i++ )
-        if( currentFileListTableWidget->item(i, TP::index_No) )
-        {
-            currentFileListTableWidget->item(i, TP::index_No)->setText(QString::number(i + 1) + QString(". "));
-        }
-        else
-        {
-            currentFileListTableWidget->setItem( i, TP::index_No, new QTableWidgetItem( QString::number(i + 1) + QString(". ") ) );
-        }
-}
+    if ( idx_Max < 0 )
+        return;
 
-void
-TP_PlaylistWindow::refreshRowHeight()
-{
-    for( size_t i {}; i < currentFileListTableWidget->rowCount(); i++ )
-        currentFileListTableWidget->resizeRowToContents(i);
+    if ( idx_Min == -1 )
+        idx_Min++;
+
+    for ( int i {idx_Min}; i <= idx_Max; i++ )
+        currentFileListWidget->item(i)->setText(
+                    QString("%1. ").arg(i + 1)
+                    +
+                    qvariant_cast<QString>(currentFileListWidget->item(i)->data(TP::role_Description)));
 }
