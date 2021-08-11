@@ -21,12 +21,9 @@ public:
     explicit TP_PlaylistWindow(QWidget *parent = nullptr);
     ~TP_PlaylistWindow();
 
-public slots:
-    void slot_refreshAllShowingTitle();
-
 private slots:
+    void slot_refreshAllShowingTitle();
     void on_pushButton_Close_clicked();
-
     void on_action_AddFile_triggered();
 
 private:

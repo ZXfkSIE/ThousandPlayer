@@ -43,7 +43,7 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
 }
 
 // *****************************************************************
-// public slots
+// private slots
 // *****************************************************************
 
 void
@@ -51,10 +51,6 @@ TP_PlaylistWindow::slot_refreshAllShowingTitle()
 {
     refreshShowingTitle(0, currentFileListWidget->count() - 1);
 }
-
-// *****************************************************************
-// private slots
-// *****************************************************************
 
 void
 TP_PlaylistWindow::on_pushButton_Close_clicked()

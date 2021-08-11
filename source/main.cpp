@@ -1,8 +1,8 @@
-﻿#include "tp_mainwindow.h"
-#include "tp_playlistwindow.h"
+﻿#include "tp_mainclass.h"
 
 #include <QApplication>
 #include <QLocale>
+#include <QTimer>
 #include <QTranslator>
 
 int main(int argc, char *argv[])
@@ -19,10 +19,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    TP_MainWindow w;
-    TP_PlaylistWindow p;
-
-    w.show();
-    p.show();
+    TP_MainClass mainClass {};
+    QTimer::singleShot(100, &mainClass, SLOT(initializePosition()));
     return a.exec();
 }

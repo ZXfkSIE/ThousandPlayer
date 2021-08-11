@@ -15,8 +15,12 @@ public:
     explicit TP_MainWindow(QWidget *parent = nullptr);
     ~TP_MainWindow();
 
+signals:
+    void signal_PositionRefreshed();
+
 private slots:
     void on_pushButton_Exit_clicked() const;
+    void on_pushButton_Expand_clicked();
 
 private:
     Ui::TP_MainWindow *ui;

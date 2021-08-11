@@ -5,6 +5,10 @@ add_subdirectory(test)
 
 set(TP_SOURCE_FILES
     main.cpp
+
+    tp_mainclass.h
+    tp_mainclass.cpp
+
     ${TP_TS_FILES}
 )
 

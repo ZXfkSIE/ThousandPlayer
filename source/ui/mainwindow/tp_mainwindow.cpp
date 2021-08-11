@@ -4,13 +4,14 @@
 #include "tp_globalconst.h"
 
 #include <QMouseEvent>
+#include <QWindow>
 
 TP_MainWindow::TP_MainWindow(QWidget *parent) :
     QWidget(parent)
-  , ui(new Ui::TP_MainWindow)
-  , b_isBorderBeingPressed(false)
-  , b_isCursorResize(false)
-  , b_isExpandingDisabled(false)
+  , ui { new Ui::TP_MainWindow }
+  , b_isBorderBeingPressed { false }
+  , b_isCursorResize { false }
+  , b_isExpandingDisabled { false }
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
@@ -45,6 +46,32 @@ void
 TP_MainWindow::on_pushButton_Exit_clicked() const
 {
     QApplication::exit();
+}
+
+void TP_MainWindow::on_pushButton_Expand_clicked()
+{
+    QRect rect_ScreenGeometry = window()->windowHandle()->screen()->geometry();
+    QRect rect_CurrentGeometry = geometry();
+
+    if(width() < rect_ScreenGeometry.width())
+    {
+        rect_CurrentGeometry.setLeft(rect_ScreenGeometry.left());
+        rect_CurrentGeometry.setRight(rect_ScreenGeometry.right());
+        setGeometry( rect_CurrentGeometry );
+    }
+    else
+        // Return to the minimum width
+    {
+        rect_CurrentGeometry.setRight(rect_CurrentGeometry.left() + minimumWidth());
+        if( rect_CurrentGeometry.left() < rect_ScreenGeometry.left() ||
+                rect_CurrentGeometry.right() > rect_ScreenGeometry.right() )
+            // Out of screen. Move it back to center of the screen
+            rect_CurrentGeometry.moveTo(
+                        (rect_ScreenGeometry.width() - minimumWidth()) / 2, rect_CurrentGeometry.y()
+                        );
+
+        setGeometry( rect_CurrentGeometry );
+    }
 }
 
 // *****************************************************************
@@ -84,6 +111,7 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
             rect_Geometry.setLeft(rect_Geometry.left() + differenceX);
             if(rect_Geometry.width() >= minimumWidth())
                 setGeometry(rect_Geometry);
+
             pressedGlobalPosition = event->globalPosition().toPoint();
             if (event->position().toPoint().x() > width() - minimumWidth() + TP::borderSize)
                 b_isExpandingDisabled = true;
@@ -96,6 +124,7 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 
             rect_Geometry.setRight(rect_Geometry.right() + differenceX);
             setGeometry(rect_Geometry);
+
             pressedGlobalPosition = event->globalPosition().toPoint();
             if (event->position().toPoint().x() < width() - TP::borderSize)
                 b_isExpandingDisabled = true;
