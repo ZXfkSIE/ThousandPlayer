@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     TP_MainClass mainClass {};
 
-    QTimer::singleShot(100, &mainClass, SLOT(initializePosition()));
+    QTimer::singleShot(100, &mainClass, &TP_MainClass::initializePosition);
 
     return a.exec();
 }

@@ -30,7 +30,7 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
     ui->pushButton_Play->setIcon( QIcon{":/image/icon_Play.svg"} );
     ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
-    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
+    setIcon_Repeat();
 }
 
 TP_MainWindow::~TP_MainWindow()
@@ -213,4 +213,11 @@ TP_MainWindow::isAtBorder(QPoint I_point) const
         return TP::rightBorder;
     }
     return TP::notAtBorder;
+}
+
+void
+TP_MainWindow::setIcon_Repeat()
+{
+    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
+    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
 }

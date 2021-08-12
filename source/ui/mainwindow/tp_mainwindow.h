@@ -35,6 +35,7 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
+    void setIcon_Repeat();
     TP::CursorPositionType isAtBorder(QPoint I_point) const;
 
     bool b_isBorderBeingPressed;
