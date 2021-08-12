@@ -1,7 +1,7 @@
 ﻿#ifndef TP_MAINCLASS_H
 #define TP_MAINCLASS_H
 
-#include <QWidget>
+#include <QObject>
 
 class TP_MainWindow;
 class TP_PlaylistWindow;
@@ -18,7 +18,7 @@ public slots:
     void initializePosition();
 
 private:
-    void connect();
+    void initializeConnection();
 
     TP_MainWindow       *tp_MainWindow;
     TP_PlaylistWindow   *tp_PlaylistWindow;

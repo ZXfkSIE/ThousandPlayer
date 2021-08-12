@@ -21,6 +21,10 @@ public:
     explicit TP_PlaylistWindow(QWidget *parent = nullptr);
     ~TP_PlaylistWindow();
 
+signals:
+    void signal_Shown();
+    void signal_Hidden();
+
 private slots:
     void slot_refreshAllShowingTitle();
     void on_pushButton_Close_clicked();
@@ -28,6 +32,9 @@ private slots:
 
 private:
     Ui::TP_PlaylistWindow *ui;
+
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
 
     void initializePlaylist();
     void initializeMenu();

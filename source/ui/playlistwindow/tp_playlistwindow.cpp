@@ -23,7 +23,8 @@ TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
   , ui( new Ui::TP_PlaylistWindow )
 {
     ui->setupUi(this);
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    // Qt::Tool is used for getting rid of the window tab in taskbar
+    setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::Tool);
 
     layout_FileListFrame = new QHBoxLayout {ui->frame_FileList};
     layout_FileListFrame->setContentsMargins(0, 0, 0, 0);
@@ -112,6 +113,24 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
     }
 
     refreshShowingTitle(originalCount - 1, currentFileListWidget->count() - 1 );
+}
+
+// *****************************************************************
+// private override
+// *****************************************************************
+
+void
+TP_PlaylistWindow::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    emit signal_Shown();
+}
+
+void
+TP_PlaylistWindow::hideEvent(QHideEvent *event)
+{
+    QWidget::hideEvent(event);
+    emit signal_Hidden();
 }
 
 // *****************************************************************

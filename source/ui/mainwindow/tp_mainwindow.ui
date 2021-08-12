@@ -1080,7 +1080,7 @@ color: rgb(255, 255, 255);</string>
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
+         <string notr="true">color: rgb(0, 0, 0);</string>
         </property>
         <property name="text">
          <string>Playlist</string>
@@ -1118,7 +1118,7 @@ color: rgb(255, 255, 255);</string>
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
+         <string notr="true">color: rgb(0, 0, 0);</string>
         </property>
         <property name="text">
          <string>Equalizer</string>
@@ -1156,7 +1156,7 @@ color: rgb(255, 255, 255);</string>
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
+         <string notr="true">color: rgb(0, 0, 0);</string>
         </property>
         <property name="text">
          <string>Lyrics</string>

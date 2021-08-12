@@ -13,6 +13,7 @@ TP_MainClass::TP_MainClass() :
   , tp_PlaylistWindow { new TP_PlaylistWindow {} }
 {
     tp_MainWindow->show();
+    initializeConnection();
 }
 
 TP_MainClass::~TP_MainClass()
@@ -35,7 +36,11 @@ TP_MainClass::initializePosition()
 // *****************************************************************
 
 void
-TP_MainClass::connect()
+TP_MainClass::initializeConnection()
 {
-
+    // Showing and hiding PlaylistWindow
+    connect(tp_PlaylistWindow, &TP_PlaylistWindow::signal_Hidden, tp_MainWindow, &TP_MainWindow::slot_PlaylistWindow_Hidden);
+    connect(tp_PlaylistWindow, &TP_PlaylistWindow::signal_Shown, tp_MainWindow, &TP_MainWindow::slot_PlaylistWindow_Shown);
+    connect(tp_MainWindow, &TP_MainWindow::signal_openPlaylistWindow, tp_PlaylistWindow, &TP_PlaylistWindow::show);
+    connect(tp_MainWindow, &TP_MainWindow::signal_hidePlaylistWindow, tp_PlaylistWindow, &TP_PlaylistWindow::hide);
 }

@@ -39,6 +39,24 @@ TP_MainWindow::~TP_MainWindow()
 }
 
 // *****************************************************************
+// public slots:
+// *****************************************************************
+
+void
+TP_MainWindow::slot_PlaylistWindow_Shown()
+{
+    ui->pushButton_Playlist->setStyleSheet("color: rgb(255, 255, 255);");
+    b_isPlaylistWindowShown = true;
+}
+
+void
+TP_MainWindow::slot_PlaylistWindow_Hidden()
+{
+    ui->pushButton_Playlist->setStyleSheet("color: rgb(0, 0, 0);");
+    b_isPlaylistWindowShown = false;
+}
+
+// *****************************************************************
 // private slots:
 // *****************************************************************
 
@@ -48,7 +66,8 @@ TP_MainWindow::on_pushButton_Exit_clicked() const
     QApplication::exit();
 }
 
-void TP_MainWindow::on_pushButton_Expand_clicked()
+void
+TP_MainWindow::on_pushButton_Expand_clicked()
 {
     QRect rect_ScreenGeometry = window()->windowHandle()->screen()->geometry();
     QRect rect_CurrentGeometry = geometry();
@@ -57,21 +76,20 @@ void TP_MainWindow::on_pushButton_Expand_clicked()
     {
         rect_CurrentGeometry.setLeft(rect_ScreenGeometry.left());
         rect_CurrentGeometry.setRight(rect_ScreenGeometry.right());
-        setGeometry( rect_CurrentGeometry );
     }
-    else
-        // Return to the minimum width
-    {
+    else    // Return to the minimum width
         rect_CurrentGeometry.setRight(rect_CurrentGeometry.left() + minimumWidth());
-        if( rect_CurrentGeometry.left() < rect_ScreenGeometry.left() ||
-                rect_CurrentGeometry.right() > rect_ScreenGeometry.right() )
-            // Out of screen. Move it back to center of the screen
-            rect_CurrentGeometry.moveTo(
-                        (rect_ScreenGeometry.width() - minimumWidth()) / 2, rect_CurrentGeometry.y()
-                        );
 
-        setGeometry( rect_CurrentGeometry );
-    }
+    setGeometry( rect_CurrentGeometry );
+}
+
+void
+TP_MainWindow::on_pushButton_Playlist_clicked()
+{
+    if(b_isPlaylistWindowShown)
+        emit signal_hidePlaylistWindow();
+    else
+        emit signal_openPlaylistWindow();
 }
 
 // *****************************************************************

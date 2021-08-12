@@ -16,11 +16,17 @@ public:
     ~TP_MainWindow();
 
 signals:
-    void signal_PositionRefreshed();
+    void signal_openPlaylistWindow();
+    void signal_hidePlaylistWindow();
+
+public slots:
+    void slot_PlaylistWindow_Shown();
+    void slot_PlaylistWindow_Hidden();
 
 private slots:
     void on_pushButton_Exit_clicked() const;
     void on_pushButton_Expand_clicked();
+    void on_pushButton_Playlist_clicked();
 
 private:
     Ui::TP_MainWindow *ui;
@@ -34,6 +40,9 @@ private:
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;
     bool b_isExpandingDisabled;
+
+    bool b_isPlaylistWindowShown;
+
     TP::CursorPositionType cursorPositionType;
     QPoint pressedGlobalPosition;
 };
