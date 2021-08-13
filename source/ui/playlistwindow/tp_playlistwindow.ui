@@ -217,10 +217,13 @@
          <property name="lineWidth">
           <number>3</number>
          </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::InternalMove</enum>
+         </property>
         </widget>
         <widget class="QFrame" name="frame_FileList">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>4</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

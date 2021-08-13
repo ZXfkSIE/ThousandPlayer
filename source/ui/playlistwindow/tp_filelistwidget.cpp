@@ -2,9 +2,10 @@
 
 #include "tp_globalconst.h"
 
-TP_FileListWidget::TP_FileListWidget(QWidget *parent, QString I_qstr) :
+TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
     QListWidget { parent }
   , listName { I_qstr }
+  , b_isConnected { false }
 {
     setMouseTracking(true);
 
@@ -19,7 +20,7 @@ TP_FileListWidget::TP_FileListWidget(QWidget *parent, QString I_qstr) :
 }
 
 void
-TP_FileListWidget::setListName(QString I_qstr)
+TP_FileListWidget::setListName(const QString &I_qstr)
 {
     listName = I_qstr;
 }
@@ -28,6 +29,18 @@ QString
 TP_FileListWidget::getListName()
 {
     return listName;
+}
+
+void
+TP_FileListWidget::setConnected()
+{
+    b_isConnected = true;
+}
+
+bool
+TP_FileListWidget::isConnected()
+{
+    return b_isConnected;
 }
 
 // *****************************************************************

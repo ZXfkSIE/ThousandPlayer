@@ -21,9 +21,12 @@ public:
     explicit TP_PlaylistWindow(QWidget *parent = nullptr);
     ~TP_PlaylistWindow();
 
+    void initializePlaylist();
+
 signals:
     void signal_Shown();
     void signal_Hidden();
+    void signal_NewFilelistWidgetCreated(TP_FileListWidget *I_fileListWidget);
 
 private slots:
     void slot_refreshAllShowingTitle();
@@ -36,19 +39,18 @@ private:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 
-    void initializePlaylist();
     void initializeMenu();
     void connectCurrentFileListWidget();
 
     void storePlaylist();
     void refreshShowingTitle(int idx_Min, int idx_Max);
 
-    QHBoxLayout *layout_FileListFrame;
+    QHBoxLayout                         *layout_FileListFrame;
 
-    TP_FileListWidget *currentFileListWidget;
-    std::vector<TP_FileListWidget *> vector_FileListWidget;
+    TP_FileListWidget                   *currentFileListWidget;
+    std::vector<TP_FileListWidget *>    vector_FileListWidget;
 
-    TP_Menu *menu_Add;
+    TP_Menu                             *menu_Add;
 };
 
 #endif // TP_PLAYLIST_H

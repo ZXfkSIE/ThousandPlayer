@@ -38,13 +38,13 @@ private:
     void setIcon_Repeat();
     TP::CursorPositionType isAtBorder(QPoint I_point) const;
 
-    bool b_isBorderBeingPressed;
-    bool b_isCursorResize;
-    bool b_isExpandingDisabled;
+    bool                    b_isBorderBeingPressed;
+    bool                    b_isCursorResize;
+    bool                    b_isExpandingDisabled;
 
-    bool b_isPlaylistWindowShown;
+    bool                    b_isPlaylistWindowShown;
 
-    TP::CursorPositionType cursorPositionType;
-    QPoint pressedGlobalPosition;
+    TP::CursorPositionType  cursorPositionType;
+    QPoint                  pressedGlobalPosition;
 };
 #endif // TP_MAINWINDOW_H

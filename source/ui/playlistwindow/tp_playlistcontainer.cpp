@@ -10,7 +10,7 @@ TP_PlaylistContainer::TP_PlaylistContainer(QWidget *parent) :
   , b_isCursorResize(false)
   , b_isExpandingDisabled(false)
 {
-    setMouseTracking(true);
+
 }
 
 
@@ -121,7 +121,7 @@ TP_PlaylistContainer::mouseReleaseEvent(QMouseEvent *event)
 // *****************************************************************
 
 TP::CursorPositionType
-TP_PlaylistContainer::isAtBorder(QPoint I_point) const
+TP_PlaylistContainer::isAtBorder(const QPoint &I_point) const
 {
     if (I_point.x() <= TP::borderSize)
     {

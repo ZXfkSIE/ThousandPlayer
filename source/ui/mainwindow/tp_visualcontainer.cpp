@@ -16,7 +16,7 @@ TP_VisualContainer::TP_VisualContainer(QWidget *parent) :
 void
 TP_VisualContainer::initialize()
 {
-    tp_AlbumCoverLabel = new TP_AlbumCoverLabel{ this, width() };
+    albumCoverLabel = new TP_AlbumCoverLabel{ this, width() };
 }
 
 void
@@ -25,8 +25,8 @@ TP_VisualContainer::switchWidget(TP::VisualContainerType I_type)
     switch (I_type)
     {
     case TP::albumCover:
-        layout->addWidget(tp_AlbumCoverLabel);
-        tp_AlbumCoverLabel->setImage();
+        layout->addWidget(albumCoverLabel);
+        albumCoverLabel->setImage();
         break;
 
     default:

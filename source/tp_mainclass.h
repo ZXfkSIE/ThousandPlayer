@@ -5,6 +5,11 @@
 
 class TP_MainWindow;
 class TP_PlaylistWindow;
+class TP_FileListWidget;
+
+class QAudioOutput;
+class QListWidgetItem;
+class QMediaPlayer;
 
 class TP_MainClass : public QObject
 {
@@ -15,13 +20,18 @@ public:
     ~TP_MainClass();
 
 public slots:
-    void initializePosition();
+    void slot_initializePosition();
+    void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
+    void slot_playFile( QListWidgetItem *I_listWidgetItem );
 
 private:
     void initializeConnection();
 
-    TP_MainWindow       *tp_MainWindow;
-    TP_PlaylistWindow   *tp_PlaylistWindow;
+    TP_MainWindow       *mainWindow;
+    TP_PlaylistWindow   *playlistWindow;
+
+    QAudioOutput        *audioOutput;
+    QMediaPlayer        *mediaPlayer;
 };
 
 #endif // TP_MAINCLASS_H

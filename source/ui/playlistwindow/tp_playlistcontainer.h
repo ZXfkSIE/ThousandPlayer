@@ -17,13 +17,13 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    TP::CursorPositionType isAtBorder(QPoint I_point) const;
+    TP::CursorPositionType isAtBorder(const QPoint &I_point) const;
 
-    bool b_isBorderBeingPressed;
-    bool b_isCursorResize;
-    bool b_isExpandingDisabled;
-    TP::CursorPositionType cursorPositionType;
-    QPoint pressedGlobalPosition;
+    bool                    b_isBorderBeingPressed;
+    bool                    b_isCursorResize;
+    bool                    b_isExpandingDisabled;
+    TP::CursorPositionType  cursorPositionType;
+    QPoint                  pressedGlobalPosition;
 };
 
 #endif // TP_PLAYLISTCONTAINER_H

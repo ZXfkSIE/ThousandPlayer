@@ -19,8 +19,8 @@ public:
     void switchWidget(TP::VisualContainerType I_type);
 
 private:
-    QHBoxLayout *layout;
-    TP_AlbumCoverLabel *tp_AlbumCoverLabel;
+    QHBoxLayout         *layout;
+    TP_AlbumCoverLabel  *albumCoverLabel;
 };
 
 #endif // TP_VISUALCONTAINER_H

@@ -10,7 +10,7 @@ TP_PlaylistBottomFrame::TP_PlaylistBottomFrame(QWidget *parent) :
   , b_isCursorResize(false)
   , b_isExpandingDisabled(false)
 {
-    setMouseTracking(true);
+
 }
 
 // *****************************************************************
@@ -101,7 +101,7 @@ TP_PlaylistBottomFrame::mouseReleaseEvent(QMouseEvent *event)
 // *****************************************************************
 
 TP::CursorPositionType
-TP_PlaylistBottomFrame::isAtBorder(QPoint I_point) const
+TP_PlaylistBottomFrame::isAtBorder(const QPoint &I_point) const
 {
     if (height() - I_point.y() <= TP::borderSize)
     {

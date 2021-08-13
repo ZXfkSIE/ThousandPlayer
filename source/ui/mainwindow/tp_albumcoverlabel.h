@@ -10,7 +10,7 @@ class TP_AlbumCoverLabel : public QLabel
 public:
     explicit TP_AlbumCoverLabel(QWidget *parent, int I_size);
     void setImage();
-    void setImage(QPixmap I_pixmap);
+    void setImage(const QPixmap &I_pixmap);
 
     QSize sizeHint() const override;
 

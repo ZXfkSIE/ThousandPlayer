@@ -31,6 +31,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     TP::ui::playlistwindow
 
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Multimedia
     )
 
 #[[

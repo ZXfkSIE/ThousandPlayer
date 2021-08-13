@@ -422,7 +422,7 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="font">
                   <font>
-                   <pointsize>8</pointsize>
+                   <pointsize>9</pointsize>
                   </font>
                  </property>
                  <property name="mouseTracking">
@@ -458,7 +458,7 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="font">
                   <font>
-                   <pointsize>8</pointsize>
+                   <pointsize>9</pointsize>
                   </font>
                  </property>
                  <property name="mouseTracking">
@@ -494,7 +494,7 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="font">
                   <font>
-                   <pointsize>8</pointsize>
+                   <pointsize>9</pointsize>
                   </font>
                  </property>
                  <property name="mouseTracking">
@@ -530,7 +530,7 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="font">
                   <font>
-                   <pointsize>8</pointsize>
+                   <pointsize>9</pointsize>
                   </font>
                  </property>
                  <property name="mouseTracking">
@@ -969,6 +969,9 @@ color: rgb(255, 255, 255);</string>
            </property>
            <property name="mouseTracking">
             <bool>true</bool>
+           </property>
+           <property name="maximum">
+            <number>100</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

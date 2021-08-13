@@ -19,19 +19,18 @@
 //#include <cmath>
 
 TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
-    QWidget(parent)
-  , ui( new Ui::TP_PlaylistWindow )
+    QWidget { parent }
+  , ui { new Ui::TP_PlaylistWindow }
 {
     ui->setupUi(this);
     // Qt::Tool is used for getting rid of the window tab in taskbar
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::Tool);
 
-    layout_FileListFrame = new QHBoxLayout {ui->frame_FileList};
+    layout_FileListFrame = new QHBoxLayout { ui->frame_FileList };
     layout_FileListFrame->setContentsMargins(0, 0, 0, 0);
 
     ui->pushButton_Close->setIcon(QIcon{":/image/icon_Exit.svg"});
 
-    initializePlaylist();
     initializeMenu();
     connectCurrentFileListWidget();
 }
@@ -41,6 +40,29 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
     delete ui;
 
     storePlaylist();
+}
+
+// Need to be executed manually after Main Class initialized the connections.
+void
+TP_PlaylistWindow::initializePlaylist()
+{
+    if( std::filesystem::exists(TP::playlistFilePath) )
+    {
+        qDebug() << "Existing playlist " << QString::fromStdString(TP::playlistFilePath) << " found.";
+    }
+    else
+    {
+        qDebug() << "Existing playlist not found. Creating default playlist and filelist.";
+        ui->playlistsWidget->addItem(tr("Default"));
+        ui->playlistsWidget->setCurrentRow(0);
+
+        currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
+        vector_FileListWidget.push_back(currentFileListWidget);
+        layout_FileListFrame->addWidget(currentFileListWidget);
+
+        qDebug() << "emit signal_NewFilelistWidgetCreated(currentFileListWidget);";
+        emit signal_NewFilelistWidgetCreated(currentFileListWidget);
+    }
 }
 
 // *****************************************************************
@@ -91,7 +113,7 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
                      .arg(duration % 60, 2, 10, QChar('0')));
 
         // set path
-        item->setData(TP::role_Path, qstr_FilePath);
+        item->setData(TP::role_Path, qstr_FilePath );
 
         // set filename
         item->setData(TP::role_Filename, qstr_Filename);
@@ -138,28 +160,6 @@ TP_PlaylistWindow::hideEvent(QHideEvent *event)
 // *****************************************************************
 
 void
-TP_PlaylistWindow::initializePlaylist()
-{
-    if( std::filesystem::exists(TP::playlistFilePath) )
-    {
-        qDebug() << "Existing playlist " << QString::fromStdString(TP::playlistFilePath) << " found.";
-    }
-    else
-    {
-        qDebug() << "Existing playlist not found. Creating default playlist and filelist.";
-        ui->playlistsWidget->addItem(tr("Default"));
-        ui->playlistsWidget->setCurrentRow(0);
-
-        for(int i{}; i < 50; i++)
-            ui->playlistsWidget->addItem(QString("L%1").arg(i));
-
-        currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
-        vector_FileListWidget.push_back(currentFileListWidget);
-        layout_FileListFrame->addWidget(currentFileListWidget);
-    }
-}
-
-void
 TP_PlaylistWindow::initializeMenu()
 {
     // Initialize menu of "Add" button
@@ -177,7 +177,9 @@ void
 TP_PlaylistWindow::connectCurrentFileListWidget()
 {
     if(currentFileListWidget != nullptr)
+    {
         connect(currentFileListWidget, &TP_FileListWidget::signal_dropped, this, &TP_PlaylistWindow::slot_refreshAllShowingTitle);
+    }
 }
 
 void

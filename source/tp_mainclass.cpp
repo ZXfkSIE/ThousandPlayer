@@ -1,34 +1,68 @@
 ﻿#include "tp_mainclass.h"
 
-#include "tp_mainwindow.h"
-#include "tp_playlistwindow.h"
+#include "tp_globalconst.h"
 
+#include "tp_mainwindow.h"
+
+#include "tp_playlistwindow.h"
+#include "tp_filelistwidget.h"
+
+#include <QAudioDevice>
+#include <QAudioOutput>
+#include <QListWidgetItem>
+#include <QMediaPlayer>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QWindow>
 
 TP_MainClass::TP_MainClass() :
     QObject { nullptr }
-  , tp_MainWindow { new TP_MainWindow {} }
-  , tp_PlaylistWindow { new TP_PlaylistWindow {} }
+  , mainWindow { new TP_MainWindow {} }
+  , playlistWindow { new TP_PlaylistWindow {} }
+  , audioOutput { new QAudioOutput { this } }
+  , mediaPlayer { new QMediaPlayer { this } }
 {
-    tp_MainWindow->show();
+    mediaPlayer->setAudioOutput(audioOutput);
+    audioOutput->setDevice(QAudioDevice());
+
     initializeConnection();
+    mainWindow->show();
+    playlistWindow->initializePlaylist();       // Must be executed before showing
+    playlistWindow->show();
 }
 
 TP_MainClass::~TP_MainClass()
 {
-    delete tp_MainWindow;
-    delete tp_PlaylistWindow;
+    delete mainWindow;
+    delete playlistWindow;
+}
+
+// *****************************************************************
+// public slots:
+// *****************************************************************
+
+void
+TP_MainClass::slot_initializePosition()
+{
+    QPoint globalPositionBottomLeft_PlaylistWindow = mainWindow->geometry().bottomLeft();
+    qDebug() << "globalPositionBottomLeft_PlaylistWindow: " << globalPositionBottomLeft_PlaylistWindow;
+    playlistWindow->move( globalPositionBottomLeft_PlaylistWindow );
 }
 
 void
-TP_MainClass::initializePosition()
+TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
 {
-    QPoint globalPositionBottomLeft_PlaylistWindow = tp_MainWindow->geometry().bottomLeft();
-    qDebug()<<"globalPositionBottomLeft_PlaylistWindow: "<<globalPositionBottomLeft_PlaylistWindow;
-    tp_PlaylistWindow->show();
-    tp_PlaylistWindow->move(globalPositionBottomLeft_PlaylistWindow);
+    connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
+            this,               &TP_MainClass::slot_playFile);
+}
+
+void
+TP_MainClass::slot_playFile(QListWidgetItem *I_listWidgetItem)
+{
+    QString qstr_FilePath { qvariant_cast <QString> ( I_listWidgetItem->data(TP::role_Path) ) };
+    QUrl fileURL { qstr_FilePath };
+    mediaPlayer->setSource ( fileURL );
+    mediaPlayer->play();
 }
 
 // *****************************************************************
@@ -39,8 +73,18 @@ void
 TP_MainClass::initializeConnection()
 {
     // Showing and hiding PlaylistWindow
-    connect(tp_PlaylistWindow, &TP_PlaylistWindow::signal_Hidden, tp_MainWindow, &TP_MainWindow::slot_PlaylistWindow_Hidden);
-    connect(tp_PlaylistWindow, &TP_PlaylistWindow::signal_Shown, tp_MainWindow, &TP_MainWindow::slot_PlaylistWindow_Shown);
-    connect(tp_MainWindow, &TP_MainWindow::signal_openPlaylistWindow, tp_PlaylistWindow, &TP_PlaylistWindow::show);
-    connect(tp_MainWindow, &TP_MainWindow::signal_hidePlaylistWindow, tp_PlaylistWindow, &TP_PlaylistWindow::hide);
+    connect(playlistWindow, &TP_PlaylistWindow::signal_Hidden,
+            mainWindow,     &TP_MainWindow::slot_PlaylistWindow_Hidden);
+    connect(playlistWindow, &TP_PlaylistWindow::signal_Shown,
+            mainWindow,     &TP_MainWindow::slot_PlaylistWindow_Shown);
+    connect(mainWindow,     &TP_MainWindow::signal_openPlaylistWindow,
+            playlistWindow, &TP_PlaylistWindow::show);
+    connect(mainWindow,     &TP_MainWindow::signal_hidePlaylistWindow,
+            playlistWindow, &TP_PlaylistWindow::hide);
+
+    // Make PlaylistWindow be able to emit signal for connecting its FileListWidget
+    connect(playlistWindow, &TP_PlaylistWindow::signal_NewFilelistWidgetCreated,
+            this,           &TP_MainClass::slot_connectFilelistWidget);
+
+    // Double click
 }

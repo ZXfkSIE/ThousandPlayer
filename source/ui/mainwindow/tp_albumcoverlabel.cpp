@@ -21,7 +21,7 @@ TP_AlbumCoverLabel::setImage()
 }
 
 void
-TP_AlbumCoverLabel::setImage(QPixmap I_pixmap)
+TP_AlbumCoverLabel::setImage(const QPixmap &I_pixmap)
 {
     setPixmap( I_pixmap.scaled(
                    QSize(size, size),
