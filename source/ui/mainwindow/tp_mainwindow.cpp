@@ -4,6 +4,7 @@
 #include "tp_globalconst.h"
 
 #include <QMouseEvent>
+#include <QStyle>
 #include <QWindow>
 
 TP_MainWindow::TP_MainWindow(QWidget *parent) :

@@ -20,6 +20,7 @@ public:
     ~TP_MainClass();
 
 public slots:
+    void slot_checkIfServiceAvailable();
     void slot_initializePosition();
     void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
     void slot_playFile( QListWidgetItem *I_listWidgetItem );

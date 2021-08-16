@@ -20,6 +20,9 @@ static const int role_Path          = 0x0105;
 static const int role_Description   = 0x0106;
 
 static const int iconSize_Repeat = 28;
+static const int iconSize_Play = 20;
+static const int iconSize_Pause = 17;
+
 }       //namespace TP
 
 #endif // TP_GLOBALCONST_H

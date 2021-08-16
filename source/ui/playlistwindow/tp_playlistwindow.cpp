@@ -60,7 +60,7 @@ TP_PlaylistWindow::initializePlaylist()
         vector_FileListWidget.push_back(currentFileListWidget);
         layout_FileListFrame->addWidget(currentFileListWidget);
 
-        qDebug() << "emit signal_NewFilelistWidgetCreated(currentFileListWidget);";
+        qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated(currentFileListWidget)";
         emit signal_NewFilelistWidgetCreated(currentFileListWidget);
     }
 }
@@ -89,7 +89,8 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
                 this,                               // QWidget *parent = nullptr
                 tr("Open files"),                   // const QString &caption = QString()
                 QString(),                          // const QString &dir = QString()
-                QString("FLAC files (*.flac)")      // const QString &filter = QString(),
+                QString("FLAC files (*.flac);;"     // const QString &filter = QString()
+                        "MP3 files (*.mp3)")
                 );
 
     for (QString& qstr_FilePath: qstrlst_FilePath)
