@@ -9,14 +9,14 @@ TP_Menu::TP_Menu(QWidget *parent) :
     setStyleSheet(
 "QMenu"
 "{"
-"color: rgb(255, 255, 255);"
+"   color: rgb(255, 255, 255);"
 "}"
 "QMenu::item"
 "{"
-"background-color: transparent;"
+"   background-color: transparent;"
 "}"
 "QMenu::item:selected"
 "{"
-"background-color: rgb(0, 0, 0);"
+"   background-color: rgb(0, 0, 0);"
 "}");
 }

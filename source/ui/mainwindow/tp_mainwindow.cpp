@@ -39,19 +39,41 @@ TP_MainWindow::~TP_MainWindow()
     delete ui;
 }
 
+void
+TP_MainWindow::setAudioPropertyLabels(
+        QString I_qstr_Format,
+        int     bitDepth,
+        int     sampleRate,
+        int     bitRate)
+{
+    ui->label_Format->setText( QString(" ") + I_qstr_Format + QString(" ") );
+    ui->label_BitDepth->setText(
+                QString(" ") + ( ( bitDepth == -1 ) ? QString("-") : QString::number( bitDepth ) )
+                + QString( " bits " )
+                );
+    ui->label_SampleRate->setText(
+                QString(" ") + ( ( sampleRate == -1 ) ? QString("-") : QString::number( sampleRate ) )
+                + QString( " KHz " )
+                );
+    ui->label_Bitrate->setText(
+                QString(" ") + ( ( bitRate == -1 ) ? QString("-") : QString::number( bitRate ) )
+                + QString( " kbps " )
+                );
+}
+
 // *****************************************************************
 // public slots:
 // *****************************************************************
 
 void
-TP_MainWindow::slot_PlaylistWindow_Shown()
+TP_MainWindow::slot_PlaylistWindowShown()
 {
     ui->pushButton_Playlist->setStyleSheet("color: rgb(255, 255, 255);");
     b_isPlaylistWindowShown = true;
 }
 
 void
-TP_MainWindow::slot_PlaylistWindow_Hidden()
+TP_MainWindow::slot_PlaylistWindowHidden()
 {
     ui->pushButton_Playlist->setStyleSheet("color: rgb(0, 0, 0);");
     b_isPlaylistWindowShown = false;

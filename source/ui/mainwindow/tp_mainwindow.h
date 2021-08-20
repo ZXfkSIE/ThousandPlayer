@@ -15,13 +15,20 @@ public:
     explicit TP_MainWindow(QWidget *parent = nullptr);
     ~TP_MainWindow();
 
+    void setAudioPropertyLabels(
+            QString I_qstr_Format,
+            int     bitDepth,
+            int     sampleRate,
+            int     bitRate
+            );
+
 signals:
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
 
 public slots:
-    void slot_PlaylistWindow_Shown();
-    void slot_PlaylistWindow_Hidden();
+    void slot_PlaylistWindowShown();
+    void slot_PlaylistWindowHidden();
 
 private slots:
     void on_pushButton_Exit_clicked() const;

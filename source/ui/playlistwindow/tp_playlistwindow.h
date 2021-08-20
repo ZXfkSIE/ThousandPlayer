@@ -27,9 +27,9 @@ signals:
     void signal_Shown();
     void signal_Hidden();
     void signal_NewFilelistWidgetCreated(TP_FileListWidget *I_fileListWidget);
+    void signal_refreshShowingTitle(int idx_Min, int idx_Max);
 
 private slots:
-    void slot_refreshAllShowingTitle();
     void on_pushButton_Close_clicked();
     void on_action_AddFile_triggered();
 
@@ -41,9 +41,9 @@ private:
 
     void initializeMenu();
     void connectCurrentFileListWidget();
+    void disconnectCurrentFileListWidget();
 
     void storePlaylist();
-    void refreshShowingTitle(int idx_Min, int idx_Max);
 
     QHBoxLayout                         *layout_FileListFrame;
 

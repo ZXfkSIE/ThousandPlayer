@@ -2,11 +2,14 @@
 add_subdirectory(playlistwindow)
 
 set(TP_UI_FILES
-    tp_titlebar.h
-    tp_titlebar.cpp
-
     tp_menu.h
     tp_menu.cpp
+
+    tp_systemtrayicon.h
+    tp_systemtrayicon.cpp
+
+    tp_titlebar.h
+    tp_titlebar.cpp
 )
 
 add_library(TP_ui ${TP_UI_FILES})

@@ -45,5 +45,3 @@ file(GLOB TP_IMAGE_FILES
     )
 
 add_subdirectory(source)
-
-

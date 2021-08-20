@@ -24,6 +24,12 @@ enum VolumeStatus
     sound
 };
 
+enum FileFormat
+{
+    FLAC,
+    MP3,
+};
+
 }       //namespace TP
 
 #endif // TP_GLOBALENUM_H

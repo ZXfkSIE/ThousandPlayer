@@ -26,9 +26,18 @@ qt6_add_resources(${PROJECT_NAME} "image"
     FILES ${TP_IMAGE_FILES}
     )
 
+if(UNIX)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${TAGLIB_INCLUDE_DIRS})
+    target_link_directories(${PROJECT_NAME} PRIVATE ${TAGLIB_LIBRARY_DIRS})
+    target_compile_options(${PROJECT_NAME} PRIVATE ${TAGLIB_CFLAGS_OTHER})
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     TP::ui::mainwindow
     TP::ui::playlistwindow
+
+    ${CONAN_LIBS}
+    ${TAGLIB_LIBRARIES}
 
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Multimedia

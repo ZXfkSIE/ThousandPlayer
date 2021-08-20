@@ -6,17 +6,15 @@
 #include "tp_filelistwidget.h"
 #include "tp_menu.h"
 
-// Headers of TagLib
-#include <fileref.h>
-#include <tag.h>
-
 #include <QFileDialog>
 #include <QMenu>
 #include <QMouseEvent>
 
 #include <filesystem>
 
-//#include <cmath>
+// Headers of TagLib
+#include <fileref.h>
+#include <tag.h>
 
 TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
     QWidget { parent }
@@ -33,6 +31,11 @@ TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
 
     initializeMenu();
     connectCurrentFileListWidget();
+
+    /****************************** WARNING *****************************************
+     *  The method initializePlaylist()
+     *  need to be executed manually after TP_MainClass initialized the connections.
+     ********************************************************************************/
 }
 
 TP_PlaylistWindow::~TP_PlaylistWindow()
@@ -42,7 +45,6 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
     storePlaylist();
 }
 
-// Need to be executed manually after Main Class initialized the connections.
 void
 TP_PlaylistWindow::initializePlaylist()
 {
@@ -57,10 +59,11 @@ TP_PlaylistWindow::initializePlaylist()
         ui->playlistsWidget->setCurrentRow(0);
 
         currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
+        connectCurrentFileListWidget();
         vector_FileListWidget.push_back(currentFileListWidget);
         layout_FileListFrame->addWidget(currentFileListWidget);
 
-        qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated(currentFileListWidget)";
+        qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated -- list's name is " << currentFileListWidget->getListName();
         emit signal_NewFilelistWidgetCreated(currentFileListWidget);
     }
 }
@@ -68,12 +71,6 @@ TP_PlaylistWindow::initializePlaylist()
 // *****************************************************************
 // private slots
 // *****************************************************************
-
-void
-TP_PlaylistWindow::slot_refreshAllShowingTitle()
-{
-    refreshShowingTitle(0, currentFileListWidget->count() - 1);
-}
 
 void
 TP_PlaylistWindow::on_pushButton_Close_clicked()
@@ -97,6 +94,7 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
     {
         QFileInfo fileInfo { QFile { qstr_FilePath } };
         QString qstr_Filename = fileInfo.fileName();
+        QString qstr_extension = fileInfo.suffix().toLower();
 
         TagLib::FileRef fileRef { qstr_FilePath.toLocal8Bit().constData() };
         QString qstr_title = TStringToQString(fileRef.tag()->title());
@@ -108,16 +106,19 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
         QListWidgetItem *item = new QListWidgetItem {currentFileListWidget};
 
         // set duration
-        item->setData(TP::role_Duration,
-                     QString("%1:%2")
-                     .arg(duration / 60, 2, 10, QChar('0'))
-                     .arg(duration % 60, 2, 10, QChar('0')));
+        item->setData(TP::role_Duration, duration);
 
-        // set path
+        // set file path URL
         item->setData(TP::role_Path, qstr_FilePath );
 
-        // set filename
-        item->setData(TP::role_Filename, qstr_Filename);
+        // set file name
+        item->setData(TP::role_FileName, qstr_Filename);
+
+        // set file type
+        if( qstr_extension == QString("flac") )
+            item->setData(TP::role_FileType, TP::FileFormat::FLAC);
+        else if( qstr_extension == QString("mp3") )
+            item->setData(TP::role_FileType, TP::FileFormat::MP3);
 
         //set descrption, artist, title, album
         if(qstr_title.length() == 0)
@@ -135,7 +136,7 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
         currentFileListWidget->addItem(item);
     }
 
-    refreshShowingTitle(originalCount - 1, currentFileListWidget->count() - 1 );
+    emit signal_refreshShowingTitle( originalCount - 1, currentFileListWidget->count() - 1 );
 }
 
 // *****************************************************************
@@ -175,12 +176,19 @@ TP_PlaylistWindow::initializeMenu()
 }
 
 void
+TP_PlaylistWindow::disconnectCurrentFileListWidget()
+{
+    if(currentFileListWidget != nullptr)
+        disconnect(this,                    &TP_PlaylistWindow::signal_refreshShowingTitle,
+                   currentFileListWidget,   &TP_FileListWidget::slot_refreshShowingTitle);
+}
+
+void
 TP_PlaylistWindow::connectCurrentFileListWidget()
 {
     if(currentFileListWidget != nullptr)
-    {
-        connect(currentFileListWidget, &TP_FileListWidget::signal_dropped, this, &TP_PlaylistWindow::slot_refreshAllShowingTitle);
-    }
+        connect(this,                    &TP_PlaylistWindow::signal_refreshShowingTitle,
+                currentFileListWidget,   &TP_FileListWidget::slot_refreshShowingTitle);
 }
 
 void
@@ -188,20 +196,4 @@ TP_PlaylistWindow::storePlaylist()
 {
     if( !std::filesystem::exists(TP::configDirectoryPath) )
         std::filesystem::create_directory(TP::configDirectoryPath);
-}
-
-void
-TP_PlaylistWindow::refreshShowingTitle( int idx_Min, int idx_Max )
-{
-    if ( idx_Max < 0 )
-        return;
-
-    if ( idx_Min == -1 )
-        idx_Min++;
-
-    for ( int i {idx_Min}; i <= idx_Max; i++ )
-        currentFileListWidget->item(i)->setText(
-                    QString("%1. ").arg(i + 1)
-                    +
-                    qvariant_cast<QString>(currentFileListWidget->item(i)->data(TP::role_Description)));
 }

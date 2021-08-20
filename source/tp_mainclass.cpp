@@ -12,11 +12,20 @@
 #include <QAudioDevice>
 #include <QAudioOutput>
 #include <QListWidgetItem>
+#include <QMediaDevices>
 #include <QMediaPlayer>
 #include <QMessageBox>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QWindow>
+
+#include <filesystem>
+
+// Headers of TagLib
+#include <fileref.h>
+#include <tag.h>
+
+#include <flacproperties.h>
 
 TP_MainClass::TP_MainClass() :
     QObject { nullptr }
@@ -26,11 +35,17 @@ TP_MainClass::TP_MainClass() :
   , mediaPlayer { new QMediaPlayer { this } }
 {
     mediaPlayer->setAudioOutput(audioOutput);
-    audioOutput->setDevice(QAudioDevice());
-    audioOutput->setVolume(50);
+    qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
+
+    qreal linearVolume =  QAudio::convertVolume(0.5,
+                                                QAudio::LogarithmicVolumeScale,
+                                                QAudio::LinearVolumeScale);
+    audioOutput->setVolume(qRound(linearVolume * 100));
 
     initializeConnection();
+
     mainWindow->show();
+
     playlistWindow->initializePlaylist();       // Must be executed before showing
     playlistWindow->show();
 }
@@ -73,19 +88,60 @@ TP_MainClass::slot_initializePosition()
 void
 TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
 {
+    qDebug() << "[SLOT] slot_connectFilelistWidget -- list's name is " << I_FilelistWidget->getListName();
     connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
-            this,               &TP_MainClass::slot_playFile);
+            this,               &TP_MainClass::slot_playURL);
 }
 
 void
-TP_MainClass::slot_playFile(QListWidgetItem *I_listWidgetItem)
+TP_MainClass::slot_playURL(QListWidgetItem *I_listWidgetItem)
 {
     QString qstr_FilePath { I_listWidgetItem->data(TP::role_Path).value<QString>() };
-    qDebug() << "[SLOT] TP_MainClass::slot_playFile: " << qstr_FilePath;
-    QUrl fileURL { qstr_FilePath };
+    qDebug() << "[SLOT] TP_MainClass::slot_playURL: " << qstr_FilePath;
+    QUrl url;
 
-    mediaPlayer->setSource ( fileURL );
+    if( std::filesystem::exists( qstr_FilePath.toLocal8Bit().constData()) )
+    {
+        url = QString("file://") + qstr_FilePath;
+
+        TagLib::FileRef fileRef { qstr_FilePath.toLocal8Bit().constData() };
+
+        // Set audio property labels
+        QString qstr_Format;
+        int bitRate = fileRef.audioProperties()->bitrate();
+        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
+        int bitDepth = -1;
+
+        TP::FileFormat format { I_listWidgetItem->data(TP::role_FileType).value<TP::FileFormat>() };
+        switch (format)
+        {
+        case TP::FileFormat::FLAC :
+            qstr_Format = QString( "FLAC" );
+            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
+            break;
+        case TP::FileFormat::MP3 :
+            qstr_Format = QString( "MP3" );
+            break;
+        }
+
+        mainWindow->setAudioPropertyLabels( qstr_Format, bitDepth, sampleRate, bitRate );
+    }
+    else
+        return;
+
+    mediaPlayer->setSource( url );
     mediaPlayer->play();
+}
+
+// *****************************************************************
+// private slots:
+// *****************************************************************
+
+void
+TP_MainClass::slot_hasAudioChanged(bool isAvailable)
+{
+    if( !isAvailable )
+        mainWindow->setAudioPropertyLabels( QString(" N/A "), -1, -1, -1 );
 }
 
 // *****************************************************************
@@ -95,11 +151,15 @@ TP_MainClass::slot_playFile(QListWidgetItem *I_listWidgetItem)
 void
 TP_MainClass::initializeConnection()
 {
+    // Media player
+    connect(mediaPlayer, &QMediaPlayer::hasAudioChanged,
+            this,        &TP_MainClass::slot_hasAudioChanged);
+
     // Showing and hiding PlaylistWindow
     connect(playlistWindow, &TP_PlaylistWindow::signal_Hidden,
-            mainWindow,     &TP_MainWindow::slot_PlaylistWindow_Hidden);
+            mainWindow,     &TP_MainWindow::slot_PlaylistWindowHidden);
     connect(playlistWindow, &TP_PlaylistWindow::signal_Shown,
-            mainWindow,     &TP_MainWindow::slot_PlaylistWindow_Shown);
+            mainWindow,     &TP_MainWindow::slot_PlaylistWindowShown);
     connect(mainWindow,     &TP_MainWindow::signal_openPlaylistWindow,
             playlistWindow, &TP_PlaylistWindow::show);
     connect(mainWindow,     &TP_MainWindow::signal_hidePlaylistWindow,
@@ -108,6 +168,4 @@ TP_MainClass::initializeConnection()
     // Make PlaylistWindow be able to emit signal for connecting its FileListWidget
     connect(playlistWindow, &TP_PlaylistWindow::signal_NewFilelistWidgetCreated,
             this,           &TP_MainClass::slot_connectFilelistWidget);
-
-    // Double click
 }
