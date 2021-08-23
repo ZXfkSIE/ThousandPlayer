@@ -60,8 +60,11 @@ TP_MainClass::~TP_MainClass()
 // public slots:
 // *****************************************************************
 
+
+// Need to be executed manually after QApplication object executed its exec()
 void
 TP_MainClass::slot_checkIfServiceAvailable()
+
 {
     QMessageBox msgBox_ServiceNotAvailable (
                 QMessageBox::Critical,
@@ -73,7 +76,7 @@ TP_MainClass::slot_checkIfServiceAvailable()
                 tr("Exit"),
                 QMessageBox::AcceptRole );
     connect( &msgBox_ServiceNotAvailable, &QMessageBox::buttonClicked, qApp, &QApplication::quit );
-    if ( !mediaPlayer->isAvailable() )
+    if ( mediaPlayer->isAvailable() )
         msgBox_ServiceNotAvailable.exec();
 }
 

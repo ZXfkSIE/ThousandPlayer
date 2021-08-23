@@ -20,11 +20,18 @@ int main(int argc, char *argv[])
     }
 
     TP_MainClass mainClass {};
-    mainClass.slot_checkIfServiceAvailable();
+
+#ifdef Q_OS_UNIX
+    /* When under X desktop environment, the window may be moved multiple times
+     * during its initialization process. Therefore, the position initialization
+     * of sub-windows need to be delayed. */
+    QTimer::singleShot( 150, &mainClass, &TP_MainClass::slot_initializePosition );
+#endif
+#ifdef Q_OS_WIN
     mainClass.slot_initializePosition();
+#endif
 
-    //QTimer::singleShot(100, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable);
-    //QTimer::singleShot(200, &mainClass, &TP_MainClass::slot_initializePosition);
-
+    // Need to be executed after QApplication object executed its exec()
+    QTimer::singleShot( 300, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable );
     return a.exec();
 }
