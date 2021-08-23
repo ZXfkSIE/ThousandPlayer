@@ -23,13 +23,12 @@ public slots:
     void slot_checkIfServiceAvailable();
     void slot_initializePosition();
     void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
-    void slot_playURL( QListWidgetItem *I_listWidgetItem );
-
-private slots:
-    void slot_hasAudioChanged(bool isAvailable);
+    void slot_playItem( QListWidgetItem *I_listWidgetItem );
 
 private:
     void initializeConnection();
+
+    void playFile( QListWidgetItem *I_listWidgetItem );
 
     TP_MainWindow       *mainWindow;
     TP_PlaylistWindow   *playlistWindow;

@@ -15,11 +15,12 @@ public:
     explicit TP_MainWindow(QWidget *parent = nullptr);
     ~TP_MainWindow();
 
-    void setAudioPropertyLabels(
+    void setCurrentAudioProperties(
             QString I_qstr_Format,
             int     bitDepth,
             int     sampleRate,
-            int     bitRate
+            int     bitRate,
+            int     duration
             );
 
 signals:

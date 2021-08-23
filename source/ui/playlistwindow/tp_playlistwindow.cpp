@@ -24,7 +24,7 @@ TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     // Qt::Tool is used for getting rid of the window tab in taskbar
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::Tool);
+    setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool );
 
     layout_FileListFrame = new QHBoxLayout { ui->frame_FileList };
     layout_FileListFrame->setContentsMargins(0, 0, 0, 0);
@@ -83,7 +83,7 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
 {
     int originalCount { currentFileListWidget->count() };
 
-    QStringList qstrlst_FilePath = QFileDialog::getOpenFileNames(
+    QList <QUrl> qlist_FileURLs = QFileDialog::getOpenFileUrls(
                 this,                               // QWidget *parent = nullptr
                 tr("Open files"),                   // const QString &caption = QString()
                 QString(),                          // const QString &dir = QString()
@@ -91,13 +91,14 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
                         "MP3 files (*.mp3)")
                 );
 
-    for (QString& qstr_FilePath: qstrlst_FilePath)
+    for (const QUrl& fileURL: qlist_FileURLs)
     {
-        QFileInfo fileInfo { QFile { qstr_FilePath } };
+        QString qstr_localFilePath = fileURL.toLocalFile();
+        QFileInfo fileInfo { QFile { qstr_localFilePath } };
         QString qstr_Filename = fileInfo.fileName();
         QString qstr_extension = fileInfo.suffix().toLower();
 
-        TagLib::FileRef fileRef { qstr_FilePath.toLocal8Bit().constData() };
+        TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
         QString qstr_title = TStringToQString(fileRef.tag()->title());
         QString qstr_artist = TStringToQString(fileRef.tag()->artist());
         QString qstr_album = TStringToQString(fileRef.tag()->album());
@@ -106,11 +107,14 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
 
         QListWidgetItem *item = new QListWidgetItem {currentFileListWidget};
 
+        // set URL
+        item->setData( TP::role_URL, fileURL );
+
+        // set source type
+        item->setData( TP::role_SourceType, TP::single );
+
         // set duration
         item->setData(TP::role_Duration, duration);
-
-        // set file path URL
-        item->setData(TP::role_Path, qstr_FilePath );
 
         // set file name
         item->setData(TP::role_FileName, qstr_Filename);

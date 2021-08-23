@@ -27,7 +27,14 @@ enum VolumeStatus
 enum FileFormat
 {
     FLAC,
-    MP3,
+    MP3
+};
+
+enum SourceType
+{
+    single,
+    cueSheet,
+    network
 };
 
 }       //namespace TP

@@ -1,6 +1,7 @@
 ﻿#include "tp_mainclass.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalenum.h"
 
 #include "tp_mainwindow.h"
 
@@ -40,7 +41,7 @@ TP_MainClass::TP_MainClass() :
     qreal linearVolume =  QAudio::convertVolume(0.5,
                                                 QAudio::LogarithmicVolumeScale,
                                                 QAudio::LinearVolumeScale);
-    audioOutput->setVolume(qRound(linearVolume * 100));
+    audioOutput->setVolume( qRound(linearVolume * 100) );
 
     initializeConnection();
 
@@ -76,7 +77,7 @@ TP_MainClass::slot_checkIfServiceAvailable()
                 tr("Exit"),
                 QMessageBox::AcceptRole );
     connect( &msgBox_ServiceNotAvailable, &QMessageBox::buttonClicked, qApp, &QApplication::quit );
-    if ( mediaPlayer->isAvailable() )
+    if ( !mediaPlayer->isAvailable() )
         msgBox_ServiceNotAvailable.exec();
 }
 
@@ -93,59 +94,25 @@ TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
 {
     qDebug() << "[SLOT] slot_connectFilelistWidget -- list's name is " << I_FilelistWidget->getListName();
     connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
-            this,               &TP_MainClass::slot_playURL);
+            this,               &TP_MainClass::slot_playItem);
 }
 
 void
-TP_MainClass::slot_playURL(QListWidgetItem *I_listWidgetItem)
+TP_MainClass::slot_playItem( QListWidgetItem *I_listWidgetItem )
 {
-    QString qstr_FilePath { I_listWidgetItem->data(TP::role_Path).value<QString>() };
-    qDebug() << "[SLOT] TP_MainClass::slot_playURL: " << qstr_FilePath;
-    QUrl url;
-
-    if( std::filesystem::exists( qstr_FilePath.toLocal8Bit().constData()) )
+    switch ( I_listWidgetItem->data( TP::role_SourceType ).value<TP::SourceType>() )
     {
-        url = QString("file://") + qstr_FilePath;
-
-        TagLib::FileRef fileRef { qstr_FilePath.toLocal8Bit().constData() };
-
-        // Set audio property labels
-        QString qstr_Format;
-        int bitRate = fileRef.audioProperties()->bitrate();
-        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
-        int bitDepth = -1;
-
-        TP::FileFormat format { I_listWidgetItem->data(TP::role_FileType).value<TP::FileFormat>() };
-        switch (format)
-        {
-        case TP::FileFormat::FLAC :
-            qstr_Format = QString( "FLAC" );
-            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
-            break;
-        case TP::FileFormat::MP3 :
-            qstr_Format = QString( "MP3" );
-            break;
-        }
-
-        mainWindow->setAudioPropertyLabels( qstr_Format, bitDepth, sampleRate, bitRate );
+    case TP::single :
+        playFile( I_listWidgetItem );
+        break;
+    default:
+        break;
     }
-    else
-        return;
-
-    mediaPlayer->setSource( url );
-    mediaPlayer->play();
 }
-
 // *****************************************************************
 // private slots:
 // *****************************************************************
 
-void
-TP_MainClass::slot_hasAudioChanged(bool isAvailable)
-{
-    if( !isAvailable )
-        mainWindow->setAudioPropertyLabels( QString(" N/A "), -1, -1, -1 );
-}
 
 // *****************************************************************
 // private
@@ -154,10 +121,6 @@ TP_MainClass::slot_hasAudioChanged(bool isAvailable)
 void
 TP_MainClass::initializeConnection()
 {
-    // Media player
-    connect(mediaPlayer, &QMediaPlayer::hasAudioChanged,
-            this,        &TP_MainClass::slot_hasAudioChanged);
-
     // Showing and hiding PlaylistWindow
     connect(playlistWindow, &TP_PlaylistWindow::signal_Hidden,
             mainWindow,     &TP_MainWindow::slot_PlaylistWindowHidden);
@@ -171,4 +134,46 @@ TP_MainClass::initializeConnection()
     // Make PlaylistWindow be able to emit signal for connecting its FileListWidget
     connect(playlistWindow, &TP_PlaylistWindow::signal_NewFilelistWidgetCreated,
             this,           &TP_MainClass::slot_connectFilelistWidget);
+}
+
+
+// Play audio file
+void
+TP_MainClass::playFile( QListWidgetItem *I_listWidgetItem )
+{
+    QUrl url { I_listWidgetItem->data( TP::role_URL ).value<QUrl>() };
+    qDebug() << "Start playing local file URL: " << url;
+
+    if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
+    {
+        TagLib::FileRef fileRef { url.toLocalFile().toLocal8Bit().constData() };
+
+        // Set audio property labels
+        QString qstr_Format;
+        int bitRate = fileRef.audioProperties()->bitrate();
+        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
+        int bitDepth = -1;
+        int duration = fileRef.audioProperties()->lengthInSeconds();
+        if( duration != I_listWidgetItem->data( TP::role_Duration ).value<int>() )
+            I_listWidgetItem->setData( TP::role_Duration, duration );
+
+        TP::FileFormat format { I_listWidgetItem->data(TP::role_FileType).value<TP::FileFormat>() };
+        switch (format)
+        {
+        case TP::FileFormat::FLAC :
+            qstr_Format = QString( "FLAC" );
+            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
+            break;
+        case TP::FileFormat::MP3 :
+            qstr_Format = QString( "MP3" );
+            break;
+        }
+
+        mainWindow->setCurrentAudioProperties( qstr_Format, bitDepth, sampleRate, bitRate, duration );
+    }
+    else
+        return;
+
+    mediaPlayer->setSource( url );
+    mediaPlayer->play();
 }

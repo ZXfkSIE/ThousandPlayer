@@ -40,11 +40,12 @@ TP_MainWindow::~TP_MainWindow()
 }
 
 void
-TP_MainWindow::setAudioPropertyLabels(
+TP_MainWindow::setCurrentAudioProperties(
         QString I_qstr_Format,
         int     bitDepth,
         int     sampleRate,
-        int     bitRate)
+        int     bitRate,
+        int     duration)
 {
     ui->label_Format->setText( QString(" ") + I_qstr_Format + QString(" ") );
     ui->label_BitDepth->setText(
@@ -59,6 +60,10 @@ TP_MainWindow::setAudioPropertyLabels(
                 QString(" ") + ( ( bitRate == -1 ) ? QString("-") : QString::number( bitRate ) )
                 + QString( " kbps " )
                 );
+    ui->label_DurationTime->setText( QString("%1:%2")
+                                     .arg(duration / 60, 2, 10, QLatin1Char('0') )
+                                     .arg(duration % 60, 2, 10, QLatin1Char('0') )
+                                     );
 }
 
 // *****************************************************************
