@@ -19,6 +19,8 @@
 TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
     QWidget { parent }
   , ui { new Ui::TP_PlaylistWindow }
+  , currentFileListWidget { nullptr }
+  , menu_Add { nullptr }
 {
     ui->setupUi(this);
     // Qt::Tool is used for getting rid of the window tab in taskbar
@@ -30,7 +32,6 @@ TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
     ui->pushButton_Close->setIcon(QIcon{":/image/icon_Exit.svg"});
 
     initializeMenu();
-    connectCurrentFileListWidget();
 
     /****************************** WARNING *****************************************
      *  The method initializePlaylist()

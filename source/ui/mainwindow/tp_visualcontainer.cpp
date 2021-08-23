@@ -12,7 +12,8 @@ TP_VisualContainer::TP_VisualContainer(QWidget *parent) :
     layout->setContentsMargins(0, 0, 0, 0);
 }
 
-// Need to be executed manually after the initialization of UI.
+// Need to be executed manually after the initialization of UI
+// to get the correct return value of width().
 void
 TP_VisualContainer::initialize()
 {

@@ -8,7 +8,8 @@ TP_VolumeIcon::TP_VolumeIcon(QWidget *parent) :
 
 }
 
-// Must be executed manually after the initialization of UI to get width and height.
+// Must be executed manually after the initialization of UI
+// to get the correct width and height.
 void
 TP_VolumeIcon::initialize()
 {

@@ -20,9 +20,11 @@ int main(int argc, char *argv[])
     }
 
     TP_MainClass mainClass {};
+    mainClass.slot_checkIfServiceAvailable();
+    mainClass.slot_initializePosition();
 
-    QTimer::singleShot(100, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable);
-    QTimer::singleShot(200, &mainClass, &TP_MainClass::slot_initializePosition);
+    //QTimer::singleShot(100, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable);
+    //QTimer::singleShot(200, &mainClass, &TP_MainClass::slot_initializePosition);
 
     return a.exec();
 }
