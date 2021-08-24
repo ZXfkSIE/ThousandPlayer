@@ -13,9 +13,10 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
   , b_isBorderBeingPressed { false }
   , b_isCursorResize { false }
   , b_isExpandingDisabled { false }
+  , b_isPlaying { false }
 {
     ui->setupUi(this);
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    setWindowFlags( windowFlags() | Qt::FramelessWindowHint );
 
     ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
     ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
@@ -25,13 +26,15 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->label_VolumeIcon->setIcon(true);
 
     ui->widget_VisualContainer->initialize();
-    ui->widget_VisualContainer->switchWidget(TP::albumCover);
+    ui->widget_VisualContainer->switchWidget( TP::albumCover );
 
     ui->pushButton_Previous->setIcon( QIcon{":/image/icon_Previous.svg"} );
     ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
-    ui->pushButton_Play->setIcon( QIcon{":/image/icon_Play.svg"} );
+    setIcon_Play();
     ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
     setIcon_Repeat();
+
+    setCurrentAudioProperties();
 }
 
 TP_MainWindow::~TP_MainWindow()
@@ -60,12 +63,29 @@ TP_MainWindow::setCurrentAudioProperties(
                 QString(" ") + ( ( bitRate == -1 ) ? QString("-") : QString::number( bitRate ) )
                 + QString( " kbps " )
                 );
-    ui->label_DurationTime->setText( QString("%1:%2")
-                                     .arg(duration / 60, 2, 10, QLatin1Char('0') )
-                                     .arg(duration % 60, 2, 10, QLatin1Char('0') )
-                                     );
+    ui->label_DurationTime->setText( convertTime( duration ) );
 
     ui->slider_Time->setMaximum( duration );
+}
+
+void
+TP_MainWindow::setPlay()
+{
+    b_isPlaying = true;
+    setIcon_Pause();
+}
+
+void TP_MainWindow::setPause()
+{
+    b_isPlaying = false;
+    setIcon_Play();
+}
+
+void TP_MainWindow::setStop()
+{
+    b_isPlaying = false;
+    setIcon_Play();
+    setCurrentAudioProperties();
 }
 
 // *****************************************************************
@@ -73,14 +93,14 @@ TP_MainWindow::setCurrentAudioProperties(
 // *****************************************************************
 
 void
-TP_MainWindow::slot_PlaylistWindowShown()
+TP_MainWindow::slot_playlistWindowShown()
 {
     ui->pushButton_Playlist->setStyleSheet("color: rgb(255, 255, 255);");
     b_isPlaylistWindowShown = true;
 }
 
 void
-TP_MainWindow::slot_PlaylistWindowHidden()
+TP_MainWindow::slot_playlistWindowHidden()
 {
     ui->pushButton_Playlist->setStyleSheet("color: rgb(0, 0, 0);");
     b_isPlaylistWindowShown = false;
@@ -89,14 +109,11 @@ TP_MainWindow::slot_PlaylistWindowHidden()
 void
 TP_MainWindow::slot_updateDuration(qint64 I_progress)
 {
-    qDebug() << QString("[SLOT] slot_updateDuration(%1)").arg(I_progress);
-    I_progress /= 1'000'000;                    // convert ms to s
+    // qDebug() << QString("[SLOT] slot_updateDuration(%1)").arg(I_progress);
+    I_progress /= 1000;                                 // convert ms to s
     if ( !ui->slider_Time->isSliderDown() )
         ui->slider_Time->setValue( I_progress );
-    ui->label_CurrentTime->setText( QString("%1:%2")
-                                    .arg(I_progress / 60, 2, 10, QLatin1Char('0') )
-                                    .arg(I_progress % 60, 2, 10, QLatin1Char('0') )
-                                    );
+    ui->label_CurrentTime->setText( convertTime(I_progress) );
 }
 
 // *****************************************************************
@@ -133,6 +150,21 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
         emit signal_hidePlaylistWindow();
     else
         emit signal_openPlaylistWindow();
+}
+
+
+
+void TP_MainWindow::on_pushButton_Stop_clicked()
+{
+    emit signal_stop();
+}
+
+void TP_MainWindow::on_pushButton_Play_clicked()
+{
+    if ( b_isPlaying )
+        emit signal_pause();
+    else
+        emit signal_play();
 }
 
 // *****************************************************************
@@ -244,6 +276,27 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 // private
 // *****************************************************************
 
+void
+TP_MainWindow::setIcon_Play()
+{
+    ui->pushButton_Play->setIcon( QIcon{":/image/icon_Play.svg"} );
+    ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Play, TP::iconSize_Play ) );
+}
+
+void
+TP_MainWindow::setIcon_Pause()
+{
+    ui->pushButton_Play->setIcon( QIcon{":/image/icon_Pause.svg"} );
+    ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Pause, TP::iconSize_Pause ) );
+}
+
+void
+TP_MainWindow::setIcon_Repeat()
+{
+    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
+    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
+}
+
 TP::CursorPositionType
 TP_MainWindow::isAtBorder(QPoint I_point) const
 {
@@ -258,9 +311,10 @@ TP_MainWindow::isAtBorder(QPoint I_point) const
     return TP::notAtBorder;
 }
 
-void
-TP_MainWindow::setIcon_Repeat()
+QString
+TP_MainWindow::convertTime(qint64 second) const
 {
-    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
-    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
+    return QString("%1:%2")
+            .arg(second / 60, 2, 10, QLatin1Char('0') )
+            .arg(second % 60, 2, 10, QLatin1Char('0') );
 }

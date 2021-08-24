@@ -37,6 +37,15 @@ enum SourceType
     network
 };
 
+enum PlayMode
+{
+    singleTime,
+    repeat,
+    sequential,
+    sequentialLoop,
+    shuffle
+};
+
 }       //namespace TP
 
 #endif // TP_GLOBALENUM_H

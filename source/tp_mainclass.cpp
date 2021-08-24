@@ -14,7 +14,6 @@
 #include <QAudioOutput>
 #include <QListWidgetItem>
 #include <QMediaDevices>
-#include <QMediaPlayer>
 #include <QMessageBox>
 #include <QGuiApplication>
 #include <QScreen>
@@ -34,6 +33,7 @@ TP_MainClass::TP_MainClass() :
   , playlistWindow { new TP_PlaylistWindow {} }
   , audioOutput { new QAudioOutput { this } }
   , mediaPlayer { new QMediaPlayer { this } }
+  , currentItem { nullptr }
 {
     mediaPlayer->setAudioOutput(audioOutput);
     qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
@@ -90,11 +90,23 @@ TP_MainClass::slot_initializePosition()
 }
 
 void
-TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
+TP_MainClass::slot_playSignalReceived()
 {
-    qDebug() << "[SLOT] slot_connectFilelistWidget -- list's name is " << I_FilelistWidget->getListName();
-    connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
-            this,               &TP_MainClass::slot_playItem);
+    switch ( mediaPlayer->playbackState() )
+    {
+    case QMediaPlayer::PausedState :
+        mediaPlayer->play();
+        break;
+
+    case QMediaPlayer::StoppedState :
+        // pending implementation
+        break;
+
+    case QMediaPlayer::PlayingState :
+        qDebug() << "[FATAL ERROR] state status inconsistent! Program will fix it manually.";
+        mainWindow->setPlay();
+        break;
+    }
 }
 
 void
@@ -113,6 +125,36 @@ TP_MainClass::slot_playItem( QListWidgetItem *I_listWidgetItem )
 // private slots:
 // *****************************************************************
 
+void
+TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
+{
+    qDebug() << "[SLOT] slot_connectFilelistWidget -- list's name is " << I_FilelistWidget->getListName();
+    connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
+            this,               &TP_MainClass::slot_playItem);
+}
+
+void
+TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
+{
+    switch ( newState )
+    {
+    case QMediaPlayer::PlayingState:
+        qDebug() << "[SLOT] Media player status changed to PlayingState.";
+        mainWindow->setPlay();
+        setMainWindowAudioProperties( currentItem );
+        break;
+
+    case QMediaPlayer::PausedState:
+        qDebug() << "[SLOT] Media player status changed to PauseState.";
+        mainWindow->setPause();
+        break;
+
+    case QMediaPlayer::StoppedState:
+        qDebug() << "[SLOT] Media player status changed to StoppedState.";
+        mainWindow->setStop();
+        break;
+    }
+}
 
 // *****************************************************************
 // private
@@ -121,15 +163,24 @@ TP_MainClass::slot_playItem( QListWidgetItem *I_listWidgetItem )
 void
 TP_MainClass::initializeConnection()
 {
-    // Connections about media player
+    // Connections about media player control
     connect(mediaPlayer,    &QMediaPlayer::positionChanged,
             mainWindow,     &TP_MainWindow::slot_updateDuration);
+    connect(mediaPlayer,    &QMediaPlayer::playbackStateChanged,
+            this,           &TP_MainClass::slot_playbackStateChanged);
+
+    connect(mainWindow,     &TP_MainWindow::signal_play,
+            this,           &TP_MainClass::slot_playSignalReceived);
+    connect(mainWindow,     &TP_MainWindow::signal_pause,
+            mediaPlayer,    &QMediaPlayer::pause);
+    connect(mainWindow,     &TP_MainWindow::signal_stop,
+            mediaPlayer,    &QMediaPlayer::stop);
 
     // Showing and hiding PlaylistWindow
     connect(playlistWindow, &TP_PlaylistWindow::signal_Hidden,
-            mainWindow,     &TP_MainWindow::slot_PlaylistWindowHidden);
+            mainWindow,     &TP_MainWindow::slot_playlistWindowHidden);
     connect(playlistWindow, &TP_PlaylistWindow::signal_Shown,
-            mainWindow,     &TP_MainWindow::slot_PlaylistWindowShown);
+            mainWindow,     &TP_MainWindow::slot_playlistWindowShown);
     connect(mainWindow,     &TP_MainWindow::signal_openPlaylistWindow,
             playlistWindow, &TP_PlaylistWindow::show);
     connect(mainWindow,     &TP_MainWindow::signal_hidePlaylistWindow,
@@ -149,7 +200,22 @@ TP_MainClass::playFile( QListWidgetItem *I_listWidgetItem )
     qDebug() << "Start playing local file URL: " << url;
 
     if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
+        currentItem = I_listWidgetItem;
+    else
+        return;
+
+    mediaPlayer->setSource( url );
+    mediaPlayer->play();
+}
+
+void
+TP_MainClass::setMainWindowAudioProperties( QListWidgetItem *I_listWidgetItem )
+{
+    QUrl url { I_listWidgetItem->data( TP::role_URL ).value<QUrl>() };
+
+    if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
     {
+        currentItem = I_listWidgetItem;
         TagLib::FileRef fileRef { url.toLocalFile().toLocal8Bit().constData() };
 
         // Set audio property labels
@@ -177,7 +243,4 @@ TP_MainClass::playFile( QListWidgetItem *I_listWidgetItem )
     }
     else
         return;
-
-    mediaPlayer->setSource( url );
-    mediaPlayer->play();
 }
