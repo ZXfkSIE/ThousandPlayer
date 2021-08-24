@@ -30,6 +30,7 @@ signals:
 public slots:
     void slot_PlaylistWindowShown();
     void slot_PlaylistWindowHidden();
+    void slot_updateDuration(qint64 I_progress);
 
 private slots:
     void on_pushButton_Exit_clicked() const;

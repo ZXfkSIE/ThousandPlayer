@@ -64,6 +64,8 @@ TP_MainWindow::setCurrentAudioProperties(
                                      .arg(duration / 60, 2, 10, QLatin1Char('0') )
                                      .arg(duration % 60, 2, 10, QLatin1Char('0') )
                                      );
+
+    ui->slider_Time->setMaximum( duration );
 }
 
 // *****************************************************************
@@ -82,6 +84,19 @@ TP_MainWindow::slot_PlaylistWindowHidden()
 {
     ui->pushButton_Playlist->setStyleSheet("color: rgb(0, 0, 0);");
     b_isPlaylistWindowShown = false;
+}
+
+void
+TP_MainWindow::slot_updateDuration(qint64 I_progress)
+{
+    qDebug() << QString("[SLOT] slot_updateDuration(%1)").arg(I_progress);
+    I_progress /= 1'000'000;                    // convert ms to s
+    if ( !ui->slider_Time->isSliderDown() )
+        ui->slider_Time->setValue( I_progress );
+    ui->label_CurrentTime->setText( QString("%1:%2")
+                                    .arg(I_progress / 60, 2, 10, QLatin1Char('0') )
+                                    .arg(I_progress % 60, 2, 10, QLatin1Char('0') )
+                                    );
 }
 
 // *****************************************************************

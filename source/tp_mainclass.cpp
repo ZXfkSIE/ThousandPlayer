@@ -121,6 +121,10 @@ TP_MainClass::slot_playItem( QListWidgetItem *I_listWidgetItem )
 void
 TP_MainClass::initializeConnection()
 {
+    // Connections about media player
+    connect(mediaPlayer,    &QMediaPlayer::positionChanged,
+            mainWindow,     &TP_MainWindow::slot_updateDuration);
+
     // Showing and hiding PlaylistWindow
     connect(playlistWindow, &TP_PlaylistWindow::signal_Hidden,
             mainWindow,     &TP_MainWindow::slot_PlaylistWindowHidden);
