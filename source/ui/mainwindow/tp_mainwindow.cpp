@@ -3,9 +3,18 @@
 
 #include "tp_globalconst.h"
 
+#include <QListWidgetItem>
 #include <QMouseEvent>
 #include <QStyle>
 #include <QWindow>
+
+#include <filesystem>
+
+// Headers of TagLib
+#include <fileref.h>
+#include <tag.h>
+
+#include <flacproperties.h>
 
 TP_MainWindow::TP_MainWindow(QWidget *parent) :
     QWidget(parent)
@@ -34,38 +43,12 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
     setIcon_Repeat();
 
-    setCurrentAudioProperties();
+    setAudioPropertyLabels();
 }
 
 TP_MainWindow::~TP_MainWindow()
 {
     delete ui;
-}
-
-void
-TP_MainWindow::setCurrentAudioProperties(
-        QString I_qstr_Format,
-        int     bitDepth,
-        int     sampleRate,
-        int     bitRate,
-        int     duration)
-{
-    ui->label_Format->setText( QString(" ") + I_qstr_Format + QString(" ") );
-    ui->label_BitDepth->setText(
-                QString(" ") + ( ( bitDepth == -1 ) ? QString("-") : QString::number( bitDepth ) )
-                + QString( " bits " )
-                );
-    ui->label_SampleRate->setText(
-                QString(" ") + ( ( sampleRate == -1 ) ? QString("-") : QString::number( sampleRate ) )
-                + QString( " KHz " )
-                );
-    ui->label_Bitrate->setText(
-                QString(" ") + ( ( bitRate == -1 ) ? QString("-") : QString::number( bitRate ) )
-                + QString( " kbps " )
-                );
-    ui->label_DurationTime->setText( convertTime( duration ) );
-
-    ui->slider_Time->setMaximum( duration );
 }
 
 void
@@ -85,7 +68,45 @@ void TP_MainWindow::setStop()
 {
     b_isPlaying = false;
     setIcon_Play();
-    setCurrentAudioProperties();
+    setAudioPropertyLabels();
+}
+
+void TP_MainWindow::setAudioInformation(const QListWidgetItem &I_listWidgetItem)
+{
+    QUrl url { I_listWidgetItem.data( TP::role_URL ).value<QUrl>() };
+
+    if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
+    {
+        TagLib::FileRef fileRef { url.toLocalFile().toLocal8Bit().constData() };
+
+        // Set audio property labels
+        QString qstr_Format;
+        int bitRate = fileRef.audioProperties()->bitrate();
+        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
+        int bitDepth = -1;
+        int duration = fileRef.audioProperties()->lengthInSeconds();
+
+        TP::FileFormat format { I_listWidgetItem.data(TP::role_FileType).value<TP::FileFormat>() };
+        switch (format)
+        {
+        case TP::FileFormat::FLAC :
+            qstr_Format = QString( "FLAC" );
+            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
+            break;
+        case TP::FileFormat::MP3 :
+            qstr_Format = QString( "MP3" );
+            break;
+        }
+
+        setAudioPropertyLabels( qstr_Format, bitDepth, sampleRate, bitRate, duration );
+    }
+    else
+        return;
+}
+
+void TP_MainWindow::setFileNotFound()
+{
+    setAudioPropertyLabels();
 }
 
 // *****************************************************************
@@ -156,15 +177,15 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
 
 void TP_MainWindow::on_pushButton_Stop_clicked()
 {
-    emit signal_stop();
+    emit signal_stopButtonPushed();
 }
 
 void TP_MainWindow::on_pushButton_Play_clicked()
 {
     if ( b_isPlaying )
-        emit signal_pause();
+        emit signal_pauseButtonPushed();
     else
-        emit signal_play();
+        emit signal_playButtonPushed();
 }
 
 // *****************************************************************
@@ -295,6 +316,32 @@ TP_MainWindow::setIcon_Repeat()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
+}
+
+void
+TP_MainWindow::setAudioPropertyLabels(
+        QString I_qstr_Format,
+        int     bitDepth,
+        int     sampleRate,
+        int     bitRate,
+        int     duration)
+{
+    ui->label_Format->setText( QString(" ") + I_qstr_Format + QString(" ") );
+    ui->label_BitDepth->setText(
+                QString(" ") + ( ( bitDepth == -1 ) ? QString("-") : QString::number( bitDepth ) )
+                + QString( " bits " )
+                );
+    ui->label_SampleRate->setText(
+                QString(" ") + ( ( sampleRate == -1 ) ? QString("-") : QString::number( sampleRate ) )
+                + QString( " KHz " )
+                );
+    ui->label_Bitrate->setText(
+                QString(" ") + ( ( bitRate == -1 ) ? QString("-") : QString::number( bitRate ) )
+                + QString( " kbps " )
+                );
+    ui->label_DurationTime->setText( convertTime( duration ) );
+
+    ui->slider_Time->setMaximum( duration );
 }
 
 TP::CursorPositionType

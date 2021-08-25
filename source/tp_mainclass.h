@@ -1,6 +1,7 @@
 ﻿#ifndef TP_MAINCLASS_H
 #define TP_MAINCLASS_H
 
+#include <QListWidgetItem>
 #include <QMediaPlayer>
 #include <QObject>
 
@@ -28,14 +29,12 @@ private slots:
     void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
     void slot_playbackStateChanged( QMediaPlayer::PlaybackState newState );
 
-    void slot_playSignalReceived();
+    void slot_playButtonPushed();
 
 private:
     void initializeConnection();
 
     void playFile( QListWidgetItem *I_listWidgetItem );
-
-    void setMainWindowAudioProperties( QListWidgetItem *I_listWidgetItem );
 
     TP_MainWindow       *mainWindow;
     TP_PlaylistWindow   *playlistWindow;
@@ -43,7 +42,7 @@ private:
     QAudioOutput        *audioOutput;
     QMediaPlayer        *mediaPlayer;
 
-    QListWidgetItem     *currentItem;
+    QListWidgetItem     currentItem;
 };
 
 #endif // TP_MAINCLASS_H

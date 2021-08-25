@@ -2,7 +2,6 @@
 #define TP_PLAYLISTWINDOW_H
 
 #include <QListWidget>
-
 #include <vector>
 
 class TP_FileListWidget;
@@ -22,6 +21,8 @@ public:
     ~TP_PlaylistWindow();
 
     void initializePlaylist();
+    void setBold(const QListWidgetItem &sI_listWidgetItem);
+    void unsetAllBolds();
 
 signals:
     void signal_Shown();

@@ -16,7 +16,7 @@
 #include <fileref.h>
 #include <tag.h>
 
-TP_PlaylistWindow::TP_PlaylistWindow(QWidget *parent) :
+TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget { parent }
   , ui { new Ui::TP_PlaylistWindow }
   , currentFileListWidget { nullptr }
@@ -66,6 +66,44 @@ TP_PlaylistWindow::initializePlaylist()
 
         qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated -- list's name is " << currentFileListWidget->getListName();
         emit signal_NewFilelistWidgetCreated(currentFileListWidget);
+    }
+}
+
+void
+TP_PlaylistWindow::setBold( const QListWidgetItem &I_listWidgetItem )
+{
+    for( size_t i {}; i < currentFileListWidget->count(); i++ )
+    {
+        QUrl lURL = I_listWidgetItem.data( TP::role_URL ).value<QUrl>();
+        QUrl rURL = currentFileListWidget->item( i )->data( TP::role_URL ).value<QUrl>();
+        if( lURL == rURL )
+        {
+            QFont font = currentFileListWidget->item( i )->font();
+            currentFileListWidget->item( i )->font();
+            font.setBold( true );
+            currentFileListWidget->item( i )->setFont( font );
+            currentFileListWidget->item( i )->setBackground( QColor("#444") );
+        }
+        else
+        {
+            QFont font = currentFileListWidget->item( i )->font();
+            currentFileListWidget->item( i )->font();
+            font.setBold( false );
+            currentFileListWidget->item( i )->setFont( font );
+            currentFileListWidget->item( i )->setBackground( QColor("#777") );
+        }
+    }
+}
+
+void
+TP_PlaylistWindow::unsetAllBolds()
+{
+    for( size_t i {}; i < currentFileListWidget->count(); i++ )
+    {
+        QFont font = currentFileListWidget->item( i )->font();
+        font.setBold( false );
+        currentFileListWidget->item( i )->setFont( font );
+        currentFileListWidget->item( i )->setBackground( QColor("#777") );
     }
 }
 

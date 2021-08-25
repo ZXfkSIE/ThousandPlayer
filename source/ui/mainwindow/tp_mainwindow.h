@@ -5,6 +5,8 @@
 
 #include <QWidget>
 
+class QListWidgetItem;
+
 namespace Ui { class TP_MainWindow; }
 
 class TP_MainWindow : public QWidget
@@ -15,25 +17,20 @@ public:
     explicit TP_MainWindow(QWidget *parent = nullptr);
     ~TP_MainWindow();
 
-    void setCurrentAudioProperties(
-            QString I_qstr_Format   = "N/A",
-            int     bitDepth        = -1,
-            int     sampleRate      = -1,
-            int     bitRate         = -1,
-            int     duration        = 0
-            );
-
     void setPlay();
     void setPause();
     void setStop();
+
+    void setAudioInformation(const QListWidgetItem &I_listWidgetItem);
+    void setFileNotFound();
 
 signals:
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
 
-    void signal_play();
-    void signal_pause();
-    void signal_stop();
+    void signal_playButtonPushed();
+    void signal_pauseButtonPushed();
+    void signal_stopButtonPushed();
 
 public slots:
     void slot_playlistWindowShown();
@@ -62,6 +59,14 @@ private:
     void setIcon_Pause();
 
     void setIcon_Repeat();
+
+    void setAudioPropertyLabels(
+            QString I_qstr_Format   = "N/A",
+            int     bitDepth        = -1,
+            int     sampleRate      = -1,
+            int     bitRate         = -1,
+            int     duration        = 0
+            );
 
     QString convertTime(qint64 second) const;
 

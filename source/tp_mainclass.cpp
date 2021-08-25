@@ -21,19 +21,13 @@
 
 #include <filesystem>
 
-// Headers of TagLib
-#include <fileref.h>
-#include <tag.h>
-
-#include <flacproperties.h>
-
 TP_MainClass::TP_MainClass() :
     QObject { nullptr }
   , mainWindow { new TP_MainWindow {} }
   , playlistWindow { new TP_PlaylistWindow {} }
   , audioOutput { new QAudioOutput { this } }
   , mediaPlayer { new QMediaPlayer { this } }
-  , currentItem { nullptr }
+  , currentItem {}
 {
     mediaPlayer->setAudioOutput(audioOutput);
     qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
@@ -90,7 +84,7 @@ TP_MainClass::slot_initializePosition()
 }
 
 void
-TP_MainClass::slot_playSignalReceived()
+TP_MainClass::slot_playButtonPushed()
 {
     switch ( mediaPlayer->playbackState() )
     {
@@ -99,7 +93,7 @@ TP_MainClass::slot_playSignalReceived()
         break;
 
     case QMediaPlayer::StoppedState :
-        // pending implementation
+        // pending implementation: get a file to play from the playlist widget
         break;
 
     case QMediaPlayer::PlayingState :
@@ -140,18 +134,34 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[SLOT] Media player status changed to PlayingState.";
+
+        // Modify main window
         mainWindow->setPlay();
-        setMainWindowAudioProperties( currentItem );
+        mainWindow->setAudioInformation( currentItem );
+
+        // Modify playlist window
+        playlistWindow->setBold( currentItem );
+
         break;
+
 
     case QMediaPlayer::PausedState:
         qDebug() << "[SLOT] Media player status changed to PauseState.";
+
+        // Modify main window
         mainWindow->setPause();
+
         break;
+
 
     case QMediaPlayer::StoppedState:
         qDebug() << "[SLOT] Media player status changed to StoppedState.";
+
+        // Modify main window
         mainWindow->setStop();
+        // Modify playlist window
+        playlistWindow->unsetAllBolds();
+
         break;
     }
 }
@@ -169,11 +179,11 @@ TP_MainClass::initializeConnection()
     connect(mediaPlayer,    &QMediaPlayer::playbackStateChanged,
             this,           &TP_MainClass::slot_playbackStateChanged);
 
-    connect(mainWindow,     &TP_MainWindow::signal_play,
-            this,           &TP_MainClass::slot_playSignalReceived);
-    connect(mainWindow,     &TP_MainWindow::signal_pause,
+    connect(mainWindow,     &TP_MainWindow::signal_playButtonPushed,
+            this,           &TP_MainClass::slot_playButtonPushed);
+    connect(mainWindow,     &TP_MainWindow::signal_pauseButtonPushed,
             mediaPlayer,    &QMediaPlayer::pause);
-    connect(mainWindow,     &TP_MainWindow::signal_stop,
+    connect(mainWindow,     &TP_MainWindow::signal_stopButtonPushed,
             mediaPlayer,    &QMediaPlayer::stop);
 
     // Showing and hiding PlaylistWindow
@@ -200,47 +210,10 @@ TP_MainClass::playFile( QListWidgetItem *I_listWidgetItem )
     qDebug() << "Start playing local file URL: " << url;
 
     if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
-        currentItem = I_listWidgetItem;
+        currentItem = *I_listWidgetItem;
     else
         return;
 
     mediaPlayer->setSource( url );
     mediaPlayer->play();
-}
-
-void
-TP_MainClass::setMainWindowAudioProperties( QListWidgetItem *I_listWidgetItem )
-{
-    QUrl url { I_listWidgetItem->data( TP::role_URL ).value<QUrl>() };
-
-    if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
-    {
-        currentItem = I_listWidgetItem;
-        TagLib::FileRef fileRef { url.toLocalFile().toLocal8Bit().constData() };
-
-        // Set audio property labels
-        QString qstr_Format;
-        int bitRate = fileRef.audioProperties()->bitrate();
-        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
-        int bitDepth = -1;
-        int duration = fileRef.audioProperties()->lengthInSeconds();
-        if( duration != I_listWidgetItem->data( TP::role_Duration ).value<int>() )
-            I_listWidgetItem->setData( TP::role_Duration, duration );
-
-        TP::FileFormat format { I_listWidgetItem->data(TP::role_FileType).value<TP::FileFormat>() };
-        switch (format)
-        {
-        case TP::FileFormat::FLAC :
-            qstr_Format = QString( "FLAC" );
-            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
-            break;
-        case TP::FileFormat::MP3 :
-            qstr_Format = QString( "MP3" );
-            break;
-        }
-
-        mainWindow->setCurrentAudioProperties( qstr_Format, bitDepth, sampleRate, bitRate, duration );
-    }
-    else
-        return;
 }
