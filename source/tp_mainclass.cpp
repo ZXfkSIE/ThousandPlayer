@@ -32,9 +32,10 @@ TP_MainClass::TP_MainClass() :
     mediaPlayer->setAudioOutput(audioOutput);
     qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
 
-    qreal linearVolume =  QAudio::convertVolume(0.5,
-                                                QAudio::LogarithmicVolumeScale,
-                                                QAudio::LinearVolumeScale);
+    qreal linearVolume =
+            QAudio::convertVolume(0.5,
+                                  QAudio::LogarithmicVolumeScale,
+                                  QAudio::LinearVolumeScale);
     audioOutput->setVolume( qRound(linearVolume * 100) );
 
     initializeConnection();

@@ -896,13 +896,13 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>135</width>
+          <width>118</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>135</width>
+          <width>118</width>
           <height>16777215</height>
          </size>
         </property>
@@ -975,40 +975,6 @@ color: rgb(255, 255, 255);</string>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_VolumeValue">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>25</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>25</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="mouseTracking">
-            <bool>true</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(255, 255, 255);</string>
-           </property>
-           <property name="text">
-            <string notr="true">100</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>

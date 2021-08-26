@@ -30,9 +30,8 @@ TP_TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
     if(b_isBeingPressed)
     {
-        window()->move(event->globalPosition().toPoint() - pressedRelativePosition);
+        emit signal_moveWindow( window(), event->globalPosition().toPoint() - pressedRelativePosition );
         QFrame::mouseMoveEvent(event);
-        // qDebug()<<"This window has been dragged to new geometry: " << window()->geometry();
     }
     else
         event->ignore();

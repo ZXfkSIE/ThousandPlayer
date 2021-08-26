@@ -22,6 +22,9 @@ class TP_TitleBar : public QFrame
 public:
     explicit TP_TitleBar(QWidget *parent = nullptr);
 
+signals:
+    void signal_moveWindow(QWidget *window, QPoint position);
+
 private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
