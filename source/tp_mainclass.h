@@ -24,6 +24,7 @@ public slots:
     void slot_checkIfServiceAvailable();
     void slot_initializePosition();
     void slot_playItem( QListWidgetItem *I_listWidgetItem );
+    void slot_moveWindow( QWidget *window, QRect newGeometry );
 
 private slots:
     void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );

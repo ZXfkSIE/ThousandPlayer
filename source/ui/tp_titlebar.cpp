@@ -30,7 +30,9 @@ TP_TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
     if(b_isBeingPressed)
     {
-        emit signal_moveWindow( window(), event->globalPosition().toPoint() - pressedRelativePosition );
+        QRect newGeometry = window()->geometry();
+        newGeometry.moveTopLeft( event->globalPosition().toPoint() - pressedRelativePosition );
+        emit signal_moveTitleBar( newGeometry );
         QFrame::mouseMoveEvent(event);
     }
     else

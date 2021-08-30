@@ -23,7 +23,7 @@ public:
     explicit TP_TitleBar(QWidget *parent = nullptr);
 
 signals:
-    void signal_moveWindow(QWidget *window, QPoint position);
+    void signal_moveTitleBar( QRect newGeometry );
 
 private:
     void mousePressEvent(QMouseEvent *event) override;

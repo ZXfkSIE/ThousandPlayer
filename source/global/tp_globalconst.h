@@ -7,6 +7,7 @@ namespace TP
 {
 
 static const int borderSize = 5;
+static const int snapBorderSize = 5;
 
 static const std::string configDirectoryPath    = "config";
 static const std::string playlistFilePath       = configDirectoryPath + "/playlists.xml";

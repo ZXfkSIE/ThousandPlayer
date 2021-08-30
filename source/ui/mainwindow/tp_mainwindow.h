@@ -25,6 +25,8 @@ public:
     void setFileNotFound();
 
 signals:
+    void signal_moveWindow( QWidget *window, QRect newGeometry );
+
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
 
@@ -39,13 +41,14 @@ public slots:
     void slot_updateDuration(qint64 I_progress);
 
 private slots:
+    void slot_moveTitleBar( QRect newGeometry );
+
     void on_pushButton_Exit_clicked() const;
     void on_pushButton_Expand_clicked();
 
     void on_pushButton_Playlist_clicked();
 
     void on_pushButton_Play_clicked();
-
     void on_pushButton_Stop_clicked();
 
 private:

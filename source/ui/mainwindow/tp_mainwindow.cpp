@@ -27,6 +27,9 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint );
 
+    connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
+            this,               &TP_MainWindow::slot_moveTitleBar);
+
     ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
     ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
     ui->pushButton_Exit->setIcon( QIcon{":/image/icon_Exit.svg"} );
@@ -142,6 +145,12 @@ TP_MainWindow::slot_updateDuration(qint64 I_progress)
 // *****************************************************************
 
 void
+TP_MainWindow::slot_moveTitleBar( QRect newGeometry )
+{
+    emit signal_moveWindow( this, newGeometry );
+}
+
+void
 TP_MainWindow::on_pushButton_Exit_clicked() const
 {
     QApplication::exit();
@@ -172,8 +181,6 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
     else
         emit signal_openPlaylistWindow();
 }
-
-
 
 void TP_MainWindow::on_pushButton_Stop_clicked()
 {
@@ -252,7 +259,7 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
     else                        // if (b_isBorderBeingPressed)
     {
         cursorPositionType = isAtBorder(eventPosition);
-        switch (cursorPositionType)
+        switch ( cursorPositionType )
         {
         case TP::notAtBorder:
             if (b_isCursorResize)
@@ -286,7 +293,7 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
     b_isExpandingDisabled = false;
     if(!isAtBorder(event->position().toPoint()) && b_isCursorResize)
     {
-        setCursor(QCursor(Qt::ArrowCursor));
+        setCursor( QCursor(Qt::ArrowCursor) );
         b_isCursorResize = false;
     }
 

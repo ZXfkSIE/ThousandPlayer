@@ -19,6 +19,7 @@
 #include <QScreen>
 #include <QWindow>
 
+#include <cmath>
 #include <filesystem>
 
 TP_MainClass::TP_MainClass() :
@@ -116,6 +117,91 @@ TP_MainClass::slot_playItem( QListWidgetItem *I_listWidgetItem )
         break;
     }
 }
+
+void
+TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
+{
+    /********************************** Note **********************************
+     *  QRect::bottom() and QRect::right(), as well as QRect::bottomRight()
+     *  are not recommended to use since the result is not accurate.
+     *  Check official Qt documentation for details.
+     **************************************************************************/
+
+    // A window can only be snapped once vertically and horizontally, respectively.
+    bool isVerticallySnapped = false;
+    bool isHorizontallySnapped = false;
+
+    // Snap to main window
+    if( window != mainWindow )
+    {
+        // Top edge snap to main window's bottom edge
+        if(
+                std::abs( mainWindow->geometry().top() + mainWindow->geometry().height() - newGeometry.top() )
+                <
+                TP::snapBorderSize
+                )
+        {
+            newGeometry.moveTop( mainWindow->geometry().top() + mainWindow->geometry().height() + 1 );
+            isVerticallySnapped = true;
+            goto EndOfWindow;
+        }
+
+        // Bottom edge snap to main window's top edge
+        if(
+                std::abs( newGeometry.top() + newGeometry.height() - mainWindow->geometry().top() )
+                <
+                TP::snapBorderSize
+                )
+        {
+            newGeometry.moveBottom( mainWindow->geometry().top() - 1 );
+            isVerticallySnapped = true;
+            goto EndOfWindow;
+        }
+
+        // Left edge snap to main window's right edge
+        if(
+                std::abs( mainWindow->geometry().left() + mainWindow->geometry().width() - newGeometry.left() )
+                <
+                TP::snapBorderSize
+                )
+        {
+            newGeometry.moveLeft( mainWindow->geometry().left() + mainWindow->geometry().width() + 1 );
+            isHorizontallySnapped = true;
+            goto EndOfWindow;
+        }
+
+        // Right edge snap to main window's left edge
+        if(
+                std::abs( newGeometry.left() + newGeometry.width() - mainWindow->geometry().left() )
+                <
+                TP::snapBorderSize
+                )
+        {
+            newGeometry.moveRight( mainWindow->geometry().left() - 1 );
+            isHorizontallySnapped = true;
+            goto EndOfWindow;
+        }
+
+    }
+
+EndOfWindow:
+
+    // Snap to playlist window
+    if( window != playlistWindow && playlistWindow->isVisible() )
+    {
+        // Top edge snap to playlist window's bottom edge
+
+        // Bottom edge snap to playlist window's top edge
+
+        // Left edge snap to playlist window's right edge
+
+        // Right edge snap to playlist window's left edge
+    }
+
+    window->setGeometry( newGeometry );
+}
+
+
 // *****************************************************************
 // private slots:
 // *****************************************************************
@@ -186,6 +272,10 @@ TP_MainClass::initializeConnection()
             mediaPlayer,    &QMediaPlayer::pause);
     connect(mainWindow,     &TP_MainWindow::signal_stopButtonPushed,
             mediaPlayer,    &QMediaPlayer::stop);
+
+    // Snapping window while moving
+    connect(mainWindow, &TP_MainWindow::signal_moveWindow,
+            this,       &TP_MainClass::slot_moveWindow);
 
     // Showing and hiding PlaylistWindow
     connect(playlistWindow, &TP_PlaylistWindow::signal_Hidden,
