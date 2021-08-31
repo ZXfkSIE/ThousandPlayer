@@ -26,6 +26,7 @@ public:
 
 signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
+    void signal_titleBarReleased();
 
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
@@ -42,6 +43,7 @@ public slots:
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
+    void slot_titleBarReleased();
 
     void on_pushButton_Exit_clicked() const;
     void on_pushButton_Expand_clicked();

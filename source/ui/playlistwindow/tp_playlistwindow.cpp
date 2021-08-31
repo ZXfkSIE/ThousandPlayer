@@ -26,6 +26,11 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     // Qt::Tool is used for getting rid of the window tab in taskbar
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool );
 
+    connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
+            this,               &TP_PlaylistWindow::slot_moveTitleBar);
+    connect(ui->frame_Title,    &TP_TitleBar::signal_titleBarReleased,
+            this,               &TP_PlaylistWindow::slot_titleBarReleased);
+
     layout_FileListFrame = new QHBoxLayout { ui->frame_FileList };
     layout_FileListFrame->setContentsMargins(0, 0, 0, 0);
 
@@ -110,6 +115,18 @@ TP_PlaylistWindow::unsetAllBolds()
 // *****************************************************************
 // private slots
 // *****************************************************************
+
+void
+TP_PlaylistWindow::slot_moveTitleBar( QRect newGeometry )
+{
+    emit signal_moveWindow( this, newGeometry );
+}
+
+void
+TP_PlaylistWindow::slot_titleBarReleased()
+{
+    emit signal_titleBarReleased();
+}
 
 void
 TP_PlaylistWindow::on_pushButton_Close_clicked()

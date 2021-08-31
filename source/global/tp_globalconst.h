@@ -6,8 +6,17 @@
 namespace TP
 {
 
-static const int borderSize = 5;
-static const int snapBorderSize = 5;
+static const int mainWindow         = 0;
+static const int playlistWindow     = 1;
+static const int equalizerWindow    = 2;
+static const int lyricsWindow       = 3;
+
+static const unsigned notSnapped    = 0;
+static const unsigned snapped       = 1;
+static const unsigned pending       = 2;
+
+static const int borderSize     = 5;
+static const int snapBorderSize = 8;
 
 static const std::string configDirectoryPath    = "config";
 static const std::string playlistFilePath       = configDirectoryPath + "/playlists.xml";

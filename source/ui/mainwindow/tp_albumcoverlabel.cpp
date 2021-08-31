@@ -9,6 +9,7 @@ TP_AlbumCoverLabel::TP_AlbumCoverLabel(QWidget *parent, int I_size) :
     setAlignment(Qt::AlignCenter);
     setMaximumSize( QSize{size, size} );
     setMinimumSize( QSize{size, size} );
+    setStyleSheet( "border: 0px" );
 }
 
 // Default musical note image

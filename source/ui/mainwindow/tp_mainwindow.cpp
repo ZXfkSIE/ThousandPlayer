@@ -29,6 +29,8 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
 
     connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
             this,               &TP_MainWindow::slot_moveTitleBar);
+    connect(ui->frame_Title,    &TP_TitleBar::signal_titleBarReleased,
+            this,               &TP_MainWindow::slot_titleBarReleased);
 
     ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
     ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
@@ -148,6 +150,12 @@ void
 TP_MainWindow::slot_moveTitleBar( QRect newGeometry )
 {
     emit signal_moveWindow( this, newGeometry );
+}
+
+void
+TP_MainWindow::slot_titleBarReleased()
+{
+    emit signal_titleBarReleased();
 }
 
 void

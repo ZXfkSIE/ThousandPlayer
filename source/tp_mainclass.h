@@ -5,6 +5,8 @@
 #include <QMediaPlayer>
 #include <QObject>
 
+#include <array>
+
 class TP_MainWindow;
 class TP_PlaylistWindow;
 class TP_FileListWidget;
@@ -23,8 +25,11 @@ public:
 public slots:
     void slot_checkIfServiceAvailable();
     void slot_initializePosition();
+
     void slot_playItem( QListWidgetItem *I_listWidgetItem );
+
     void slot_moveWindow( QWidget *window, QRect newGeometry );
+    void slot_titleBarReleased();
 
 private slots:
     void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
@@ -42,8 +47,9 @@ private:
 
     QAudioOutput        *audioOutput;
     QMediaPlayer        *mediaPlayer;
-
     QListWidgetItem     currentItem;
+
+    std::array<unsigned, 4> b_isSnapped;
 };
 
 #endif // TP_MAINCLASS_H
