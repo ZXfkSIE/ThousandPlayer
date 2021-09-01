@@ -5,6 +5,7 @@
 
 #include "tp_timeslider.h"
 
+#include <QAudio>
 #include <QListWidgetItem>
 #include <QMouseEvent>
 #include <QStyle>
@@ -37,7 +38,6 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Exit->setIcon( QIcon{":/image/icon_Exit.svg"} );
 
     ui->label_VolumeIcon->initialize();
-    ui->label_VolumeIcon->setIcon(true);
 
     ui->widget_VisualContainer->initialize();
     ui->widget_VisualContainer->switchWidget( TP::albumCover );
@@ -63,20 +63,23 @@ TP_MainWindow::setPlay()
     setIcon_Pause();
 }
 
-void TP_MainWindow::setPause()
+void
+TP_MainWindow::setPause()
 {
     b_isPlaying = false;
     setIcon_Play();
 }
 
-void TP_MainWindow::setStop()
+void
+TP_MainWindow::setStop()
 {
     b_isPlaying = false;
     setIcon_Play();
     setAudioPropertyLabels();
 }
 
-void TP_MainWindow::setAudioInformation(const QListWidgetItem &I_listWidgetItem)
+void
+TP_MainWindow::setAudioInformation(const QListWidgetItem &I_listWidgetItem)
 {
     QUrl url { I_listWidgetItem.data( TP::role_URL ).value<QUrl>() };
 
@@ -109,14 +112,31 @@ void TP_MainWindow::setAudioInformation(const QListWidgetItem &I_listWidgetItem)
         return;
 }
 
-void TP_MainWindow::setFileNotFound()
+void
+TP_MainWindow::setFileNotFound()
 {
     setAudioPropertyLabels();
+}
+
+void
+TP_MainWindow::setVolumeSliderValue(int value)
+{
+    ui->slider_Volume->setValue( value );
 }
 
 // *****************************************************************
 // public slots:
 // *****************************************************************
+
+void
+TP_MainWindow::slot_changeVolumeSlider(float linearVolume)
+{
+    float logarithmicVolume = QAudio::convertVolume(linearVolume,
+                                                    QAudio::LinearVolumeScale,
+                                                    QAudio::LogarithmicVolumeScale);
+
+    ui->slider_Volume->setValue( std::round(logarithmicVolume * 100) );
+}
 
 void
 TP_MainWindow::slot_playlistWindowShown()
@@ -169,7 +189,6 @@ void
 TP_MainWindow::slot_timeSliderPressed( int second )
 {
     emit signal_timeSliderPressed( second );
-    ui->slider_Volume->setToolTip( QString::number(second) );
 }
 
 void
@@ -177,7 +196,11 @@ TP_MainWindow::slot_volumeSliderChanged( int volume )
 {
     ui->label_VolumeIcon->setIcon( volume );
     QToolTip::showText( QCursor::pos(), QString::number(volume), nullptr, {}, 1500);
-    emit signal_volumeSliderChanged( volume );
+    emit signal_volumeSliderValueChanged(
+                QAudio::convertVolume(ui->slider_Volume->value() / 100.0,
+                                      QAudio::LogarithmicVolumeScale,
+                                      QAudio::LinearVolumeScale)
+                );
 }
 
 void

@@ -24,12 +24,14 @@ public:
     void setAudioInformation(const QListWidgetItem &I_listWidgetItem);
     void setFileNotFound();
 
+    void setVolumeSliderValue(int value);
+
 signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
     void signal_titleBarReleased();
 
     void signal_timeSliderPressed( int second );
-    void signal_volumeSliderChanged( int volume );
+    void signal_volumeSliderValueChanged( float logarithmicVolume );
 
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
@@ -39,6 +41,8 @@ signals:
     void signal_stopButtonPushed();
 
 public slots:
+    void slot_changeVolumeSlider(float volume);
+
     void slot_playlistWindowShown();
     void slot_playlistWindowHidden();
 

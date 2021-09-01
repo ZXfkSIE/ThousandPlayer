@@ -35,15 +35,10 @@ TP_MainClass::TP_MainClass() :
     mediaPlayer->setAudioOutput(audioOutput);
     qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
 
-    qreal linearVolume =
-            QAudio::convertVolume(0.5,
-                                  QAudio::LogarithmicVolumeScale,
-                                  QAudio::LinearVolumeScale);
-    audioOutput->setVolume( qRound(linearVolume * 100) );
-
     initializeConnection();
 
     mainWindow->show();
+    mainWindow->setVolumeSliderValue( 50 );
 
     playlistWindow->initializePlaylist();       // Must be executed before showing
     playlistWindow->show();
@@ -388,7 +383,7 @@ TP_MainClass::slot_changePlayingPosition( int second )
 void
 TP_MainClass::initializeConnection()
 {
-    // Connections about media player control
+    // Playerback control related
     connect(mediaPlayer,    &QMediaPlayer::positionChanged,
             mainWindow,     &TP_MainWindow::slot_updateDuration);
     connect(mediaPlayer,    &QMediaPlayer::playbackStateChanged,
@@ -403,6 +398,12 @@ TP_MainClass::initializeConnection()
 
     connect(mainWindow, &TP_MainWindow::signal_timeSliderPressed,
             this,       &TP_MainClass::slot_changePlayingPosition);
+
+    // Volume control related
+    connect(audioOutput,    &QAudioOutput::volumeChanged,
+            mainWindow,     &TP_MainWindow::slot_changeVolumeSlider);
+    connect(mainWindow,     &TP_MainWindow::signal_volumeSliderValueChanged,
+            audioOutput,    &QAudioOutput::setVolume);
 
     // Title bar related
     connect(mainWindow,     &TP_MainWindow::signal_moveWindow,
