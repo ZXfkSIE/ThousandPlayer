@@ -21,7 +21,7 @@ public:
     ~TP_PlaylistWindow();
 
     void initializePlaylist();
-    void setBold(const QListWidgetItem &sI_listWidgetItem);
+    void setBold(const QListWidgetItem &I_listWidgetItem);
     void unsetAllBolds();
 
 signals:

@@ -20,9 +20,9 @@ TP_VolumeIcon::initialize()
 }
 
 void
-TP_VolumeIcon::setIcon(int I_currentVolume)
+TP_VolumeIcon::setIcon(int volume)
 {
-    if(I_currentVolume)
+    if(volume)
         setPixmap( pixmap_Volume );
     else
         setPixmap( pixmap_Mute );

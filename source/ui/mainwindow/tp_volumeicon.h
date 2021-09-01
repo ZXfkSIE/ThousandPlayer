@@ -11,7 +11,7 @@ public:
     explicit TP_VolumeIcon(QWidget *parent = nullptr);
 
     void initialize();
-    void setIcon(int I_currentVolume);
+    void setIcon(int volume);
 
 private:
     QPixmap pixmap_Volume, pixmap_Mute;

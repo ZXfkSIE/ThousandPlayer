@@ -28,6 +28,9 @@ signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
     void signal_titleBarReleased();
 
+    void signal_timeSliderPressed( int second );
+    void signal_volumeSliderChanged( int volume );
+
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
 
@@ -39,11 +42,16 @@ public slots:
     void slot_playlistWindowShown();
     void slot_playlistWindowHidden();
 
-    void slot_updateDuration(qint64 I_progress);
+    void slot_updateDuration(qint64 ms);
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
     void slot_titleBarReleased();
+
+    void slot_timeSliderChanged( int second );
+    void slot_timeSliderPressed( int second );
+
+    void slot_volumeSliderChanged( int volume );
 
     void on_pushButton_Exit_clicked() const;
     void on_pushButton_Expand_clicked();
@@ -59,6 +67,8 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+
+    void initializeConnection();
 
     void setIcon_Play();
     void setIcon_Pause();

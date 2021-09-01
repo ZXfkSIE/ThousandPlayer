@@ -687,7 +687,7 @@ border: 0px;</string>
              </widget>
             </item>
             <item>
-             <widget class="QSlider" name="slider_Time">
+             <widget class="TP_TimeSlider" name="slider_Time">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -976,7 +976,13 @@ border: 0px;</string>
           </widget>
          </item>
          <item>
-          <widget class="QSlider" name="slider_Volume">
+          <widget class="TP_VolumeSlider" name="slider_Volume">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -985,7 +991,7 @@ border: 0px;</string>
            </property>
            <property name="maximumSize">
             <size>
-             <width>16777215</width>
+             <width>92</width>
              <height>18</height>
             </size>
            </property>
@@ -1152,6 +1158,16 @@ border: 0px;</string>
    <class>TP_VolumeIcon</class>
    <extends>QLabel</extends>
    <header>tp_volumeicon.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_TimeSlider</class>
+   <extends>QSlider</extends>
+   <header location="global">tp_timeslider.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_VolumeSlider</class>
+   <extends>QSlider</extends>
+   <header>tp_volumeslider.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

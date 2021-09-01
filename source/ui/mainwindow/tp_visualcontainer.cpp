@@ -7,7 +7,7 @@
 
 TP_VisualContainer::TP_VisualContainer(QWidget *parent) :
     QWidget( parent )
-  , layout( new QHBoxLayout{this} )
+  , layout { new QHBoxLayout{ this } }
 {
     layout->setContentsMargins(0, 0, 0, 0);
 }
@@ -21,12 +21,12 @@ TP_VisualContainer::initialize()
 }
 
 void
-TP_VisualContainer::switchWidget(TP::VisualContainerType I_type)
+TP_VisualContainer::switchWidget(TP::VisualContainerType type)
 {
-    switch (I_type)
+    switch ( type )
     {
     case TP::albumCover:
-        layout->addWidget(albumCoverLabel);
+        layout->addWidget( albumCoverLabel );
         albumCoverLabel->setImage();
         break;
 

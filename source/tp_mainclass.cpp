@@ -375,6 +375,12 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     }
 }
 
+void
+TP_MainClass::slot_changePlayingPosition( int second )
+{
+    mediaPlayer->setPosition( second * 1000 );
+}
+
 // *****************************************************************
 // private
 // *****************************************************************
@@ -394,6 +400,9 @@ TP_MainClass::initializeConnection()
             mediaPlayer,    &QMediaPlayer::pause);
     connect(mainWindow,     &TP_MainWindow::signal_stopButtonPushed,
             mediaPlayer,    &QMediaPlayer::stop);
+
+    connect(mainWindow, &TP_MainWindow::signal_timeSliderPressed,
+            this,       &TP_MainClass::slot_changePlayingPosition);
 
     // Title bar related
     connect(mainWindow,     &TP_MainWindow::signal_moveWindow,

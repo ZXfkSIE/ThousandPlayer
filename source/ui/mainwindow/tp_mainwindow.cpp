@@ -3,9 +3,12 @@
 
 #include "tp_globalconst.h"
 
+#include "tp_timeslider.h"
+
 #include <QListWidgetItem>
 #include <QMouseEvent>
 #include <QStyle>
+#include <QToolTip>
 #include <QWindow>
 
 #include <filesystem>
@@ -27,10 +30,7 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint );
 
-    connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
-            this,               &TP_MainWindow::slot_moveTitleBar);
-    connect(ui->frame_Title,    &TP_TitleBar::signal_titleBarReleased,
-            this,               &TP_MainWindow::slot_titleBarReleased);
+    initializeConnection();
 
     ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
     ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
@@ -133,13 +133,14 @@ TP_MainWindow::slot_playlistWindowHidden()
 }
 
 void
-TP_MainWindow::slot_updateDuration(qint64 I_progress)
+TP_MainWindow::slot_updateDuration(qint64 ms)
 {
-    // qDebug() << QString("[SLOT] slot_updateDuration(%1)").arg(I_progress);
-    I_progress /= 1000;                                 // convert ms to s
+    qint64 second = ms / 1000;                       // convert ms to s
     if ( !ui->slider_Time->isSliderDown() )
-        ui->slider_Time->setValue( I_progress );
-    ui->label_CurrentTime->setText( convertTime(I_progress) );
+        ui->slider_Time->setValue( second );
+
+    // DO NOT update time label here.
+    // Let slot_timeSliderChanged do it.
 }
 
 // *****************************************************************
@@ -156,6 +157,27 @@ void
 TP_MainWindow::slot_titleBarReleased()
 {
     emit signal_titleBarReleased();
+}
+
+void
+TP_MainWindow::slot_timeSliderChanged(int second)
+{
+    ui->label_CurrentTime->setText( convertTime( second ) );
+}
+
+void
+TP_MainWindow::slot_timeSliderPressed( int second )
+{
+    emit signal_timeSliderPressed( second );
+    ui->slider_Volume->setToolTip( QString::number(second) );
+}
+
+void
+TP_MainWindow::slot_volumeSliderChanged( int volume )
+{
+    ui->label_VolumeIcon->setIcon( volume );
+    QToolTip::showText( QCursor::pos(), QString::number(volume), nullptr, {}, 1500);
+    emit signal_volumeSliderChanged( volume );
 }
 
 void
@@ -313,6 +335,23 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 // *****************************************************************
 
 void
+TP_MainWindow::initializeConnection()
+{
+    connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
+            this,               &TP_MainWindow::slot_moveTitleBar);
+    connect(ui->frame_Title,    &TP_TitleBar::signal_titleBarReleased,
+            this,               &TP_MainWindow::slot_titleBarReleased);
+
+    connect(ui->slider_Time,    &TP_TimeSlider::valueChanged,
+            this,               &TP_MainWindow::slot_timeSliderChanged);
+    connect(ui->slider_Time,    &TP_TimeSlider::signal_mouseReleased,
+            this,               &TP_MainWindow::slot_timeSliderPressed);
+
+    connect(ui->slider_Volume,  &TP_VolumeSlider::valueChanged,
+            this,               &TP_MainWindow::slot_volumeSliderChanged);
+}
+
+void
 TP_MainWindow::setIcon_Play()
 {
     ui->pushButton_Play->setIcon( QIcon{":/image/icon_Play.svg"} );
@@ -356,7 +395,7 @@ TP_MainWindow::setAudioPropertyLabels(
                 );
     ui->label_DurationTime->setText( convertTime( duration ) );
 
-    ui->slider_Time->setMaximum( duration );
+    ui->slider_Time->setRange( 0, duration );
 }
 
 TP::CursorPositionType

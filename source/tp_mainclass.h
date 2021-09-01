@@ -34,8 +34,8 @@ public slots:
 private slots:
     void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
     void slot_playbackStateChanged( QMediaPlayer::PlaybackState newState );
-
     void slot_playButtonPushed();
+    void slot_changePlayingPosition( int second );
 
 private:    
     void initializeConnection();

@@ -16,7 +16,7 @@ public:
     explicit TP_VisualContainer(QWidget *parent = nullptr);
 
     void initialize();
-    void switchWidget(TP::VisualContainerType I_type);
+    void switchWidget(TP::VisualContainerType type);
 
 private:
     QHBoxLayout         *layout;
