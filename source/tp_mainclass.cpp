@@ -29,7 +29,8 @@ TP_MainClass::TP_MainClass() :
   , audioOutput { new QAudioOutput { this } }
   , mediaPlayer { new QMediaPlayer { this } }
   , currentItem {}
-  , b_isSnapped {}
+  , b_isSnapped_playlistWindow { false }
+  , snappingPosition_playlistWindow {}
 {
     mediaPlayer->setAudioOutput(audioOutput);
     qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
@@ -184,13 +185,37 @@ TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
         }
 
         // This window does not snap to main window
-        b_isSnapped [ typeOfWindow ] = TP::notSnapped;
+
+        switch ( typeOfWindow )
+        {
+        case TP::playlistWindow :
+            b_isSnapped_playlistWindow = TP::notSnapped;
+            snappingPosition_playlistWindow = QPoint(0, 0);
+            break;
+
+        // case TP::equalizerWindow :
+
+        default:
+            break;
+        }
+
         goto Not_snapped_to_main_window;
 
     }       // if( window != mainWindow )
 
 Snapped_to_main_window:
-    b_isSnapped [ typeOfWindow ] = TP::pending;
+    switch ( typeOfWindow )
+    {
+    case TP::playlistWindow :
+        b_isSnapped_playlistWindow = TP::pending;
+        snappingPosition_playlistWindow = window->pos() - mainWindow->pos();
+        break;
+
+    // case TP::equalizerWindow :
+
+    default:
+        break;
+    }
 
 Not_snapped_to_main_window:
 
@@ -199,7 +224,7 @@ Not_snapped_to_main_window:
     if( window != playlistWindow && playlistWindow->isVisible() )
     {
         // If it is main window and the playlist window has already been snapped to it, jump.
-        if( window == mainWindow && b_isSnapped [ TP::playlistWindow ] == TP::snapped )
+        if( window == mainWindow && b_isSnapped_playlistWindow == TP::snapped )
             goto Not_snapped_to_playlist_window;
 
         // Top edge snaps to playlist window's bottom edge
@@ -252,7 +277,10 @@ Not_snapped_to_main_window:
 
         if( window == mainWindow )
             // Playlist window does not snap to main window
-            b_isSnapped [ TP::playlistWindow ] = TP::notSnapped;
+        {
+            b_isSnapped_playlistWindow = TP::notSnapped;
+            snappingPosition_playlistWindow = QPoint(0, 0);
+        }
 
         goto Not_snapped_to_playlist_window;
 
@@ -260,7 +288,10 @@ Not_snapped_to_main_window:
 
 Snapped_to_playlist_window:
     if( window == mainWindow )
-        b_isSnapped [ TP::playlistWindow ] = TP::pending;
+    {
+        b_isSnapped_playlistWindow = TP::pending;
+        snappingPosition_playlistWindow = playlistWindow->pos() - window->pos();
+    }
 
 Not_snapped_to_playlist_window:
     if( isVerticallySnapped && isHorizontallySnapped )
@@ -269,14 +300,14 @@ Not_snapped_to_playlist_window:
 // ==================== Move window ====================
 Move_window:
 
+    window->setGeometry( newGeometry );
     if( window == mainWindow )
         // If window is main window, move the snapped window(s) as well
     {
-        QPoint difference = newGeometry.topLeft() - window->geometry().topLeft();
+        unsnapInvisibleWindows();
 
-        if ( b_isSnapped [ TP::playlistWindow ] == TP::snapped )
-            playlistWindow->move( playlistWindow->geometry().topLeft() + difference );
-
+        if ( b_isSnapped_playlistWindow == TP::snapped && playlistWindow->isVisible() )
+            playlistWindow->move( newGeometry.topLeft() + snappingPosition_playlistWindow );
         /*
         if ( b_isSnapped [ TP::equalizerWindow ] == TP::snapped )
 
@@ -284,16 +315,13 @@ Move_window:
 
         */
     }
-
-    window->setGeometry( newGeometry );
 }
 
 void
 TP_MainClass::slot_titleBarReleased()
 {
-    for( size_t i = 1; i <= 3; i++ )
-        if( b_isSnapped [ i ] == TP::pending )
-            b_isSnapped [ i ] = TP::snapped;
+    if( b_isSnapped_playlistWindow == TP::pending )
+        b_isSnapped_playlistWindow = TP::snapped;
 }
 
 // *****************************************************************
@@ -392,6 +420,12 @@ TP_MainClass::initializeConnection()
             this,           &TP_MainClass::slot_connectFilelistWidget);
 }
 
+void
+TP_MainClass::unsnapInvisibleWindows()
+{
+    if( !playlistWindow->isVisible() )
+        b_isSnapped_playlistWindow = TP::notSnapped;
+}
 
 // Play audio file
 void

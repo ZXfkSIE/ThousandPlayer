@@ -37,8 +37,10 @@ private slots:
 
     void slot_playButtonPushed();
 
-private:
+private:    
     void initializeConnection();
+
+    void unsnapInvisibleWindows();
 
     void playFile( QListWidgetItem *I_listWidgetItem );
 
@@ -49,7 +51,12 @@ private:
     QMediaPlayer        *mediaPlayer;
     QListWidgetItem     currentItem;
 
-    std::array<unsigned, 4> b_isSnapped;
+    unsigned b_isSnapped_playlistWindow;
+    QPoint snappingPosition_playlistWindow;
+    // bool b_isSnapped_equalizerWindow;
+    // QPoint snappingPosition_equalizerWindow;
+    // bool b_isSnapped_lyricsWindow;
+    // QPoint snappingPosition_lyricsWindow;
 };
 
 #endif // TP_MAINCLASS_H
