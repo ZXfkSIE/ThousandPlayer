@@ -29,7 +29,7 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
   , b_isPlaying { false }
 {
     ui->setupUi(this);
-    setWindowFlags( windowFlags() | Qt::FramelessWindowHint );
+    setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint );
 
     initializeConnection();
 

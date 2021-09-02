@@ -1,6 +1,8 @@
 ﻿#ifndef TP_MAINCLASS_H
 #define TP_MAINCLASS_H
 
+#include "tp_globalenum.h"
+
 #include <QListWidgetItem>
 #include <QMediaPlayer>
 #include <QObject>
@@ -51,8 +53,9 @@ private:
     QMediaPlayer        *mediaPlayer;
     QListWidgetItem     currentItem;
 
-    unsigned b_isSnapped_playlistWindow;
-    QPoint snappingPosition_playlistWindow;
+    TP::SnapStatus  snapStatus_playlistWindow;
+    // TP::SnapType    snapType_playlistWindow;
+    QPoint          snappingPosition_playlistWindow;
     // bool b_isSnapped_equalizerWindow;
     // QPoint snappingPosition_equalizerWindow;
     // bool b_isSnapped_lyricsWindow;

@@ -4,6 +4,30 @@
 namespace TP
 {
 
+enum WindowType
+{
+    mainWindow,
+    playlistWindow,
+    equalizerWindow,
+    lyricsWindow
+};
+
+enum SnapStatus
+{
+    notSnapped,
+    snapped,
+    pending
+};
+
+// At some direction of the main window
+enum SnapType
+{
+    atLeft,
+    atRight,
+    atTop,
+    atBottom
+};
+
 enum CursorPositionType
 {
     notAtBorder,

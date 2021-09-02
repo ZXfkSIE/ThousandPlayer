@@ -24,7 +24,7 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
 {
     ui->setupUi(this);
     // Qt::Tool is used for getting rid of the window tab in taskbar
-    setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool );
+    setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
 
     connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
             this,               &TP_PlaylistWindow::slot_moveTitleBar);
