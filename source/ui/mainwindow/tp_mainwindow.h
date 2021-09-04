@@ -28,7 +28,7 @@ public:
 
 signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
-    void signal_titleBarReleased();
+    void signal_leftButtonReleased();
 
     void signal_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
 
@@ -52,7 +52,7 @@ public slots:
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
-    void slot_titleBarReleased();
+    void slot_leftButtonReleased();
 
     void slot_timeSliderChanged( int second );
     void slot_timeSliderPressed( int second );
@@ -95,12 +95,10 @@ private:
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;
-    bool b_isExpandingDisabled;
 
     bool b_isPlaylistWindowShown;
     bool b_isPlaying;
 
     TP::CursorPositionType  cursorPositionType;
-    QPoint                  pressedGlobalPosition;
 };
 #endif // TP_MAINWINDOW_H

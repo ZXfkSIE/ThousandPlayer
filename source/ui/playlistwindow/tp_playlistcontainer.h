@@ -14,6 +14,8 @@ public:
 
 signals:
     void signal_resizeWindow( QRect newGeometry, TP::ResizeType resizeType );
+    void signal_leftButtonReleased();
+
 private:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
@@ -25,7 +27,6 @@ private:
     bool                    b_isCursorResize;
     bool                    b_isExpandingDisabled;
     TP::CursorPositionType  cursorPositionType;
-    QPoint                  pressedGlobalPosition;
 };
 
 #endif // TP_PLAYLISTCONTAINER_H

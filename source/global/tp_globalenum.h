@@ -4,13 +4,6 @@
 namespace TP
 {
 
-enum SnapStatus
-{
-    notSnapped,
-    snapped,
-    pending
-};
-
 // First window snaps at the left/right/bottom/top of second window.
 enum SnapType
 {

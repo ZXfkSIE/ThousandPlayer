@@ -24,7 +24,7 @@ public:
 
 signals:
     void signal_moveTitleBar( QRect newGeometry );
-    void signal_titleBarReleased();
+    void signal_leftButtonReleased();
 
 private:
     void mousePressEvent(QMouseEvent *event) override;

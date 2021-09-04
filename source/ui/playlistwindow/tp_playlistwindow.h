@@ -28,7 +28,7 @@ public:
 
 signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
-    void signal_titleBarReleased();
+    void signal_leftButtonReleased();
 
     void signal_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
 
@@ -39,7 +39,7 @@ signals:
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
-    void slot_titleBarReleased();
+    void slot_leftButtonReleased();
 
     void slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType );
 

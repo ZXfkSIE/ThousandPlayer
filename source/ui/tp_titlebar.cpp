@@ -43,6 +43,6 @@ void
 TP_TitleBar::mouseReleaseEvent(QMouseEvent *event)
 {
     b_isBeingPressed = false;
-    emit signal_titleBarReleased();
+    emit signal_leftButtonReleased();
     QWidget::mouseReleaseEvent(event);
 }

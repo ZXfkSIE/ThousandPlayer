@@ -25,7 +25,6 @@ TP_PlaylistContainer::mousePressEvent( QMouseEvent *event )
     {
         b_isBorderBeingPressed = true;
         b_isExpandingDisabled = false;
-        pressedGlobalPosition = event->globalPosition().toPoint();
     }
 
     QWidget::mousePressEvent( event );
@@ -38,33 +37,29 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
 
     if ( b_isBorderBeingPressed )
     {
-        int differenceX = event->globalPosition().toPoint().x() - pressedGlobalPosition.x();
         QRect newGeometry = window()->geometry();
 
         switch ( cursorPositionType )
         {
         case TP::leftBorder:
-            if ( differenceX < 0 && b_isExpandingDisabled )
-                return;
 
-            newGeometry.setLeft( newGeometry.left() + differenceX );
-            if( newGeometry.width() >= window()->minimumWidth() )
+            newGeometry.setLeft( event->globalPosition().toPoint().x() );
+            if( newGeometry.width() < window()->minimumWidth() )
+                newGeometry.setLeft( newGeometry.right() - window()->minimumWidth() + 1 );
+
+            if( newGeometry != geometry() )
                 emit signal_resizeWindow( newGeometry, TP::atLeft );
-            pressedGlobalPosition = event->globalPosition().toPoint();
-            if ( event->position().toPoint().x() > width() - window()->minimumWidth() + TP::borderSize )
-                b_isExpandingDisabled = true;
 
             break;              // case TP_LEFT_BORDER
 
         case TP::rightBorder:
-            if ( differenceX > 0 && b_isExpandingDisabled )
-                return;
 
-            newGeometry.setRight( newGeometry.right() + differenceX );
-            emit signal_resizeWindow( newGeometry, TP::atRight );
-            pressedGlobalPosition = event->globalPosition().toPoint();
-            if ( event->position().toPoint().x() < width() -  TP::borderSize )
-                b_isExpandingDisabled = true;
+            newGeometry.setRight( event->globalPosition().toPoint().x() );
+            if( newGeometry.width() < window()->minimumWidth() )
+                newGeometry.setWidth( window()->minimumWidth() );
+
+            if( newGeometry != geometry() )
+                emit signal_resizeWindow( newGeometry, TP::atRight );
 
             break;              // case TP_RIGHT_BORDER
 
@@ -112,6 +107,7 @@ TP_PlaylistContainer::mouseReleaseEvent( QMouseEvent *event )
         setCursor( QCursor( Qt::ArrowCursor ) );
         b_isCursorResize = false;
     }
+    emit signal_leftButtonReleased();
 
     QWidget::mouseReleaseEvent( event );
 }

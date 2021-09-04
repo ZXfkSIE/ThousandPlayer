@@ -24,7 +24,6 @@ TP_PlaylistBottomFrame::mousePressEvent( QMouseEvent *event )
     {
         b_isBorderBeingPressed = true;
         b_isExpandingDisabled = false;
-        pressedGlobalPosition = event->globalPosition().toPoint();
     }
 
     QFrame::mousePressEvent( event );
@@ -37,19 +36,16 @@ TP_PlaylistBottomFrame::mouseMoveEvent( QMouseEvent *event )
 
     if ( b_isBorderBeingPressed )
     {
-        int differenceY = event->globalPosition().toPoint().y() - pressedGlobalPosition.y();
         QRect newGeometry = window()->geometry();
 
         if( cursorPositionType == TP::bottomBorder )
         {
-            if  (differenceY > 0 && b_isExpandingDisabled )
-                return;
+            newGeometry.setBottom( event->globalPosition().toPoint().y() );
+            if( newGeometry.height() < window()->minimumHeight() )
+                newGeometry.setHeight( window()->minimumHeight() );
 
-            newGeometry.setBottom( newGeometry.bottom() + differenceY );
-            emit signal_resizeWindow( newGeometry, TP::atBottom );
-            pressedGlobalPosition = event->globalPosition().toPoint();
-            if ( event->position().toPoint().y() < height() -  TP::borderSize )
-                b_isExpandingDisabled = true;
+            if( newGeometry != geometry() )
+                emit signal_resizeWindow( newGeometry, TP::atBottom );
         }
     }
     else
@@ -92,6 +88,7 @@ TP_PlaylistBottomFrame::mouseReleaseEvent( QMouseEvent *event )
         setCursor( QCursor( Qt::ArrowCursor ) );
         b_isCursorResize = false;
     }
+    emit signal_leftButtonReleased();
 
     QFrame::mouseReleaseEvent( event );
 }

@@ -25,7 +25,6 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
   , ui { new Ui::TP_MainWindow }
   , b_isBorderBeingPressed { false }
   , b_isCursorResize { false }
-  , b_isExpandingDisabled { false }
   , b_isPlaying { false }
 {
     ui->setupUi(this);
@@ -174,9 +173,9 @@ TP_MainWindow::slot_moveTitleBar( QRect newGeometry )
 }
 
 void
-TP_MainWindow::slot_titleBarReleased()
+TP_MainWindow::slot_leftButtonReleased()
 {
-    emit signal_titleBarReleased();
+    emit signal_leftButtonReleased();
 }
 
 void
@@ -221,7 +220,7 @@ TP_MainWindow::on_pushButton_Expand_clicked()
         CurrentGeometry.setRight(ScreenGeometry.right());
     }
     else    // Return to the minimum width
-        CurrentGeometry.setRight(CurrentGeometry.left() + minimumWidth());
+        CurrentGeometry.setRight(CurrentGeometry.left() + minimumWidth() - 1);
 
     setGeometry( CurrentGeometry );
 }
@@ -256,11 +255,7 @@ void
 TP_MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && cursorPositionType)
-    {
         b_isBorderBeingPressed = true;
-        b_isExpandingDisabled = false;
-        pressedGlobalPosition = event->globalPosition().toPoint();
-    }
 
     QWidget::mousePressEvent(event);
 }
@@ -273,35 +268,29 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 
     if (b_isBorderBeingPressed)
     {
-        int differenceX = event->globalPosition().toPoint().x() - pressedGlobalPosition.x();
         QRect newGeometry = geometry();
 
         switch (cursorPositionType)
         {
         case TP::leftBorder:
-            if (differenceX < 0 && b_isExpandingDisabled)
-                return;
 
-            newGeometry.setLeft(newGeometry.left() + differenceX);
-            if(newGeometry.width() >= minimumWidth())
+            newGeometry.setLeft( event->globalPosition().toPoint().x() );
+            if ( newGeometry.width() < minimumWidth() )
+                newGeometry.setLeft( newGeometry.right() - minimumWidth() + 1 );
+
+            if( newGeometry != geometry() )
                 emit signal_resizeWindow( this, newGeometry, TP::atLeft );
-
-            pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() > width() - minimumWidth() + TP::borderSize)
-                b_isExpandingDisabled = true;
 
             break;              // case TP_LEFT_BORDER
 
         case TP::rightBorder:
-            if (differenceX > 0 && b_isExpandingDisabled)
-                return;
 
-            newGeometry.setRight(newGeometry.right() + differenceX);
-            emit signal_resizeWindow( this, newGeometry, TP::atRight );
+            newGeometry.setRight( event->globalPosition().toPoint().x() );
+            if ( newGeometry.width() < minimumWidth() )
+                newGeometry.setWidth( minimumWidth() );
 
-            pressedGlobalPosition = event->globalPosition().toPoint();
-            if (event->position().toPoint().x() < width() - TP::borderSize)
-                b_isExpandingDisabled = true;
+            if( newGeometry != geometry() )
+                emit signal_resizeWindow( this, newGeometry, TP::atRight );
 
             break;              // case TP_RIGHT_BORDER
 
@@ -342,12 +331,15 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
 void
 TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    b_isBorderBeingPressed = false;
-    b_isExpandingDisabled = false;
-    if(!isAtBorder(event->position().toPoint()) && b_isCursorResize)
+    if( b_isBorderBeingPressed )
     {
-        setCursor( QCursor(Qt::ArrowCursor) );
-        b_isCursorResize = false;
+        b_isBorderBeingPressed = false;
+        if( !isAtBorder(event->position().toPoint()) && b_isCursorResize )
+        {
+            setCursor( QCursor(Qt::ArrowCursor) );
+            b_isCursorResize = false;
+        }
+        emit signal_leftButtonReleased();
     }
 
     QWidget::mouseReleaseEvent(event);
@@ -362,8 +354,8 @@ TP_MainWindow::initializeConnection()
 {
     connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
             this,               &TP_MainWindow::slot_moveTitleBar);
-    connect(ui->frame_Title,    &TP_TitleBar::signal_titleBarReleased,
-            this,               &TP_MainWindow::slot_titleBarReleased);
+    connect(ui->frame_Title,    &TP_TitleBar::signal_leftButtonReleased,
+            this,               &TP_MainWindow::slot_leftButtonReleased);
 
     connect(ui->slider_Time,    &TP_TimeSlider::valueChanged,
             this,               &TP_MainWindow::slot_timeSliderChanged);

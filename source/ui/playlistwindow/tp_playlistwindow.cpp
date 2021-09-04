@@ -26,10 +26,7 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     // Qt::Tool is used for getting rid of the window tab in taskbar
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
 
-    connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
-            this,               &TP_PlaylistWindow::slot_moveTitleBar);
-    connect(ui->frame_Title,    &TP_TitleBar::signal_titleBarReleased,
-            this,               &TP_PlaylistWindow::slot_titleBarReleased);
+    initializeConnection();
 
     layout_FileListFrame = new QHBoxLayout { ui->frame_FileList };
     layout_FileListFrame->setContentsMargins(0, 0, 0, 0);
@@ -123,9 +120,9 @@ TP_PlaylistWindow::slot_moveTitleBar( QRect newGeometry )
 }
 
 void
-TP_PlaylistWindow::slot_titleBarReleased()
+TP_PlaylistWindow::slot_leftButtonReleased()
 {
-    emit signal_titleBarReleased();
+    emit signal_leftButtonReleased();
 }
 
 void
@@ -166,7 +163,7 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
 
         int duration = fileRef.audioProperties()->lengthInSeconds();
 
-        QListWidgetItem *item = new QListWidgetItem {currentFileListWidget};
+        QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
 
         // set URL
         item->setData( TP::role_URL, fileURL );
@@ -244,10 +241,18 @@ TP_PlaylistWindow::initializeMenu()
 void
 TP_PlaylistWindow::initializeConnection()
 {
+    connect(ui->frame_Title,        &TP_TitleBar::signal_moveTitleBar,
+            this,                   &TP_PlaylistWindow::slot_moveTitleBar);
+    connect(ui->frame_Title,        &TP_TitleBar::signal_leftButtonReleased,
+            this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
     connect(ui->playlistContainer,  &TP_PlaylistContainer::signal_resizeWindow,
             this,                   &TP_PlaylistWindow::slot_resizeWindow);
+    connect(ui->playlistContainer,  &TP_PlaylistContainer::signal_leftButtonReleased,
+            this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
     connect(ui->frame_Bottom,       &TP_PlaylistBottomFrame::signal_resizeWindow,
             this,                   &TP_PlaylistWindow::slot_resizeWindow);
+    connect(ui->frame_Bottom,       &TP_PlaylistBottomFrame::signal_leftButtonReleased,
+            this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
 }
 
 void
