@@ -4,14 +4,6 @@
 namespace TP
 {
 
-enum WindowType
-{
-    mainWindow,
-    playlistWindow,
-    equalizerWindow,
-    lyricsWindow
-};
-
 enum SnapStatus
 {
     notSnapped,
@@ -19,12 +11,20 @@ enum SnapStatus
     pending
 };
 
-// At some direction of the main window
+// First window snaps at the left/right/bottom/top of second window.
 enum SnapType
+{
+    notAdjacent,
+    toLeft,
+    toRight,
+    toBottom,
+    toTop
+};
+
+enum ResizeType
 {
     atLeft,
     atRight,
-    atTop,
     atBottom
 };
 

@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     TP_MainClass mainClass {};
 
 #ifdef Q_OS_UNIX
-    /* When under X desktop environment, the window may be moved multiple times
+    /* Under X desktop environment, the window may be moved multiple times
      * during its initialization process. Therefore, the position initialization
      * of sub-windows need to be delayed. */
     QTimer::singleShot( 150, &mainClass, &TP_MainClass::slot_initializePosition );

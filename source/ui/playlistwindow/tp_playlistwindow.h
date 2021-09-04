@@ -1,6 +1,8 @@
 ﻿#ifndef TP_PLAYLISTWINDOW_H
 #define TP_PLAYLISTWINDOW_H
 
+#include "tp_globalenum.h"
+
 #include <QListWidget>
 #include <vector>
 
@@ -28,14 +30,18 @@ signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
     void signal_titleBarReleased();
 
-    void signal_Shown();
-    void signal_Hidden();
-    void signal_NewFilelistWidgetCreated(TP_FileListWidget *I_fileListWidget);
+    void signal_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
+
+    void signal_shown();
+    void signal_hidden();
+    void signal_newFilelistWidgetCreated(TP_FileListWidget *I_fileListWidget);
     void signal_refreshShowingTitle(int idx_Min, int idx_Max);
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
     void slot_titleBarReleased();
+
+    void slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType );
 
     void on_pushButton_Close_clicked();
     void on_action_AddFile_triggered();
@@ -47,6 +53,7 @@ private:
     void hideEvent(QHideEvent *event) override;
 
     void initializeMenu();
+    void initializeConnection();
     void connectCurrentFileListWidget();
     void disconnectCurrentFileListWidget();
 

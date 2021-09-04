@@ -70,7 +70,7 @@ TP_PlaylistWindow::initializePlaylist()
         layout_FileListFrame->addWidget(currentFileListWidget);
 
         qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated -- list's name is " << currentFileListWidget->getListName();
-        emit signal_NewFilelistWidgetCreated(currentFileListWidget);
+        emit signal_newFilelistWidgetCreated(currentFileListWidget);
     }
 }
 
@@ -129,6 +129,12 @@ TP_PlaylistWindow::slot_titleBarReleased()
 }
 
 void
+TP_PlaylistWindow::slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType )
+{
+    emit signal_resizeWindow( this, newGeomtry, resizeType );
+}
+
+void
 TP_PlaylistWindow::on_pushButton_Close_clicked()
 {
     hide();
@@ -154,9 +160,9 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
         QString qstr_extension = fileInfo.suffix().toLower();
 
         TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
-        QString qstr_title = TStringToQString(fileRef.tag()->title());
-        QString qstr_artist = TStringToQString(fileRef.tag()->artist());
-        QString qstr_album = TStringToQString(fileRef.tag()->album());
+        QString qstr_title = TStringToQString( fileRef.tag()->title() );
+        QString qstr_artist = TStringToQString( fileRef.tag()->artist() );
+        QString qstr_album = TStringToQString( fileRef.tag()->album() );
 
         int duration = fileRef.audioProperties()->lengthInSeconds();
 
@@ -176,24 +182,24 @@ void TP_PlaylistWindow::on_action_AddFile_triggered()
 
         // set file type
         if( qstr_extension == QString("flac") )
-            item->setData(TP::role_FileType, TP::FileFormat::FLAC);
+            item->setData( TP::role_FileType, TP::FileFormat::FLAC );
         else if( qstr_extension == QString("mp3") )
-            item->setData(TP::role_FileType, TP::FileFormat::MP3);
+            item->setData( TP::role_FileType, TP::FileFormat::MP3 );
 
         //set descrption, artist, title, album
         if(qstr_title.length() == 0)
         {
             // No title in tag, meaning that no valid tag is contained in the file
-            item->setData(TP::role_Description, qstr_Filename);
+            item->setData( TP::role_Description, qstr_Filename );
         }
         else
         {
-            item->setData(TP::role_Description, qstr_artist + QString(" - ") + qstr_title);    // will be able to customized in the future
-            item->setData(TP::role_Artist, qstr_artist);
-            item->setData(TP::role_Title, qstr_title);
-            item->setData(TP::role_Album, qstr_album);
+            item->setData( TP::role_Description, qstr_artist + QString(" - ") + qstr_title );    // will be able to customized in the future
+            item->setData( TP::role_Artist, qstr_artist );
+            item->setData( TP::role_Title, qstr_title );
+            item->setData( TP::role_Album, qstr_album );
         }
-        currentFileListWidget->addItem(item);
+        currentFileListWidget->addItem( item );
     }
 
     emit signal_refreshShowingTitle( originalCount - 1, currentFileListWidget->count() - 1 );
@@ -207,14 +213,14 @@ void
 TP_PlaylistWindow::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    emit signal_Shown();
+    emit signal_shown();
 }
 
 void
 TP_PlaylistWindow::hideEvent(QHideEvent *event)
 {
     QWidget::hideEvent(event);
-    emit signal_Hidden();
+    emit signal_hidden();
 }
 
 // *****************************************************************
@@ -233,6 +239,15 @@ TP_PlaylistWindow::initializeMenu()
     menu_Add->addAction(ui->action_AddURL);
 
     ui->pushButton_Add->setMenu(menu_Add);
+}
+
+void
+TP_PlaylistWindow::initializeConnection()
+{
+    connect(ui->playlistContainer,  &TP_PlaylistContainer::signal_resizeWindow,
+            this,                   &TP_PlaylistWindow::slot_resizeWindow);
+    connect(ui->frame_Bottom,       &TP_PlaylistBottomFrame::signal_resizeWindow,
+            this,                   &TP_PlaylistWindow::slot_resizeWindow);
 }
 
 void

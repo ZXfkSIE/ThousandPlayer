@@ -12,6 +12,9 @@ class TP_PlaylistBottomFrame : public QFrame
 public:
     explicit TP_PlaylistBottomFrame(QWidget *parent = nullptr);
 
+signals:
+    void signal_resizeWindow( QRect newGeometry, TP::ResizeType resizeType );
+
 private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

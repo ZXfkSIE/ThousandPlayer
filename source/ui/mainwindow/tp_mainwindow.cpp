@@ -180,7 +180,7 @@ TP_MainWindow::slot_titleBarReleased()
 }
 
 void
-TP_MainWindow::slot_timeSliderChanged(int second)
+TP_MainWindow::slot_timeSliderChanged( int second )
 {
     ui->label_CurrentTime->setText( convertTime( second ) );
 }
@@ -212,18 +212,18 @@ TP_MainWindow::on_pushButton_Exit_clicked() const
 void
 TP_MainWindow::on_pushButton_Expand_clicked()
 {
-    QRect rect_ScreenGeometry = window()->windowHandle()->screen()->geometry();
-    QRect rect_CurrentGeometry = geometry();
+    QRect ScreenGeometry = window()->windowHandle()->screen()->geometry();
+    QRect CurrentGeometry = geometry();
 
-    if(width() < rect_ScreenGeometry.width())
+    if(width() < ScreenGeometry.width())
     {
-        rect_CurrentGeometry.setLeft(rect_ScreenGeometry.left());
-        rect_CurrentGeometry.setRight(rect_ScreenGeometry.right());
+        CurrentGeometry.setLeft(ScreenGeometry.left());
+        CurrentGeometry.setRight(ScreenGeometry.right());
     }
     else    // Return to the minimum width
-        rect_CurrentGeometry.setRight(rect_CurrentGeometry.left() + minimumWidth());
+        CurrentGeometry.setRight(CurrentGeometry.left() + minimumWidth());
 
-    setGeometry( rect_CurrentGeometry );
+    setGeometry( CurrentGeometry );
 }
 
 void
@@ -274,7 +274,7 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
     if (b_isBorderBeingPressed)
     {
         int differenceX = event->globalPosition().toPoint().x() - pressedGlobalPosition.x();
-        QRect rect_Geometry = geometry();
+        QRect newGeometry = geometry();
 
         switch (cursorPositionType)
         {
@@ -282,9 +282,9 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
             if (differenceX < 0 && b_isExpandingDisabled)
                 return;
 
-            rect_Geometry.setLeft(rect_Geometry.left() + differenceX);
-            if(rect_Geometry.width() >= minimumWidth())
-                setGeometry(rect_Geometry);
+            newGeometry.setLeft(newGeometry.left() + differenceX);
+            if(newGeometry.width() >= minimumWidth())
+                emit signal_resizeWindow( this, newGeometry, TP::atLeft );
 
             pressedGlobalPosition = event->globalPosition().toPoint();
             if (event->position().toPoint().x() > width() - minimumWidth() + TP::borderSize)
@@ -296,8 +296,8 @@ TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
             if (differenceX > 0 && b_isExpandingDisabled)
                 return;
 
-            rect_Geometry.setRight(rect_Geometry.right() + differenceX);
-            setGeometry(rect_Geometry);
+            newGeometry.setRight(newGeometry.right() + differenceX);
+            emit signal_resizeWindow( this, newGeometry, TP::atRight );
 
             pressedGlobalPosition = event->globalPosition().toPoint();
             if (event->position().toPoint().x() < width() - TP::borderSize)

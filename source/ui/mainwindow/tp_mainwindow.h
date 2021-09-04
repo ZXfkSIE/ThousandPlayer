@@ -30,6 +30,8 @@ signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
     void signal_titleBarReleased();
 
+    void signal_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
+
     void signal_timeSliderPressed( int second );
     void signal_volumeSliderValueChanged( float logarithmicVolume );
 
