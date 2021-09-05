@@ -31,8 +31,8 @@ public slots:
 private slots:
     void slot_playItem( QListWidgetItem *I_listWidgetItem );
     void slot_moveWindow( QWidget *window, QRect newGeometry );
-    void slot_leftButtonReleased();
     void slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
+    void slot_leftButtonReleased();
     void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
     void slot_playbackStateChanged( QMediaPlayer::PlaybackState newState );
     void slot_playButtonPushed();

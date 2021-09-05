@@ -134,6 +134,7 @@ TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
     if ( window != mainWindow )
     {
         TP::SnapType snapType { checkSnapType( newGeometry, mainWindow->geometry() ) };
+
         // --------------------- Step 1 (edge sticks to edge) ---------------------
 
         switch( snapType )
@@ -219,6 +220,9 @@ TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
 
 MOVE_End_of_snap_to_main_window:
 
+    if( isVerticallySnapped && isHorizontallySnapped )
+        goto Move_window;
+
     // ============================== Snapping to playlist window ==============================
 
     if( window != playlistWindow && playlistWindow->isVisible() )
@@ -228,6 +232,7 @@ MOVE_End_of_snap_to_main_window:
             goto MOVE_End_of_snap_to_playlist_window;
 
         // ------------------ Step 1 (edge sticks to edge) ------------------
+
         TP::SnapType snapType { checkSnapType( newGeometry, playlistWindow->geometry() ) };
 
         switch( snapType )
@@ -256,72 +261,69 @@ MOVE_End_of_snap_to_main_window:
             goto MOVE_End_of_snap_to_playlist_window;
         }
 
-            // ---------- Step 2 (edge alignment in the vertical direction) ----------
+        // ---------- Step 2 (edge alignment in the vertical direction) ----------
 
-            switch( snapType )
+        switch( snapType )
+        {
+        case TP::toTop :
+        case TP::toBottom :
+
+            // Left edge alignment
+            if( std::abs( newGeometry.left() - playlistWindow->geometry().left() )
+                    <= TP::snapRange
+                && !isHorizontallySnapped )
             {
-            case TP::toTop :
-            case TP::toBottom :
-
-                // Left edge alignment
-                if( std::abs( newGeometry.left() - playlistWindow->geometry().left() )
-                        <= TP::snapRange
-                    && !isHorizontallySnapped )
-                {
-                    newGeometry.moveLeft( playlistWindow->geometry().left() );
-                    isHorizontallySnapped = true;
-                    break;
-                }
-
-                // Right edge alignment
-                if( std::abs( newGeometry.right() - playlistWindow->geometry().right() )
-                        <= TP::snapRange
-                    && !isHorizontallySnapped )
-                {
-                    newGeometry.moveRight( playlistWindow->geometry().right() );
-                    isHorizontallySnapped = true;
-                    break;
-                }
-
+                newGeometry.moveLeft( playlistWindow->geometry().left() );
+                isHorizontallySnapped = true;
                 break;
+            }
 
-            case TP::toLeft :
-            case TP::toRight :
-
-                // Top edge alignment
-                if( std::abs( newGeometry.top() - playlistWindow->geometry().top() )
-                        <= TP::snapRange
-                    && !isVerticallySnapped )
-                {
-                    newGeometry.moveTop( playlistWindow->geometry().top() );
-                    isVerticallySnapped = true;
-                    break;
-                }
-
-                // Bottom edge alignment
-                if( std::abs( newGeometry.bottom() - playlistWindow->geometry().bottom() )
-                        <= TP::snapRange
-                    && !isVerticallySnapped )
-                {
-                    newGeometry.moveBottom( playlistWindow->geometry().bottom() );
-                    isVerticallySnapped = true;
-                    break;
-                }
-
+            // Right edge alignment
+            if( std::abs( newGeometry.right() - playlistWindow->geometry().right() )
+                    <= TP::snapRange
+                && !isHorizontallySnapped )
+            {
+                newGeometry.moveRight( playlistWindow->geometry().right() );
+                isHorizontallySnapped = true;
                 break;
+            }
 
-            default:
+            break;
+
+        case TP::toLeft :
+        case TP::toRight :
+
+            // Top edge alignment
+            if( std::abs( newGeometry.top() - playlistWindow->geometry().top() )
+                    <= TP::snapRange
+                && !isVerticallySnapped )
+            {
+                newGeometry.moveTop( playlistWindow->geometry().top() );
+                isVerticallySnapped = true;
                 break;
-            }       // switch( snapType )
-/*
-    // If main window has perfectly snapped to some window before,
-    // it cannot be moved anymore.
-    // However, it is still necessary to detect the snap status
-    // near the borders of main window.
-*/
-    }   // if( window != playlistWindow && playlistWindow->isVisible() )
+            }
+
+            // Bottom edge alignment
+            if( std::abs( newGeometry.bottom() - playlistWindow->geometry().bottom() )
+                    <= TP::snapRange
+                && !isVerticallySnapped )
+            {
+                newGeometry.moveBottom( playlistWindow->geometry().bottom() );
+                isVerticallySnapped = true;
+                break;
+            }
+
+            break;
+
+        default:
+            break;
+        }       // switch( snapType )
+    }       // if( window != playlistWindow && playlistWindow->isVisible() )
 
 MOVE_End_of_snap_to_playlist_window:
+
+    if( isVerticallySnapped && isHorizontallySnapped )
+        goto Move_window;
 
 // ==================== Move window ====================
 Move_window:
@@ -338,6 +340,217 @@ Move_window:
 
         // Move other windows...
     }
+}
+
+void
+TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType )
+{
+    // While resizing, a window can only be snapped (or aligned) once.
+    bool isSnapped = false;
+    unsigned typeOfWindow {};
+    TP::SnapType    snapType;
+
+    if( window == mainWindow )
+        typeOfWindow = TP::mainWindow;
+    if( window == playlistWindow )
+        typeOfWindow = TP::playlistWindow;
+
+    if ( window != mainWindow )
+    {
+        TP::SnapType snapType { checkSnapType( newGeometry, mainWindow->geometry() ) };
+        TP::SnapType adjacentType { checkAdjacentType( newGeometry, mainWindow->geometry() ) };
+
+        if( snapType == TP::notAdjacent && adjacentType == TP::notAdjacent )
+            goto RESIZE_End_of_snap_to_main_window;
+
+        if( snapType != TP::notAdjacent )
+            switch( snapType )
+            {
+            case TP::toTop :
+                if( resizeType == TP::atBottom )
+                {
+                    newGeometry.setBottom( mainWindow->geometry().top() - 1 );
+                    isSnapped = true;
+                    goto RESIZE_End_of_snap_to_main_window;
+                }
+                break;
+
+            case TP::toRight :
+                if( resizeType == TP::atLeft )
+                {
+                    newGeometry.setLeft( mainWindow->geometry().right() + 1 );
+                    isSnapped = true;
+                    goto RESIZE_End_of_snap_to_main_window;
+                }
+                break;
+
+            case TP::toLeft :
+                if( resizeType == TP::atRight )
+                {
+                    newGeometry.setRight( mainWindow->geometry().left() - 1 );
+                    isSnapped = true;
+                    goto RESIZE_End_of_snap_to_main_window;
+                }
+                break;
+
+            default :
+                break;
+            }       // switch( snapType )
+
+            // ---------- Step 2 (edge alignment in the vertical direction) ----------
+        switch( adjacentType )
+        {
+        case TP::toTop :
+        case TP::toBottom :
+
+            // Left edge alignment
+            if( std::abs( newGeometry.left() - mainWindow->geometry().left() )
+                    <= TP::snapRange
+                    && resizeType == TP::atLeft )
+            {
+                newGeometry.setLeft( mainWindow->geometry().left() );
+                isSnapped = true;
+                break;
+            }
+
+            // Right edge alignment
+            if( std::abs( newGeometry.right() - mainWindow->geometry().right() )
+                    <= TP::snapRange
+                && resizeType == TP::atRight )
+            {
+                newGeometry.setRight( mainWindow->geometry().right() );
+                isSnapped = true;
+                break;
+            }
+
+            break;
+
+        case TP::toLeft :
+        case TP::toRight :
+
+            // Bottom edge alignment
+            if( std::abs( newGeometry.bottom() - mainWindow->geometry().bottom() )
+                    <= TP::snapRange
+                && resizeType == TP::atBottom )
+            {
+                newGeometry.setBottom( mainWindow->geometry().bottom() );
+                isSnapped = true;
+                break;
+            }
+
+            break;
+
+        default:
+            break;
+        }       // switch( snapType )
+    }   //if ( window != mainWindow )
+
+RESIZE_End_of_snap_to_main_window:
+
+    if( isSnapped )
+        goto Resize_window;
+
+    // ============================== Snapping to playlist window ==============================
+
+    if( window != playlistWindow && playlistWindow->isVisible() )
+    {
+        // ------------------ Step 1 (edge sticks to edge) ------------------
+
+        TP::SnapType snapType { checkSnapType( newGeometry, playlistWindow->geometry() ) };
+        TP::SnapType adjacentType { checkAdjacentType( newGeometry, playlistWindow->geometry() ) };
+
+        if( snapType == TP::notAdjacent && adjacentType == TP::notAdjacent )
+            goto RESIZE_End_of_main_window_snaps_to_playlist_window;
+
+        if( snapType != TP::notAdjacent )
+            switch( snapType )
+            {
+            case TP::toTop :
+                if( resizeType == TP::atBottom )
+                {
+                    newGeometry.setBottom( playlistWindow->geometry().top() - 1 );
+                    isSnapped = true;
+                    goto RESIZE_End_of_main_window_snaps_to_playlist_window;
+                }
+                break;
+
+            case TP::toRight :
+                if( resizeType == TP::atLeft )
+                {
+                    newGeometry.setLeft( playlistWindow->geometry().right() + 1 );
+                    isSnapped = true;
+                    goto RESIZE_End_of_main_window_snaps_to_playlist_window;
+                }
+                break;
+
+            case TP::toLeft :
+                if( resizeType == TP::atRight )
+                {
+                    newGeometry.setRight( playlistWindow->geometry().left() - 1 );
+                    isSnapped = true;
+                    goto RESIZE_End_of_main_window_snaps_to_playlist_window;
+                }
+                break;
+
+            default :
+                break;
+            }       // switch( snapType )
+
+            // ---------- Step 2 (edge alignment in the vertical direction) ----------
+        switch( adjacentType )
+        {
+        case TP::toTop :
+        case TP::toBottom :
+
+            // Left edge alignment
+            if( std::abs( newGeometry.left() - playlistWindow->geometry().left() )
+                    <= TP::snapRange
+                    && resizeType == TP::atLeft )
+            {
+                newGeometry.setLeft( playlistWindow->geometry().left() );
+                isSnapped = true;
+                break;
+            }
+
+            // Right edge alignment
+            if( std::abs( newGeometry.right() - playlistWindow->geometry().right() )
+                    <= TP::snapRange
+                && resizeType == TP::atRight )
+            {
+                newGeometry.setRight( playlistWindow->geometry().right() );
+                isSnapped = true;
+                break;
+            }
+
+            break;
+
+        case TP::toLeft :
+        case TP::toRight :
+
+            // Bottom edge alignment
+            if( std::abs( newGeometry.bottom() - playlistWindow->geometry().bottom() )
+                    <= TP::snapRange
+                && resizeType == TP::atBottom )
+            {
+                newGeometry.setBottom( playlistWindow->geometry().bottom() );
+                isSnapped = true;
+                break;
+            }
+
+            break;
+
+        default:
+            break;
+        }       // switch( snapType )
+    }       // if( window != playlistWindow && playlistWindow->isVisible() )
+
+RESIZE_End_of_main_window_snaps_to_playlist_window:
+
+    if( isSnapped )
+        goto Resize_window;
+
+Resize_window:
+    window->setGeometry( newGeometry );
 }
 
 void
@@ -361,218 +574,6 @@ TP_MainClass::slot_leftButtonReleased()
     }
 
     // Check other window pairs...
-}
-
-void
-TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType )
-{
-    // While resizing, a window can only be snapped (or aligned) once.
-    bool isSnapped = false;
-    unsigned typeOfWindow {};
-    TP::SnapType    snapType;
-
-    if( window == mainWindow )
-        typeOfWindow = TP::mainWindow;
-    if( window == playlistWindow )
-        typeOfWindow = TP::playlistWindow;
-
-    if( window == mainWindow )
-    {
-        // ============================== Snapping to playlist window ==============================
-
-        if( playlistWindow->isVisible() )
-        {
-            // ------------------ Step 1 (edge sticks to edge) ------------------
-
-            TP::SnapType snapType { checkSnapType( newGeometry, playlistWindow->geometry() ) };
-            TP::SnapType adjacentType { checkAdjacentType( newGeometry, playlistWindow->geometry() ) };
-
-            if( snapType == TP::notAdjacent && adjacentType == TP::notAdjacent )
-                goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-
-            if( snapType != TP::notAdjacent )
-                switch( snapType )
-                {
-                case TP::toTop :
-                    if( resizeType == TP::atBottom )
-                    {
-                        newGeometry.setBottom( playlistWindow->geometry().top() - 1 );
-                        isSnapped = true;
-                        goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-                    }
-                    break;
-
-                case TP::toRight :
-                    if( resizeType == TP::atLeft )
-                    {
-                        newGeometry.setLeft( playlistWindow->geometry().right() + 1 );
-                        isSnapped = true;
-                        goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-                    }
-                    break;
-
-                case TP::toLeft :
-                    if( resizeType == TP::atRight )
-                    {
-                        newGeometry.setRight( playlistWindow->geometry().left() - 1 );
-                        isSnapped = true;
-                        goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-                    }
-                    break;
-
-                default :
-                    break;
-                }       // switch( snapType )
-
-            // ---------- Step 2 (edge alignment in the vertical direction) ----------
-            switch( adjacentType )
-            {
-            case TP::toTop :
-            case TP::toBottom :
-
-                // Left edge alignment
-                if( std::abs( newGeometry.left() - playlistWindow->geometry().left() )
-                        <= TP::snapRange
-                        && resizeType == TP::atLeft )
-                {
-                    newGeometry.setLeft( playlistWindow->geometry().left() );
-                    isSnapped = true;
-                    break;
-                }
-
-                // Right edge alignment
-                if( std::abs( newGeometry.right() - playlistWindow->geometry().right() )
-                        <= TP::snapRange
-                    && resizeType == TP::atRight )
-                {
-                    newGeometry.setRight( playlistWindow->geometry().right() );
-                    isSnapped = true;
-                    break;
-                }
-
-                break;
-
-            case TP::toLeft :
-            case TP::toRight :
-
-                // Bottom edge alignment
-                if( std::abs( newGeometry.bottom() - playlistWindow->geometry().bottom() )
-                        <= TP::snapRange
-                    && resizeType == TP::atBottom )
-                {
-                    newGeometry.setBottom( playlistWindow->geometry().bottom() );
-                    isSnapped = true;
-                    break;
-                }
-
-                break;
-
-            default:
-                break;
-            }       // switch( snapType )
-        }      //if( playlistWindow->isVisible() )
-
-RESIZE_End_of_main_window_snaps_to_playlist_window:   int dummy;
-
-    }   // if ( window == mainWindow )
-    else //********************************** if ( window != mainWindow ) **********************************
-    {
-        // ============================== Snapping to main window ==============================
-        {
-            TP::SnapType snapType { checkSnapType( newGeometry, mainWindow->geometry() ) };
-            TP::SnapType adjacentType { checkAdjacentType( newGeometry, mainWindow->geometry() ) };
-
-            if( snapType == TP::notAdjacent && adjacentType == TP::notAdjacent )
-                goto RESIZE_End_of_snap_to_main_window;
-
-            if( snapType != TP::notAdjacent )
-                switch( snapType )
-                {
-                case TP::toTop :
-                    if( resizeType == TP::atBottom )
-                    {
-                        newGeometry.setBottom( mainWindow->geometry().top() - 1 );
-                        isSnapped = true;
-                        goto RESIZE_End_of_snap_to_main_window;
-                    }
-                    break;
-
-                case TP::toRight :
-                    if( resizeType == TP::atLeft )
-                    {
-                        newGeometry.setLeft( mainWindow->geometry().right() + 1 );
-                        isSnapped = true;
-                        goto RESIZE_End_of_snap_to_main_window;
-                    }
-                    break;
-
-                case TP::toLeft :
-                    if( resizeType == TP::atRight )
-                    {
-                        newGeometry.setRight( mainWindow->geometry().left() - 1 );
-                        isSnapped = true;
-                        goto RESIZE_End_of_snap_to_main_window;
-                    }
-                    break;
-
-                default :
-                    break;
-                }       // switch( snapType )
-
-            // ---------- Step 2 (edge alignment in the vertical direction) ----------
-            switch( adjacentType )
-            {
-            case TP::toTop :
-            case TP::toBottom :
-
-                // Left edge alignment
-                if( std::abs( newGeometry.left() - mainWindow->geometry().left() )
-                        <= TP::snapRange
-                        && resizeType == TP::atLeft )
-                {
-                    newGeometry.setLeft( mainWindow->geometry().left() );
-                    isSnapped = true;
-                    break;
-                }
-
-                // Right edge alignment
-                if( std::abs( newGeometry.right() - mainWindow->geometry().right() )
-                        <= TP::snapRange
-                    && resizeType == TP::atRight )
-                {
-                    newGeometry.setRight( mainWindow->geometry().right() );
-                    isSnapped = true;
-                    break;
-                }
-
-                break;
-
-            case TP::toLeft :
-            case TP::toRight :
-
-                // Bottom edge alignment
-                if( std::abs( newGeometry.bottom() - mainWindow->geometry().bottom() )
-                        <= TP::snapRange
-                    && resizeType == TP::atBottom )
-                {
-                    newGeometry.setBottom( mainWindow->geometry().bottom() );
-                    isSnapped = true;
-                    break;
-                }
-
-                break;
-
-            default:
-                break;
-            }       // switch( snapType )
-
-        }   //  Snapping to main window
-
-RESIZE_End_of_snap_to_main_window:  int dummy;
-
-    }       // else
-
-    window->setGeometry( newGeometry );
 }
 
 void
