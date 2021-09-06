@@ -289,7 +289,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="pushButton_Add">
+       <widget class="TP_PushButton" name="pushButton_Add">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -317,9 +317,6 @@
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Add</string>
@@ -327,7 +324,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_Remove">
+       <widget class="TP_PushButton" name="pushButton_Remove">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -355,9 +352,6 @@
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Remove</string>
@@ -365,7 +359,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_Sort">
+       <widget class="TP_PushButton" name="pushButton_Sort">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -393,9 +387,6 @@
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Sort</string>
@@ -403,7 +394,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_Find">
+       <widget class="TP_PushButton" name="pushButton_Find">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -431,9 +422,6 @@
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Find</string>
@@ -441,7 +429,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_Select">
+       <widget class="TP_PushButton" name="pushButton_Select">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -469,9 +457,6 @@
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Select</string>
@@ -482,17 +467,17 @@
     </widget>
    </item>
   </layout>
-  <action name="action_AddFile">
+  <action name="action_addFile">
    <property name="text">
     <string>&amp;File...</string>
    </property>
   </action>
-  <action name="action_AddFolder">
+  <action name="action_addFolder">
    <property name="text">
     <string>&amp;Folder...</string>
    </property>
   </action>
-  <action name="action_AddURL">
+  <action name="action_addURL">
    <property name="text">
     <string>&amp;URL...</string>
    </property>
@@ -520,7 +505,12 @@
   <customwidget>
    <class>TP_PlaylistsWidget</class>
    <extends>QListWidget</extends>
-   <header location="global">tp_playlistswidget.h</header>
+   <header>tp_playlistswidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_PushButton</class>
+   <extends>QPushButton</extends>
+   <header>tp_pushbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

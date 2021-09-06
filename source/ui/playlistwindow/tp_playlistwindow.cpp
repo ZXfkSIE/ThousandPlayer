@@ -20,6 +20,10 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget { parent }
   , ui { new Ui::TP_PlaylistWindow }
   , currentFileListWidget { nullptr }
+  , vector_FileListWidget {}
+  , previousItem { nullptr }
+  , currentItem { nullptr }
+  , nextItem { nullptr }
   , menu_Add { nullptr }
 {
     ui->setupUi(this);
@@ -100,13 +104,59 @@ TP_PlaylistWindow::setBold( const QListWidgetItem &I_listWidgetItem )
 void
 TP_PlaylistWindow::unsetAllBolds()
 {
-    for( size_t i {}; i < currentFileListWidget->count(); i++ )
+    for ( size_t i {}; i < currentFileListWidget->count(); i++ )
     {
         QFont font = currentFileListWidget->item( i )->font();
         font.setBold( false );
         currentFileListWidget->item( i )->setFont( font );
         currentFileListWidget->item( i )->setBackground( QColor("#777") );
     }
+}
+
+void
+TP_PlaylistWindow::setMode_SingleTime()
+{
+    playMode = TP::singleTime;
+}
+
+void
+TP_PlaylistWindow::setMode_Repeat()
+{
+    playMode = TP::repeat;
+}
+
+void
+TP_PlaylistWindow::setMode_Sequential()
+{
+    playMode = TP::sequential;
+}
+
+void
+TP_PlaylistWindow::setMode_Shuffle()
+{
+    playMode = TP::shuffle;
+}
+
+QListWidgetItem *
+TP_PlaylistWindow::getCurrentItem()
+{
+    QList <QListWidgetItem *> itemList = currentFileListWidget->selectedItems();
+    if( itemList.count() == 0 )
+        return getNextItem();
+    else
+        return itemList[0];
+}
+
+QListWidgetItem *
+TP_PlaylistWindow::getNextItem()
+{
+
+}
+
+QListWidgetItem *
+TP_PlaylistWindow::getPreviousItem()
+{
+
 }
 
 // *****************************************************************
@@ -137,7 +187,7 @@ TP_PlaylistWindow::on_pushButton_Close_clicked()
     hide();
 }
 
-void TP_PlaylistWindow::on_action_AddFile_triggered()
+void TP_PlaylistWindow::on_action_addFile_triggered()
 {
     int originalCount { currentFileListWidget->count() };
 
@@ -228,14 +278,14 @@ void
 TP_PlaylistWindow::initializeMenu()
 {
     // Initialize menu of "Add" button
-    menu_Add = new TP_Menu {ui->pushButton_Add};
+    menu_Add = new TP_Menu { ui->pushButton_Add };
 
-    menu_Add->addAction(ui->action_AddFile);
-    menu_Add->addAction(ui->action_AddFolder);
+    menu_Add->addAction( ui->action_addFile );
+    menu_Add->addAction( ui->action_addFolder );
     menu_Add->addSeparator();
-    menu_Add->addAction(ui->action_AddURL);
+    menu_Add->addAction( ui->action_addURL );
 
-    ui->pushButton_Add->setMenu(menu_Add);
+    ui->pushButton_Add->setMenu( menu_Add );
 }
 
 void

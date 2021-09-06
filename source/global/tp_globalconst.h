@@ -27,9 +27,13 @@ static const int role_URL           = 0x0106;
 static const int role_SourceType    = 0x0107;
 static const int role_Description   = 0x0108;
 
-static const int iconSize_Repeat    = 28;
-static const int iconSize_Play      = 20;
-static const int iconSize_Pause     = 18;
+static const int iconSize_Play          = 20;
+static const int iconSize_Pause         = 18;
+
+static const int iconSize_SingleTime    = 26;
+static const int iconSize_Repeat        = 28;
+static const int iconSize_Sequential    = 22;
+static const int iconSize_Shuffle       = 30;
 
 }       //namespace TP
 

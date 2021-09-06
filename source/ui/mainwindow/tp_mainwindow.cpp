@@ -3,6 +3,7 @@
 
 #include "tp_globalconst.h"
 
+#include "tp_menu.h"
 #include "tp_timeslider.h"
 
 #include <QAudio>
@@ -31,6 +32,7 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint );
 
     initializeConnection();
+    initializeMenu();
 
     ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
     ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
@@ -45,7 +47,7 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
     setIcon_Play();
     ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
-    setIcon_Repeat();
+    on_action_setMode_SingleTime_triggered();
 
     setAudioPropertyLabels();
 }
@@ -214,13 +216,13 @@ TP_MainWindow::on_pushButton_Expand_clicked()
     QRect ScreenGeometry = window()->windowHandle()->screen()->geometry();
     QRect CurrentGeometry = geometry();
 
-    if(width() < ScreenGeometry.width())
+    if( width() < ScreenGeometry.width() )
     {
-        CurrentGeometry.setLeft(ScreenGeometry.left());
-        CurrentGeometry.setRight(ScreenGeometry.right());
+        CurrentGeometry.setLeft( ScreenGeometry.left() );
+        CurrentGeometry.setRight( ScreenGeometry.right() );
     }
     else    // Return to the minimum width
-        CurrentGeometry.setRight(CurrentGeometry.left() + minimumWidth() - 1);
+        CurrentGeometry.setRight( CurrentGeometry.left() + minimumWidth() - 1 );
 
     setGeometry( CurrentGeometry );
 }
@@ -234,11 +236,6 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
         emit signal_openPlaylistWindow();
 }
 
-void TP_MainWindow::on_pushButton_Stop_clicked()
-{
-    emit signal_stopButtonPushed();
-}
-
 void TP_MainWindow::on_pushButton_Play_clicked()
 {
     if ( b_isPlaying )
@@ -247,30 +244,67 @@ void TP_MainWindow::on_pushButton_Play_clicked()
         emit signal_playButtonPushed();
 }
 
+void TP_MainWindow::on_pushButton_Stop_clicked()
+{
+    emit signal_stopButtonPushed();
+}
+
+void
+TP_MainWindow::on_action_setMode_SingleTime_triggered()
+{
+    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
+    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
+    emit signal_setMode_SingleTime();
+}
+
+void
+TP_MainWindow::on_action_setMode_Repeat_triggered()
+{
+    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
+    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
+    emit signal_setMode_Repeat();
+}
+
+void
+TP_MainWindow::on_action_setMode_Sequential_triggered()
+{
+    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Sequential.svg"} );
+    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
+    emit signal_setMode_Sequential();
+}
+
+void
+TP_MainWindow::on_action_setMode_Shuffle_triggered()
+{
+    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Shuffle.svg"} );
+    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Shuffle, TP::iconSize_Shuffle } );
+    emit signal_setMode_Shuffle();
+}
+
 // *****************************************************************
 // private override
 // *****************************************************************
 
 void
-TP_MainWindow::mousePressEvent(QMouseEvent *event)
+TP_MainWindow::mousePressEvent( QMouseEvent *event )
 {
-    if (event->button() == Qt::LeftButton && cursorPositionType)
+    if ( event->button() == Qt::LeftButton && cursorPositionType )
         b_isBorderBeingPressed = true;
 
-    QWidget::mousePressEvent(event);
+    QWidget::mousePressEvent( event );
 }
 
 void
-TP_MainWindow::mouseMoveEvent(QMouseEvent *event)
+TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
 {
     QPoint eventPosition = event->position().toPoint();
     // qDebug()<< "Main Window cursor position: " << eventPosition;
 
-    if (b_isBorderBeingPressed)
+    if ( b_isBorderBeingPressed )
     {
         QRect newGeometry = geometry();
 
-        switch (cursorPositionType)
+        switch ( cursorPositionType )
         {
         case TP::leftBorder:
 
@@ -367,6 +401,25 @@ TP_MainWindow::initializeConnection()
 }
 
 void
+TP_MainWindow::initializeMenu()
+{
+    // Initialize menu of playback mode button
+    ui->action_setMode_SingleTime->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
+    ui->action_setMode_Repeat->setIcon( QIcon{":/image/icon_Repeat.svg"} );
+    ui->action_setMode_Sequential->setIcon( QIcon{":/image/icon_Sequential.svg"} );
+    ui->action_setMode_Shuffle->setIcon( QIcon{":/image/icon_Shuffle.svg"} );
+
+    menu_Mode = new TP_Menu { ui->pushButton_Mode };
+
+    menu_Mode->addAction( ui->action_setMode_SingleTime );
+    menu_Mode->addAction( ui->action_setMode_Repeat );
+    menu_Mode->addAction( ui->action_setMode_Sequential );
+    menu_Mode->addAction( ui->action_setMode_Shuffle );
+
+    ui->pushButton_Mode->setMenu( menu_Mode );
+}
+
+void
 TP_MainWindow::setIcon_Play()
 {
     ui->pushButton_Play->setIcon( QIcon{":/image/icon_Play.svg"} );
@@ -378,13 +431,6 @@ TP_MainWindow::setIcon_Pause()
 {
     ui->pushButton_Play->setIcon( QIcon{":/image/icon_Pause.svg"} );
     ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Pause, TP::iconSize_Pause ) );
-}
-
-void
-TP_MainWindow::setIcon_Repeat()
-{
-    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
-    ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
 }
 
 void

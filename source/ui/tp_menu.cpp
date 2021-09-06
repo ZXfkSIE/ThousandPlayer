@@ -9,11 +9,8 @@ TP_Menu::TP_Menu(QWidget *parent) :
     setStyleSheet(
 "QMenu"
 "{"
+"   border: 3px solid #888888;"
 "   color: rgb(255, 255, 255);"
-"}"
-"QMenu::item"
-"{"
-"   background-color: transparent;"
 "}"
 "QMenu::item:selected"
 "{"

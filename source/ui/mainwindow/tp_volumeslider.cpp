@@ -1,4 +1,4 @@
-#include "tp_volumeslider.h"
+﻿#include "tp_volumeslider.h"
 
 #include <QMouseEvent>
 
@@ -32,7 +32,7 @@ TP_VolumeSlider::mouseReleaseEvent( QMouseEvent *event )
 }
 
 void
-TP_VolumeSlider::wheelEvent (QWheelEvent *event)
+TP_VolumeSlider::wheelEvent( QWheelEvent *event )
 {
     if( b_invertMouseWheel )
     {

@@ -37,6 +37,10 @@ private slots:
     void slot_playbackStateChanged( QMediaPlayer::PlaybackState newState );
     void slot_playButtonPushed();
     void slot_changePlayingPosition( int second );
+    void slot_setMode_SingleTime();
+    void slot_setMode_Repeat();
+    void slot_setMode_Sequential();
+    void slot_setMode_Shuffle();
 
 private:    
     void initializeConnection();
@@ -54,6 +58,7 @@ private:
     QAudioOutput        *audioOutput;
     QMediaPlayer        *mediaPlayer;
     QListWidgetItem     currentItem;
+    TP::PlayMode        playMode;
 
     bool snapStatus [4] [4];
     QPoint snapPosition_playlistWindow;

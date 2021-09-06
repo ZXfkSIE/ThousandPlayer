@@ -59,7 +59,6 @@ enum PlayMode
     singleTime,
     repeat,
     sequential,
-    sequentialLoop,
     shuffle
 };
 

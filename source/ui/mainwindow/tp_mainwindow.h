@@ -5,6 +5,7 @@
 
 #include <QWidget>
 
+class TP_Menu;
 class QListWidgetItem;
 
 namespace Ui { class TP_MainWindow; }
@@ -42,6 +43,11 @@ signals:
     void signal_pauseButtonPushed();
     void signal_stopButtonPushed();
 
+    void signal_setMode_SingleTime();
+    void signal_setMode_Repeat();
+    void signal_setMode_Sequential();
+    void signal_setMode_Shuffle();
+
 public slots:
     void slot_changeVolumeSlider(float volume);
 
@@ -67,6 +73,11 @@ private slots:
     void on_pushButton_Play_clicked();
     void on_pushButton_Stop_clicked();
 
+    void on_action_setMode_SingleTime_triggered();
+    void on_action_setMode_Repeat_triggered();
+    void on_action_setMode_Sequential_triggered();
+    void on_action_setMode_Shuffle_triggered();
+
 private:
     Ui::TP_MainWindow *ui;
 
@@ -75,11 +86,10 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     void initializeConnection();
+    void initializeMenu();
 
     void setIcon_Play();
     void setIcon_Pause();
-
-    void setIcon_Repeat();
 
     void setAudioPropertyLabels(
             QString I_qstr_Format   = "N/A",
@@ -98,6 +108,8 @@ private:
 
     bool b_isPlaylistWindowShown;
     bool b_isPlaying;
+
+    TP_Menu * menu_Mode;
 
     TP::CursorPositionType  cursorPositionType;
 };

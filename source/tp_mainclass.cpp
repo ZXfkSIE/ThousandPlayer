@@ -629,6 +629,30 @@ TP_MainClass::slot_changePlayingPosition( int second )
     mediaPlayer->setPosition( second * 1000 );
 }
 
+void
+TP_MainClass::slot_setMode_SingleTime()
+{
+    playMode = TP::singleTime;
+}
+
+void
+TP_MainClass::slot_setMode_Repeat()
+{
+    playMode = TP::repeat;
+}
+
+void
+TP_MainClass::slot_setMode_Sequential()
+{
+    playMode = TP::sequential;
+}
+
+void
+TP_MainClass::slot_setMode_Shuffle()
+{
+    playMode = TP::shuffle;
+}
+
 // *****************************************************************
 // private
 // *****************************************************************
@@ -657,6 +681,16 @@ TP_MainClass::initializeConnection()
             mainWindow,     &TP_MainWindow::slot_changeVolumeSlider);
     connect(mainWindow,     &TP_MainWindow::signal_volumeSliderValueChanged,
             audioOutput,    &QAudioOutput::setVolume);
+
+    // Playback mode setting
+    connect(mainWindow,     &TP_MainWindow::signal_setMode_SingleTime,
+            this,           &TP_MainClass::slot_setMode_SingleTime);
+    connect(mainWindow,     &TP_MainWindow::signal_setMode_Repeat,
+            this,           &TP_MainClass::slot_setMode_Repeat);
+    connect(mainWindow,     &TP_MainWindow::signal_setMode_Sequential,
+            this,           &TP_MainClass::slot_setMode_Sequential);
+    connect(mainWindow,     &TP_MainWindow::signal_setMode_Shuffle,
+            this,           &TP_MainClass::slot_setMode_Shuffle);
 
     // Windows moving & resizing related
     connect(mainWindow,     &TP_MainWindow::signal_moveWindow,

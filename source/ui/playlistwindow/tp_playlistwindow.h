@@ -4,6 +4,7 @@
 #include "tp_globalenum.h"
 
 #include <QListWidget>
+
 #include <vector>
 
 class TP_FileListWidget;
@@ -26,6 +27,15 @@ public:
     void setBold(const QListWidgetItem &I_listWidgetItem);
     void unsetAllBolds();
 
+    void setMode_SingleTime();
+    void setMode_Repeat();
+    void setMode_Sequential();
+    void setMode_Shuffle();
+
+    QListWidgetItem * getCurrentItem();
+    QListWidgetItem * getNextItem();
+    QListWidgetItem * getPreviousItem();
+
 signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
     void signal_leftButtonReleased();
@@ -44,7 +54,7 @@ private slots:
     void slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType );
 
     void on_pushButton_Close_clicked();
-    void on_action_AddFile_triggered();
+    void on_action_addFile_triggered();
 
 private:
     Ui::TP_PlaylistWindow *ui;
@@ -59,12 +69,15 @@ private:
 
     void storePlaylist();
 
-    QHBoxLayout                         *layout_FileListFrame;
+    QHBoxLayout     *layout_FileListFrame;
 
     TP_FileListWidget                   *currentFileListWidget;
     std::vector<TP_FileListWidget *>    vector_FileListWidget;
 
-    TP_Menu                             *menu_Add;
+    QListWidgetItem     *previousItem, *currentItem, *nextItem;
+    TP::PlayMode        playMode;
+
+    TP_Menu *menu_Add;
 };
 
 #endif // TP_PLAYLIST_H

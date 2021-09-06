@@ -1,4 +1,5 @@
-﻿add_subdirectory(global)
+﻿add_subdirectory(config)
+add_subdirectory(global)
 add_subdirectory(ui)
 
 add_subdirectory(test)

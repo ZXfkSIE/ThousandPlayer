@@ -5,6 +5,9 @@ set(TP_UI_FILES
     tp_menu.h
     tp_menu.cpp
 
+    tp_pushbutton.h
+    tp_pushbutton.cpp
+
     tp_systemtrayicon.h
     tp_systemtrayicon.cpp
 
