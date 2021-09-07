@@ -15,14 +15,14 @@ class TP_MainWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit TP_MainWindow(QWidget *parent = nullptr);
+    explicit TP_MainWindow( QWidget *parent = nullptr );
     ~TP_MainWindow();
 
     void setPlay();
     void setPause();
     void setStop();
 
-    void setAudioInformation(const QListWidgetItem &I_listWidgetItem);
+    void setAudioInformation( const QUrl &I_url );
     void setFileNotFound();
 
     void setVolumeSliderValue(int value);
@@ -43,18 +43,13 @@ signals:
     void signal_pauseButtonPushed();
     void signal_stopButtonPushed();
 
-    void signal_setMode_SingleTime();
-    void signal_setMode_Repeat();
-    void signal_setMode_Sequential();
-    void signal_setMode_Shuffle();
-
 public slots:
-    void slot_changeVolumeSlider(float volume);
+    void slot_changeVolumeSlider( float volume );
 
     void slot_playlistWindowShown();
     void slot_playlistWindowHidden();
 
-    void slot_updateDuration(qint64 ms);
+    void slot_updateDuration( qint64 ms );
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
@@ -81,9 +76,9 @@ private slots:
 private:
     Ui::TP_MainWindow *ui;
 
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
     void initializeConnection();
     void initializeMenu();
@@ -92,16 +87,16 @@ private:
     void setIcon_Pause();
 
     void setAudioPropertyLabels(
-            QString I_qstr_Format   = "N/A",
-            int     bitDepth        = -1,
-            int     sampleRate      = -1,
-            int     bitRate         = -1,
-            int     duration        = 0
+            const QString & I_qstr_Format   = QString { "N/A" },
+            int             bitDepth        = -1,
+            int             sampleRate      = -1,
+            int             bitRate         = -1,
+            int             duration        = 0
             );
 
-    QString convertTime(qint64 second) const;
+    QString convertTime( qint64 second ) const;
 
-    TP::CursorPositionType isAtBorder(QPoint I_point) const;
+    TP::CursorPositionType isAtBorder( const QPoint &I_point ) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;

@@ -24,14 +24,9 @@ public:
     ~TP_PlaylistWindow();
 
     void initializePlaylist();
-    void setBold(const QListWidgetItem &I_listWidgetItem);
     void unsetAllBolds();
 
-    void setMode_SingleTime();
-    void setMode_Repeat();
-    void setMode_Sequential();
-    void setMode_Shuffle();
-
+    void setCurrentItem( QListWidgetItem * I_item );
     QListWidgetItem * getCurrentItem();
     QListWidgetItem * getNextItem();
     QListWidgetItem * getPreviousItem();
@@ -44,8 +39,8 @@ signals:
 
     void signal_shown();
     void signal_hidden();
-    void signal_newFilelistWidgetCreated(TP_FileListWidget *I_fileListWidget);
-    void signal_refreshShowingTitle(int idx_Min, int idx_Max);
+    void signal_newFilelistWidgetCreated( TP_FileListWidget *I_fileListWidget );
+    void signal_refreshShowingTitle( int idx_Min, int idx_Max );
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
@@ -59,8 +54,8 @@ private slots:
 private:
     Ui::TP_PlaylistWindow *ui;
 
-    void showEvent(QShowEvent *event) override;
-    void hideEvent(QHideEvent *event) override;
+    void showEvent( QShowEvent *event ) override;
+    void hideEvent( QHideEvent *event ) override;
 
     void initializeMenu();
     void initializeConnection();
@@ -69,15 +64,12 @@ private:
 
     void storePlaylist();
 
-    QHBoxLayout     *layout_FileListFrame;
+    QHBoxLayout *layout_FileListFrame;
 
-    TP_FileListWidget                   *currentFileListWidget;
+    TP_FileListWidget *                 currentFileListWidget;
     std::vector<TP_FileListWidget *>    vector_FileListWidget;
 
-    QListWidgetItem     *previousItem, *currentItem, *nextItem;
-    TP::PlayMode        playMode;
-
-    TP_Menu *menu_Add;
+    TP_Menu     *menu_Add;
 };
 
 #endif // TP_PLAYLIST_H

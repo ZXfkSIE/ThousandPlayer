@@ -29,36 +29,36 @@ public slots:
     void slot_initializePosition();
 
 private slots:
-    void slot_playItem( QListWidgetItem *I_listWidgetItem );
-    void slot_moveWindow( QWidget *window, QRect newGeometry );
-    void slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
+    void slot_playItem ( QListWidgetItem *I_listWidgetItem );
+    void slot_moveWindow ( QWidget *window, QRect newGeometry );
+    void slot_resizeWindow ( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
     void slot_leftButtonReleased();
-    void slot_connectFilelistWidget( TP_FileListWidget* I_FilelistWidget );
-    void slot_playbackStateChanged( QMediaPlayer::PlaybackState newState );
+
+    void slot_connectFilelistWidget ( TP_FileListWidget* I_FilelistWidget );
+
     void slot_playButtonPushed();
+
+    void slot_playbackStateChanged ( QMediaPlayer::PlaybackState newState );
+    void slot_sourceChanged ( const QUrl &I_url );
+
     void slot_changePlayingPosition( int second );
-    void slot_setMode_SingleTime();
-    void slot_setMode_Repeat();
-    void slot_setMode_Sequential();
-    void slot_setMode_Shuffle();
 
 private:    
     void initializeConnection();
 
     void unsnapInvisibleWindows();
-    TP::SnapType checkSnapType( const QRect &geometry1, const QRect &geometry2) const;
-    TP::SnapType checkAdjacentType( const QRect &geometry1, const QRect &geometry2) const;
-    bool breadthFirstSearch( unsigned idx_Target ) const;
+    TP::SnapType checkSnapType ( const QRect &geometry1, const QRect &geometry2 ) const;
+    TP::SnapType checkAdjacentType ( const QRect &geometry1, const QRect &geometry2 ) const;
+    bool breadthFirstSearch ( unsigned idx_Target ) const;
 
-    void playFile( QListWidgetItem *I_listWidgetItem );
+    void playFile ( QListWidgetItem *I_listWidgetItem );
 
-    TP_MainWindow       *mainWindow;
-    TP_PlaylistWindow   *playlistWindow;
+    TP_MainWindow *     mainWindow;
+    TP_PlaylistWindow * playlistWindow;
+    QListWidgetItem *   currentItem;
 
-    QAudioOutput        *audioOutput;
-    QMediaPlayer        *mediaPlayer;
-    QListWidgetItem     currentItem;
-    TP::PlayMode        playMode;
+    QAudioOutput *      audioOutput;
+    QMediaPlayer *      mediaPlayer;
 
     bool snapStatus [4] [4];
     QPoint snapPosition_playlistWindow;

@@ -2,6 +2,7 @@
 #include "ui_tp_playlistwindow.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalvariable.h"
 
 #include "tp_filelistwidget.h"
 #include "tp_menu.h"
@@ -21,9 +22,6 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
   , ui { new Ui::TP_PlaylistWindow }
   , currentFileListWidget { nullptr }
   , vector_FileListWidget {}
-  , previousItem { nullptr }
-  , currentItem { nullptr }
-  , nextItem { nullptr }
   , menu_Add { nullptr }
 {
     ui->setupUi(this);
@@ -55,9 +53,9 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
 void
 TP_PlaylistWindow::initializePlaylist()
 {
-    if( std::filesystem::exists(TP::playlistFilePath) )
+    if( std::filesystem::exists( TP::playlistFilePath.toLocal8Bit().constData() ) )
     {
-        qDebug() << "Existing playlist " << QString::fromStdString(TP::playlistFilePath) << " found.";
+        qDebug() << "Existing playlist " << TP::playlistFilePath << " found.";
     }
     else
     {
@@ -67,37 +65,11 @@ TP_PlaylistWindow::initializePlaylist()
 
         currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
         connectCurrentFileListWidget();
-        vector_FileListWidget.push_back(currentFileListWidget);
-        layout_FileListFrame->addWidget(currentFileListWidget);
+        vector_FileListWidget.push_back( currentFileListWidget );
+        layout_FileListFrame->addWidget( currentFileListWidget );
 
         qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated -- list's name is " << currentFileListWidget->getListName();
-        emit signal_newFilelistWidgetCreated(currentFileListWidget);
-    }
-}
-
-void
-TP_PlaylistWindow::setBold( const QListWidgetItem &I_listWidgetItem )
-{
-    for( size_t i {}; i < currentFileListWidget->count(); i++ )
-    {
-        QUrl lURL = I_listWidgetItem.data( TP::role_URL ).value<QUrl>();
-        QUrl rURL = currentFileListWidget->item( i )->data( TP::role_URL ).value<QUrl>();
-        if( lURL == rURL )
-        {
-            QFont font = currentFileListWidget->item( i )->font();
-            currentFileListWidget->item( i )->font();
-            font.setBold( true );
-            currentFileListWidget->item( i )->setFont( font );
-            currentFileListWidget->item( i )->setBackground( QColor("#444") );
-        }
-        else
-        {
-            QFont font = currentFileListWidget->item( i )->font();
-            currentFileListWidget->item( i )->font();
-            font.setBold( false );
-            currentFileListWidget->item( i )->setFont( font );
-            currentFileListWidget->item( i )->setBackground( QColor("#777") );
-        }
+        emit signal_newFilelistWidgetCreated( currentFileListWidget );
     }
 }
 
@@ -114,48 +86,82 @@ TP_PlaylistWindow::unsetAllBolds()
 }
 
 void
-TP_PlaylistWindow::setMode_SingleTime()
+TP_PlaylistWindow::setCurrentItem( QListWidgetItem * I_item )
 {
-    playMode = TP::singleTime;
-}
+    bool isSet { false };
 
-void
-TP_PlaylistWindow::setMode_Repeat()
-{
-    playMode = TP::repeat;
-}
-
-void
-TP_PlaylistWindow::setMode_Sequential()
-{
-    playMode = TP::sequential;
-}
-
-void
-TP_PlaylistWindow::setMode_Shuffle()
-{
-    playMode = TP::shuffle;
+    for( size_t i {}; i < currentFileListWidget->count(); i++ )
+    {
+        QUrl rURL = currentFileListWidget->item( i )->data( TP::role_URL ).value<QUrl>();
+        if( I_url == rURL )
+        {
+            QFont font = currentFileListWidget->item( i )->font();
+            currentFileListWidget->item( i )->font();
+            font.setBold( true );
+            currentFileListWidget->item( i )->setFont( font );
+            currentFileListWidget->item( i )->setBackground( QColor("#444") );
+            if( !isSet )
+            {
+                if( currentItem != nullptr )
+                    previousItem = currentItem;
+                currentItem = currentFileListWidget->item( i );
+                isSet = true;
+            }
+        }
+        else
+        {
+            QFont font = currentFileListWidget->item( i )->font();
+            currentFileListWidget->item( i )->font();
+            font.setBold( false );
+            currentFileListWidget->item( i )->setFont( font );
+            currentFileListWidget->item( i )->setBackground( QColor("#777") );
+        }
+    }
 }
 
 QListWidgetItem *
 TP_PlaylistWindow::getCurrentItem()
 {
-    QList <QListWidgetItem *> itemList = currentFileListWidget->selectedItems();
-    if( itemList.count() == 0 )
-        return getNextItem();
+    if ( currentFileListWidget->count() == 0 )
+        return nullptr;
+
+    if ( currentItem != nullptr )
+        return currentItem;
     else
-        return itemList[0];
+    {
+        QList <QListWidgetItem *> selectedItemList = currentFileListWidget->selectedItems();
+
+        if( selectedItemList.count() != 0 )
+            return selectedItemList[0];
+        else
+        {
+            if( TP::Config().getPlayMode() == TP::shuffle )
+                return getNextItem();
+            else
+                return currentFileListWidget->item(0);
+        }
+    }
 }
+
 
 QListWidgetItem *
 TP_PlaylistWindow::getNextItem()
 {
+    if ( currentFileListWidget->count() == 0 )
+        return nullptr;
 
+    switch ( TP::Config().getPlayMode() )
+    {
+    case TP::singleTime :
+
+    }
 }
 
 QListWidgetItem *
 TP_PlaylistWindow::getPreviousItem()
 {
+    if ( currentFileListWidget->count() == 0 )
+        return nullptr;
 
 }
 
@@ -204,7 +210,6 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
         QString qstr_localFilePath = fileURL.toLocalFile();
         QFileInfo fileInfo { QFile { qstr_localFilePath } };
         QString qstr_Filename = fileInfo.fileName();
-        QString qstr_extension = fileInfo.suffix().toLower();
 
         TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
         QString qstr_title = TStringToQString( fileRef.tag()->title() );
@@ -219,19 +224,13 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
         item->setData( TP::role_URL, fileURL );
 
         // set source type
-        item->setData( TP::role_SourceType, TP::single );
+        item->setData( TP::role_SourceType, TP::singleFile );
 
         // set duration
         item->setData(TP::role_Duration, duration);
 
         // set file name
         item->setData(TP::role_FileName, qstr_Filename);
-
-        // set file type
-        if( qstr_extension == QString("flac") )
-            item->setData( TP::role_FileType, TP::FileFormat::FLAC );
-        else if( qstr_extension == QString("mp3") )
-            item->setData( TP::role_FileType, TP::FileFormat::MP3 );
 
         //set descrption, artist, title, album
         if(qstr_title.length() == 0)
@@ -324,6 +323,6 @@ TP_PlaylistWindow::connectCurrentFileListWidget()
 void
 TP_PlaylistWindow::storePlaylist()
 {
-    if( !std::filesystem::exists(TP::configDirectoryPath) )
-        std::filesystem::create_directory(TP::configDirectoryPath);
+    if( !std::filesystem::exists( TP::configDirectoryPath.toLocal8Bit().constData() ) )
+        std::filesystem::create_directory( TP::configDirectoryPath.toLocal8Bit().constData() );
 }

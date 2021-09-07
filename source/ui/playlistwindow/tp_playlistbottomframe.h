@@ -10,16 +10,16 @@ class TP_PlaylistBottomFrame : public QFrame
     Q_OBJECT
 
 public:
-    explicit TP_PlaylistBottomFrame(QWidget *parent = nullptr);
+    explicit TP_PlaylistBottomFrame( QWidget *parent = nullptr );
 
 signals:
     void signal_resizeWindow( QRect newGeometry, TP::ResizeType resizeType );
     void signal_leftButtonReleased();
 
 private:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
     TP::CursorPositionType isAtBorder(const QPoint &I_point) const;
 

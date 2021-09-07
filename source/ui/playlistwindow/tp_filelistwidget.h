@@ -13,7 +13,12 @@ public:
     explicit TP_FileListWidget(QWidget *parent, const QString &I_qstr);
 
     void setListName(const QString &I_qstr);
-    QString getListName();
+    QString getListName() const;
+
+    void setCurrentItem( QListWidgetItem * I_item );
+    QListWidgetItem * getCurrentItem();
+    QListWidgetItem * getNextItem();
+    QListWidgetItem * getPreviousItem();
 
 public slots:
     void slot_refreshShowingTitle(int idx_Min, int idx_Max);
@@ -34,6 +39,9 @@ private:
 
     TP_Menu *menu_rightClick;
     QAction *act_remove;
+
+    // previousItem & currentItem are only used in shuffle mode
+    QListWidgetItem *previousItem, *currentItem, *nextItem;
 
     QString listName;
     bool    b_isConnected;

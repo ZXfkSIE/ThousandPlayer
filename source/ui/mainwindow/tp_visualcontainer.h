@@ -13,10 +13,10 @@ class TP_VisualContainer : public QWidget
     Q_OBJECT
 
 public:
-    explicit TP_VisualContainer(QWidget *parent = nullptr);
+    explicit TP_VisualContainer( QWidget *parent = nullptr );
 
     void initialize();
-    void switchWidget(TP::VisualContainerType type);
+    void switchWidget( TP::VisualContainerType type );
 
 private:
     QHBoxLayout         *layout;

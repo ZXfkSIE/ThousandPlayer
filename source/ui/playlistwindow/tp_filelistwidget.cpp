@@ -1,6 +1,7 @@
 ﻿#include "tp_filelistwidget.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalvariable.h"
 
 #include "tp_menu.h"
 
@@ -8,6 +9,9 @@
 
 TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
     QListWidget { parent }
+  , previousItem { nullptr }
+  , currentItem { nullptr }
+  , nextItem { nullptr }
   , listName { I_qstr }
   , b_isConnected { false }
 {
@@ -26,15 +30,89 @@ TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
 }
 
 void
-TP_FileListWidget::setListName(const QString &I_qstr)
+TP_FileListWidget::setListName( const QString &I_qstr )
 {
     listName = I_qstr;
 }
 
 QString
-TP_FileListWidget::getListName()
+TP_FileListWidget::getListName() const
 {
     return listName;
+}
+
+void
+TP_FileListWidget::setCurrentItem( QListWidgetItem * I_item )
+{
+    currentItem = I_item;
+
+    QUrl lURL = I_item->data( TP::role_URL ).value<QUrl>();
+    for( size_t i {}; i < count(); i++ )
+    {
+        QUrl rURL = item( i )->data( TP::role_URL ).value<QUrl>();
+        if( lURL == rURL )
+        {
+            QFont font = item( i )->font();
+            item( i )->font();
+            font.setBold( true );
+            item( i )->setFont( font );
+            item( i )->setBackground( QColor("#444") );
+        }
+        else
+        {
+            QFont font = item( i )->font();
+            item( i )->font();
+            font.setBold( false );
+            item( i )->setFont( font );
+            item( i )->setBackground( QColor("#777") );
+        }
+    }
+}
+
+QListWidgetItem *
+TP_FileListWidget::getCurrentItem()
+{
+    // No item
+    if ( count() == 0 )
+        return nullptr;
+
+    // Return stored pointer
+    if ( currentItem != nullptr )
+        return currentItem;
+
+    // Return first selected item
+    QList <QListWidgetItem *> selectedItemList = selectedItems();
+    if( selectedItemList.count() != 0 )
+        return selectedItemList [0];
+
+    // Return random item when in shuffle mode
+    if( TP::Config().getPlayMode() == TP::shuffle )
+        return getNextItem();
+
+    // Return first item in the list
+    return item(0);
+}
+
+
+QListWidgetItem *
+TP_FileListWidget::getNextItem()
+{
+    if ( count() == 0 )
+        return nullptr;
+
+    switch ( TP::Config().getPlayMode() )
+    {
+    case TP::singleTime :
+
+    }
+}
+
+QListWidgetItem *
+TP_FileListWidget::getPreviousItem()
+{
+    if ( currentFileListWidget->count() == 0 )
+        return nullptr;
+
 }
 
 // *****************************************************************

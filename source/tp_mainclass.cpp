@@ -2,6 +2,7 @@
 
 #include "tp_globalconst.h"
 #include "tp_globalenum.h"
+#include "tp_globalvariable.h"
 
 #include "tp_mainwindow.h"
 
@@ -29,11 +30,10 @@ TP_MainClass::TP_MainClass() :
   , playlistWindow { new TP_PlaylistWindow {} }
   , audioOutput { new QAudioOutput { this } }
   , mediaPlayer { new QMediaPlayer { this } }
-  , currentItem {}
   , snapStatus { false }
   , snapPosition_playlistWindow {}
 {
-    mediaPlayer->setAudioOutput(audioOutput);
+    mediaPlayer->setAudioOutput( audioOutput );
     qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
 
     initializeConnection();
@@ -47,6 +47,12 @@ TP_MainClass::TP_MainClass() :
 
 TP_MainClass::~TP_MainClass()
 {
+    QScreen *mainWindowScreen = QApplication::screenAt( mainWindow->pos() );
+    TP::Config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
+
+    QScreen *playlistWindowScreen = QApplication::screenAt( playlistWindow->pos() );
+    TP::Config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
+
     delete mainWindow;
     delete playlistWindow;
 }
@@ -80,7 +86,9 @@ TP_MainClass::slot_checkIfServiceAvailable()
 void
 TP_MainClass::slot_initializePosition()
 {
-    playlistWindow->move( mainWindow->geometry().bottomLeft() + QPoint(0, 1) );
+    QScreen *currentScreen = QApplication::screenAt( QCursor::pos() );
+    mainWindow->move( TP::Config().getMainWindowPosition() + currentScreen->geometry().topLeft() );
+    playlistWindow->move( TP::Config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft() );
     slot_leftButtonReleased();
 }
 
@@ -90,31 +98,11 @@ TP_MainClass::slot_initializePosition()
 // *****************************************************************
 
 void
-TP_MainClass::slot_playButtonPushed()
-{
-    switch ( mediaPlayer->playbackState() )
-    {
-    case QMediaPlayer::PausedState :
-        mediaPlayer->play();
-        break;
-
-    case QMediaPlayer::StoppedState :
-        // pending implementation: get a file to play from the playlist widget
-        break;
-
-    case QMediaPlayer::PlayingState :
-        qDebug() << "[FATAL ERROR] state status inconsistent! Program will fix it manually.";
-        mainWindow->setPlay();
-        break;
-    }
-}
-
-void
 TP_MainClass::slot_playItem( QListWidgetItem *I_listWidgetItem )
 {
     switch ( I_listWidgetItem->data( TP::role_SourceType ).value<TP::SourceType>() )
     {
-    case TP::single :
+    case TP::singleFile :
         playFile( I_listWidgetItem );
         break;
     default:
@@ -346,14 +334,8 @@ void
 TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType )
 {
     // While resizing, a window can only be snapped (or aligned) once.
-    bool isSnapped = false;
-    unsigned typeOfWindow {};
+    bool            isSnapped { false };
     TP::SnapType    snapType;
-
-    if( window == mainWindow )
-        typeOfWindow = TP::mainWindow;
-    if( window == playlistWindow )
-        typeOfWindow = TP::playlistWindow;
 
     if ( window != mainWindow )
     {
@@ -570,7 +552,7 @@ TP_MainClass::slot_leftButtonReleased()
         //qDebug("[TP_MainClass] main window desnapped to playlist window.");
         snapStatus [TP::mainWindow][TP::playlistWindow] = false;
         snapStatus [TP::playlistWindow][TP::mainWindow] = false;
-        snapPosition_playlistWindow = {0, 0};
+        snapPosition_playlistWindow = { 0, 0 };
     }
 
     // Check other window pairs...
@@ -585,6 +567,26 @@ TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
 }
 
 void
+TP_MainClass::slot_playButtonPushed()
+{
+    switch ( mediaPlayer->playbackState() )
+    {
+    case QMediaPlayer::PausedState :
+        mediaPlayer->play();
+        break;
+
+    case QMediaPlayer::StoppedState :
+        // pending implementation: get a file to play from the playlist widget
+        break;
+
+    case QMediaPlayer::PlayingState :
+        qDebug() << "[FATAL ERROR] state status inconsistent! Program will fix it manually.";
+        mainWindow->setPlay();
+        break;
+    }
+}
+
+void
 TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 {
     switch ( newState )
@@ -594,10 +596,6 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 
         // Modify main window
         mainWindow->setPlay();
-        mainWindow->setAudioInformation( currentItem );
-
-        // Modify playlist window
-        playlistWindow->setBold( currentItem );
 
         break;
 
@@ -624,33 +622,16 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 }
 
 void
+TP_MainClass::slot_sourceChanged( const QUrl &I_url )
+{
+    mainWindow->setAudioInformation( I_url );
+    playlistWindow->setCurrentItem( currentItem );
+}
+
+void
 TP_MainClass::slot_changePlayingPosition( int second )
 {
     mediaPlayer->setPosition( second * 1000 );
-}
-
-void
-TP_MainClass::slot_setMode_SingleTime()
-{
-    playMode = TP::singleTime;
-}
-
-void
-TP_MainClass::slot_setMode_Repeat()
-{
-    playMode = TP::repeat;
-}
-
-void
-TP_MainClass::slot_setMode_Sequential()
-{
-    playMode = TP::sequential;
-}
-
-void
-TP_MainClass::slot_setMode_Shuffle()
-{
-    playMode = TP::shuffle;
 }
 
 // *****************************************************************
@@ -681,16 +662,6 @@ TP_MainClass::initializeConnection()
             mainWindow,     &TP_MainWindow::slot_changeVolumeSlider);
     connect(mainWindow,     &TP_MainWindow::signal_volumeSliderValueChanged,
             audioOutput,    &QAudioOutput::setVolume);
-
-    // Playback mode setting
-    connect(mainWindow,     &TP_MainWindow::signal_setMode_SingleTime,
-            this,           &TP_MainClass::slot_setMode_SingleTime);
-    connect(mainWindow,     &TP_MainWindow::signal_setMode_Repeat,
-            this,           &TP_MainClass::slot_setMode_Repeat);
-    connect(mainWindow,     &TP_MainWindow::signal_setMode_Sequential,
-            this,           &TP_MainClass::slot_setMode_Sequential);
-    connect(mainWindow,     &TP_MainWindow::signal_setMode_Shuffle,
-            this,           &TP_MainClass::slot_setMode_Shuffle);
 
     // Windows moving & resizing related
     connect(mainWindow,     &TP_MainWindow::signal_moveWindow,
@@ -827,10 +798,9 @@ TP_MainClass::playFile( QListWidgetItem *I_listWidgetItem )
     qDebug() << "Start playing local file URL: " << url;
 
     if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
-        currentItem = *I_listWidgetItem;
-    else
-        return;
-
-    mediaPlayer->setSource( url );
-    mediaPlayer->play();
+    {
+        currentItem = I_listWidgetItem;
+        mediaPlayer->setSource( url );
+        mediaPlayer->play();
+    }
 }

@@ -8,10 +8,10 @@ class TP_VolumeIcon : public QLabel
     Q_OBJECT
 
 public:
-    explicit TP_VolumeIcon(QWidget *parent = nullptr);
+    explicit TP_VolumeIcon( QWidget *parent = nullptr );
 
     void initialize();
-    void setIcon(int volume);
+    void setIcon( int volume );
 
 private:
     QPixmap pixmap_Volume, pixmap_Mute;

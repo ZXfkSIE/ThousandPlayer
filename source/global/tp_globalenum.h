@@ -41,15 +41,9 @@ enum VolumeStatus
     sound
 };
 
-enum FileFormat
-{
-    FLAC,
-    MP3
-};
-
 enum SourceType
 {
-    single,
+    singleFile,
     cueSheet,
     network
 };

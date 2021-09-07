@@ -34,6 +34,7 @@ if(UNIX)
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    TP::global
     TP::ui::mainwindow
     TP::ui::playlistwindow
 

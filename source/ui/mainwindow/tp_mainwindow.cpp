@@ -2,11 +2,13 @@
 #include "./ui_tp_mainwindow.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalvariable.h"
 
 #include "tp_menu.h"
 #include "tp_timeslider.h"
 
 #include <QAudio>
+#include <QFileInfo>
 #include <QListWidgetItem>
 #include <QMouseEvent>
 #include <QStyle>
@@ -47,7 +49,25 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
     setIcon_Play();
     ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
-    on_action_setMode_SingleTime_triggered();
+
+    switch( TP::Config().getPlayMode() )
+    {
+    case TP::singleTime :
+        on_action_setMode_SingleTime_triggered();
+        break;
+
+    case TP::repeat :
+        on_action_setMode_Repeat_triggered();
+        break;
+
+    case TP::sequential :
+        on_action_setMode_Sequential_triggered();
+        break;
+
+    case TP::shuffle :
+        on_action_setMode_Shuffle_triggered();
+        break;
+    }
 
     setAudioPropertyLabels();
 }
@@ -80,34 +100,31 @@ TP_MainWindow::setStop()
 }
 
 void
-TP_MainWindow::setAudioInformation(const QListWidgetItem &I_listWidgetItem)
+TP_MainWindow::setAudioInformation( const QUrl &I_url )
 {
-    QUrl url { I_listWidgetItem.data( TP::role_URL ).value<QUrl>() };
-
-    if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
+    const QString qstr_localPath = I_url.toLocalFile();
+    if( std::filesystem::exists( qstr_localPath.toLocal8Bit().constData() ) )
     {
-        TagLib::FileRef fileRef { url.toLocalFile().toLocal8Bit().constData() };
+        TagLib::FileRef fileRef { qstr_localPath.toLocal8Bit().constData() };
 
         // Set audio property labels
-        QString qstr_Format;
+        QString qstr_format { "N/A" };
         int bitRate = fileRef.audioProperties()->bitrate();
         int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
         int bitDepth = -1;
         int duration = fileRef.audioProperties()->lengthInSeconds();
 
-        TP::FileFormat format { I_listWidgetItem.data(TP::role_FileType).value<TP::FileFormat>() };
-        switch (format)
-        {
-        case TP::FileFormat::FLAC :
-            qstr_Format = QString( "FLAC" );
-            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
-            break;
-        case TP::FileFormat::MP3 :
-            qstr_Format = QString( "MP3" );
-            break;
-        }
+        QString extension { QFileInfo { qstr_localPath }.suffix().toLower() };
 
-        setAudioPropertyLabels( qstr_Format, bitDepth, sampleRate, bitRate, duration );
+        if( extension == QString { "flac" } )
+        {
+            qstr_format = "FLAC";
+            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
+        }
+        if( extension == QString { "mp3" } )
+            qstr_format = "MP3";
+
+        setAudioPropertyLabels( qstr_format, bitDepth, sampleRate, bitRate, duration );
     }
     else
         return;
@@ -254,7 +271,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
-    emit signal_setMode_SingleTime();
+    TP::Config().setPlayMode( TP::singleTime );
 }
 
 void
@@ -262,7 +279,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
-    emit signal_setMode_Repeat();
+    TP::Config().setPlayMode( TP::repeat );
 }
 
 void
@@ -270,7 +287,7 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Sequential.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
-    emit signal_setMode_Sequential();
+    TP::Config().setPlayMode( TP::sequential );
 }
 
 void
@@ -278,7 +295,7 @@ TP_MainWindow::on_action_setMode_Shuffle_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Shuffle.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Shuffle, TP::iconSize_Shuffle } );
-    emit signal_setMode_Shuffle();
+    TP::Config().setPlayMode( TP::shuffle );
 }
 
 // *****************************************************************
@@ -435,11 +452,11 @@ TP_MainWindow::setIcon_Pause()
 
 void
 TP_MainWindow::setAudioPropertyLabels(
-        QString I_qstr_Format,
-        int     bitDepth,
-        int     sampleRate,
-        int     bitRate,
-        int     duration)
+        const QString & I_qstr_Format,
+        int             bitDepth,
+        int             sampleRate,
+        int             bitRate,
+        int             duration)
 {
     ui->label_Format->setText( QString(" ") + I_qstr_Format + QString(" ") );
     ui->label_BitDepth->setText(
@@ -460,7 +477,7 @@ TP_MainWindow::setAudioPropertyLabels(
 }
 
 TP::CursorPositionType
-TP_MainWindow::isAtBorder(QPoint I_point) const
+TP_MainWindow::isAtBorder(const QPoint &I_point) const
 {
     if (I_point.x() <= TP::borderSize)
     {
