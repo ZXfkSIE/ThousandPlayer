@@ -45,6 +45,7 @@ TP_MainClass::TP_MainClass() :
     playlistWindow->show();
 }
 
+
 TP_MainClass::~TP_MainClass()
 {
     QScreen *mainWindowScreen = QApplication::screenAt( mainWindow->pos() );
@@ -66,7 +67,7 @@ TP_MainClass::~TP_MainClass()
 void
 TP_MainClass::slot_checkIfServiceAvailable()
 {
-    if ( !mediaPlayer->isAvailable() )
+    if ( ! mediaPlayer->isAvailable() )
     {
         QMessageBox msgBox_ServiceNotAvailable (
                     QMessageBox::Critical,
@@ -83,6 +84,7 @@ TP_MainClass::slot_checkIfServiceAvailable()
     }
 }
 
+
 void
 TP_MainClass::slot_initializePosition()
 {
@@ -97,18 +99,17 @@ TP_MainClass::slot_initializePosition()
 // private slots:
 // *****************************************************************
 
+
 void
-TP_MainClass::slot_playItem( QListWidgetItem *I_listWidgetItem )
+TP_MainClass::slot_itemDoubleClicked( QListWidgetItem *I_item )
 {
-    switch ( I_listWidgetItem->data( TP::role_SourceType ).value<TP::SourceType>() )
-    {
-    case TP::singleFile :
-        playFile( I_listWidgetItem );
-        break;
-    default:
-        break;
-    }
+    // Double clicking list item interrupts the playing order.
+    // Therefore, previous and next items need to be initialized.
+    playlistWindow->slot_modeIsNotShuffle();
+
+    playItem( I_item );
 }
+
 
 void
 TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
@@ -330,6 +331,7 @@ Move_window:
     }
 }
 
+
 void
 TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType )
 {
@@ -535,6 +537,7 @@ Resize_window:
     window->setGeometry( newGeometry );
 }
 
+
 void
 TP_MainClass::slot_leftButtonReleased()
 {
@@ -558,13 +561,15 @@ TP_MainClass::slot_leftButtonReleased()
     // Check other window pairs...
 }
 
+
 void
 TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
 {
     qDebug() << "[SLOT] slot_connectFilelistWidget -- list's name is " << I_FilelistWidget->getListName();
     connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
-            this,               &TP_MainClass::slot_playItem);
+            this,               &TP_MainClass::slot_itemDoubleClicked);
 }
+
 
 void
 TP_MainClass::slot_playButtonPushed()
@@ -573,18 +578,41 @@ TP_MainClass::slot_playButtonPushed()
     {
     case QMediaPlayer::PausedState :
         mediaPlayer->play();
+
         break;
 
     case QMediaPlayer::StoppedState :
-        // pending implementation: get a file to play from the playlist widget
+        playItem( playlistWindow->getCurrentItem() );
+
         break;
 
     case QMediaPlayer::PlayingState :
-        qDebug() << "[FATAL ERROR] state status inconsistent! Program will fix it manually.";
+        qDebug() << "[ERROR] state status inconsistent! Program will fix it manually.";
         mainWindow->setPlay();
         break;
     }
 }
+
+
+void
+TP_MainClass::slot_nextButtonPushed()
+{
+    if( TP::Config().getPlayMode() == TP::shuffle )
+        playItem( playlistWindow->getNextItem_shuffle() );
+    else
+        playItem( playlistWindow->getNextItem() );
+}
+
+
+void
+TP_MainClass::slot_previousButtonPushed()
+{
+    if( TP::Config().getPlayMode() == TP::shuffle )
+        playItem( playlistWindow->getPreviousItem_shuffle() );
+    else
+        playItem( playlistWindow->getPreviousItem() );
+}
+
 
 void
 TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
@@ -592,41 +620,87 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     switch ( newState )
     {
     case QMediaPlayer::PlayingState:
-        qDebug() << "[SLOT] Media player status changed to PlayingState.";
-
-        // Modify main window
+        qDebug() << "[Media Player] Playback state changed to PlayingState.";
         mainWindow->setPlay();
+        mainWindow->setAudioInformation( currentItem );
+        playlistWindow->setCurrentItemBold();
 
         break;
 
-
     case QMediaPlayer::PausedState:
-        qDebug() << "[SLOT] Media player status changed to PauseState.";
-
-        // Modify main window
+        qDebug() << "[Media Player] Playback state changed to PauseState.";
         mainWindow->setPause();
 
         break;
 
-
     case QMediaPlayer::StoppedState:
-        qDebug() << "[SLOT] Media player status changed to StoppedState.";
-
-        // Modify main window
+        qDebug() << "[Media Player] Playback state changed to StoppedState.";
         mainWindow->setStop();
-        // Modify playlist window
-        playlistWindow->unsetAllBolds();
+        playlistWindow->unsetCurrentItemBold();
 
         break;
     }
 }
 
+
 void
-TP_MainClass::slot_sourceChanged( const QUrl &I_url )
+TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 {
-    mainWindow->setAudioInformation( I_url );
-    playlistWindow->setCurrentItem( currentItem );
+    switch ( status )
+    {
+    case QMediaPlayer::NoMedia :
+        qDebug("[Media Player] Media status changed to NoMedia.");
+        break;
+
+    case QMediaPlayer::LoadingMedia :
+        qDebug("[Media Player] Media status changed to LoadingMedia.");
+        break;
+
+    case QMediaPlayer::LoadedMedia :
+        qDebug("[Media Player] Media status changed to LoadedMedia.");
+        break;
+
+    case QMediaPlayer::StalledMedia :
+        qDebug("[Media Player] Media status changed to StalledMedia.");
+        break;
+
+    case QMediaPlayer::BufferingMedia :
+        qDebug("[Media Player] Media status changed to BufferingMedia.");
+        break;
+
+    case QMediaPlayer::BufferedMedia :
+        qDebug("[Media Player] Media status changed to BufferedMedia.");
+        break;
+
+    case QMediaPlayer::EndOfMedia :
+        qDebug("[Media Player] Media status changed to EndOfMedia.");
+
+        switch( TP::Config().getPlayMode() )
+        {
+        case TP::singleTime :
+            break;
+
+        case TP::repeat :
+            mediaPlayer->play();
+            break;
+
+        case TP::sequential :
+            playItem( playlistWindow->getNextItem() );
+            break;
+
+        case TP::shuffle :
+            playItem( playlistWindow->getPreviousItem() );
+            break;
+        }
+
+        break;
+
+    case QMediaPlayer::InvalidMedia :
+        qDebug("[Media Player] Media status changed to InvalidMedia.");
+        break;
+    }
 }
+
 
 void
 TP_MainClass::slot_changePlayingPosition( int second )
@@ -634,9 +708,11 @@ TP_MainClass::slot_changePlayingPosition( int second )
     mediaPlayer->setPosition( second * 1000 );
 }
 
+
 // *****************************************************************
 // private
 // *****************************************************************
+
 
 void
 TP_MainClass::initializeConnection()
@@ -646,6 +722,8 @@ TP_MainClass::initializeConnection()
             mainWindow,     &TP_MainWindow::slot_updateDuration);
     connect(mediaPlayer,    &QMediaPlayer::playbackStateChanged,
             this,           &TP_MainClass::slot_playbackStateChanged);
+    connect(mediaPlayer,    &QMediaPlayer::mediaStatusChanged,
+            this,           &TP_MainClass::slot_mediaStatusChanged);
 
     connect(mainWindow,     &TP_MainWindow::signal_playButtonPushed,
             this,           &TP_MainClass::slot_playButtonPushed);
@@ -656,6 +734,14 @@ TP_MainClass::initializeConnection()
 
     connect(mainWindow, &TP_MainWindow::signal_timeSliderPressed,
             this,       &TP_MainClass::slot_changePlayingPosition);
+
+    // Source switching related
+    connect(mainWindow,     &TP_MainWindow::signal_modeIsNotShuffle,
+            playlistWindow, &TP_PlaylistWindow::slot_modeIsNotShuffle);
+    connect(mainWindow,     &TP_MainWindow::signal_nextButtonPushed,
+            this,           &TP_MainClass::slot_nextButtonPushed);
+    connect(mainWindow,     &TP_MainWindow::signal_previousButtonPushed,
+            this,           &TP_MainClass::slot_previousButtonPushed);
 
     // Volume control related
     connect(audioOutput,    &QAudioOutput::volumeChanged,
@@ -790,16 +876,28 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
     return false;
 }
 
-// Play audio file
 void
-TP_MainClass::playFile( QListWidgetItem *I_listWidgetItem )
+TP_MainClass::playItem ( QListWidgetItem *I_item )
 {
-    QUrl url { I_listWidgetItem->data( TP::role_URL ).value<QUrl>() };
+    switch ( I_item->data( TP::role_SourceType ).value<TP::SourceType>() )
+    {
+    case TP::singleFile :
+        playFile( I_item );
+        break;
+    default:
+        break;
+    }
+}
+
+void
+TP_MainClass::playFile ( QListWidgetItem *I_item )
+{
+    QUrl url { I_item->data( TP::role_URL ).value<QUrl>() };
     qDebug() << "Start playing local file URL: " << url;
 
     if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
     {
-        currentItem = I_listWidgetItem;
+        playlistWindow->setCurrentItem( currentItem = I_item );
         mediaPlayer->setSource( url );
         mediaPlayer->play();
     }

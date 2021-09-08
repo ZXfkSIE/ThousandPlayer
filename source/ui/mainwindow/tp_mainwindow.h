@@ -22,7 +22,7 @@ public:
     void setPause();
     void setStop();
 
-    void setAudioInformation( const QUrl &I_url );
+    void setAudioInformation( QListWidgetItem *I_item );
     void setFileNotFound();
 
     void setVolumeSliderValue(int value);
@@ -42,6 +42,10 @@ signals:
     void signal_playButtonPushed();
     void signal_pauseButtonPushed();
     void signal_stopButtonPushed();
+    void signal_nextButtonPushed();
+    void signal_previousButtonPushed();
+
+    void signal_modeIsNotShuffle();
 
 public slots:
     void slot_changeVolumeSlider( float volume );
@@ -67,11 +71,15 @@ private slots:
 
     void on_pushButton_Play_clicked();
     void on_pushButton_Stop_clicked();
+    void on_pushButton_Next_clicked();
+    void on_pushButton_Previous_clicked();
 
     void on_action_setMode_SingleTime_triggered();
     void on_action_setMode_Repeat_triggered();
     void on_action_setMode_Sequential_triggered();
     void on_action_setMode_Shuffle_triggered();
+
+
 
 private:
     Ui::TP_MainWindow *ui;

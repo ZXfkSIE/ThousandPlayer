@@ -15,10 +15,17 @@ public:
     void setListName(const QString &I_qstr);
     QString getListName() const;
 
-    void setCurrentItem( QListWidgetItem * I_item );
+    // not to be confused with QListWidget::setCurrentItem
+    void _setCurrentItem( QListWidgetItem * I_item );
+    void setCurrentItemBold();
+    void unsetCurrentItemBold();
     QListWidgetItem * getCurrentItem();
     QListWidgetItem * getNextItem();
     QListWidgetItem * getPreviousItem();
+    QListWidgetItem * getNextItem_shuffle();
+    QListWidgetItem * getPreviousItem_shuffle();
+
+    void modeIsNotShuffle();
 
 public slots:
     void slot_refreshShowingTitle(int idx_Min, int idx_Max);

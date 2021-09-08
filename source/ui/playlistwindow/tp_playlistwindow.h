@@ -24,12 +24,15 @@ public:
     ~TP_PlaylistWindow();
 
     void initializePlaylist();
-    void unsetAllBolds();
 
     void setCurrentItem( QListWidgetItem * I_item );
+    void setCurrentItemBold();
+    void unsetCurrentItemBold();
     QListWidgetItem * getCurrentItem();
     QListWidgetItem * getNextItem();
     QListWidgetItem * getPreviousItem();
+    QListWidgetItem * getNextItem_shuffle();
+    QListWidgetItem * getPreviousItem_shuffle();
 
 signals:
     void signal_moveWindow( QWidget *window, QRect newGeometry );
@@ -41,6 +44,9 @@ signals:
     void signal_hidden();
     void signal_newFilelistWidgetCreated( TP_FileListWidget *I_fileListWidget );
     void signal_refreshShowingTitle( int idx_Min, int idx_Max );
+
+public slots:
+    void slot_modeIsNotShuffle();
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );

@@ -16,6 +16,7 @@
 // Headers of TagLib
 #include <fileref.h>
 #include <tag.h>
+#include <flacproperties.h>
 
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget { parent }
@@ -50,6 +51,7 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
     storePlaylist();
 }
 
+
 void
 TP_PlaylistWindow::initializePlaylist()
 {
@@ -73,101 +75,76 @@ TP_PlaylistWindow::initializePlaylist()
     }
 }
 
-void
-TP_PlaylistWindow::unsetAllBolds()
-{
-    for ( size_t i {}; i < currentFileListWidget->count(); i++ )
-    {
-        QFont font = currentFileListWidget->item( i )->font();
-        font.setBold( false );
-        currentFileListWidget->item( i )->setFont( font );
-        currentFileListWidget->item( i )->setBackground( QColor("#777") );
-    }
-}
 
 void
 TP_PlaylistWindow::setCurrentItem( QListWidgetItem * I_item )
 {
-    bool isSet { false };
-
-    for( size_t i {}; i < currentFileListWidget->count(); i++ )
-    {
-        QUrl rURL = currentFileListWidget->item( i )->data( TP::role_URL ).value<QUrl>();
-        if( I_url == rURL )
-        {
-            QFont font = currentFileListWidget->item( i )->font();
-            currentFileListWidget->item( i )->font();
-            font.setBold( true );
-            currentFileListWidget->item( i )->setFont( font );
-            currentFileListWidget->item( i )->setBackground( QColor("#444") );
-            if( !isSet )
-            {
-                if( currentItem != nullptr )
-                    previousItem = currentItem;
-                currentItem = currentFileListWidget->item( i );
-                isSet = true;
-            }
-        }
-        else
-        {
-            QFont font = currentFileListWidget->item( i )->font();
-            currentFileListWidget->item( i )->font();
-            font.setBold( false );
-            currentFileListWidget->item( i )->setFont( font );
-            currentFileListWidget->item( i )->setBackground( QColor("#777") );
-        }
-    }
+    currentFileListWidget->_setCurrentItem( I_item );
 }
+
+
+void TP_PlaylistWindow::setCurrentItemBold()
+{
+    currentFileListWidget->setCurrentItemBold();
+}
+
+
+void TP_PlaylistWindow::unsetCurrentItemBold()
+{
+    currentFileListWidget->unsetCurrentItemBold();
+}
+
 
 QListWidgetItem *
 TP_PlaylistWindow::getCurrentItem()
 {
-    if ( currentFileListWidget->count() == 0 )
-        return nullptr;
-
-    if ( currentItem != nullptr )
-        return currentItem;
-    else
-    {
-        QList <QListWidgetItem *> selectedItemList = currentFileListWidget->selectedItems();
-
-        if( selectedItemList.count() != 0 )
-            return selectedItemList[0];
-        else
-        {
-            if( TP::Config().getPlayMode() == TP::shuffle )
-                return getNextItem();
-            else
-                return currentFileListWidget->item(0);
-        }
-    }
+    return currentFileListWidget->getCurrentItem();
 }
 
 
 QListWidgetItem *
 TP_PlaylistWindow::getNextItem()
 {
-    if ( currentFileListWidget->count() == 0 )
-        return nullptr;
-
-    switch ( TP::Config().getPlayMode() )
-    {
-    case TP::singleTime :
-
-    }
+    return currentFileListWidget->getNextItem();
 }
+
 
 QListWidgetItem *
 TP_PlaylistWindow::getPreviousItem()
 {
-    if ( currentFileListWidget->count() == 0 )
-        return nullptr;
-
+    return currentFileListWidget->getPreviousItem();
 }
+
+
+QListWidgetItem *
+TP_PlaylistWindow::getNextItem_shuffle()
+{
+    return currentFileListWidget->getNextItem_shuffle();
+}
+
+
+QListWidgetItem *
+TP_PlaylistWindow::getPreviousItem_shuffle()
+{
+    return currentFileListWidget->getPreviousItem_shuffle();
+}
+
+
+// *****************************************************************
+// public slots
+// *****************************************************************
+
+void
+TP_PlaylistWindow::slot_modeIsNotShuffle()
+{
+    currentFileListWidget->modeIsNotShuffle();
+}
+
 
 // *****************************************************************
 // private slots
 // *****************************************************************
+
 
 void
 TP_PlaylistWindow::slot_moveTitleBar( QRect newGeometry )
@@ -175,11 +152,13 @@ TP_PlaylistWindow::slot_moveTitleBar( QRect newGeometry )
     emit signal_moveWindow( this, newGeometry );
 }
 
+
 void
 TP_PlaylistWindow::slot_leftButtonReleased()
 {
     emit signal_leftButtonReleased();
 }
+
 
 void
 TP_PlaylistWindow::slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType )
@@ -187,11 +166,13 @@ TP_PlaylistWindow::slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeTyp
     emit signal_resizeWindow( this, newGeomtry, resizeType );
 }
 
+
 void
 TP_PlaylistWindow::on_pushButton_Close_clicked()
 {
     hide();
 }
+
 
 void TP_PlaylistWindow::on_action_addFile_triggered()
 {
@@ -207,6 +188,7 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
 
     for (const QUrl& fileURL: qlist_FileURLs)
     {
+
         QString qstr_localFilePath = fileURL.toLocalFile();
         QFileInfo fileInfo { QFile { qstr_localFilePath } };
         QString qstr_Filename = fileInfo.fileName();
@@ -217,6 +199,13 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
         QString qstr_album = TStringToQString( fileRef.tag()->album() );
 
         int duration = fileRef.audioProperties()->lengthInSeconds();
+        int bitrate = fileRef.audioProperties()->bitrate();
+        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
+        int bitDepth = -1 ;
+
+        QString extension { QFileInfo { fileURL.toLocalFile() }.suffix().toLower() };
+        if( extension == QString { "flac" } )
+            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
 
         QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
 
@@ -227,7 +216,16 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
         item->setData( TP::role_SourceType, TP::singleFile );
 
         // set duration
-        item->setData(TP::role_Duration, duration);
+        item->setData( TP::role_Duration, duration );
+
+        // set bitrate
+        item->setData( TP::role_Bitrate, bitrate );
+
+        // set sample rate
+        item->setData( TP::role_SampleRate, sampleRate );
+
+        // set bit depth
+        item->setData( TP::role_BitDepth, bitDepth );
 
         // set file name
         item->setData(TP::role_FileName, qstr_Filename);

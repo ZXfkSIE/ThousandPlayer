@@ -29,7 +29,7 @@ public slots:
     void slot_initializePosition();
 
 private slots:
-    void slot_playItem ( QListWidgetItem *I_listWidgetItem );
+    void slot_itemDoubleClicked ( QListWidgetItem *I_item );
     void slot_moveWindow ( QWidget *window, QRect newGeometry );
     void slot_resizeWindow ( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
     void slot_leftButtonReleased();
@@ -37,9 +37,11 @@ private slots:
     void slot_connectFilelistWidget ( TP_FileListWidget* I_FilelistWidget );
 
     void slot_playButtonPushed();
+    void slot_nextButtonPushed();
+    void slot_previousButtonPushed();
 
     void slot_playbackStateChanged ( QMediaPlayer::PlaybackState newState );
-    void slot_sourceChanged ( const QUrl &I_url );
+    void slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status );
 
     void slot_changePlayingPosition( int second );
 
@@ -51,7 +53,8 @@ private:
     TP::SnapType checkAdjacentType ( const QRect &geometry1, const QRect &geometry2 ) const;
     bool breadthFirstSearch ( unsigned idx_Target ) const;
 
-    void playFile ( QListWidgetItem *I_listWidgetItem );
+    void playItem ( QListWidgetItem *I_item );
+    void playFile ( QListWidgetItem *I_item );
 
     TP_MainWindow *     mainWindow;
     TP_PlaylistWindow * playlistWindow;

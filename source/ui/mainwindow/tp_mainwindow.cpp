@@ -17,12 +17,6 @@
 
 #include <filesystem>
 
-// Headers of TagLib
-#include <fileref.h>
-#include <tag.h>
-
-#include <flacproperties.h>
-
 TP_MainWindow::TP_MainWindow(QWidget *parent) :
     QWidget(parent)
   , ui { new Ui::TP_MainWindow }
@@ -72,10 +66,12 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     setAudioPropertyLabels();
 }
 
+
 TP_MainWindow::~TP_MainWindow()
 {
     delete ui;
 }
+
 
 void
 TP_MainWindow::setPlay()
@@ -84,12 +80,14 @@ TP_MainWindow::setPlay()
     setIcon_Pause();
 }
 
+
 void
 TP_MainWindow::setPause()
 {
     b_isPlaying = false;
     setIcon_Play();
 }
+
 
 void
 TP_MainWindow::setStop()
@@ -99,36 +97,30 @@ TP_MainWindow::setStop()
     setAudioPropertyLabels();
 }
 
+
 void
-TP_MainWindow::setAudioInformation( const QUrl &I_url )
+TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
 {
-    const QString qstr_localPath = I_url.toLocalFile();
-    if( std::filesystem::exists( qstr_localPath.toLocal8Bit().constData() ) )
-    {
-        TagLib::FileRef fileRef { qstr_localPath.toLocal8Bit().constData() };
+    const QString qstr_localPath = I_item->data( TP::role_URL ).value<QUrl>().toLocalFile();
 
-        // Set audio property labels
-        QString qstr_format { "N/A" };
-        int bitRate = fileRef.audioProperties()->bitrate();
-        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
-        int bitDepth = -1;
-        int duration = fileRef.audioProperties()->lengthInSeconds();
+    // Set audio property labels
+    QString qstr_format { "N/A" };
 
-        QString extension { QFileInfo { qstr_localPath }.suffix().toLower() };
+    QString extension { QFileInfo { qstr_localPath }.suffix().toLower() };
 
-        if( extension == QString { "flac" } )
-        {
-            qstr_format = "FLAC";
-            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
-        }
-        if( extension == QString { "mp3" } )
-            qstr_format = "MP3";
+    if( extension == QString { "flac" } )
+        qstr_format = "FLAC";
+    if( extension == QString { "mp3" } )
+        qstr_format = "MP3";
 
-        setAudioPropertyLabels( qstr_format, bitDepth, sampleRate, bitRate, duration );
-    }
-    else
-        return;
+    setAudioPropertyLabels( qstr_format,
+                            I_item->data( TP::role_BitDepth ).value<int>(),
+                            I_item->data( TP::role_SampleRate ).value<int>(),
+                            I_item->data( TP::role_Bitrate ).value<int>(),
+                            I_item->data( TP::role_Duration ).value<int>()
+                            );
 }
+
 
 void
 TP_MainWindow::setFileNotFound()
@@ -136,15 +128,18 @@ TP_MainWindow::setFileNotFound()
     setAudioPropertyLabels();
 }
 
+
 void
 TP_MainWindow::setVolumeSliderValue(int value)
 {
     ui->slider_Volume->setValue( value );
 }
 
+
 // *****************************************************************
 // public slots:
 // *****************************************************************
+
 
 void
 TP_MainWindow::slot_changeVolumeSlider(float linearVolume)
@@ -156,6 +151,7 @@ TP_MainWindow::slot_changeVolumeSlider(float linearVolume)
     ui->slider_Volume->setValue( std::round(logarithmicVolume * 100) );
 }
 
+
 void
 TP_MainWindow::slot_playlistWindowShown()
 {
@@ -163,12 +159,14 @@ TP_MainWindow::slot_playlistWindowShown()
     b_isPlaylistWindowShown = true;
 }
 
+
 void
 TP_MainWindow::slot_playlistWindowHidden()
 {
     ui->pushButton_Playlist->setStyleSheet("color: rgb(0, 0, 0);");
     b_isPlaylistWindowShown = false;
 }
+
 
 void
 TP_MainWindow::slot_updateDuration(qint64 ms)
@@ -181,9 +179,11 @@ TP_MainWindow::slot_updateDuration(qint64 ms)
     // Let slot_timeSliderChanged do it.
 }
 
+
 // *****************************************************************
 // private slots:
 // *****************************************************************
+
 
 void
 TP_MainWindow::slot_moveTitleBar( QRect newGeometry )
@@ -191,11 +191,13 @@ TP_MainWindow::slot_moveTitleBar( QRect newGeometry )
     emit signal_moveWindow( this, newGeometry );
 }
 
+
 void
 TP_MainWindow::slot_leftButtonReleased()
 {
     emit signal_leftButtonReleased();
 }
+
 
 void
 TP_MainWindow::slot_timeSliderChanged( int second )
@@ -203,11 +205,13 @@ TP_MainWindow::slot_timeSliderChanged( int second )
     ui->label_CurrentTime->setText( convertTime( second ) );
 }
 
+
 void
 TP_MainWindow::slot_timeSliderPressed( int second )
 {
     emit signal_timeSliderPressed( second );
 }
+
 
 void
 TP_MainWindow::slot_volumeSliderChanged( int volume )
@@ -221,11 +225,13 @@ TP_MainWindow::slot_volumeSliderChanged( int volume )
                 );
 }
 
+
 void
 TP_MainWindow::on_pushButton_Exit_clicked() const
 {
     QApplication::exit();
 }
+
 
 void
 TP_MainWindow::on_pushButton_Expand_clicked()
@@ -244,6 +250,7 @@ TP_MainWindow::on_pushButton_Expand_clicked()
     setGeometry( CurrentGeometry );
 }
 
+
 void
 TP_MainWindow::on_pushButton_Playlist_clicked()
 {
@@ -253,7 +260,9 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
         emit signal_openPlaylistWindow();
 }
 
-void TP_MainWindow::on_pushButton_Play_clicked()
+
+void
+TP_MainWindow::on_pushButton_Play_clicked()
 {
     if ( b_isPlaying )
         emit signal_pauseButtonPushed();
@@ -261,10 +270,27 @@ void TP_MainWindow::on_pushButton_Play_clicked()
         emit signal_playButtonPushed();
 }
 
-void TP_MainWindow::on_pushButton_Stop_clicked()
+
+void
+TP_MainWindow::on_pushButton_Stop_clicked()
 {
     emit signal_stopButtonPushed();
 }
+
+
+void
+TP_MainWindow::on_pushButton_Next_clicked()
+{
+    emit signal_nextButtonPushed();
+}
+
+
+void
+TP_MainWindow::on_pushButton_Previous_clicked()
+{
+    emit signal_previousButtonPushed();
+}
+
 
 void
 TP_MainWindow::on_action_setMode_SingleTime_triggered()
@@ -272,6 +298,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
     TP::Config().setPlayMode( TP::singleTime );
+    emit signal_modeIsNotShuffle();
 }
 
 void
@@ -280,6 +307,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
     TP::Config().setPlayMode( TP::repeat );
+    emit signal_modeIsNotShuffle();
 }
 
 void
@@ -288,6 +316,7 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Sequential.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
     TP::Config().setPlayMode( TP::sequential );
+    emit signal_modeIsNotShuffle();
 }
 
 void

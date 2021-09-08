@@ -29,11 +29,13 @@ TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
     initializeMenu();
 }
 
+
 void
 TP_FileListWidget::setListName( const QString &I_qstr )
 {
     listName = I_qstr;
 }
+
 
 QString
 TP_FileListWidget::getListName() const
@@ -41,15 +43,27 @@ TP_FileListWidget::getListName() const
     return listName;
 }
 
+
 void
-TP_FileListWidget::setCurrentItem( QListWidgetItem * I_item )
+TP_FileListWidget::_setCurrentItem( QListWidgetItem * I_item )
 {
     currentItem = I_item;
+}
 
-    QUrl lURL = I_item->data( TP::role_URL ).value<QUrl>();
+
+void
+TP_FileListWidget::setCurrentItemBold()
+{
+    if( currentItem == nullptr )
+    {
+        unsetCurrentItemBold();
+        return;
+    }
+
+    const QUrl lURL = currentItem->data( TP::role_URL ).value<QUrl>();
     for( size_t i {}; i < count(); i++ )
     {
-        QUrl rURL = item( i )->data( TP::role_URL ).value<QUrl>();
+        const QUrl rURL = item( i )->data( TP::role_URL ).value<QUrl>();
         if( lURL == rURL )
         {
             QFont font = item( i )->font();
@@ -69,10 +83,24 @@ TP_FileListWidget::setCurrentItem( QListWidgetItem * I_item )
     }
 }
 
+
+void
+TP_FileListWidget::unsetCurrentItemBold()
+{
+    for ( size_t i {}; i < count(); i++ )
+    {
+        QFont font = item( i )->font();
+        font.setBold( false );
+        item( i )->setFont( font );
+        item( i )->setBackground( QColor("#777") );
+    }
+}
+
+
 QListWidgetItem *
 TP_FileListWidget::getCurrentItem()
 {
-    // No item
+    // No item in the list
     if ( count() == 0 )
         return nullptr;
 
@@ -80,40 +108,152 @@ TP_FileListWidget::getCurrentItem()
     if ( currentItem != nullptr )
         return currentItem;
 
+    // Return the only item in the list
+    if ( count() == 1 )
+        return currentItem = item ( 0 );
+
     // Return first selected item
     QList <QListWidgetItem *> selectedItemList = selectedItems();
     if( selectedItemList.count() != 0 )
-        return selectedItemList [0];
+        return currentItem = selectedItemList [0];
 
     // Return random item when in shuffle mode
     if( TP::Config().getPlayMode() == TP::shuffle )
-        return getNextItem();
+        return getNextItem_shuffle();
 
     // Return first item in the list
-    return item(0);
+    return currentItem = item ( 0 );
 }
 
 
 QListWidgetItem *
 TP_FileListWidget::getNextItem()
 {
+    // No item in the list
     if ( count() == 0 )
         return nullptr;
 
-    switch ( TP::Config().getPlayMode() )
-    {
-    case TP::singleTime :
+    // Return the only item in the list
+    if ( count() == 1 )
+        return currentItem = item ( 0 );
 
-    }
+    // Return the next item
+    int currentRow = indexFromItem( currentItem ).row();
+
+    if( currentRow == count() - 1 )
+        return currentItem = item ( 0 );
+    else
+        return currentItem = item ( currentRow + 1 );
 }
+
 
 QListWidgetItem *
 TP_FileListWidget::getPreviousItem()
 {
-    if ( currentFileListWidget->count() == 0 )
+    // No item in the list
+    if ( count() == 0 )
         return nullptr;
 
+    // Return the only item in the list
+    if ( count() == 1 )
+        return currentItem = item ( 0 );
+
+    // Return the previous item
+    int currentRow = indexFromItem( currentItem ).row();
+
+    if( currentRow == 0 )
+        return currentItem = item ( count() - 1 );
+    else
+        return currentItem = item ( currentRow - 1 );
 }
+
+
+QListWidgetItem *
+TP_FileListWidget::getNextItem_shuffle()
+{
+    // No item in the list
+    if ( count() == 0 )
+        return nullptr;
+
+    // Return stored pointer
+    if ( nextItem != nullptr )
+    {
+        previousItem = currentItem;
+        currentItem = nextItem;
+        nextItem = nullptr;
+        return currentItem;
+    }
+
+    // Return the only item in the list
+    if ( count() == 1 )
+        return currentItem = item ( 0 );
+
+    // Return a random item
+    int currentRow;
+    int randomRow { -1 } ;
+
+    if( currentItem == nullptr )
+        currentRow = -1;
+    else
+        currentRow = indexFromItem( currentItem ).row();
+
+    std::uniform_int_distribution<int> distribution { 0, count() - 1 } ;
+
+    do
+        randomRow = distribution( TP::randomEngine() );
+    while( randomRow == currentRow );
+
+    previousItem = currentItem;
+    return currentItem = item ( randomRow );
+}
+
+QListWidgetItem *
+TP_FileListWidget::getPreviousItem_shuffle()
+{
+    // No item in the list
+    if ( count() == 0 )
+        return nullptr;
+
+    // Return stored pointer
+    if ( previousItem != nullptr )
+    {
+        nextItem = currentItem;
+        currentItem = previousItem;
+        previousItem = nullptr;
+        return currentItem;
+    }
+
+    // Return the only item in the list
+    if ( count() == 1 )
+        return currentItem = item ( 0 );
+
+    // Return a random item
+    int currentRow;
+    int randomRow { -1 } ;
+
+    if( currentItem == nullptr )
+        currentRow = -1;
+    else
+        currentRow = indexFromItem( currentItem ).row();
+
+    std::uniform_int_distribution<int> distribution { 0, count() - 1 } ;
+
+    do
+        randomRow = distribution( TP::randomEngine() );
+    while( randomRow == currentRow );
+
+    nextItem = currentItem;
+    return currentItem = item ( randomRow );
+}
+
+
+void
+TP_FileListWidget::modeIsNotShuffle()
+{
+    previousItem = nullptr;
+    nextItem = nullptr;
+}
+
 
 // *****************************************************************
 // public slots:
@@ -153,7 +293,16 @@ void
 TP_FileListWidget::slot_removeSelections()
 {
     for( QListWidgetItem *selectedItem : selectedItems() )
+    {
+        if( previousItem == selectedItem )
+            previousItem = nullptr;
+        if( currentItem == selectedItem )
+            currentItem = nullptr;
+        if( nextItem == selectedItem )
+            nextItem = nullptr;
+
         delete takeItem( row(selectedItem) );
+    }
 
     slot_refreshShowingTitle ( 0, count() - 1 );
 }
