@@ -28,6 +28,7 @@ TP_MainClass::TP_MainClass() :
     QObject { nullptr }
   , mainWindow { new TP_MainWindow {} }
   , playlistWindow { new TP_PlaylistWindow {} }
+  , b_playlistWindowState { true }
   , audioOutput { new QAudioOutput { this } }
   , mediaPlayer { new QMediaPlayer { this } }
   , snapStatus { false }
@@ -98,6 +99,28 @@ TP_MainClass::slot_initializePosition()
 // *****************************************************************
 // private slots:
 // *****************************************************************
+
+
+void
+TP_MainClass::slot_minimizeWindow()
+{
+    if( playlistWindow->isVisible() )
+    {
+        b_playlistWindowState = true;
+        playlistWindow->showMinimized();
+    }
+    else
+        b_playlistWindowState = false;
+}
+
+void
+TP_MainClass::slot_restoreWindow()
+{
+    if( b_playlistWindowState )
+        playlistWindow->showNormal();
+
+    slot_leftButtonReleased();
+}
 
 
 void
@@ -748,6 +771,12 @@ TP_MainClass::initializeConnection()
             mainWindow,     &TP_MainWindow::slot_changeVolumeSlider);
     connect(mainWindow,     &TP_MainWindow::signal_volumeSliderValueChanged,
             audioOutput,    &QAudioOutput::setVolume);
+
+    // Windows minimizing & restoring related
+    connect(mainWindow,     &TP_MainWindow::signal_minimizeWindow,
+            this,           &TP_MainClass::slot_minimizeWindow);
+    connect(mainWindow,     &TP_MainWindow::signal_restoreWindow,
+            this,           &TP_MainClass::slot_restoreWindow);
 
     // Windows moving & resizing related
     connect(mainWindow,     &TP_MainWindow::signal_moveWindow,

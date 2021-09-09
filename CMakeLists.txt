@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(WIN32)
-# In Windows, use Conan to setup 3rd packages
+# In Windows, use Conan to setup 3rd party packages
     message(STATUS "[ThousandPlayer] Windows build environment detected.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()

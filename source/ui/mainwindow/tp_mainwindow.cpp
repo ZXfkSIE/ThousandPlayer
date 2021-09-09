@@ -252,6 +252,13 @@ TP_MainWindow::on_pushButton_Expand_clicked()
 
 
 void
+TP_MainWindow::on_pushButton_Minimize_clicked()
+{
+    showMinimized();
+}
+
+
+void
 TP_MainWindow::on_pushButton_Playlist_clicked()
 {
     if(b_isPlaylistWindowShown)
@@ -301,6 +308,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
     emit signal_modeIsNotShuffle();
 }
 
+
 void
 TP_MainWindow::on_action_setMode_Repeat_triggered()
 {
@@ -309,6 +317,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
     TP::Config().setPlayMode( TP::repeat );
     emit signal_modeIsNotShuffle();
 }
+
 
 void
 TP_MainWindow::on_action_setMode_Sequential_triggered()
@@ -319,6 +328,7 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
     emit signal_modeIsNotShuffle();
 }
 
+
 void
 TP_MainWindow::on_action_setMode_Shuffle_triggered()
 {
@@ -327,9 +337,24 @@ TP_MainWindow::on_action_setMode_Shuffle_triggered()
     TP::Config().setPlayMode( TP::shuffle );
 }
 
+
 // *****************************************************************
 // private override
 // *****************************************************************
+
+
+void
+TP_MainWindow::changeEvent( QEvent *event )
+{
+    if( event->type() == QEvent::WindowStateChange )
+    {
+        if( isMinimized() )
+            emit signal_minimizeWindow();
+        if( isVisible() )
+            emit signal_restoreWindow();
+    }
+}
+
 
 void
 TP_MainWindow::mousePressEvent( QMouseEvent *event )
@@ -339,6 +364,7 @@ TP_MainWindow::mousePressEvent( QMouseEvent *event )
 
     QWidget::mousePressEvent( event );
 }
+
 
 void
 TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
@@ -408,6 +434,7 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
     QWidget::mouseMoveEvent(event);
 }
 
+
 void
 TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -425,9 +452,11 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
     QWidget::mouseReleaseEvent(event);
 }
 
+
 // *****************************************************************
 // private
 // *****************************************************************
+
 
 void
 TP_MainWindow::initializeConnection()
@@ -445,6 +474,7 @@ TP_MainWindow::initializeConnection()
     connect(ui->slider_Volume,  &TP_VolumeSlider::valueChanged,
             this,               &TP_MainWindow::slot_volumeSliderChanged);
 }
+
 
 void
 TP_MainWindow::initializeMenu()
@@ -465,6 +495,7 @@ TP_MainWindow::initializeMenu()
     ui->pushButton_Mode->setMenu( menu_Mode );
 }
 
+
 void
 TP_MainWindow::setIcon_Play()
 {
@@ -472,12 +503,14 @@ TP_MainWindow::setIcon_Play()
     ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Play, TP::iconSize_Play ) );
 }
 
+
 void
 TP_MainWindow::setIcon_Pause()
 {
     ui->pushButton_Play->setIcon( QIcon{":/image/icon_Pause.svg"} );
     ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Pause, TP::iconSize_Pause ) );
 }
+
 
 void
 TP_MainWindow::setAudioPropertyLabels(
@@ -505,6 +538,7 @@ TP_MainWindow::setAudioPropertyLabels(
     ui->slider_Time->setRange( 0, duration );
 }
 
+
 TP::CursorPositionType
 TP_MainWindow::isAtBorder(const QPoint &I_point) const
 {
@@ -518,6 +552,7 @@ TP_MainWindow::isAtBorder(const QPoint &I_point) const
     }
     return TP::notAtBorder;
 }
+
 
 QString
 TP_MainWindow::convertTime(qint64 second) const

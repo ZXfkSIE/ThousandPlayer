@@ -28,6 +28,8 @@ public:
     void setVolumeSliderValue(int value);
 
 signals:
+    void signal_minimizeWindow();
+    void signal_restoreWindow();
     void signal_moveWindow( QWidget *window, QRect newGeometry );
     void signal_leftButtonReleased();
 
@@ -66,6 +68,7 @@ private slots:
 
     void on_pushButton_Exit_clicked() const;
     void on_pushButton_Expand_clicked();
+    void on_pushButton_Minimize_clicked();
 
     void on_pushButton_Playlist_clicked();
 
@@ -79,10 +82,10 @@ private slots:
     void on_action_setMode_Sequential_triggered();
     void on_action_setMode_Shuffle_triggered();
 
-
-
 private:
     Ui::TP_MainWindow *ui;
+
+    void changeEvent( QEvent *event ) override;
 
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;

@@ -29,6 +29,9 @@ public slots:
     void slot_initializePosition();
 
 private slots:
+    void slot_minimizeWindow();
+    void slot_restoreWindow();
+
     void slot_itemDoubleClicked ( QListWidgetItem *I_item );
     void slot_moveWindow ( QWidget *window, QRect newGeometry );
     void slot_resizeWindow ( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
@@ -58,6 +61,8 @@ private:
 
     TP_MainWindow *     mainWindow;
     TP_PlaylistWindow * playlistWindow;
+    bool                b_playlistWindowState;
+
     QListWidgetItem *   currentItem;
 
     QAudioOutput *      audioOutput;
