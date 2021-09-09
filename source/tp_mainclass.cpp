@@ -28,7 +28,7 @@ TP_MainClass::TP_MainClass() :
     QObject { nullptr }
   , mainWindow { new TP_MainWindow {} }
   , playlistWindow { new TP_PlaylistWindow {} }
-  , b_playlistWindowState { true }
+  , b_isPlaylistWindowVisible { true }
   , audioOutput { new QAudioOutput { this } }
   , mediaPlayer { new QMediaPlayer { this } }
   , snapStatus { false }
@@ -106,18 +106,21 @@ TP_MainClass::slot_minimizeWindow()
 {
     if( playlistWindow->isVisible() )
     {
-        b_playlistWindowState = true;
-        playlistWindow->showMinimized();
+        b_isPlaylistWindowVisible = true;
+        playlistWindow->hide();
     }
     else
-        b_playlistWindowState = false;
+        b_isPlaylistWindowVisible = false;
 }
 
 void
 TP_MainClass::slot_restoreWindow()
 {
-    if( b_playlistWindowState )
-        playlistWindow->showNormal();
+    if( b_isPlaylistWindowVisible )
+    {
+        playlistWindow->show();
+        playlistWindow->raise();
+    }
 
     slot_leftButtonReleased();
 }

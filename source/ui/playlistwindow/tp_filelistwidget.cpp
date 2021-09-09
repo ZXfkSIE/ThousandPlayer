@@ -44,10 +44,12 @@ TP_FileListWidget::getListName() const
 }
 
 
+// not to be confused with QListWidget::setCurrentItem
 void
 TP_FileListWidget::_setCurrentItem( QListWidgetItem * I_item )
 {
     currentItem = I_item;
+    setCurrentItem( I_item );
 }
 
 

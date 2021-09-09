@@ -61,7 +61,7 @@ private:
 
     TP_MainWindow *     mainWindow;
     TP_PlaylistWindow * playlistWindow;
-    bool                b_playlistWindowState;
+    bool                b_isPlaylistWindowVisible;
 
     QListWidgetItem *   currentItem;
 

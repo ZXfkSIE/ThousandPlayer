@@ -350,7 +350,12 @@ TP_MainWindow::changeEvent( QEvent *event )
     {
         if( isMinimized() )
             emit signal_minimizeWindow();
-        if( isVisible() )
+        else
+            emit signal_restoreWindow();
+    }
+    if( event->type() == QEvent::ActivationChange )
+    {
+        if( isActiveWindow() )
             emit signal_restoreWindow();
     }
 }

@@ -193,7 +193,11 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
         QFileInfo fileInfo { QFile { qstr_localFilePath } };
         QString qstr_Filename = fileInfo.fileName();
 
+#ifdef Q_OS_WINDOWS
+        TagLib::FileRef fileRef { qstr_localFilePath.toStdWString().c_str() };
+#else
         TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
+#endif
         QString qstr_title = TStringToQString( fileRef.tag()->title() );
         QString qstr_artist = TStringToQString( fileRef.tag()->artist() );
         QString qstr_album = TStringToQString( fileRef.tag()->album() );

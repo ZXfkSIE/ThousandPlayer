@@ -15,7 +15,6 @@ public:
     void setListName(const QString &I_qstr);
     QString getListName() const;
 
-    // not to be confused with QListWidget::setCurrentItem
     void _setCurrentItem( QListWidgetItem * I_item );
     void setCurrentItemBold();
     void unsetCurrentItemBold();
