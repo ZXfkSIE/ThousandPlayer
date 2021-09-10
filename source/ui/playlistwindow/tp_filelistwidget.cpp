@@ -258,7 +258,7 @@ TP_FileListWidget::modeIsNotShuffle()
 
 
 // *****************************************************************
-// public slots:
+// public slots
 // *****************************************************************
 
 void
@@ -274,11 +274,11 @@ TP_FileListWidget::slot_refreshShowingTitle( int idx_Min, int idx_Max )
         item(i)->setText(
                     QString("%1. ").arg(i + 1)
                     +
-                    qvariant_cast<QString>( item(i)->data(TP::role_Description)) );
+                    item(i)->data(TP::role_Description).value<QString>() );
 }
 
 // *****************************************************************
-// private slots:
+// private slots
 // *****************************************************************
 
 void

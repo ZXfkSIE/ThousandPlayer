@@ -1,22 +1,23 @@
 ﻿#include "tp_albumcoverlabel.h"
 
-#include <QIcon>
+#include "tp_menu.h"
 
-TP_AlbumCoverLabel::TP_AlbumCoverLabel(QWidget *parent, int I_size) :
-    QLabel(parent),
-    size(I_size)
+#include <QAction>
+#include <QIcon>
+#include <QMouseEvent>
+
+TP_AlbumCoverLabel::TP_AlbumCoverLabel( QWidget *parent ) :
+    QLabel { parent }
+  , currentPixmap {}
 {
-    setAlignment(Qt::AlignCenter);
-    setMaximumSize( QSize{size, size} );
-    setMinimumSize( QSize{size, size} );
-    setStyleSheet( "border: 0px" );
+    setAlignment( Qt::AlignCenter );
 }
 
 // Default musical note image
 void
 TP_AlbumCoverLabel::setImage()
 {
-    int noteSize = size * 3 / 4;
+    int noteSize = width() * 3 / 4;
     setPixmap( QIcon(":/image/MusicalNote.svg")
                .pixmap(QSize(noteSize, noteSize)) );
 }
@@ -24,20 +25,64 @@ TP_AlbumCoverLabel::setImage()
 void
 TP_AlbumCoverLabel::setImage(const QPixmap &I_pixmap)
 {
+    currentPixmap = I_pixmap;
+
     setPixmap( I_pixmap.scaled(
-                   QSize(size, size),
+                   QSize(width(), width()),
                    Qt::KeepAspectRatio,
                    Qt::SmoothTransformation
                    )
                );
 }
 
+
 // *****************************************************************
-// public override
+// private slots
 // *****************************************************************
 
-QSize
-TP_AlbumCoverLabel::sizeHint() const
+
+void
+TP_AlbumCoverLabel::slot_viewCoverImage()
 {
-    return QSize(size, size);
+
+}
+
+
+// *****************************************************************
+// private override
+// *****************************************************************
+
+
+void
+TP_AlbumCoverLabel::mouseDoubleClickEvent( QMouseEvent *event )
+{
+    if( event->button() == Qt::LeftButton )
+        slot_viewCoverImage();
+    else
+        event->ignore();
+}
+
+
+void
+TP_AlbumCoverLabel::contextMenuEvent( QContextMenuEvent *event )
+{
+    menu_rightClick->exec( event->globalPos() );
+}
+
+
+// *****************************************************************
+// private
+// *****************************************************************
+
+
+void
+TP_AlbumCoverLabel::initializeMenu()
+{
+    act_viewCoverImage = new QAction { tr("&View cover image..."), this };
+
+    connect(act_viewCoverImage, &QAction::triggered,
+            this,               &TP_AlbumCoverLabel::slot_viewCoverImage);
+
+    menu_rightClick = new TP_Menu { this };
+    menu_rightClick->addAction( act_viewCoverImage );
 }

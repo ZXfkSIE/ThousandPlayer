@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>480</width>
-    <height>360</height>
+    <height>240</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
    <item>
     <widget class="TP_TitleBar" name="frame_Title">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -491,6 +491,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>TP_PushButton</class>
+   <extends>QPushButton</extends>
+   <header>tp_pushbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>TP_PlaylistContainer</class>
    <extends>QWidget</extends>
    <header>tp_playlistcontainer.h</header>
@@ -506,11 +511,6 @@
    <class>TP_PlaylistsWidget</class>
    <extends>QListWidget</extends>
    <header>tp_playlistswidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_PushButton</class>
-   <extends>QPushButton</extends>
-   <header>tp_pushbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

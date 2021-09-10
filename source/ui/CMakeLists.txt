@@ -1,4 +1,5 @@
-﻿add_subdirectory(mainwindow)
+﻿add_subdirectory(lyricswindow)
+add_subdirectory(mainwindow)
 add_subdirectory(playlistwindow)
 
 set(TP_UI_FILES

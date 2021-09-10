@@ -2,6 +2,7 @@
 
 #include "tp_globalconst.h"
 #include "tp_globalenum.h"
+#include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
 #include "tp_mainwindow.h"
@@ -15,6 +16,7 @@
 #include <QAudioOutput>
 #include <QListWidgetItem>
 #include <QMediaDevices>
+#include <QMediaMetaData>
 #include <QMessageBox>
 #include <QGuiApplication>
 #include <QScreen>
@@ -23,6 +25,13 @@
 #include <cmath>
 #include <deque>
 #include <filesystem>
+
+// Headers of TagLib
+#include <attachedpictureframe.h>
+#include <id3v2frame.h>
+#include <id3v2tag.h>
+#include <flacfile.h>
+#include <mpegfile.h>
 
 TP_MainClass::TP_MainClass() :
     QObject { nullptr }
@@ -643,12 +652,34 @@ TP_MainClass::slot_previousButtonPushed()
 void
 TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 {
+    QString path {}, extension {};
+    TP::SourceType sourceType { static_cast<TP::SourceType>( currentItem->data( TP::role_SourceType ).toInt() ) };
+
+    if( sourceType == TP::singleFile )
+    {
+        path = currentItem->data( TP::role_URL ).value<QUrl>().toLocalFile();
+        extension = TP::extension ( path );
+    }
+
     switch ( newState )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[Media Player] Playback state changed to PlayingState.";
         mainWindow->setPlay();
         mainWindow->setAudioInformation( currentItem );
+
+        if( sourceType == TP::singleFile )
+        {
+            if( extension == QString( "flac" ) )
+                mainWindow->setAlbumCover(
+                            getCoverImageFromFLAC( path )
+                            );
+            else
+                mainWindow->setAlbumCover(
+                            getCoverImageFromID3V2( path )
+                            );
+        }
+
         playlistWindow->setCurrentItemBold();
 
         break;
@@ -662,6 +693,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     case QMediaPlayer::StoppedState:
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
         mainWindow->setStop();
+        mainWindow->setAlbumCover( QImage {} );
         playlistWindow->unsetCurrentItemBold();
 
         break;
@@ -933,4 +965,48 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         mediaPlayer->setSource( url );
         mediaPlayer->play();
     }
+}
+
+QImage
+TP_MainClass::getCoverImageFromFLAC( const QString &filePath )
+{
+#ifdef Q_OS_Windows
+    TagLib::FLAC::File flacFile { filePath.toStdWString().c_str() };
+#else
+    TagLib::FLAC::File flacFile { filePath.toLocal8Bit().constData() };
+#endif
+
+    const TagLib::List <TagLib::FLAC::Picture *> &pictureList = flacFile.pictureList();
+    if( pictureList.size() > 0 )
+        return QImage::fromData(
+                    QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
+                    );
+
+    return {};
+}
+
+QImage
+TP_MainClass::getCoverImageFromID3V2( const QString &filePath )
+{
+#ifdef Q_OS_Windows
+    TagLib::MPEG::File mpegFile { filePath.toStdWString().c_str() };
+#else
+    TagLib::MPEG::File mpegFile { filePath.toLocal8Bit().constData() };
+#endif
+
+    TagLib::ID3v2::Tag *id3v2Tag { nullptr };
+
+    if( TP::extension( filePath ) == QString{ "MP3" } )
+        id3v2Tag = mpegFile.ID3v2Tag();
+
+    if( id3v2Tag )
+    {
+        TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList("APIC") };
+        TagLib::ID3v2::AttachedPictureFrame *pictureFrame =
+            static_cast<TagLib::ID3v2::AttachedPictureFrame *>( frameList.front() );
+        return QImage::fromData(
+                    QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
+                    );
+    }
+    return {};
 }

@@ -25,7 +25,9 @@ public:
     void setAudioInformation( QListWidgetItem *I_item );
     void setFileNotFound();
 
-    void setVolumeSliderValue(int value);
+    void setVolumeSliderValue( int value );
+
+    void setAlbumCover( const QImage &I_image );
 
 signals:
     void signal_minimizeWindow();

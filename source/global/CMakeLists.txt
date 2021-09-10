@@ -3,6 +3,9 @@
 
     tp_globalenum.h
 
+    tp_globalfunction.h
+    tp_globalfunction.cpp
+
     tp_globalvariable.h
     tp_globalvariable.cpp
 )

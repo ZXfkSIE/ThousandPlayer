@@ -2,6 +2,7 @@
 #include "./ui_tp_mainwindow.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
 #include "tp_menu.h"
@@ -36,8 +37,7 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
 
     ui->label_VolumeIcon->initialize();
 
-    ui->widget_VisualContainer->initialize();
-    ui->widget_VisualContainer->switchWidget( TP::albumCover );
+    ui->label_AlbumCover->setImage();
 
     ui->pushButton_Previous->setIcon( QIcon{":/image/icon_Previous.svg"} );
     ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
@@ -101,12 +101,12 @@ TP_MainWindow::setStop()
 void
 TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
 {
-    const QString qstr_localPath = I_item->data( TP::role_URL ).value<QUrl>().toLocalFile();
+    const QUrl url = I_item->data( TP::role_URL ).value<QUrl>();
 
     // Set audio property labels
     QString qstr_format { "N/A" };
 
-    QString extension { QFileInfo { qstr_localPath }.suffix().toLower() };
+    QString extension { TP::extension( url.toLocalFile() ) };
 
     if( extension == QString { "flac" } )
         qstr_format = "FLAC";
@@ -135,6 +135,14 @@ TP_MainWindow::setVolumeSliderValue(int value)
     ui->slider_Volume->setValue( value );
 }
 
+void
+TP_MainWindow::setAlbumCover( const QImage &I_image )
+{
+    if( I_image.isNull() )
+        ui->label_AlbumCover->setImage();
+    else
+        ui->label_AlbumCover->setImage( QPixmap::fromImage( I_image ) );
+}
 
 // *****************************************************************
 // public slots:

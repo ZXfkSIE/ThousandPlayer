@@ -2,15 +2,15 @@
     tp_albumcoverlabel.h
     tp_albumcoverlabel.cpp
 
+    tp_albumcoverviewer.h
+    tp_albumcoverviewer.cpp
+
     tp_mainwindow.h
     tp_mainwindow.cpp
     tp_mainwindow.ui
 
     tp_timeslider.h
     tp_timeslider.cpp
-
-    tp_visualcontainer.h
-    tp_visualcontainer.cpp
 
     tp_volumeicon.h
     tp_volumeicon.cpp

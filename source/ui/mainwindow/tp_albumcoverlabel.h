@@ -3,19 +3,30 @@
 
 #include <QLabel>
 
+class TP_Menu;
+
 class TP_AlbumCoverLabel : public QLabel
 {
     Q_OBJECT
 
 public:
-    explicit TP_AlbumCoverLabel(QWidget *parent, int I_size);
+    explicit TP_AlbumCoverLabel( QWidget *parent );
     void setImage();
-    void setImage(const QPixmap &I_pixmap);
+    void setImage( const QPixmap &I_pixmap );
 
-    QSize sizeHint() const override;
+private slots:
+    void slot_viewCoverImage();
 
 private:
-    int size;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
+
+    void initializeMenu();
+
+    TP_Menu *menu_rightClick;
+    QAction *act_viewCoverImage;
+
+    QPixmap currentPixmap;
 };
 
 #endif // TP_ALBUMCOVERLABEL_H

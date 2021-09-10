@@ -59,6 +59,9 @@ private:
     void playItem ( QListWidgetItem *I_item );
     void playFile ( QListWidgetItem *I_item );
 
+    QImage getCoverImageFromFLAC( const QString &filePath );
+    QImage getCoverImageFromID3V2( const QString &filePath );
+
     TP_MainWindow *     mainWindow;
     TP_PlaylistWindow * playlistWindow;
     bool                b_isPlaylistWindowVisible;
