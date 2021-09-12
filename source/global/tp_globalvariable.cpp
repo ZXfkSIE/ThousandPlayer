@@ -1,7 +1,7 @@
 ﻿#include "tp_globalvariable.h"
 
 TP_Config &
-TP::Config()
+TP::config()
 {
     static TP_Config config;
     return config;
@@ -13,4 +13,18 @@ TP::randomEngine()
     static std::random_device randomDevice;
     static std::mt19937 randomGenerator { randomDevice() };
     return randomGenerator;
+}
+
+QListWidgetItem *&
+TP::currentItem()
+{
+    static QListWidgetItem * item { nullptr };
+    return item;
+}
+
+QMediaPlayer::PlaybackState &
+TP::playbackState()
+{
+    static QMediaPlayer::PlaybackState state {};
+    return state;
 }

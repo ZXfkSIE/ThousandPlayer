@@ -3,8 +3,8 @@
 #include <QMouseEvent>
 
 TP_VolumeSlider::TP_VolumeSlider( QWidget *parent ) :
-    QSlider( parent )
-  , b_invertMouseWheel { false }
+    QSlider             { parent }
+  , b_invertMouseWheel  { false }
 {
     setRange(0, 100);
 }

@@ -18,4 +18,5 @@ target_link_libraries(TP_global PUBLIC
     TP::config
 
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Multimedia
     )

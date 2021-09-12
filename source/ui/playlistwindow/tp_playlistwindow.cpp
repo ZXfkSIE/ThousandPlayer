@@ -19,11 +19,10 @@
 #include <flacproperties.h>
 
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
-    QWidget { parent }
-  , ui { new Ui::TP_PlaylistWindow }
-  , currentFileListWidget { nullptr }
-  , vector_FileListWidget {}
-  , menu_Add { nullptr }
+    QWidget                 { parent }
+  , ui                      { new Ui::TP_PlaylistWindow }
+  , currentFileListWidget   { nullptr }
+  , vector_FileListWidget   {}
 {
     ui->setupUi(this);
     // Qt::Tool is used for getting rid of the window tab in taskbar
@@ -79,7 +78,7 @@ TP_PlaylistWindow::initializePlaylist()
 void
 TP_PlaylistWindow::setCurrentItem( QListWidgetItem * I_item )
 {
-    currentFileListWidget->_setCurrentItem( I_item );
+    currentFileListWidget->setCurrentItem( I_item );
 }
 
 

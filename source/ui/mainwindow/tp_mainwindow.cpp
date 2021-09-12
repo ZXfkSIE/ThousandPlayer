@@ -19,11 +19,10 @@
 #include <filesystem>
 
 TP_MainWindow::TP_MainWindow(QWidget *parent) :
-    QWidget(parent)
-  , ui { new Ui::TP_MainWindow }
-  , b_isBorderBeingPressed { false }
-  , b_isCursorResize { false }
-  , b_isPlaying { false }
+    QWidget                 { parent }
+  , ui                      { new Ui::TP_MainWindow }
+  , b_isBorderBeingPressed  { false }
+  , b_isCursorResize        { false }
 {
     ui->setupUi(this);
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint );
@@ -37,14 +36,14 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
 
     ui->label_VolumeIcon->initialize();
 
-    ui->label_AlbumCover->setImage();
+    ui->label_Cover->setImage();
 
     ui->pushButton_Previous->setIcon( QIcon{":/image/icon_Previous.svg"} );
     ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
     setIcon_Play();
     ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
 
-    switch( TP::Config().getPlayMode() )
+    switch( TP::config().getPlayMode() )
     {
     case TP::singleTime :
         on_action_setMode_SingleTime_triggered();
@@ -76,7 +75,6 @@ TP_MainWindow::~TP_MainWindow()
 void
 TP_MainWindow::setPlay()
 {
-    b_isPlaying = true;
     setIcon_Pause();
 }
 
@@ -84,7 +82,6 @@ TP_MainWindow::setPlay()
 void
 TP_MainWindow::setPause()
 {
-    b_isPlaying = false;
     setIcon_Play();
 }
 
@@ -92,7 +89,6 @@ TP_MainWindow::setPause()
 void
 TP_MainWindow::setStop()
 {
-    b_isPlaying = false;
     setIcon_Play();
     setAudioPropertyLabels();
 }
@@ -103,7 +99,6 @@ TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
 {
     const QUrl url = I_item->data( TP::role_URL ).value<QUrl>();
 
-    // Set audio property labels
     QString qstr_format { "N/A" };
 
     QString extension { TP::extension( url.toLocalFile() ) };
@@ -136,12 +131,12 @@ TP_MainWindow::setVolumeSliderValue(int value)
 }
 
 void
-TP_MainWindow::setAlbumCover( const QImage &I_image )
+TP_MainWindow::setCover( const QImage &I_image )
 {
     if( I_image.isNull() )
-        ui->label_AlbumCover->setImage();
+        ui->label_Cover->setImage();
     else
-        ui->label_AlbumCover->setImage( QPixmap::fromImage( I_image ) );
+        ui->label_Cover->setImage( QPixmap::fromImage( I_image ) );
 }
 
 // *****************************************************************
@@ -279,7 +274,7 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
 void
 TP_MainWindow::on_pushButton_Play_clicked()
 {
-    if ( b_isPlaying )
+    if ( TP::playbackState() == QMediaPlayer::PlayingState )
         emit signal_pauseButtonPushed();
     else
         emit signal_playButtonPushed();
@@ -312,7 +307,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
-    TP::Config().setPlayMode( TP::singleTime );
+    TP::config().setPlayMode( TP::singleTime );
     emit signal_modeIsNotShuffle();
 }
 
@@ -322,7 +317,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
-    TP::Config().setPlayMode( TP::repeat );
+    TP::config().setPlayMode( TP::repeat );
     emit signal_modeIsNotShuffle();
 }
 
@@ -332,7 +327,7 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Sequential.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
-    TP::Config().setPlayMode( TP::sequential );
+    TP::config().setPlayMode( TP::sequential );
     emit signal_modeIsNotShuffle();
 }
 
@@ -342,7 +337,7 @@ TP_MainWindow::on_action_setMode_Shuffle_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Shuffle.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Shuffle, TP::iconSize_Shuffle } );
-    TP::Config().setPlayMode( TP::shuffle );
+    TP::config().setPlayMode( TP::shuffle );
 }
 
 

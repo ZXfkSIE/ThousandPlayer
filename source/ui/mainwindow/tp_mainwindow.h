@@ -27,7 +27,7 @@ public:
 
     void setVolumeSliderValue( int value );
 
-    void setAlbumCover( const QImage &I_image );
+    void setCover( const QImage &I_image );
 
 signals:
     void signal_minimizeWindow();
@@ -115,10 +115,9 @@ private:
     bool b_isCursorResize;
 
     bool b_isPlaylistWindowShown;
-    bool b_isPlaying;
 
-    TP_Menu * menu_Mode;
+    TP_Menu *menu_Mode;
 
-    TP::CursorPositionType  cursorPositionType;
+    TP::CursorPositionType cursorPositionType;
 };
 #endif // TP_MAINWINDOW_H

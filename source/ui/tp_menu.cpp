@@ -15,5 +15,10 @@ TP_Menu::TP_Menu(QWidget *parent) :
 "QMenu::item:selected"
 "{"
 "   background-color: rgb(0, 0, 0);"
+"}"
+"QMenu::item::disabled"
+"{"
+"   background-color: #888888;"
+"   color: rgb(0, 0, 0);"
 "}");
 }

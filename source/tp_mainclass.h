@@ -32,12 +32,12 @@ private slots:
     void slot_minimizeWindow();
     void slot_restoreWindow();
 
-    void slot_itemDoubleClicked ( QListWidgetItem *I_item );
     void slot_moveWindow ( QWidget *window, QRect newGeometry );
     void slot_resizeWindow ( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
     void slot_leftButtonReleased();
 
     void slot_connectFilelistWidget ( TP_FileListWidget* I_FilelistWidget );
+    void slot_itemDoubleClicked ( QListWidgetItem *I_item );
 
     void slot_playButtonPushed();
     void slot_nextButtonPushed();
@@ -65,8 +65,6 @@ private:
     TP_MainWindow *     mainWindow;
     TP_PlaylistWindow * playlistWindow;
     bool                b_isPlaylistWindowVisible;
-
-    QListWidgetItem *   currentItem;
 
     QAudioOutput *      audioOutput;
     QMediaPlayer *      mediaPlayer;

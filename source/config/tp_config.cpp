@@ -6,7 +6,7 @@
 
 TP_Config::TP_Config( QObject *parent ) :
     QObject { parent }
-  , config { TP::configFilePath, QSettings::IniFormat, this }
+  , config  { TP::configFilePath, QSettings::IniFormat, this }
 {
     config.beginGroup( group_UI );
     mainWindowPosition = config.value( key_UI_mainWindowPosition,

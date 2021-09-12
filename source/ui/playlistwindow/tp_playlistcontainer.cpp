@@ -5,10 +5,10 @@
 #include <QMouseEvent>
 
 TP_PlaylistContainer::TP_PlaylistContainer( QWidget *parent ) :
-    QWidget { parent }
-  , b_isBorderBeingPressed { false }
-  , b_isCursorResize { false }
-  , b_isExpandingDisabled { false }
+    QWidget                 { parent }
+  , b_isBorderBeingPressed  { false }
+  , b_isCursorResize        { false }
+  , b_isExpandingDisabled   { false }
 {
 
 }

@@ -31,8 +31,8 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    bool    b_isBeingPressed;
-    QPoint  pressedRelativePosition;
+    bool b_isBeingPressed;
+    QPoint pressedRelativePosition;
 };
 
 #endif // TP_TITLEBAR_H

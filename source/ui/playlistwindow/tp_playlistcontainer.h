@@ -23,10 +23,10 @@ private:
 
     TP::CursorPositionType isAtBorder( const QPoint &I_point ) const;
 
-    bool                    b_isBorderBeingPressed;
-    bool                    b_isCursorResize;
-    bool                    b_isExpandingDisabled;
-    TP::CursorPositionType  cursorPositionType;
+    bool b_isBorderBeingPressed;
+    bool b_isCursorResize;
+    bool b_isExpandingDisabled;
+    TP::CursorPositionType cursorPositionType;
 };
 
 #endif // TP_PLAYLISTCONTAINER_H

@@ -5,16 +5,20 @@
 #include <QTimer>
 #include <QTranslator>
 
+#include "tp_coverviewer.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
+    for (const QString &locale : uiLanguages)
+    {
         const QString baseName = "ThousandPlayer_" + QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
-            a.installTranslator(&translator);
+        if ( translator.load( ":/i18n/" + baseName ) )
+        {
+            a.installTranslator( &translator );
             break;
         }
     }
@@ -27,7 +31,7 @@ int main(int argc, char *argv[])
      * of sub-windows need to be delayed. */
     QTimer::singleShot( 150, &mainClass, &TP_MainClass::slot_initializePosition );
 #endif
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WINDOWS
     mainClass.slot_initializePosition();
 #endif
 

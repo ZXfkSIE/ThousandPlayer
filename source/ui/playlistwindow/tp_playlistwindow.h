@@ -72,8 +72,8 @@ private:
 
     QHBoxLayout *layout_FileListFrame;
 
-    TP_FileListWidget *                 currentFileListWidget;
-    std::vector<TP_FileListWidget *>    vector_FileListWidget;
+    TP_FileListWidget *currentFileListWidget;
+    std::vector<TP_FileListWidget *> vector_FileListWidget;
 
     TP_Menu     *menu_Add;
 };

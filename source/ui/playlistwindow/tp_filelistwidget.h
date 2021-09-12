@@ -15,7 +15,6 @@ public:
     void setListName(const QString &I_qstr);
     QString getListName() const;
 
-    void _setCurrentItem( QListWidgetItem * I_item );
     void setCurrentItemBold();
     void unsetCurrentItemBold();
     QListWidgetItem * getCurrentItem();
@@ -25,6 +24,9 @@ public:
     QListWidgetItem * getPreviousItem_shuffle();
 
     void modeIsNotShuffle();
+
+signals:
+    void signal_currentItemUnset();
 
 public slots:
     void slot_refreshShowingTitle(int idx_Min, int idx_Max);
@@ -47,7 +49,7 @@ private:
     QAction *act_remove;
 
     // previousItem & currentItem are only used in shuffle mode
-    QListWidgetItem *previousItem, *currentItem, *nextItem;
+    QListWidgetItem *previousItem, *nextItem;
 
     QString listName;
     bool    b_isConnected;

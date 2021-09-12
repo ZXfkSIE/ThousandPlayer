@@ -3,8 +3,8 @@
 #include <QMouseEvent>
 
 TP_TitleBar::TP_TitleBar(QWidget *parent) :
-    QFrame { parent }
-  , b_isBeingPressed { false }
+    QFrame              { parent }
+  , b_isBeingPressed    { false }
 {
     setMouseTracking(true);
 }

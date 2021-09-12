@@ -1,10 +1,10 @@
-#include "tp_timeslider.h"
+﻿#include "tp_timeslider.h"
 
 #include <QMouseEvent>
 
 TP_TimeSlider::TP_TimeSlider( QWidget *parent ) :
-    QSlider( parent )
-  , b_invertMouseWheel { false }
+    QSlider             { parent }
+  , b_invertMouseWheel  { false }
 {
     setRange(0, 0);
 }

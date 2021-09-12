@@ -34,17 +34,18 @@
 #include <mpegfile.h>
 
 TP_MainClass::TP_MainClass() :
-    QObject { nullptr }
-  , mainWindow { new TP_MainWindow {} }
-  , playlistWindow { new TP_PlaylistWindow {} }
-  , b_isPlaylistWindowVisible { true }
-  , audioOutput { new QAudioOutput { this } }
-  , mediaPlayer { new QMediaPlayer { this } }
-  , snapStatus { false }
+    QObject                     { nullptr }
+  , mainWindow                  { new TP_MainWindow {} }
+  , playlistWindow              { new TP_PlaylistWindow {} }
+  , b_isPlaylistWindowVisible   { true }
+  , audioOutput                 { new QAudioOutput { this } }
+  , mediaPlayer                 { new QMediaPlayer { this } }
+  , snapStatus                  { false }
   , snapPosition_playlistWindow {}
 {
     mediaPlayer->setAudioOutput( audioOutput );
     qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
+    TP::playbackState() = mediaPlayer->playbackState();
 
     initializeConnection();
 
@@ -59,10 +60,10 @@ TP_MainClass::TP_MainClass() :
 TP_MainClass::~TP_MainClass()
 {
     QScreen *mainWindowScreen = QApplication::screenAt( mainWindow->pos() );
-    TP::Config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
+    TP::config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
 
     QScreen *playlistWindowScreen = QApplication::screenAt( playlistWindow->pos() );
-    TP::Config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
+    TP::config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
 
     delete mainWindow;
     delete playlistWindow;
@@ -99,8 +100,8 @@ void
 TP_MainClass::slot_initializePosition()
 {
     QScreen *currentScreen = QApplication::screenAt( QCursor::pos() );
-    mainWindow->move( TP::Config().getMainWindowPosition() + currentScreen->geometry().topLeft() );
-    playlistWindow->move( TP::Config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft() );
+    mainWindow->move( TP::config().getMainWindowPosition() + currentScreen->geometry().topLeft() );
+    playlistWindow->move( TP::config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft() );
     slot_leftButtonReleased();
 }
 
@@ -132,17 +133,6 @@ TP_MainClass::slot_restoreWindow()
     }
 
     slot_leftButtonReleased();
-}
-
-
-void
-TP_MainClass::slot_itemDoubleClicked( QListWidgetItem *I_item )
-{
-    // Double clicking list item interrupts the playing order.
-    // Therefore, previous and next items need to be initialized.
-    playlistWindow->slot_modeIsNotShuffle();
-
-    playItem( I_item );
 }
 
 
@@ -607,6 +597,15 @@ TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
 
 
 void
+TP_MainClass::slot_itemDoubleClicked( QListWidgetItem *I_item )
+{
+    // Double clicking list item interrupts the playing order.
+    // Therefore, previous and next items need to be initialized.
+    playlistWindow->slot_modeIsNotShuffle();
+
+    playItem( I_item );
+}
+void
 TP_MainClass::slot_playButtonPushed()
 {
     switch ( mediaPlayer->playbackState() )
@@ -632,7 +631,7 @@ TP_MainClass::slot_playButtonPushed()
 void
 TP_MainClass::slot_nextButtonPushed()
 {
-    if( TP::Config().getPlayMode() == TP::shuffle )
+    if( TP::config().getPlayMode() == TP::shuffle )
         playItem( playlistWindow->getNextItem_shuffle() );
     else
         playItem( playlistWindow->getNextItem() );
@@ -642,7 +641,7 @@ TP_MainClass::slot_nextButtonPushed()
 void
 TP_MainClass::slot_previousButtonPushed()
 {
-    if( TP::Config().getPlayMode() == TP::shuffle )
+    if( TP::config().getPlayMode() == TP::shuffle )
         playItem( playlistWindow->getPreviousItem_shuffle() );
     else
         playItem( playlistWindow->getPreviousItem() );
@@ -652,35 +651,47 @@ TP_MainClass::slot_previousButtonPushed()
 void
 TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 {
-    QString path {}, extension {};
-    TP::SourceType sourceType { static_cast<TP::SourceType>( currentItem->data( TP::role_SourceType ).toInt() ) };
+    TP::playbackState() = newState;
 
-    if( sourceType == TP::singleFile )
+    QString path {}, extension {};
+    TP::SourceType sourceType {};
+
+    if( TP::currentItem() != nullptr )
     {
-        path = currentItem->data( TP::role_URL ).value<QUrl>().toLocalFile();
-        extension = TP::extension ( path );
+        sourceType = static_cast<TP::SourceType>( TP::currentItem()->data( TP::role_SourceType ).toInt() );
+
+        if( sourceType == TP::singleFile )
+        {
+            path = TP::currentItem()->data( TP::role_URL ).value<QUrl>().toLocalFile();
+            extension = TP::extension ( path );
+        }
     }
 
     switch ( newState )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[Media Player] Playback state changed to PlayingState.";
+
         mainWindow->setPlay();
-        mainWindow->setAudioInformation( currentItem );
 
-        if( sourceType == TP::singleFile )
+        if( TP::currentItem() != nullptr )
         {
-            if( extension == QString( "flac" ) )
-                mainWindow->setAlbumCover(
-                            getCoverImageFromFLAC( path )
-                            );
-            else
-                mainWindow->setAlbumCover(
-                            getCoverImageFromID3V2( path )
-                            );
-        }
+            mainWindow->setAudioInformation( TP::currentItem() );
 
-        playlistWindow->setCurrentItemBold();
+            if( sourceType == TP::singleFile )
+            {
+                if( extension == QString( "flac" ) )
+                    mainWindow->setCover(
+                                getCoverImageFromFLAC( path )
+                                );
+                else
+                    mainWindow->setCover(
+                                getCoverImageFromID3V2( path )
+                                );
+            }
+
+            playlistWindow->setCurrentItemBold();
+        }
 
         break;
 
@@ -693,7 +704,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     case QMediaPlayer::StoppedState:
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
         mainWindow->setStop();
-        mainWindow->setAlbumCover( QImage {} );
+        mainWindow->setCover( QImage {} );
         playlistWindow->unsetCurrentItemBold();
 
         break;
@@ -733,7 +744,7 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
     case QMediaPlayer::EndOfMedia :
         qDebug("[Media Player] Media status changed to EndOfMedia.");
 
-        switch( TP::Config().getPlayMode() )
+        switch( TP::config().getPlayMode() )
         {
         case TP::singleTime :
             break;
@@ -943,6 +954,9 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
 void
 TP_MainClass::playItem ( QListWidgetItem *I_item )
 {
+    if( I_item == nullptr )
+        return;
+
     switch ( I_item->data( TP::role_SourceType ).value<TP::SourceType>() )
     {
     case TP::singleFile :
@@ -961,7 +975,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
     if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
     {
-        playlistWindow->setCurrentItem( currentItem = I_item );
+        playlistWindow->setCurrentItem( TP::currentItem() = I_item );
         mediaPlayer->setSource( url );
         mediaPlayer->play();
     }
@@ -970,7 +984,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 QImage
 TP_MainClass::getCoverImageFromFLAC( const QString &filePath )
 {
-#ifdef Q_OS_Windows
+#ifdef Q_OS_WINDOWS
     TagLib::FLAC::File flacFile { filePath.toStdWString().c_str() };
 #else
     TagLib::FLAC::File flacFile { filePath.toLocal8Bit().constData() };
@@ -988,7 +1002,7 @@ TP_MainClass::getCoverImageFromFLAC( const QString &filePath )
 QImage
 TP_MainClass::getCoverImageFromID3V2( const QString &filePath )
 {
-#ifdef Q_OS_Windows
+#ifdef Q_OS_WINDOWS
     TagLib::MPEG::File mpegFile { filePath.toStdWString().c_str() };
 #else
     TagLib::MPEG::File mpegFile { filePath.toLocal8Bit().constData() };

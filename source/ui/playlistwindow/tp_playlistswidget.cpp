@@ -3,7 +3,7 @@
 #include <QMouseEvent>
 
 TP_PlaylistsWidget::TP_PlaylistsWidget(QWidget *parent) :
-    QListWidget(parent)
+    QListWidget { parent }
 {
 
 }

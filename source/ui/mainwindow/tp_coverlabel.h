@@ -1,16 +1,18 @@
-﻿#ifndef TP_ALBUMCOVERLABEL_H
-#define TP_ALBUMCOVERLABEL_H
+﻿#ifndef TP_COVERLABEL_H
+#define TP_COVERLABEL_H
 
 #include <QLabel>
 
+class TP_CoverViewer;
 class TP_Menu;
 
-class TP_AlbumCoverLabel : public QLabel
+class TP_CoverLabel : public QLabel
 {
     Q_OBJECT
 
 public:
-    explicit TP_AlbumCoverLabel( QWidget *parent );
+    explicit TP_CoverLabel( QWidget *parent );
+    ~TP_CoverLabel();
     void setImage();
     void setImage( const QPixmap &I_pixmap );
 
@@ -23,10 +25,10 @@ private:
 
     void initializeMenu();
 
+    TP_CoverViewer *coverViewer;
+
     TP_Menu *menu_rightClick;
     QAction *act_viewCoverImage;
-
-    QPixmap currentPixmap;
 };
 
-#endif // TP_ALBUMCOVERLABEL_H
+#endif // TP_COVERLABEL_H

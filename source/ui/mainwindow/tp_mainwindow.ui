@@ -327,7 +327,7 @@ color: rgb(255, 255, 255);</string>
        <number>3</number>
       </property>
       <item>
-       <widget class="TP_AlbumCoverLabel" name="label_AlbumCover">
+       <widget class="TP_CoverLabel" name="label_Cover">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -1145,9 +1145,9 @@ border: 0px;</string>
    <header>tp_pushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>TP_AlbumCoverLabel</class>
+   <class>TP_CoverLabel</class>
    <extends>QLabel</extends>
-   <header>tp_albumcoverlabel.h</header>
+   <header>tp_coverlabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

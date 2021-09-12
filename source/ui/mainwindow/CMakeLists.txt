@@ -1,9 +1,10 @@
 ﻿set(TP_UI_MAINWINDOW_FILES
-    tp_albumcoverlabel.h
-    tp_albumcoverlabel.cpp
+    tp_coverlabel.h
+    tp_coverlabel.cpp
 
-    tp_albumcoverviewer.h
-    tp_albumcoverviewer.cpp
+    tp_coverviewer.h
+    tp_coverviewer.cpp
+    tp_coverviewer.ui
 
     tp_mainwindow.h
     tp_mainwindow.cpp

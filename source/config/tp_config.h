@@ -36,7 +36,7 @@ private:
     const QString   key_PLAYBACK_playMode           { "playMode" };
     TP::PlayMode    playMode;
 
-    QSettings config;
+    QSettings       config;
 
 };
 

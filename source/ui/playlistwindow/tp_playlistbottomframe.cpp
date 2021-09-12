@@ -5,10 +5,10 @@
 #include <QMouseEvent>
 
 TP_PlaylistBottomFrame::TP_PlaylistBottomFrame( QWidget *parent ) :
-    QFrame { parent }
-  , b_isBorderBeingPressed { false }
-  , b_isCursorResize { false }
-  , b_isExpandingDisabled { false }
+    QFrame                  { parent }
+  , b_isBorderBeingPressed  { false }
+  , b_isCursorResize        { false }
+  , b_isExpandingDisabled   { false }
 {
 
 }

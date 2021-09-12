@@ -8,12 +8,11 @@
 #include <QMouseEvent>
 
 TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
-    QListWidget { parent }
-  , previousItem { nullptr }
-  , currentItem { nullptr }
-  , nextItem { nullptr }
-  , listName { I_qstr }
-  , b_isConnected { false }
+    QListWidget     { parent }
+  , previousItem    { nullptr }
+  , nextItem        { nullptr }
+  , listName        { I_qstr }
+  , b_isConnected   { false }
 {
     setMouseTracking(true);
 
@@ -43,26 +42,16 @@ TP_FileListWidget::getListName() const
     return listName;
 }
 
-
-// not to be confused with QListWidget::setCurrentItem
-void
-TP_FileListWidget::_setCurrentItem( QListWidgetItem * I_item )
-{
-    currentItem = I_item;
-    setCurrentItem( I_item );
-}
-
-
 void
 TP_FileListWidget::setCurrentItemBold()
 {
-    if( currentItem == nullptr )
+    if( TP::currentItem() == nullptr )
     {
         unsetCurrentItemBold();
         return;
     }
 
-    const QUrl lURL = currentItem->data( TP::role_URL ).value<QUrl>();
+    const QUrl lURL = TP::currentItem()->data( TP::role_URL ).value<QUrl>();
     for( size_t i {}; i < count(); i++ )
     {
         const QUrl rURL = item( i )->data( TP::role_URL ).value<QUrl>();
@@ -107,24 +96,24 @@ TP_FileListWidget::getCurrentItem()
         return nullptr;
 
     // Return stored pointer
-    if ( currentItem != nullptr )
-        return currentItem;
+    if ( TP::currentItem() != nullptr )
+        return TP::currentItem();
 
     // Return the only item in the list
     if ( count() == 1 )
-        return currentItem = item ( 0 );
+        return TP::currentItem() = item ( 0 );
 
     // Return first selected item
     QList <QListWidgetItem *> selectedItemList = selectedItems();
     if( selectedItemList.count() != 0 )
-        return currentItem = selectedItemList [0];
+        return TP::currentItem() = selectedItemList [0];
 
     // Return random item when in shuffle mode
-    if( TP::Config().getPlayMode() == TP::shuffle )
+    if( TP::config().getPlayMode() == TP::shuffle )
         return getNextItem_shuffle();
 
     // Return first item in the list
-    return currentItem = item ( 0 );
+    return TP::currentItem() = item ( 0 );
 }
 
 
@@ -137,15 +126,15 @@ TP_FileListWidget::getNextItem()
 
     // Return the only item in the list
     if ( count() == 1 )
-        return currentItem = item ( 0 );
+        return TP::currentItem() = item ( 0 );
 
     // Return the next item
-    int currentRow = indexFromItem( currentItem ).row();
+    int currentRow = indexFromItem( TP::currentItem() ).row();
 
     if( currentRow == count() - 1 )
-        return currentItem = item ( 0 );
+        return TP::currentItem() = item ( 0 );
     else
-        return currentItem = item ( currentRow + 1 );
+        return TP::currentItem() = item ( currentRow + 1 );
 }
 
 
@@ -158,15 +147,15 @@ TP_FileListWidget::getPreviousItem()
 
     // Return the only item in the list
     if ( count() == 1 )
-        return currentItem = item ( 0 );
+        return TP::currentItem() = item ( 0 );
 
     // Return the previous item
-    int currentRow = indexFromItem( currentItem ).row();
+    int currentRow = indexFromItem( TP::currentItem() ).row();
 
     if( currentRow == 0 )
-        return currentItem = item ( count() - 1 );
+        return TP::currentItem() = item ( count() - 1 );
     else
-        return currentItem = item ( currentRow - 1 );
+        return TP::currentItem() = item ( currentRow - 1 );
 }
 
 
@@ -180,24 +169,24 @@ TP_FileListWidget::getNextItem_shuffle()
     // Return stored pointer
     if ( nextItem != nullptr )
     {
-        previousItem = currentItem;
-        currentItem = nextItem;
+        previousItem = TP::currentItem();
+        TP::currentItem() = nextItem;
         nextItem = nullptr;
-        return currentItem;
+        return TP::currentItem();
     }
 
     // Return the only item in the list
     if ( count() == 1 )
-        return currentItem = item ( 0 );
+        return TP::currentItem() = item ( 0 );
 
     // Return a random item
     int currentRow;
     int randomRow { -1 } ;
 
-    if( currentItem == nullptr )
+    if( TP::currentItem() == nullptr )
         currentRow = -1;
     else
-        currentRow = indexFromItem( currentItem ).row();
+        currentRow = indexFromItem( TP::currentItem() ).row();
 
     std::uniform_int_distribution<int> distribution { 0, count() - 1 } ;
 
@@ -205,8 +194,8 @@ TP_FileListWidget::getNextItem_shuffle()
         randomRow = distribution( TP::randomEngine() );
     while( randomRow == currentRow );
 
-    previousItem = currentItem;
-    return currentItem = item ( randomRow );
+    previousItem = TP::currentItem();
+    return TP::currentItem() = item ( randomRow );
 }
 
 QListWidgetItem *
@@ -219,24 +208,24 @@ TP_FileListWidget::getPreviousItem_shuffle()
     // Return stored pointer
     if ( previousItem != nullptr )
     {
-        nextItem = currentItem;
-        currentItem = previousItem;
+        nextItem = TP::currentItem();
+        TP::currentItem() = previousItem;
         previousItem = nullptr;
-        return currentItem;
+        return TP::currentItem();
     }
 
     // Return the only item in the list
     if ( count() == 1 )
-        return currentItem = item ( 0 );
+        return TP::currentItem() = item ( 0 );
 
     // Return a random item
     int currentRow;
     int randomRow { -1 } ;
 
-    if( currentItem == nullptr )
+    if( TP::currentItem() == nullptr )
         currentRow = -1;
     else
-        currentRow = indexFromItem( currentItem ).row();
+        currentRow = indexFromItem( TP::currentItem() ).row();
 
     std::uniform_int_distribution<int> distribution { 0, count() - 1 } ;
 
@@ -244,8 +233,8 @@ TP_FileListWidget::getPreviousItem_shuffle()
         randomRow = distribution( TP::randomEngine() );
     while( randomRow == currentRow );
 
-    nextItem = currentItem;
-    return currentItem = item ( randomRow );
+    nextItem = TP::currentItem();
+    return TP::currentItem() = item ( randomRow );
 }
 
 
@@ -298,8 +287,11 @@ TP_FileListWidget::slot_removeSelections()
     {
         if( previousItem == selectedItem )
             previousItem = nullptr;
-        if( currentItem == selectedItem )
-            currentItem = nullptr;
+        if( TP::currentItem() == selectedItem )
+        {
+            TP::currentItem() = nullptr;
+            emit signal_currentItemUnset();
+        }
         if( nextItem == selectedItem )
             nextItem = nullptr;
 
