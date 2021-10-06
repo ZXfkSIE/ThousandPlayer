@@ -246,12 +246,8 @@ TP_FileListWidget::modeIsNotShuffle()
 }
 
 
-// *****************************************************************
-// public slots
-// *****************************************************************
-
 void
-TP_FileListWidget::slot_refreshShowingTitle( int idx_Min, int idx_Max )
+TP_FileListWidget::refreshShowingTitle( int idx_Min, int idx_Max )
 {
     if ( idx_Max < 0 )
         return;
@@ -266,23 +262,54 @@ TP_FileListWidget::slot_refreshShowingTitle( int idx_Min, int idx_Max )
                     item(i)->data(TP::role_Description).value<QString>() );
 }
 
-// *****************************************************************
-// private slots
-// *****************************************************************
 
 void
-TP_FileListWidget::slot_clearAllItems()
+TP_FileListWidget::clearUnselectedItems()
 {
-    clear();
+    qsizetype numberOfSelectedItems { selectedItems().size() };
+
+    // No item is selected or all items are selected
+    if( numberOfSelectedItems == 0
+        ||
+        numberOfSelectedItems == count() )
+        return;
+
+    // Reverse selection
+    for( size_t i {}; i < count(); i++ )
+        item( i )->setSelected( ! item( i )->isSelected() );
+
+    slot_clearSelectedItems();
 }
 
-// *****************************************************************
-// private override
-// *****************************************************************
 
 void
-TP_FileListWidget::slot_removeSelections()
+TP_FileListWidget::clearAllItems()
 {
+    clear();
+
+    previousItem = nullptr;
+    nextItem = nullptr;
+
+    TP::currentItem() = nullptr;
+    emit signal_currentItemRemoved();
+}
+
+
+// *****************************************************************
+// public slots
+// *****************************************************************
+
+
+void
+TP_FileListWidget::slot_clearSelectedItems()
+{
+    // All items are selected
+    if( selectedItems().size() == count() )
+    {
+        clearAllItems();
+        return;
+    }
+
     for( QListWidgetItem *selectedItem : selectedItems() )
     {
         if( previousItem == selectedItem )
@@ -290,7 +317,8 @@ TP_FileListWidget::slot_removeSelections()
         if( TP::currentItem() == selectedItem )
         {
             TP::currentItem() = nullptr;
-            emit signal_currentItemUnset();
+            qDebug() << "[SIGNAL] TP_FileListWidget::signal_currentItemRemoved()";
+            emit signal_currentItemRemoved();
         }
         if( nextItem == selectedItem )
             nextItem = nullptr;
@@ -298,8 +326,14 @@ TP_FileListWidget::slot_removeSelections()
         delete takeItem( row(selectedItem) );
     }
 
-    slot_refreshShowingTitle ( 0, count() - 1 );
+    refreshShowingTitle ( 0, count() - 1 );
 }
+
+
+// *****************************************************************
+// private override
+// *****************************************************************
+
 
 void
 TP_FileListWidget::dropEvent(QDropEvent *event)
@@ -308,7 +342,7 @@ TP_FileListWidget::dropEvent(QDropEvent *event)
         b_isLeftButtonPressed = false;
 
     QListWidget::dropEvent(event);
-    slot_refreshShowingTitle ( 0, count() - 1 );
+    refreshShowingTitle ( 0, count() - 1 );
 }
 
 /* Disable all default list operations
@@ -331,7 +365,7 @@ void
 TP_FileListWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if( event->button() == Qt::LeftButton )
-        QListWidget::mouseDoubleClickEvent(event);
+        QListWidget::mouseDoubleClickEvent( event );
     else
         event->ignore();
 }
@@ -339,7 +373,7 @@ void
 TP_FileListWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if ( b_isLeftButtonPressed )
-        QListWidget::mouseMoveEvent(event);
+        QListWidget::mouseMoveEvent( event );
     else
         event->ignore();
 }
@@ -376,7 +410,7 @@ TP_FileListWidget::initializeMenu()
     act_remove = new QAction { tr("&Remove"), this };
 
     connect(act_remove, &QAction::triggered,
-            this,       &TP_FileListWidget::slot_removeSelections);
+            this,       &TP_FileListWidget::slot_clearSelectedItems);
 
     menu_rightClick = new TP_Menu { this };
     menu_rightClick->addAction( act_remove );

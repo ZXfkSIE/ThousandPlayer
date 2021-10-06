@@ -467,9 +467,12 @@
     </widget>
    </item>
   </layout>
-  <action name="action_addFile">
+  <action name="action_addFiles">
    <property name="text">
-    <string>&amp;File...</string>
+    <string>&amp;Files...</string>
+   </property>
+   <property name="toolTip">
+    <string>Files</string>
    </property>
   </action>
   <action name="action_addFolder">
@@ -480,6 +483,34 @@
   <action name="action_addURL">
    <property name="text">
     <string>&amp;URL...</string>
+   </property>
+  </action>
+  <action name="action_clearSelectedItems">
+   <property name="text">
+    <string>&amp;Selected items</string>
+   </property>
+  </action>
+  <action name="action_clearUnselectedItems">
+   <property name="text">
+    <string>&amp;Unselected items</string>
+   </property>
+   <property name="toolTip">
+    <string>Unselected items</string>
+   </property>
+  </action>
+  <action name="action_clearInaccessibleItems">
+   <property name="text">
+    <string>&amp;Inaccessible items</string>
+   </property>
+  </action>
+  <action name="action_clearAllItems">
+   <property name="text">
+    <string>&amp;All items</string>
+   </property>
+  </action>
+  <action name="action_deleteFromDisk">
+   <property name="text">
+    <string>&amp;Delete from disk!</string>
    </property>
   </action>
  </widget>

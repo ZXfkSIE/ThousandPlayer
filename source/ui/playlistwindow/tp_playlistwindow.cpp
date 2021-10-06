@@ -65,11 +65,15 @@ TP_PlaylistWindow::initializePlaylist()
         ui->playlistsWidget->setCurrentRow(0);
 
         currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
-        connectCurrentFileListWidget();
         vector_FileListWidget.push_back( currentFileListWidget );
         layout_FileListFrame->addWidget( currentFileListWidget );
 
         qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated -- list's name is " << currentFileListWidget->getListName();
+
+        // When current item is deleted
+        connect(currentFileListWidget,  &TP_FileListWidget::signal_currentItemRemoved,
+                this,                   &TP_PlaylistWindow::slot_currentItemRemoved);
+
         emit signal_newFilelistWidgetCreated( currentFileListWidget );
     }
 }
@@ -167,13 +171,21 @@ TP_PlaylistWindow::slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeTyp
 
 
 void
+TP_PlaylistWindow::slot_currentItemRemoved()
+{
+    qDebug() << "[SIGNAL] TP_PlaylistWindow::signal_currentItemRemoved";
+    emit signal_currentItemRemoved();
+}
+
+
+void
 TP_PlaylistWindow::on_pushButton_Close_clicked()
 {
     hide();
 }
 
 
-void TP_PlaylistWindow::on_action_addFile_triggered()
+void TP_PlaylistWindow::on_action_addFiles_triggered()
 {
     int originalCount { currentFileListWidget->count() };
 
@@ -249,7 +261,26 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
         currentFileListWidget->addItem( item );
     }
 
-    emit signal_refreshShowingTitle( originalCount - 1, currentFileListWidget->count() - 1 );
+    currentFileListWidget->refreshShowingTitle( originalCount - 1, currentFileListWidget->count() - 1 );
+}
+
+
+void
+TP_PlaylistWindow::on_action_clearSelectedItems_triggered()
+{
+    currentFileListWidget->slot_clearSelectedItems();
+}
+
+void
+TP_PlaylistWindow::on_action_clearUnselectedItems_triggered()
+{
+    currentFileListWidget->clearUnselectedItems();
+}
+
+void
+TP_PlaylistWindow::on_action_clearAllItems_triggered()
+{
+    currentFileListWidget->clearAllItems();
 }
 
 // *****************************************************************
@@ -257,16 +288,16 @@ void TP_PlaylistWindow::on_action_addFile_triggered()
 // *****************************************************************
 
 void
-TP_PlaylistWindow::showEvent(QShowEvent *event)
+TP_PlaylistWindow::showEvent( QShowEvent *event )
 {
-    QWidget::showEvent(event);
+    QWidget::showEvent( event );
     emit signal_shown();
 }
 
 void
-TP_PlaylistWindow::hideEvent(QHideEvent *event)
+TP_PlaylistWindow::hideEvent( QHideEvent *event )
 {
-    QWidget::hideEvent(event);
+    QWidget::hideEvent( event );
     emit signal_hidden();
 }
 
@@ -277,20 +308,32 @@ TP_PlaylistWindow::hideEvent(QHideEvent *event)
 void
 TP_PlaylistWindow::initializeMenu()
 {
-    // Initialize menu of "Add" button
+    // =============== Initialize menu of "Add" button ===============
     menu_Add = new TP_Menu { ui->pushButton_Add };
 
-    menu_Add->addAction( ui->action_addFile );
-    menu_Add->addAction( ui->action_addFolder );
-    menu_Add->addSeparator();
-    menu_Add->addAction( ui->action_addURL );
+    menu_Add->addAction( ui->action_addFiles );
+    /* ----- Pending implementation ----- */
+    // menu_Add->addAction( ui->action_addFolder );
+    // menu_Add->addSeparator();
+    // menu_Add->addAction( ui->action_addURL );
 
     ui->pushButton_Add->setMenu( menu_Add );
+
+    // =============== Initialize menu of "Remove" button ===============
+    menu_Remove = new TP_Menu { ui->pushButton_Remove };
+
+    menu_Remove->addAction( ui->action_clearSelectedItems );
+    menu_Remove->addAction( ui->action_clearUnselectedItems );
+    menu_Remove->addSeparator();
+    menu_Remove->addAction( ui->action_clearAllItems );
+
+    ui->pushButton_Remove->setMenu( menu_Remove );
 }
 
 void
 TP_PlaylistWindow::initializeConnection()
 {
+    // Window moving and resizing related
     connect(ui->frame_Title,        &TP_TitleBar::signal_moveTitleBar,
             this,                   &TP_PlaylistWindow::slot_moveTitleBar);
     connect(ui->frame_Title,        &TP_TitleBar::signal_leftButtonReleased,
@@ -303,22 +346,6 @@ TP_PlaylistWindow::initializeConnection()
             this,                   &TP_PlaylistWindow::slot_resizeWindow);
     connect(ui->frame_Bottom,       &TP_PlaylistBottomFrame::signal_leftButtonReleased,
             this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
-}
-
-void
-TP_PlaylistWindow::disconnectCurrentFileListWidget()
-{
-    if(currentFileListWidget != nullptr)
-        disconnect(this,                    &TP_PlaylistWindow::signal_refreshShowingTitle,
-                   currentFileListWidget,   &TP_FileListWidget::slot_refreshShowingTitle);
-}
-
-void
-TP_PlaylistWindow::connectCurrentFileListWidget()
-{
-    if(currentFileListWidget != nullptr)
-        connect(this,                    &TP_PlaylistWindow::signal_refreshShowingTitle,
-                currentFileListWidget,   &TP_FileListWidget::slot_refreshShowingTitle);
 }
 
 void

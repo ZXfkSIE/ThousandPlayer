@@ -135,6 +135,12 @@ TP_MainClass::slot_restoreWindow()
     slot_leftButtonReleased();
 }
 
+void
+TP_MainClass::slot_activateWindow()
+{
+    if( playlistWindow->isVisible() )
+        playlistWindow->raise();
+}
 
 void
 TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
@@ -602,7 +608,6 @@ TP_MainClass::slot_itemDoubleClicked( QListWidgetItem *I_item )
     // Double clicking list item interrupts the playing order.
     // Therefore, previous and next items need to be initialized.
     playlistWindow->slot_modeIsNotShuffle();
-
     playItem( I_item );
 }
 void
@@ -653,46 +658,12 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 {
     TP::playbackState() = newState;
 
-    QString path {}, extension {};
-    TP::SourceType sourceType {};
-
-    if( TP::currentItem() != nullptr )
-    {
-        sourceType = static_cast<TP::SourceType>( TP::currentItem()->data( TP::role_SourceType ).toInt() );
-
-        if( sourceType == TP::singleFile )
-        {
-            path = TP::currentItem()->data( TP::role_URL ).value<QUrl>().toLocalFile();
-            extension = TP::extension ( path );
-        }
-    }
-
     switch ( newState )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[Media Player] Playback state changed to PlayingState.";
 
         mainWindow->setPlay();
-
-        if( TP::currentItem() != nullptr )
-        {
-            mainWindow->setAudioInformation( TP::currentItem() );
-
-            if( sourceType == TP::singleFile )
-            {
-                if( extension == QString( "flac" ) )
-                    mainWindow->setCover(
-                                getCoverImageFromFLAC( path )
-                                );
-                else
-                    mainWindow->setCover(
-                                getCoverImageFromID3V2( path )
-                                );
-            }
-
-            playlistWindow->setCurrentItemBold();
-        }
-
         break;
 
     case QMediaPlayer::PausedState:
@@ -704,7 +675,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     case QMediaPlayer::StoppedState:
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
         mainWindow->setStop();
-        mainWindow->setCover( QImage {} );
+        mainWindow->setCover( {} );
         playlistWindow->unsetCurrentItemBold();
 
         break;
@@ -715,6 +686,20 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 void
 TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 {
+    QString path {}, extension {};
+    TP::SourceType sourceType {};
+
+    if( TP::currentItem() != nullptr )
+    {
+        TP::SourceType sourceType = static_cast<TP::SourceType>( TP::currentItem()->data( TP::role_SourceType ).toInt() );
+
+        if( sourceType == TP::singleFile )
+        {
+            path = TP::currentItem()->data( TP::role_URL ).value<QUrl>().toLocalFile();
+            extension = TP::extension ( path );
+        }
+    }
+
     switch ( status )
     {
     case QMediaPlayer::NoMedia :
@@ -739,6 +724,24 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 
     case QMediaPlayer::BufferedMedia :
         qDebug("[Media Player] Media status changed to BufferedMedia.");
+        if( TP::currentItem() != nullptr )
+        {
+            mainWindow->setAudioInformation( TP::currentItem() );
+
+            if( sourceType == TP::singleFile )
+            {
+                if( extension == QString( "flac" ) )
+                    mainWindow->setCover(
+                                getCoverImageFromFLAC( path )
+                                );
+                else
+                    mainWindow->setCover(
+                                getCoverImageFromID3V2( path )
+                                );
+            }
+
+            playlistWindow->setCurrentItemBold();
+        }
         break;
 
     case QMediaPlayer::EndOfMedia :
@@ -811,6 +814,8 @@ TP_MainClass::initializeConnection()
             this,           &TP_MainClass::slot_nextButtonPushed);
     connect(mainWindow,     &TP_MainWindow::signal_previousButtonPushed,
             this,           &TP_MainClass::slot_previousButtonPushed);
+    connect(playlistWindow, &TP_PlaylistWindow::signal_currentItemRemoved,
+            mediaPlayer,    &QMediaPlayer::stop);
 
     // Volume control related
     connect(audioOutput,    &QAudioOutput::volumeChanged,
@@ -823,6 +828,8 @@ TP_MainClass::initializeConnection()
             this,           &TP_MainClass::slot_minimizeWindow);
     connect(mainWindow,     &TP_MainWindow::signal_restoreWindow,
             this,           &TP_MainClass::slot_restoreWindow);
+    connect(mainWindow,     &TP_MainWindow::signal_activateWindow,
+            this,           &TP_MainClass::slot_activateWindow);
 
     // Windows moving & resizing related
     connect(mainWindow,     &TP_MainWindow::signal_moveWindow,
@@ -858,7 +865,7 @@ void
 TP_MainClass::unsnapInvisibleWindows()
 {
     if( !playlistWindow->isVisible() )
-        for( unsigned i {}; i < 4; i++ )
+        for( unsigned i {}; i < 3; i++ )
         {
             snapStatus [i][TP::playlistWindow] = false;
             snapStatus [TP::playlistWindow][i] = false;
@@ -922,7 +929,7 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
 {
     // The search always start from main window.
     unsigned idx_Current {};
-    bool isVisited [4] {false};
+    bool isVisited [3] {false};
     std::deque <unsigned> queue {};
 
     isVisited [ TP::mainWindow ] = true;
@@ -933,7 +940,7 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
         idx_Current = queue.front();
         queue.pop_front();
 
-        for( unsigned i { 1 }; i < 4; i++ )
+        for( unsigned i { 1 }; i < 3; i++ )
         {
             if( ! isVisited [i] && snapStatus [idx_Current][i] )
             {

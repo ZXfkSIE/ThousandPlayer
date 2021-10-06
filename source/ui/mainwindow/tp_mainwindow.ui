@@ -1046,9 +1046,6 @@ border: 0px;</string>
         <property name="mouseTracking">
          <bool>true</bool>
         </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(0, 0, 0);</string>
-        </property>
         <property name="text">
          <string>Playlist</string>
         </property>
@@ -1083,9 +1080,6 @@ border: 0px;</string>
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(0, 0, 0);</string>
         </property>
         <property name="text">
          <string>Lyrics</string>
@@ -1125,6 +1119,11 @@ border: 0px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>TP_PushButton</class>
+   <extends>QPushButton</extends>
+   <header>tp_pushbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>TP_VolumeIcon</class>
    <extends>QLabel</extends>
    <header>tp_volumeicon.h</header>
@@ -1138,11 +1137,6 @@ border: 0px;</string>
    <class>TP_VolumeSlider</class>
    <extends>QSlider</extends>
    <header>tp_volumeslider.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_PushButton</class>
-   <extends>QPushButton</extends>
-   <header>tp_pushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>TP_CoverLabel</class>

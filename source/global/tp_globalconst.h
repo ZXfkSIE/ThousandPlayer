@@ -8,8 +8,7 @@ namespace TP
 
 static const unsigned mainWindow        = 0;
 static const unsigned playlistWindow    = 1;
-static const unsigned equalizerWindow   = 2;
-static const unsigned lyricsWindow      = 3;
+static const unsigned lyricsWindow      = 2;
 
 static const int borderSize = 5;
 static const int snapRange  = 8;

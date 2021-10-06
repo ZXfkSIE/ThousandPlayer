@@ -35,9 +35,10 @@ TP_CoverViewer::setImage( const QPixmap &I_pixmap )
     if( I_pixmap.isNull() )
         pixmap = {};
     else
+    {
         pixmap = I_pixmap;
-
-    on_pushButton_OriginalSize_clicked();
+        on_pushButton_OriginalSize_clicked();
+    }
 }
 
 // *****************************************************************

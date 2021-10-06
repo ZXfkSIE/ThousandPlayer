@@ -32,6 +32,7 @@ public:
 signals:
     void signal_minimizeWindow();
     void signal_restoreWindow();
+    void signal_activateWindow();
     void signal_moveWindow( QWidget *window, QRect newGeometry );
     void signal_leftButtonReleased();
 

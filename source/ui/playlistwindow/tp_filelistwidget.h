@@ -24,16 +24,15 @@ public:
     QListWidgetItem * getPreviousItem_shuffle();
 
     void modeIsNotShuffle();
+    void refreshShowingTitle(int idx_Min, int idx_Max);
+    void clearUnselectedItems();
+    void clearAllItems();
 
 signals:
-    void signal_currentItemUnset();
+    void signal_currentItemRemoved();
 
 public slots:
-    void slot_refreshShowingTitle(int idx_Min, int idx_Max);
-    void slot_clearAllItems();
-
-private slots:
-    void slot_removeSelections();
+    void slot_clearSelectedItems();
 
 private:
     void dropEvent(QDropEvent *event) override;

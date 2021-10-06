@@ -63,6 +63,9 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     }
 
     setAudioPropertyLabels();
+
+    // Pending implementation
+    ui->pushButton_Lyrics->hide();
 }
 
 
@@ -129,6 +132,7 @@ TP_MainWindow::setVolumeSliderValue(int value)
 {
     ui->slider_Volume->setValue( value );
 }
+
 
 void
 TP_MainWindow::setCover( const QImage &I_image )
@@ -264,7 +268,7 @@ TP_MainWindow::on_pushButton_Minimize_clicked()
 void
 TP_MainWindow::on_pushButton_Playlist_clicked()
 {
-    if(b_isPlaylistWindowShown)
+    if( b_isPlaylistWindowShown )
         emit signal_hidePlaylistWindow();
     else
         emit signal_openPlaylistWindow();
@@ -351,6 +355,7 @@ TP_MainWindow::changeEvent( QEvent *event )
 {
     if( event->type() == QEvent::WindowStateChange )
     {
+        qDebug()<<"[EVENT] TP_MainWindow::changeEvent - QEvent::WindowStateChange";
         if( isMinimized() )
             emit signal_minimizeWindow();
         else
@@ -358,8 +363,9 @@ TP_MainWindow::changeEvent( QEvent *event )
     }
     if( event->type() == QEvent::ActivationChange )
     {
+        qDebug()<<"[EVENT] TP_MainWindow::changeEvent - QEvent::ActivationChange";
         if( isActiveWindow() )
-            emit signal_restoreWindow();
+            emit signal_activateWindow();
     }
 }
 

@@ -45,6 +45,8 @@ signals:
     void signal_newFilelistWidgetCreated( TP_FileListWidget *I_fileListWidget );
     void signal_refreshShowingTitle( int idx_Min, int idx_Max );
 
+    void signal_currentItemRemoved();
+
 public slots:
     void slot_modeIsNotShuffle();
 
@@ -54,8 +56,15 @@ private slots:
 
     void slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType );
 
+    void slot_currentItemRemoved();
+
     void on_pushButton_Close_clicked();
-    void on_action_addFile_triggered();
+
+    void on_action_addFiles_triggered();
+
+    void on_action_clearSelectedItems_triggered();
+    void on_action_clearUnselectedItems_triggered();
+    void on_action_clearAllItems_triggered();
 
 private:
     Ui::TP_PlaylistWindow *ui;
@@ -65,8 +74,6 @@ private:
 
     void initializeMenu();
     void initializeConnection();
-    void connectCurrentFileListWidget();
-    void disconnectCurrentFileListWidget();
 
     void storePlaylist();
 
@@ -75,7 +82,8 @@ private:
     TP_FileListWidget *currentFileListWidget;
     std::vector<TP_FileListWidget *> vector_FileListWidget;
 
-    TP_Menu     *menu_Add;
+    TP_Menu *menu_Add;
+    TP_Menu *menu_Remove;
 };
 
 #endif // TP_PLAYLIST_H
