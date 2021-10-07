@@ -7,6 +7,8 @@
 
 #include <QMouseEvent>
 
+#include <filesystem>
+
 TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
     QListWidget     { parent }
   , previousItem    { nullptr }
@@ -14,16 +16,16 @@ TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
   , listName        { I_qstr }
   , b_isConnected   { false }
 {
-    setMouseTracking(true);
+    setMouseTracking( true );
 
-    setDragDropMode(QAbstractItemView::InternalMove);
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setDragDropMode( QAbstractItemView::InternalMove );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     QFont currentFont = font();
-    currentFont.setPointSize(10);
-    setFont(currentFont);
+    currentFont.setPointSize( 10 );
+    setFont( currentFont );
 
-    setStyleSheet("color: rgb(255, 255, 255);");
+    setStyleSheet( "color: rgb(255, 255, 255);" );
 
     initializeMenu();
 }
@@ -283,13 +285,38 @@ TP_FileListWidget::clearUnselectedItems()
 
 
 void
+TP_FileListWidget::clearInaccessibleItems()
+{
+    for( size_t i {}; i < count(); i++ )
+    {
+        switch ( item( i )->data( TP::role_SourceType ).value<TP::SourceType>() )
+        {
+        case TP::singleFile :
+            if ( ! std::filesystem::exists(
+                     item( i )->data( TP::role_URL ).value<QUrl>().toLocalFile().toLocal8Bit().constData()
+                     )
+                 )
+            {
+                delete takeItem( i );
+                i--;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+
+    refreshShowingTitle ( 0, count() - 1 );
+}
+
+
+void
 TP_FileListWidget::clearAllItems()
 {
     clear();
 
     previousItem = nullptr;
     nextItem = nullptr;
-
     TP::currentItem() = nullptr;
     emit signal_currentItemRemoved();
 }
@@ -317,13 +344,12 @@ TP_FileListWidget::slot_clearSelectedItems()
         if( TP::currentItem() == selectedItem )
         {
             TP::currentItem() = nullptr;
-            qDebug() << "[SIGNAL] TP_FileListWidget::signal_currentItemRemoved()";
             emit signal_currentItemRemoved();
         }
         if( nextItem == selectedItem )
             nextItem = nullptr;
 
-        delete takeItem( row(selectedItem) );
+        delete takeItem( row( selectedItem ) );
     }
 
     refreshShowingTitle ( 0, count() - 1 );

@@ -68,12 +68,11 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
     ui->pushButton_Lyrics->hide();
 }
 
-
 TP_MainWindow::~TP_MainWindow()
 {
+    TP::config().setVolume( ui->slider_Volume->value() );
     delete ui;
 }
-
 
 void
 TP_MainWindow::setPlay()
@@ -128,13 +127,6 @@ TP_MainWindow::setFileNotFound()
 
 
 void
-TP_MainWindow::setVolumeSliderValue(int value)
-{
-    ui->slider_Volume->setValue( value );
-}
-
-
-void
 TP_MainWindow::setCover( const QImage &I_image )
 {
     if( I_image.isNull() )
@@ -149,13 +141,21 @@ TP_MainWindow::setCover( const QImage &I_image )
 
 
 void
-TP_MainWindow::slot_changeVolumeSlider(float linearVolume)
+TP_MainWindow::slot_setVolumeSliderValue( int I_volume )
 {
-    float logarithmicVolume = QAudio::convertVolume(linearVolume,
-                                                    QAudio::LinearVolumeScale,
-                                                    QAudio::LogarithmicVolumeScale);
+    ui->slider_Volume->setValue( I_volume );
+}
 
-    ui->slider_Volume->setValue( std::round(logarithmicVolume * 100) );
+
+void
+TP_MainWindow::slot_changeVolumeSliderFromLinearVolume( float linearVolume )
+{
+    float logarithmicVolume =
+            QAudio::convertVolume( linearVolume,
+                                   QAudio::LinearVolumeScale,
+                                   QAudio::LogarithmicVolumeScale );
+
+    ui->slider_Volume->setValue( std::round( logarithmicVolume * 100 ) );
 }
 
 
@@ -176,7 +176,7 @@ TP_MainWindow::slot_playlistWindowHidden()
 
 
 void
-TP_MainWindow::slot_updateDuration(qint64 ms)
+TP_MainWindow::slot_updateDuration( qint64 ms )
 {
     qint64 second = ms / 1000;                       // convert ms to s
     if ( !ui->slider_Time->isSliderDown() )
@@ -221,10 +221,11 @@ TP_MainWindow::slot_timeSliderPressed( int second )
 
 
 void
-TP_MainWindow::slot_volumeSliderChanged( int volume )
+TP_MainWindow::slot_volumeSliderChanged( int I_volume )
 {
-    ui->label_VolumeIcon->setIcon( volume );
-    QToolTip::showText( QCursor::pos(), QString::number(volume), nullptr, {}, 1500);
+    // qDebug() << "[SLOT] TP_MainWindow::slot_volumeSliderChanged(" << I_volume << ")";
+    ui->label_VolumeIcon->setIcon( I_volume );
+    QToolTip::showText( QCursor::pos(), QString::number( I_volume ), nullptr, {}, 1500);
     emit signal_volumeSliderValueChanged(
                 QAudio::convertVolume(ui->slider_Volume->value() / 100.0,
                                       QAudio::LogarithmicVolumeScale,
@@ -355,17 +356,22 @@ TP_MainWindow::changeEvent( QEvent *event )
 {
     if( event->type() == QEvent::WindowStateChange )
     {
-        qDebug()<<"[EVENT] TP_MainWindow::changeEvent - QEvent::WindowStateChange";
         if( isMinimized() )
+        {
+            // qDebug() << "[SIGNAL] TP_MainWindow::signal_minimizeWindow()";
             emit signal_minimizeWindow();
+        }
         else
+        {
+            // qDebug() << "[SIGNAL] TP_MainWindow::signal_restoreWindow()";
             emit signal_restoreWindow();
+        }
     }
-    if( event->type() == QEvent::ActivationChange )
+
+    if( event->type() == QEvent::ActivationChange && isActiveWindow() )
     {
-        qDebug()<<"[EVENT] TP_MainWindow::changeEvent - QEvent::ActivationChange";
-        if( isActiveWindow() )
-            emit signal_activateWindow();
+        // qDebug() << "[SIGNAL] TP_MainWindow::signal_activateWindow()";
+        emit signal_activateWindow();
     }
 }
 
@@ -485,8 +491,10 @@ TP_MainWindow::initializeConnection()
     connect(ui->slider_Time,    &TP_TimeSlider::signal_mouseReleased,
             this,               &TP_MainWindow::slot_timeSliderPressed);
 
-    connect(ui->slider_Volume,  &TP_VolumeSlider::valueChanged,
-            this,               &TP_MainWindow::slot_volumeSliderChanged);
+    connect(ui->slider_Volume,      &TP_VolumeSlider::valueChanged,
+            this,                   &TP_MainWindow::slot_volumeSliderChanged);
+    connect(ui->label_VolumeIcon,   &TP_VolumeIcon::signal_setVolume,
+            this,                   &TP_MainWindow::slot_setVolumeSliderValue);
 }
 
 

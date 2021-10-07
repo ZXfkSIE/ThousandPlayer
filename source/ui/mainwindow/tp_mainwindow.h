@@ -25,8 +25,6 @@ public:
     void setAudioInformation( QListWidgetItem *I_item );
     void setFileNotFound();
 
-    void setVolumeSliderValue( int value );
-
     void setCover( const QImage &I_image );
 
 signals:
@@ -53,7 +51,8 @@ signals:
     void signal_modeIsNotShuffle();
 
 public slots:
-    void slot_changeVolumeSlider( float volume );
+    void slot_setVolumeSliderValue( int value );
+    void slot_changeVolumeSliderFromLinearVolume( float volume );
 
     void slot_playlistWindowShown();
     void slot_playlistWindowHidden();

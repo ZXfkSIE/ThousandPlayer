@@ -26,6 +26,7 @@ public:
     void modeIsNotShuffle();
     void refreshShowingTitle(int idx_Min, int idx_Max);
     void clearUnselectedItems();
+    void clearInaccessibleItems();
     void clearAllItems();
 
 signals:

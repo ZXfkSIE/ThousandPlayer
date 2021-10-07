@@ -50,10 +50,15 @@ TP_MainClass::TP_MainClass() :
     initializeConnection();
 
     mainWindow->show();
-    mainWindow->setVolumeSliderValue( 50 );
+
+    // If the volume is 0, then the valueChanged signal will not be triggered
+    // since the original value is 0.
+    if( ! TP::config().getVolume() )
+        mainWindow->slot_setVolumeSliderValue( 50 );
+
+    mainWindow->slot_setVolumeSliderValue( TP::config().getVolume() );
 
     playlistWindow->initializePlaylist();       // Must be executed before showing
-    playlistWindow->show();
 }
 
 
@@ -62,8 +67,17 @@ TP_MainClass::~TP_MainClass()
     QScreen *mainWindowScreen = QApplication::screenAt( mainWindow->pos() );
     TP::config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
 
-    QScreen *playlistWindowScreen = QApplication::screenAt( playlistWindow->pos() );
-    TP::config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
+    if( playlistWindow->isVisible() )
+    {
+        QScreen *playlistWindowScreen = QApplication::screenAt( playlistWindow->pos() );
+        TP::config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
+        TP::config().setPlaylistWindowShown( true );
+    }
+    else
+    {
+        TP::config().setPlaylistWindowPosition( QPoint { 100, 340 } );
+        TP::config().setPlaylistWindowShown( false );
+    }
 
     delete mainWindow;
     delete playlistWindow;
@@ -100,8 +114,20 @@ void
 TP_MainClass::slot_initializePosition()
 {
     QScreen *currentScreen = QApplication::screenAt( QCursor::pos() );
+
     mainWindow->move( TP::config().getMainWindowPosition() + currentScreen->geometry().topLeft() );
+    mainWindow->raise();
+
     playlistWindow->move( TP::config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft() );
+    if ( TP::config().isPlaylistWindowShown() )
+    {
+        playlistWindow->show();
+        playlistWindow->raise();
+    }
+    else
+        mainWindow->slot_playlistWindowHidden();
+
+    // Refresh snapping status
     slot_leftButtonReleased();
 }
 
@@ -819,7 +845,7 @@ TP_MainClass::initializeConnection()
 
     // Volume control related
     connect(audioOutput,    &QAudioOutput::volumeChanged,
-            mainWindow,     &TP_MainWindow::slot_changeVolumeSlider);
+            mainWindow,     &TP_MainWindow::slot_changeVolumeSliderFromLinearVolume);
     connect(mainWindow,     &TP_MainWindow::signal_volumeSliderValueChanged,
             audioOutput,    &QAudioOutput::setVolume);
 

@@ -65,6 +65,7 @@ private slots:
     void on_action_clearSelectedItems_triggered();
     void on_action_clearUnselectedItems_triggered();
     void on_action_clearAllItems_triggered();
+    void on_action_clearInaccessibleItems_triggered();
 
 private:
     Ui::TP_PlaylistWindow *ui;

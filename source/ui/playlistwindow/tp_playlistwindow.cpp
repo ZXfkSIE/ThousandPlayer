@@ -271,11 +271,13 @@ TP_PlaylistWindow::on_action_clearSelectedItems_triggered()
     currentFileListWidget->slot_clearSelectedItems();
 }
 
+
 void
 TP_PlaylistWindow::on_action_clearUnselectedItems_triggered()
 {
     currentFileListWidget->clearUnselectedItems();
 }
+
 
 void
 TP_PlaylistWindow::on_action_clearAllItems_triggered()
@@ -283,9 +285,17 @@ TP_PlaylistWindow::on_action_clearAllItems_triggered()
     currentFileListWidget->clearAllItems();
 }
 
+
+void TP_PlaylistWindow::on_action_clearInaccessibleItems_triggered()
+{
+    currentFileListWidget->clearInaccessibleItems();
+}
+
+
 // *****************************************************************
 // private override
 // *****************************************************************
+
 
 void
 TP_PlaylistWindow::showEvent( QShowEvent *event )
@@ -294,6 +304,7 @@ TP_PlaylistWindow::showEvent( QShowEvent *event )
     emit signal_shown();
 }
 
+
 void
 TP_PlaylistWindow::hideEvent( QHideEvent *event )
 {
@@ -301,9 +312,11 @@ TP_PlaylistWindow::hideEvent( QHideEvent *event )
     emit signal_hidden();
 }
 
+
 // *****************************************************************
 // private
 // *****************************************************************
+
 
 void
 TP_PlaylistWindow::initializeMenu()
@@ -325,10 +338,13 @@ TP_PlaylistWindow::initializeMenu()
     menu_Remove->addAction( ui->action_clearSelectedItems );
     menu_Remove->addAction( ui->action_clearUnselectedItems );
     menu_Remove->addSeparator();
+    menu_Remove->addAction( ui->action_clearInaccessibleItems );
+    menu_Remove->addSeparator();
     menu_Remove->addAction( ui->action_clearAllItems );
 
     ui->pushButton_Remove->setMenu( menu_Remove );
 }
+
 
 void
 TP_PlaylistWindow::initializeConnection()
@@ -347,6 +363,7 @@ TP_PlaylistWindow::initializeConnection()
     connect(ui->frame_Bottom,       &TP_PlaylistBottomFrame::signal_leftButtonReleased,
             this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
 }
+
 
 void
 TP_PlaylistWindow::storePlaylist()

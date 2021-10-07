@@ -2,10 +2,7 @@
 #define TP_COVERVIEWER_H
 
 #include <QWidget>
-
-namespace Ui {
-class TP_CoverViewer;
-}
+namespace Ui { class TP_CoverViewer; }
 
 class TP_CoverViewer : public QWidget
 {

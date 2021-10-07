@@ -90,7 +90,8 @@ TP_CoverLabel::mouseDoubleClickEvent( QMouseEvent *event )
 void
 TP_CoverLabel::contextMenuEvent( QContextMenuEvent *event )
 {
-    menu_rightClick->exec( event->globalPos() );
+    if( act_viewCoverImage->isEnabled() )
+        menu_rightClick->exec( event->globalPos() );
 }
 
 

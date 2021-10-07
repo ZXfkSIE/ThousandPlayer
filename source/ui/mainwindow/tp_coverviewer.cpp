@@ -3,7 +3,7 @@
 
 #include <QStyle>
 
-TP_CoverViewer::TP_CoverViewer(QWidget *parent) :
+TP_CoverViewer::TP_CoverViewer( QWidget *parent ) :
     QWidget     { parent }
   , ui          { new Ui::TP_CoverViewer }
   , pixmap      {}
