@@ -688,8 +688,8 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[Media Player] Playback state changed to PlayingState.";
-
         mainWindow->setPlay();
+
         break;
 
     case QMediaPlayer::PausedState:
@@ -700,6 +700,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 
     case QMediaPlayer::StoppedState:
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
+        mediaPlayer->setSource( {} );               // Cease I/O operations of current file
         mainWindow->setStop();
         mainWindow->setCover( {} );
         playlistWindow->unsetCurrentItemBold();
@@ -717,7 +718,9 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 
     if( TP::currentItem() != nullptr )
     {
-        TP::SourceType sourceType = static_cast<TP::SourceType>( TP::currentItem()->data( TP::role_SourceType ).toInt() );
+        TP::SourceType sourceType {
+            static_cast<TP::SourceType>( TP::currentItem()->data( TP::role_SourceType ).toInt() )
+        };
 
         if( sourceType == TP::singleFile )
         {
@@ -1006,7 +1009,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
     QUrl url { I_item->data( TP::role_URL ).value<QUrl>() };
     qDebug() << "Start playing local file URL: " << url;
 
-    if( std::filesystem::exists( url.toLocalFile().toLocal8Bit().constData() ) )
+    if( std::filesystem::exists( url.toLocalFile().toStdWString() ) )
     {
         playlistWindow->setCurrentItem( TP::currentItem() = I_item );
         mediaPlayer->setSource( url );

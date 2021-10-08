@@ -28,6 +28,7 @@ public:
     void clearUnselectedItems();
     void clearInaccessibleItems();
     void clearAllItems();
+    void deleteSelectedItems();
 
 signals:
     void signal_currentItemRemoved();
@@ -36,12 +37,12 @@ public slots:
     void slot_clearSelectedItems();
 
 private:
-    void dropEvent(QDropEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseDoubleClickEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
+    void dropEvent( QDropEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
     void initializeMenu();
 

@@ -54,7 +54,7 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
 void
 TP_PlaylistWindow::initializePlaylist()
 {
-    if( std::filesystem::exists( TP::playlistFilePath.toLocal8Bit().constData() ) )
+    if( std::filesystem::exists( TP::playlistFilePath.toStdWString() ) )
     {
         qDebug() << "Existing playlist " << TP::playlistFilePath << " found.";
     }
@@ -286,11 +286,17 @@ TP_PlaylistWindow::on_action_clearAllItems_triggered()
 }
 
 
-void TP_PlaylistWindow::on_action_clearInaccessibleItems_triggered()
+void
+TP_PlaylistWindow::on_action_clearInaccessibleItems_triggered()
 {
     currentFileListWidget->clearInaccessibleItems();
 }
 
+void
+TP_PlaylistWindow::on_action_deleteFromDisk_triggered()
+{
+    currentFileListWidget->deleteSelectedItems();
+}
 
 // *****************************************************************
 // private override
@@ -339,8 +345,9 @@ TP_PlaylistWindow::initializeMenu()
     menu_Remove->addAction( ui->action_clearUnselectedItems );
     menu_Remove->addSeparator();
     menu_Remove->addAction( ui->action_clearInaccessibleItems );
-    menu_Remove->addSeparator();
     menu_Remove->addAction( ui->action_clearAllItems );
+    menu_Remove->addSeparator();
+    menu_Remove->addAction( ui->action_deleteFromDisk );
 
     ui->pushButton_Remove->setMenu( menu_Remove );
 }
@@ -368,6 +375,7 @@ TP_PlaylistWindow::initializeConnection()
 void
 TP_PlaylistWindow::storePlaylist()
 {
-    if( !std::filesystem::exists( TP::configDirectoryPath.toLocal8Bit().constData() ) )
-        std::filesystem::create_directory( TP::configDirectoryPath.toLocal8Bit().constData() );
+    if( !std::filesystem::exists( TP::configDirectoryPath.toStdWString() ) )
+        std::filesystem::create_directory( TP::configDirectoryPath.toStdWString() );
 }
+

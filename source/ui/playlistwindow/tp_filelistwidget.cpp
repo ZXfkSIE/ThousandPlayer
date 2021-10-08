@@ -5,9 +5,9 @@
 
 #include "tp_menu.h"
 
+#include <QFile>
+#include <QMessageBox>
 #include <QMouseEvent>
-
-#include <filesystem>
 
 TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
     QListWidget     { parent }
@@ -293,7 +293,7 @@ TP_FileListWidget::clearInaccessibleItems()
         {
         case TP::singleFile :
             if ( ! std::filesystem::exists(
-                     item( i )->data( TP::role_URL ).value<QUrl>().toLocalFile().toLocal8Bit().constData()
+                     item( i )->data( TP::role_URL ).value<QUrl>().toLocalFile().toStdWString()
                      )
                  )
             {
@@ -322,6 +322,74 @@ TP_FileListWidget::clearAllItems()
 }
 
 
+void
+TP_FileListWidget::deleteSelectedItems()
+{
+    qsizetype numberOfSelectedItems { selectedItems().size() };
+
+    // No item is selected
+    if( numberOfSelectedItems == 0 )
+        return;
+
+    QMessageBox messageBox (
+                QMessageBox::Warning,                           // QMessageBox::Icon icon
+                tr( "Warning" ),                                // const QString &title
+                tr( "Are you really want to delete"
+                    "<br>%1"
+                    "<br>from the <b>DISK</b>?"
+                    "<br>NOTE: remote URLs will not be deleted." )
+                .arg( numberOfSelectedItems == 1
+                      ? QString( "\"%1\"" ).arg( selectedItems()[0]->data( TP::role_FileName ).value< QString >() )
+                      : tr( "these %1 items" ).arg( numberOfSelectedItems )
+                      ),                                        // const QString &text
+                QMessageBox::Yes | QMessageBox::No,             // QMessageBox::StandardButtons buttons
+                this                                            // QWidget *parent
+    );
+
+    if( messageBox.exec() == QMessageBox::Yes )
+    {
+        size_t failureCount {};
+
+        for( QListWidgetItem *selectedItem : selectedItems() )
+        {
+            if( previousItem == selectedItem )
+                previousItem = nullptr;
+            if( TP::currentItem() == selectedItem )
+            {
+                TP::currentItem() = nullptr;
+                emit signal_currentItemRemoved();
+            }
+            if( nextItem == selectedItem )
+                nextItem = nullptr;
+
+            TP::SourceType sourceType {
+                static_cast<TP::SourceType>( selectedItem->data( TP::role_SourceType ).toInt() )
+            };
+
+            if( sourceType == TP::singleFile )
+            {
+                QFile qFile { selectedItem->data( TP::role_URL ).value< QUrl >().toLocalFile() };
+
+                if( ! qFile.moveToTrash() )
+                    failureCount++;
+            }
+
+            delete takeItem( row( selectedItem ) );
+        }
+
+        if( failureCount )
+            QMessageBox::warning(
+                        this,                       // QWidget *parent
+                        tr( "Warning" ),            // const QString &title
+                        tr( "Failed to delete %1 items.\nAnyway, they have been removed from the list." )
+                        .arg( failureCount )        // const QString &text
+                        );
+
+        refreshShowingTitle ( 0, count() - 1 );
+    }
+}
+
+
 // *****************************************************************
 // public slots
 // *****************************************************************
@@ -330,8 +398,14 @@ TP_FileListWidget::clearAllItems()
 void
 TP_FileListWidget::slot_clearSelectedItems()
 {
+    qsizetype numberOfSelectedItems { selectedItems().size() };
+
+    // No item is selected
+    if( numberOfSelectedItems == 0 )
+        return;
+
     // All items are selected
-    if( selectedItems().size() == count() )
+    if( numberOfSelectedItems == count() )
     {
         clearAllItems();
         return;
@@ -367,7 +441,7 @@ TP_FileListWidget::dropEvent(QDropEvent *event)
     if ( b_isLeftButtonPressed )
         b_isLeftButtonPressed = false;
 
-    QListWidget::dropEvent(event);
+    QListWidget::dropEvent( event );
     refreshShowingTitle ( 0, count() - 1 );
 }
 
@@ -376,33 +450,37 @@ TP_FileListWidget::dropEvent(QDropEvent *event)
  * triggered by buttons other than left button. */
 
 void
-TP_FileListWidget::mousePressEvent(QMouseEvent *event)
+TP_FileListWidget::mousePressEvent( QMouseEvent *event )
 {
     if( event->button() == Qt::LeftButton )
     {
         b_isLeftButtonPressed = true;
-        QListWidget::mousePressEvent(event);
+        QListWidget::mousePressEvent( event );
     }
     else
         event->ignore();
 }
 
+
 void
-TP_FileListWidget::mouseDoubleClickEvent(QMouseEvent *event)
+TP_FileListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
     if( event->button() == Qt::LeftButton )
         QListWidget::mouseDoubleClickEvent( event );
     else
         event->ignore();
 }
+
+
 void
-TP_FileListWidget::mouseMoveEvent(QMouseEvent *event)
+TP_FileListWidget::mouseMoveEvent( QMouseEvent *event )
 {
     if ( b_isLeftButtonPressed )
         QListWidget::mouseMoveEvent( event );
     else
         event->ignore();
 }
+
 
 void
 TP_FileListWidget::mouseReleaseEvent(QMouseEvent *event)
