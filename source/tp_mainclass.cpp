@@ -603,15 +603,15 @@ TP_MainClass::slot_leftButtonReleased()
     {
         //qDebug() << "[TP_MainClass] main window is snapped to playlist window at position "
         //         << checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() );
-        snapStatus [TP::mainWindow][TP::playlistWindow] = true;
-        snapStatus [TP::playlistWindow][TP::mainWindow] = true;
+        snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = true;
+        snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = true;
         snapPosition_playlistWindow = playlistWindow->pos() - mainWindow->pos();
     }
     else
     {
         //qDebug("[TP_MainClass] main window desnapped to playlist window.");
-        snapStatus [TP::mainWindow][TP::playlistWindow] = false;
-        snapStatus [TP::playlistWindow][TP::mainWindow] = false;
+        snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = false;
+        snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = false;
         snapPosition_playlistWindow = { 0, 0 };
     }
 
@@ -620,7 +620,7 @@ TP_MainClass::slot_leftButtonReleased()
 
 
 void
-TP_MainClass::slot_connectFilelistWidget(TP_FileListWidget *I_FilelistWidget)
+TP_MainClass::slot_connectFilelistWidget( TP_FileListWidget *I_FilelistWidget )
 {
     qDebug() << "[SLOT] slot_connectFilelistWidget -- list's name is " << I_FilelistWidget->getListName();
     connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
@@ -633,9 +633,11 @@ TP_MainClass::slot_itemDoubleClicked( QListWidgetItem *I_item )
 {
     // Double clicking list item interrupts the playing order.
     // Therefore, previous and next items need to be initialized.
-    playlistWindow->slot_modeIsNotShuffle();
+    playlistWindow->slot_clearPreviousAndNext();
     playItem( I_item );
 }
+
+
 void
 TP_MainClass::slot_playButtonPushed()
 {
@@ -713,22 +715,6 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 void
 TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 {
-    QString path {}, extension {};
-    TP::SourceType sourceType {};
-
-    if( TP::currentItem() != nullptr )
-    {
-        TP::SourceType sourceType {
-            static_cast<TP::SourceType>( TP::currentItem()->data( TP::role_SourceType ).toInt() )
-        };
-
-        if( sourceType == TP::singleFile )
-        {
-            path = TP::currentItem()->data( TP::role_URL ).value<QUrl>().toLocalFile();
-            extension = TP::extension ( path );
-        }
-    }
-
     switch ( status )
     {
     case QMediaPlayer::NoMedia :
@@ -753,24 +739,6 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 
     case QMediaPlayer::BufferedMedia :
         qDebug("[Media Player] Media status changed to BufferedMedia.");
-        if( TP::currentItem() != nullptr )
-        {
-            mainWindow->setAudioInformation( TP::currentItem() );
-
-            if( sourceType == TP::singleFile )
-            {
-                if( extension == QString( "flac" ) )
-                    mainWindow->setCover(
-                                getCoverImageFromFLAC( path )
-                                );
-                else
-                    mainWindow->setCover(
-                                getCoverImageFromID3V2( path )
-                                );
-            }
-
-            playlistWindow->setCurrentItemBold();
-        }
         break;
 
     case QMediaPlayer::EndOfMedia :
@@ -838,7 +806,7 @@ TP_MainClass::initializeConnection()
 
     // Source switching related
     connect(mainWindow,     &TP_MainWindow::signal_modeIsNotShuffle,
-            playlistWindow, &TP_PlaylistWindow::slot_modeIsNotShuffle);
+            playlistWindow, &TP_PlaylistWindow::slot_clearPreviousAndNext);
     connect(mainWindow,     &TP_MainWindow::signal_nextButtonPushed,
             this,           &TP_MainClass::slot_nextButtonPushed);
     connect(mainWindow,     &TP_MainWindow::signal_previousButtonPushed,
@@ -894,10 +862,10 @@ void
 TP_MainClass::unsnapInvisibleWindows()
 {
     if( !playlistWindow->isVisible() )
-        for( unsigned i {}; i < 3; i++ )
+        for( unsigned i {}; i < TP::numberOfWindows; i++ )
         {
-            snapStatus [i][TP::playlistWindow] = false;
-            snapStatus [TP::playlistWindow][i] = false;
+            snapStatus [ i ][ TP::playlistWindow ] = false;
+            snapStatus [ TP::playlistWindow ][ i ] = false;
         }
 }
 
@@ -958,8 +926,8 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
 {
     // The search always start from main window.
     unsigned idx_Current {};
-    bool isVisited [3] {false};
-    std::deque <unsigned> queue {};
+    bool isVisited [ TP::numberOfWindows ] { false };
+    std::deque < unsigned > queue {};
 
     isVisited [ TP::mainWindow ] = true;
     queue.push_back( TP::mainWindow );
@@ -969,15 +937,15 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
         idx_Current = queue.front();
         queue.pop_front();
 
-        for( unsigned i { 1 }; i < 3; i++ )
+        for( unsigned i { 1 }; i < TP::numberOfWindows; i++ )
         {
-            if( ! isVisited [i] && snapStatus [idx_Current][i] )
+            if( ! isVisited[ i ] && snapStatus[ idx_Current ][ i ] )
             {
                 if( i == idx_Target )
                     return true;
                 else
                 {
-                    isVisited [i] = true;
+                    isVisited[ i ] = true;
                     queue.push_back( i );
                 }
              }
@@ -1006,12 +974,31 @@ TP_MainClass::playItem ( QListWidgetItem *I_item )
 void
 TP_MainClass::playFile ( QListWidgetItem *I_item )
 {
-    QUrl url { I_item->data( TP::role_URL ).value<QUrl>() };
+    QUrl url { I_item->data( TP::role_URL ).value< QUrl >() };
     qDebug() << "Start playing local file URL: " << url;
+    QString localPath = url.toLocalFile();
 
-    if( std::filesystem::exists( url.toLocalFile().toStdWString() ) )
+    if( std::filesystem::exists( localPath.toStdWString() ) )
     {
+        mediaPlayer->stop();
+
+        QString extension = TP::extension ( localPath );
+
+        TP::storeInformation( I_item );                                 // Refresh audio info
+        mainWindow->setAudioInformation( I_item );
+
+        if( extension == QString( "flac" ) )
+            mainWindow->setCover(
+                        getCoverImageFromFLAC( localPath )
+                        );
+        else
+            mainWindow->setCover(
+                        getCoverImageFromID3V2( localPath )
+                        );
+
         playlistWindow->setCurrentItem( TP::currentItem() = I_item );
+        playlistWindow->refreshShowingTitle( I_item );
+
         mediaPlayer->setSource( url );
         mediaPlayer->play();
     }
@@ -1026,7 +1013,7 @@ TP_MainClass::getCoverImageFromFLAC( const QString &filePath )
     TagLib::FLAC::File flacFile { filePath.toLocal8Bit().constData() };
 #endif
 
-    const TagLib::List <TagLib::FLAC::Picture *> &pictureList = flacFile.pictureList();
+    const TagLib::List < TagLib::FLAC::Picture * > &pictureList { flacFile.pictureList() };
     if( pictureList.size() > 0 )
         return QImage::fromData(
                     QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
@@ -1051,9 +1038,10 @@ TP_MainClass::getCoverImageFromID3V2( const QString &filePath )
 
     if( id3v2Tag )
     {
-        TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList("APIC") };
-        TagLib::ID3v2::AttachedPictureFrame *pictureFrame =
-            static_cast<TagLib::ID3v2::AttachedPictureFrame *>( frameList.front() );
+        TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList( "APIC" ) };
+        TagLib::ID3v2::AttachedPictureFrame *pictureFrame {
+            static_cast< TagLib::ID3v2::AttachedPictureFrame * >( frameList.front() )
+        };
         return QImage::fromData(
                     QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
                     );

@@ -26,7 +26,7 @@ TP_CoverLabel::~TP_CoverLabel()
 void
 TP_CoverLabel::setImage()
 {
-    act_viewCoverImage->setEnabled( false );
+    action_viewCoverImage->setEnabled( false );
 
     coverViewer->close();
     coverViewer->setImage( {} );
@@ -40,7 +40,7 @@ TP_CoverLabel::setImage()
 void
 TP_CoverLabel::setImage( const QPixmap &I_pixmap )
 {
-    act_viewCoverImage->setEnabled( true );
+    action_viewCoverImage->setEnabled( true );
     coverViewer->close();
     coverViewer->setImage( I_pixmap );
 
@@ -61,7 +61,7 @@ TP_CoverLabel::setImage( const QPixmap &I_pixmap )
 void
 TP_CoverLabel::slot_viewCoverImage()
 {
-    if( act_viewCoverImage->isEnabled() )
+    if( action_viewCoverImage->isEnabled() )
     {
         if( coverViewer->isVisible() )
             coverViewer->close();
@@ -80,7 +80,7 @@ void
 TP_CoverLabel::mouseDoubleClickEvent( QMouseEvent *event )
 {
     if( event->button() == Qt::LeftButton
-            && act_viewCoverImage->isEnabled() )
+            && action_viewCoverImage->isEnabled() )
         slot_viewCoverImage();
     else
         event->ignore();
@@ -90,7 +90,7 @@ TP_CoverLabel::mouseDoubleClickEvent( QMouseEvent *event )
 void
 TP_CoverLabel::contextMenuEvent( QContextMenuEvent *event )
 {
-    if( act_viewCoverImage->isEnabled() )
+    if( action_viewCoverImage->isEnabled() )
         menu_rightClick->exec( event->globalPos() );
 }
 
@@ -103,13 +103,13 @@ TP_CoverLabel::contextMenuEvent( QContextMenuEvent *event )
 void
 TP_CoverLabel::initializeMenu()
 {
-    act_viewCoverImage = new QAction { tr("&View cover"), this };
+    action_viewCoverImage = new QAction { tr("&View cover"), this };
 
-    connect(act_viewCoverImage, &QAction::triggered,
-            this,               &TP_CoverLabel::slot_viewCoverImage);
+    connect(action_viewCoverImage,  &QAction::triggered,
+            this,                   &TP_CoverLabel::slot_viewCoverImage);
 
     menu_rightClick = new TP_Menu { this };
-    menu_rightClick->addAction( act_viewCoverImage );
+    menu_rightClick->addAction( action_viewCoverImage );
 
-    act_viewCoverImage->setEnabled( false );
+    action_viewCoverImage->setEnabled( false );
 }

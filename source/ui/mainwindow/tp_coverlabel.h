@@ -28,7 +28,7 @@ private:
     TP_CoverViewer *coverViewer;
 
     TP_Menu *menu_rightClick;
-    QAction *act_viewCoverImage;
+    QAction *action_viewCoverImage;
 };
 
 #endif // TP_COVERLABEL_H

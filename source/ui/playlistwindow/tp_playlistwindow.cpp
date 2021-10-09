@@ -2,6 +2,7 @@
 #include "ui_tp_playlistwindow.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
 #include "tp_filelistwidget.h"
@@ -11,29 +12,22 @@
 #include <QMenu>
 #include <QMouseEvent>
 
-#include <filesystem>
-
-// Headers of TagLib
-#include <fileref.h>
-#include <tag.h>
-#include <flacproperties.h>
-
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget                 { parent }
   , ui                      { new Ui::TP_PlaylistWindow }
-  , currentFileListWidget   { nullptr }
+  , currentFileListWidget   {}
   , vector_FileListWidget   {}
 {
-    ui->setupUi(this);
+    ui->setupUi( this );
     // Qt::Tool is used for getting rid of the window tab in taskbar
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
 
     initializeConnection();
 
     layout_FileListFrame = new QHBoxLayout { ui->frame_FileList };
-    layout_FileListFrame->setContentsMargins(0, 0, 0, 0);
+    layout_FileListFrame->setContentsMargins( 0, 0, 0, 0 );
 
-    ui->pushButton_Close->setIcon(QIcon{":/image/icon_Exit.svg"});
+    ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
 
     initializeMenu();
 
@@ -61,10 +55,10 @@ TP_PlaylistWindow::initializePlaylist()
     else
     {
         qDebug() << "Existing playlist not found. Creating default playlist and filelist.";
-        ui->playlistsWidget->addItem(tr("Default"));
-        ui->playlistsWidget->setCurrentRow(0);
+        ui->playlistsWidget->addItem( tr( "Default" ) );
+        ui->playlistsWidget->setCurrentRow( 0 );
 
-        currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr("Default") };
+        currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr( "Default" ) };
         vector_FileListWidget.push_back( currentFileListWidget );
         layout_FileListFrame->addWidget( currentFileListWidget );
 
@@ -86,15 +80,29 @@ TP_PlaylistWindow::setCurrentItem( QListWidgetItem * I_item )
 }
 
 
-void TP_PlaylistWindow::setCurrentItemBold()
+void
+TP_PlaylistWindow::setCurrentItemBold()
 {
     currentFileListWidget->setCurrentItemBold();
 }
 
 
-void TP_PlaylistWindow::unsetCurrentItemBold()
+void
+TP_PlaylistWindow::unsetCurrentItemBold()
 {
     currentFileListWidget->unsetCurrentItemBold();
+}
+
+
+
+void
+TP_PlaylistWindow::refreshShowingTitle( QListWidgetItem *I_item )
+{
+    int index {
+        currentFileListWidget->indexFromItem( TP::currentItem() ).row()
+    };
+    currentFileListWidget->refreshShowingTitle( index, index );
+
 }
 
 
@@ -138,9 +146,9 @@ TP_PlaylistWindow::getPreviousItem_shuffle()
 // *****************************************************************
 
 void
-TP_PlaylistWindow::slot_modeIsNotShuffle()
+TP_PlaylistWindow::slot_clearPreviousAndNext()
 {
-    currentFileListWidget->modeIsNotShuffle();
+    currentFileListWidget->clearPreviousAndNext();
 }
 
 
@@ -189,7 +197,7 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
 {
     int originalCount { currentFileListWidget->count() };
 
-    QList <QUrl> qlist_FileURLs = QFileDialog::getOpenFileUrls(
+    QList <QUrl> fileURLs = QFileDialog::getOpenFileUrls(
                 this,                               // QWidget *parent = nullptr
                 tr("Open files"),                   // const QString &caption = QString()
                 QString(),                          // const QString &dir = QString()
@@ -197,67 +205,11 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
                         "MP3 files (*.mp3)")
                 );
 
-    for (const QUrl& fileURL: qlist_FileURLs)
+    for (const QUrl& fileURL: fileURLs)
     {
-
-        QString qstr_localFilePath = fileURL.toLocalFile();
-        QFileInfo fileInfo { QFile { qstr_localFilePath } };
-        QString qstr_Filename = fileInfo.fileName();
-
-#ifdef Q_OS_WINDOWS
-        TagLib::FileRef fileRef { qstr_localFilePath.toStdWString().c_str() };
-#else
-        TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
-#endif
-        QString qstr_title = TStringToQString( fileRef.tag()->title() );
-        QString qstr_artist = TStringToQString( fileRef.tag()->artist() );
-        QString qstr_album = TStringToQString( fileRef.tag()->album() );
-
-        int duration = fileRef.audioProperties()->lengthInSeconds();
-        int bitrate = fileRef.audioProperties()->bitrate();
-        int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
-        int bitDepth = -1 ;
-
-        QString extension { QFileInfo { fileURL.toLocalFile() }.suffix().toLower() };
-        if( extension == QString { "flac" } )
-            bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
-
         QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
-
-        // set URL
-        item->setData( TP::role_URL, fileURL );
-
-        // set source type
-        item->setData( TP::role_SourceType, TP::singleFile );
-
-        // set duration
-        item->setData( TP::role_Duration, duration );
-
-        // set bitrate
-        item->setData( TP::role_Bitrate, bitrate );
-
-        // set sample rate
-        item->setData( TP::role_SampleRate, sampleRate );
-
-        // set bit depth
-        item->setData( TP::role_BitDepth, bitDepth );
-
-        // set file name
-        item->setData(TP::role_FileName, qstr_Filename);
-
-        //set descrption, artist, title, album
-        if(qstr_title.length() == 0)
-        {
-            // No title in tag, meaning that no valid tag is contained in the file
-            item->setData( TP::role_Description, qstr_Filename );
-        }
-        else
-        {
-            item->setData( TP::role_Description, qstr_artist + QString(" - ") + qstr_title );    // will be able to customized in the future
-            item->setData( TP::role_Artist, qstr_artist );
-            item->setData( TP::role_Title, qstr_title );
-            item->setData( TP::role_Album, qstr_album );
-        }
+        item->setData( TP::role_URL, fileURL );         // set URL
+        TP::storeInformation( item );
         currentFileListWidget->addItem( item );
     }
 
@@ -292,10 +244,32 @@ TP_PlaylistWindow::on_action_clearInaccessibleItems_triggered()
     currentFileListWidget->clearInaccessibleItems();
 }
 
+
 void
 TP_PlaylistWindow::on_action_deleteFromDisk_triggered()
 {
     currentFileListWidget->deleteSelectedItems();
+}
+
+
+void
+TP_PlaylistWindow::on_action_selectAll_triggered()
+{
+    currentFileListWidget->selectAll();
+}
+
+
+void
+TP_PlaylistWindow::on_action_unselectAll_triggered()
+{
+    currentFileListWidget->clearSelection();
+}
+
+
+void
+TP_PlaylistWindow::on_action_reverseSelection_triggered()
+{
+    currentFileListWidget->reverseSelection();
 }
 
 // *****************************************************************
@@ -350,6 +324,16 @@ TP_PlaylistWindow::initializeMenu()
     menu_Remove->addAction( ui->action_deleteFromDisk );
 
     ui->pushButton_Remove->setMenu( menu_Remove );
+
+    // =============== Initialize menu of "Select" button ===============
+    menu_Select = new TP_Menu { ui->pushButton_Select };
+
+    menu_Select->addAction( ui->action_selectAll );
+    menu_Select->addAction( ui->action_unselectAll );
+    menu_Select->addSeparator();
+    menu_Select->addAction( ui->action_reverseSelection );
+
+    ui->pushButton_Select->setMenu( menu_Select );
 }
 
 
@@ -375,7 +359,6 @@ TP_PlaylistWindow::initializeConnection()
 void
 TP_PlaylistWindow::storePlaylist()
 {
-    if( !std::filesystem::exists( TP::configDirectoryPath.toStdWString() ) )
+    if( ! std::filesystem::exists( TP::configDirectoryPath.toStdWString() ) )
         std::filesystem::create_directory( TP::configDirectoryPath.toStdWString() );
 }
-

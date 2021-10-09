@@ -1,6 +1,8 @@
 ﻿#ifndef TP_FILELISTWIDGET_H
 #define TP_FILELISTWIDGET_H
 
+#include "tp_globalenum.h"
+
 #include <QListWidget>
 
 class TP_Menu;
@@ -10,9 +12,9 @@ class TP_FileListWidget : public QListWidget
     Q_OBJECT
 
 public:
-    explicit TP_FileListWidget(QWidget *parent, const QString &I_qstr);
+    explicit TP_FileListWidget( QWidget *parent, const QString &I_qstr );
 
-    void setListName(const QString &I_qstr);
+    void setListName( const QString &I_qstr );
     QString getListName() const;
 
     void setCurrentItemBold();
@@ -23,12 +25,17 @@ public:
     QListWidgetItem * getNextItem_shuffle();
     QListWidgetItem * getPreviousItem_shuffle();
 
-    void modeIsNotShuffle();
-    void refreshShowingTitle(int idx_Min, int idx_Max);
+    void clearPreviousAndNext();
+    void refreshShowingTitle( int idx_Min, int idx_Max );
+
     void clearUnselectedItems();
     void clearInaccessibleItems();
     void clearAllItems();
     void deleteSelectedItems();
+
+    void reverseSelection();
+
+    void sortByData( const int role );
 
 signals:
     void signal_currentItemRemoved();
@@ -47,7 +54,7 @@ private:
     void initializeMenu();
 
     TP_Menu *menu_rightClick;
-    QAction *act_remove;
+    QAction *action_remove;
 
     // previousItem & currentItem are only used in shuffle mode
     QListWidgetItem *previousItem, *nextItem;

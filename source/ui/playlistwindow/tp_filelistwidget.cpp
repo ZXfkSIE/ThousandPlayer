@@ -241,7 +241,7 @@ TP_FileListWidget::getPreviousItem_shuffle()
 
 
 void
-TP_FileListWidget::modeIsNotShuffle()
+TP_FileListWidget::clearPreviousAndNext()
 {
     previousItem = nullptr;
     nextItem = nullptr;
@@ -271,15 +271,12 @@ TP_FileListWidget::clearUnselectedItems()
     qsizetype numberOfSelectedItems { selectedItems().size() };
 
     // No item is selected or all items are selected
-    if( numberOfSelectedItems == 0
+    if( ! numberOfSelectedItems
         ||
         numberOfSelectedItems == count() )
         return;
 
-    // Reverse selection
-    for( size_t i {}; i < count(); i++ )
-        item( i )->setSelected( ! item( i )->isSelected() );
-
+    reverseSelection();
     slot_clearSelectedItems();
 }
 
@@ -289,11 +286,11 @@ TP_FileListWidget::clearInaccessibleItems()
 {
     for( size_t i {}; i < count(); i++ )
     {
-        switch ( item( i )->data( TP::role_SourceType ).value<TP::SourceType>() )
+        switch ( item( i )->data( TP::role_SourceType ).value< TP::SourceType >() )
         {
         case TP::singleFile :
             if ( ! std::filesystem::exists(
-                     item( i )->data( TP::role_URL ).value<QUrl>().toLocalFile().toStdWString()
+                     item( i )->data( TP::role_URL ).value< QUrl >().toLocalFile().toStdWString()
                      )
                  )
             {
@@ -387,6 +384,24 @@ TP_FileListWidget::deleteSelectedItems()
 
         refreshShowingTitle ( 0, count() - 1 );
     }
+}
+
+
+void
+TP_FileListWidget::reverseSelection()
+{
+    if( ! selectedItems().size() )
+        return;
+
+    for( size_t i {}; i < count(); i++ )
+        item( i )->setSelected( ! item( i )->isSelected() );
+}
+
+
+void
+TP_FileListWidget::sortByData( const int role )
+{
+
 }
 
 
@@ -511,11 +526,11 @@ TP_FileListWidget::contextMenuEvent(QContextMenuEvent *event)
 void
 TP_FileListWidget::initializeMenu()
 {
-    act_remove = new QAction { tr("&Remove"), this };
+    action_remove = new QAction { tr("&Remove"), this };
 
-    connect(act_remove, &QAction::triggered,
-            this,       &TP_FileListWidget::slot_clearSelectedItems);
+    connect(action_remove,  &QAction::triggered,
+            this,           &TP_FileListWidget::slot_clearSelectedItems);
 
     menu_rightClick = new TP_Menu { this };
-    menu_rightClick->addAction( act_remove );
+    menu_rightClick->addAction( action_remove );
 }

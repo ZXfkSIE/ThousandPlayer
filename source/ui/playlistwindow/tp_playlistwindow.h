@@ -25,9 +25,11 @@ public:
 
     void initializePlaylist();
 
-    void setCurrentItem( QListWidgetItem * I_item );
+    void setCurrentItem( QListWidgetItem *I_item );
     void setCurrentItemBold();
     void unsetCurrentItemBold();
+    void refreshShowingTitle( QListWidgetItem *I_item );
+
     QListWidgetItem * getCurrentItem();
     QListWidgetItem * getNextItem();
     QListWidgetItem * getPreviousItem();
@@ -43,12 +45,11 @@ signals:
     void signal_shown();
     void signal_hidden();
     void signal_newFilelistWidgetCreated( TP_FileListWidget *I_fileListWidget );
-    void signal_refreshShowingTitle( int idx_Min, int idx_Max );
 
     void signal_currentItemRemoved();
 
 public slots:
-    void slot_modeIsNotShuffle();
+    void slot_clearPreviousAndNext();
 
 private slots:
     void slot_moveTitleBar( QRect newGeometry );
@@ -68,6 +69,10 @@ private slots:
     void on_action_clearInaccessibleItems_triggered();
     void on_action_deleteFromDisk_triggered();
 
+    void on_action_selectAll_triggered();
+    void on_action_unselectAll_triggered();
+    void on_action_reverseSelection_triggered();
+
 private:
     Ui::TP_PlaylistWindow *ui;
 
@@ -86,6 +91,7 @@ private:
 
     TP_Menu *menu_Add;
     TP_Menu *menu_Remove;
+    TP_Menu *menu_Select;
 };
 
 #endif // TP_PLAYLIST_H
