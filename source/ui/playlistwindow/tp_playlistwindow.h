@@ -73,6 +73,8 @@ private slots:
     void on_action_unselectAll_triggered();
     void on_action_reverseSelection_triggered();
 
+    void on_action_sortByDuration_triggered();
+
 private:
     Ui::TP_PlaylistWindow *ui;
 
@@ -92,6 +94,9 @@ private:
     TP_Menu *menu_Add;
     TP_Menu *menu_Remove;
     TP_Menu *menu_Select;
+    TP_Menu *menu_Sort;
+
+    bool b_reverseOrder;
 };
 
 #endif // TP_PLAYLIST_H

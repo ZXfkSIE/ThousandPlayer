@@ -69,6 +69,12 @@ TP_PlaylistWindow::initializePlaylist()
                 this,                   &TP_PlaylistWindow::slot_currentItemRemoved);
 
         emit signal_newFilelistWidgetCreated( currentFileListWidget );
+
+        /*test
+        currentFileListWidget->addItems( {"0","1","2","3","4"} );
+        delete currentFileListWidget->takeItem(1);
+        currentFileListWidget->insertItem( 1, currentFileListWidget->item(3)->clone() );
+        test*/
     }
 }
 
@@ -272,6 +278,13 @@ TP_PlaylistWindow::on_action_reverseSelection_triggered()
     currentFileListWidget->reverseSelection();
 }
 
+
+void
+TP_PlaylistWindow::on_action_sortByDuration_triggered()
+{
+    currentFileListWidget->sortByData( TP::role_Duration );
+}
+
 // *****************************************************************
 // private override
 // *****************************************************************
@@ -334,6 +347,13 @@ TP_PlaylistWindow::initializeMenu()
     menu_Select->addAction( ui->action_reverseSelection );
 
     ui->pushButton_Select->setMenu( menu_Select );
+
+    // =============== Initialize menu of "Sort" button ===============
+    menu_Sort = new TP_Menu { ui->pushButton_Sort };
+
+    menu_Sort->addAction( ui->action_sortByDuration );
+
+    ui->pushButton_Sort->setMenu( menu_Sort );
 }
 
 

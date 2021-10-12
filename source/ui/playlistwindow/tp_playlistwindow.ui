@@ -528,6 +528,11 @@
     <string>&amp;Reverse selection</string>
    </property>
   </action>
+  <action name="action_sortByDuration">
+   <property name="text">
+    <string>By &amp;duration</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

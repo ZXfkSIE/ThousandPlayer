@@ -111,10 +111,10 @@ TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
         qstr_format = "MP3";
 
     setAudioPropertyLabels( qstr_format,
-                            I_item->data( TP::role_BitDepth ).value<int>(),
-                            I_item->data( TP::role_SampleRate ).value<int>(),
-                            I_item->data( TP::role_Bitrate ).value<int>(),
-                            I_item->data( TP::role_Duration ).value<int>()
+                            I_item->data( TP::role_BitDepth ).toInt(),
+                            I_item->data( TP::role_SampleRate ).toInt(),
+                            I_item->data( TP::role_Bitrate ).toInt(),
+                            I_item->data( TP::role_Duration ).toInt()
                             );
 }
 

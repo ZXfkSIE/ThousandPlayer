@@ -26,7 +26,7 @@ public:
     QListWidgetItem * getPreviousItem_shuffle();
 
     void clearPreviousAndNext();
-    void refreshShowingTitle( int idx_Min, int idx_Max );
+    void refreshShowingTitle( int idx_Min, const int idx_Max );
 
     void clearUnselectedItems();
     void clearInaccessibleItems();
@@ -52,6 +52,8 @@ private:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 
     void initializeMenu();
+
+    void quickSort( const int role, const int left, const int right );
 
     TP_Menu *menu_rightClick;
     QAction *action_remove;

@@ -15,9 +15,9 @@ add_library(TP::global ALIAS TP_global)
 
 target_include_directories(TP_global PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 if(UNIX)
-    target_include_directories(TP_ui_playlistwindow PRIVATE ${TAGLIB_INCLUDE_DIRS})
-    target_link_directories(TP_ui_playlistwindow PRIVATE ${TAGLIB_LIBRARY_DIRS})
-    target_compile_options(TP_ui_playlistwindow PRIVATE ${TAGLIB_CFLAGS_OTHER})
+    target_include_directories(TP_global PRIVATE ${TAGLIB_INCLUDE_DIRS})
+    target_link_directories(TP_global PRIVATE ${TAGLIB_LIBRARY_DIRS})
+    target_compile_options(TP_global PRIVATE ${TAGLIB_CFLAGS_OTHER})
 endif()
 
 target_link_libraries(TP_global PUBLIC

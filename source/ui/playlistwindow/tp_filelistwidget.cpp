@@ -249,7 +249,7 @@ TP_FileListWidget::clearPreviousAndNext()
 
 
 void
-TP_FileListWidget::refreshShowingTitle( int idx_Min, int idx_Max )
+TP_FileListWidget::refreshShowingTitle( int idx_Min, const int idx_Max )
 {
     if ( idx_Max < 0 )
         return;
@@ -397,11 +397,13 @@ TP_FileListWidget::reverseSelection()
         item( i )->setSelected( ! item( i )->isSelected() );
 }
 
-
 void
 TP_FileListWidget::sortByData( const int role )
 {
+    if( count() <= 1 )
+        return;
 
+    quickSort( role, 0, count() - 1 );
 }
 
 
@@ -506,6 +508,7 @@ TP_FileListWidget::mouseReleaseEvent(QMouseEvent *event)
     QListWidget::mouseReleaseEvent(event);
 }
 
+
 // Right-click context menu
 void
 TP_FileListWidget::contextMenuEvent(QContextMenuEvent *event)
@@ -519,9 +522,11 @@ TP_FileListWidget::contextMenuEvent(QContextMenuEvent *event)
     menu_rightClick->exec( event->globalPos() );
 }
 
+
 // *****************************************************************
 // private
 // *****************************************************************
+
 
 void
 TP_FileListWidget::initializeMenu()
@@ -533,4 +538,77 @@ TP_FileListWidget::initializeMenu()
 
     menu_rightClick = new TP_Menu { this };
     menu_rightClick->addAction( action_remove );
+}
+
+// static const int role_Duration      = 0x0100;   // int
+// static const int role_FileName      = 0x0107;   // QString
+// static const int role_URL           = 0x0108;   // QUrl ( actually it's toLocalFile() which will be compared )
+// static const int role_Description   = 0x010A;   // QString
+void
+TP_FileListWidget::quickSort( const int role, const int left, const int right )
+{
+    qDebug() << "[METHOD] TP_FileListWidget::quickSort(" << role << ", " << left << ", " << right << ")";
+    if( left >= right )
+        return;
+
+    QListWidgetItem *pivot = item( left )->clone();
+    int low = left, high = right;
+
+    while( low < high )
+    {
+        switch( role )
+        {
+        case TP::role_Duration:
+            item( high )->data( role ).toInt();
+            while( low < high &&
+                  item( high )->data( role ).toInt() >= pivot->data( role ).toInt() )
+            {
+                qDebug()<<QString("high: %1, %2, pivot: %3").arg(high).arg(item( high )->data( role ).toInt())
+                       .arg(pivot->data( role ).toInt());
+                high--;
+            }
+
+            break;
+        }
+
+        if( low < high )
+        {
+            insertItem( low, item( high )->clone() );
+            delete takeItem( low + 1 );
+            qDebug() << QString("item[%1] = item[%2], count: %3").arg(low).arg(high).arg(count());
+        }
+
+        switch( role )
+        {
+        case TP::role_Duration:
+            while( low < high &&
+                   item( low )->data( role ).toInt() <= pivot->data( role ).toInt() )
+            {
+                qDebug()<<QString("low: %1, %2, pivot: %3").arg(low).arg(item( low )->data( role ).toInt())
+                       .arg(pivot->data( role ).toInt());
+                low++;
+            }
+
+            break;
+        }
+
+        if( low < high )
+        {
+            delete takeItem( high );
+            insertItem( high, item( low )->clone() );
+            qDebug() << QString("item[%1] = item[%2], count: %3").arg(high).arg(low).arg(count());
+        }
+    }
+
+    if( left < low )
+    {
+        takeItem( low );
+        insertItem( low, pivot );
+        qDebug() << QString("item[%1] = item[%2], count: %3").arg(low).arg(left).arg(count());
+    }
+    else
+        delete pivot;
+
+    quickSort( role, left, low - 1 );
+    quickSort( role, low + 1, right );
 }
