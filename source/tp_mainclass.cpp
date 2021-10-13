@@ -974,7 +974,7 @@ TP_MainClass::playItem ( QListWidgetItem *I_item )
 void
 TP_MainClass::playFile ( QListWidgetItem *I_item )
 {
-    QUrl url { I_item->data( TP::role_URL ).value< QUrl >() };
+    QUrl url { I_item->data( TP::role_URL ).toUrl() };
     qDebug() << "Start playing local file URL: " << url;
     QString localPath = url.toLocalFile();
 

@@ -11,10 +11,10 @@ TP_Config::TP_Config( QObject *parent ) :
     config.beginGroup( group_UI );
     mainWindowPosition = config
             .value( key_UI_mainWindowPosition, QPoint { 100, 100 } )
-            .value<QPoint>();
+            .toPoint();
     playlistWindowPosition = config
             .value( key_UI_playlistWindowPosition, QPoint { 100, 340 } )
-            .value<QPoint>();
+            .toPoint();
     b_isPlaylistWindowShown = config
             .value( key_UI_isPlaylistWindowShown, true )
             .toBool();

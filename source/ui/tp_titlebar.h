@@ -20,16 +20,16 @@ class TP_TitleBar : public QFrame
     Q_OBJECT
 
 public:
-    explicit TP_TitleBar(QWidget *parent = nullptr);
+    explicit TP_TitleBar( QWidget *parent = nullptr );
 
 signals:
     void signal_moveTitleBar( QRect newGeometry );
     void signal_leftButtonReleased();
 
 private:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
     bool b_isBeingPressed;
     QPoint pressedRelativePosition;

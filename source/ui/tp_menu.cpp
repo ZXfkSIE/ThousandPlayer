@@ -4,8 +4,8 @@ TP_Menu::TP_Menu(QWidget *parent) :
     QMenu { parent }
 {
     QFont tempFont = font();
-    tempFont.setPointSize(10);
-    setFont(tempFont);
+    tempFont.setPointSize( 10 );
+    setFont( tempFont );
     setStyleSheet(
 "QMenu"
 "{"

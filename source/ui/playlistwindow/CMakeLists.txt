@@ -3,6 +3,10 @@
     tp_filelistwidget.h
     tp_filelistwidget.cpp
 
+    tp_filesearchdialog.h
+    tp_filesearchdialog.cpp
+    tp_filesearchdialog.ui
+
     tp_playlistswidget.h
     tp_playlistswidget.cpp
     

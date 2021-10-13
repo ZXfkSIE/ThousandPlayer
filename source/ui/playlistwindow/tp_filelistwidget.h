@@ -35,7 +35,7 @@ public:
 
     void reverseSelection();
 
-    void sortByData( const int role );
+    void sortByData( const int role , const bool isDescending );
 
 signals:
     void signal_currentItemRemoved();
@@ -53,7 +53,7 @@ private:
 
     void initializeMenu();
 
-    void quickSort( const int role, const int left, const int right );
+    void quickSort( const int role, const int left, const int right, const bool isDescending );
 
     TP_Menu *menu_rightClick;
     QAction *action_remove;

@@ -9,7 +9,7 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
-TP_FileListWidget::TP_FileListWidget(QWidget *parent, const QString &I_qstr) :
+TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
     QListWidget     { parent }
   , previousItem    { nullptr }
   , nextItem        { nullptr }
@@ -53,17 +53,17 @@ TP_FileListWidget::setCurrentItemBold()
         return;
     }
 
-    const QUrl lURL = TP::currentItem()->data( TP::role_URL ).value<QUrl>();
+    const QUrl lURL = TP::currentItem()->data( TP::role_URL ).toUrl();
     for( size_t i {}; i < count(); i++ )
     {
-        const QUrl rURL = item( i )->data( TP::role_URL ).value<QUrl>();
+        const QUrl rURL = item( i )->data( TP::role_URL ).toUrl();
         if( lURL == rURL )
         {
             QFont font = item( i )->font();
             item( i )->font();
             font.setBold( true );
             item( i )->setFont( font );
-            item( i )->setBackground( QColor("#444") );
+            item( i )->setBackground( QColor( "#444" ) );
         }
         else
         {
@@ -71,7 +71,7 @@ TP_FileListWidget::setCurrentItemBold()
             item( i )->font();
             font.setBold( false );
             item( i )->setFont( font );
-            item( i )->setBackground( QColor("#777") );
+            item( i )->setBackground( QColor( "#777" ) );
         }
     }
 }
@@ -261,7 +261,7 @@ TP_FileListWidget::refreshShowingTitle( int idx_Min, const int idx_Max )
         item(i)->setText(
                     QString("%1. ").arg(i + 1)
                     +
-                    item(i)->data(TP::role_Description).value<QString>() );
+                    item(i)->data(TP::role_Description).toString() );
 }
 
 
@@ -290,7 +290,7 @@ TP_FileListWidget::clearInaccessibleItems()
         {
         case TP::singleFile :
             if ( ! std::filesystem::exists(
-                     item( i )->data( TP::role_URL ).value< QUrl >().toLocalFile().toStdWString()
+                     item( i )->data( TP::role_URL ).toUrl().toLocalFile().toStdWString()
                      )
                  )
             {
@@ -336,7 +336,7 @@ TP_FileListWidget::deleteSelectedItems()
                     "<br>from the <b>DISK</b>?"
                     "<br>NOTE: remote URLs will not be deleted." )
                 .arg( numberOfSelectedItems == 1
-                      ? QString( "\"%1\"" ).arg( selectedItems()[0]->data( TP::role_FileName ).value< QString >() )
+                      ? QString( "\"%1\"" ).arg( selectedItems()[0]->data( TP::role_FileName ).toString() )
                       : tr( "these %1 items" ).arg( numberOfSelectedItems )
                       ),                                        // const QString &text
                 QMessageBox::Yes | QMessageBox::No,             // QMessageBox::StandardButtons buttons
@@ -365,7 +365,7 @@ TP_FileListWidget::deleteSelectedItems()
 
             if( sourceType == TP::singleFile )
             {
-                QFile qFile { selectedItem->data( TP::role_URL ).value< QUrl >().toLocalFile() };
+                QFile qFile { selectedItem->data( TP::role_URL ).toUrl().toLocalFile() };
 
                 if( ! qFile.moveToTrash() )
                     failureCount++;
@@ -390,20 +390,19 @@ TP_FileListWidget::deleteSelectedItems()
 void
 TP_FileListWidget::reverseSelection()
 {
-    if( ! selectedItems().size() )
-        return;
-
     for( size_t i {}; i < count(); i++ )
         item( i )->setSelected( ! item( i )->isSelected() );
 }
 
 void
-TP_FileListWidget::sortByData( const int role )
+TP_FileListWidget::sortByData( const int role, const bool isDescending )
 {
     if( count() <= 1 )
         return;
 
-    quickSort( role, 0, count() - 1 );
+    quickSort( role, 0, count() - 1, isDescending );
+
+    refreshShowingTitle ( 0, count() - 1 );
 }
 
 
@@ -505,7 +504,7 @@ TP_FileListWidget::mouseReleaseEvent(QMouseEvent *event)
     if ( b_isLeftButtonPressed )
         b_isLeftButtonPressed = false;
 
-    QListWidget::mouseReleaseEvent(event);
+    QListWidget::mouseReleaseEvent( event );
 }
 
 
@@ -531,7 +530,7 @@ TP_FileListWidget::contextMenuEvent(QContextMenuEvent *event)
 void
 TP_FileListWidget::initializeMenu()
 {
-    action_remove = new QAction { tr("&Remove"), this };
+    action_remove = new QAction { tr( "&Remove" ), this };
 
     connect(action_remove,  &QAction::triggered,
             this,           &TP_FileListWidget::slot_clearSelectedItems);
@@ -542,10 +541,10 @@ TP_FileListWidget::initializeMenu()
 
 // static const int role_Duration      = 0x0100;   // int
 // static const int role_FileName      = 0x0107;   // QString
-// static const int role_URL           = 0x0108;   // QUrl ( actually it's toLocalFile() which will be compared )
+// static const int role_URL           = 0x0108;   // QUrl (compare the converted QString)
 // static const int role_Description   = 0x010A;   // QString
 void
-TP_FileListWidget::quickSort( const int role, const int left, const int right )
+TP_FileListWidget::quickSort( const int role, const int left, const int right, const bool isDescending )
 {
     qDebug() << "[METHOD] TP_FileListWidget::quickSort(" << role << ", " << left << ", " << right << ")";
     if( left >= right )
@@ -558,57 +557,104 @@ TP_FileListWidget::quickSort( const int role, const int left, const int right )
     {
         switch( role )
         {
-        case TP::role_Duration:
-            item( high )->data( role ).toInt();
-            while( low < high &&
-                  item( high )->data( role ).toInt() >= pivot->data( role ).toInt() )
-            {
-                qDebug()<<QString("high: %1, %2, pivot: %3").arg(high).arg(item( high )->data( role ).toInt())
-                       .arg(pivot->data( role ).toInt());
-                high--;
-            }
+        case TP::role_Duration :
+            if( ! isDescending )
+                while( low < high &&
+                      item( high )->data( role ).toInt() >= pivot->data( role ).toInt() )
+                    high--;
+            else
+                while( low < high &&
+                      item( high )->data( role ).toInt() <= pivot->data( role ).toInt() )
+                    high--;
+
+            break;
+
+        case TP::role_FileName :
+        case TP::role_Description :
+        case TP::role_URL :
+            if( ! isDescending )
+                while( low < high &&
+                       QString::compare(
+                           item( high )->data( role ).toString(),
+                           pivot->data( role ).toString(),
+                           Qt::CaseInsensitive
+                           ) >= 0
+                       )
+                    high--;
+            else
+                while( low < high &&
+                       QString::compare(
+                           item( high )->data( role ).toString(),
+                           pivot->data( role ).toString(),
+                           Qt::CaseInsensitive
+                           ) <= 0
+                       )
+                    high--;
 
             break;
         }
 
         if( low < high )
-        {
+        {                                       // item[low] = item[high]
             insertItem( low, item( high )->clone() );
             delete takeItem( low + 1 );
-            qDebug() << QString("item[%1] = item[%2], count: %3").arg(low).arg(high).arg(count());
         }
 
         switch( role )
         {
-        case TP::role_Duration:
-            while( low < high &&
-                   item( low )->data( role ).toInt() <= pivot->data( role ).toInt() )
-            {
-                qDebug()<<QString("low: %1, %2, pivot: %3").arg(low).arg(item( low )->data( role ).toInt())
-                       .arg(pivot->data( role ).toInt());
-                low++;
-            }
+        case TP::role_Duration :
 
+            if( ! isDescending )
+                while( low < high &&
+                       item( low )->data( role ).toInt() < pivot->data( role ).toInt() )
+                    low++;
+            else
+                while( low < high &&
+                       item( low )->data( role ).toInt() > pivot->data( role ).toInt() )
+                    low++;
+
+            break;
+
+        case TP::role_FileName :
+        case TP::role_Description :
+        case TP::role_URL :
+
+            if( ! isDescending )
+                while( low < high &&
+                       QString::compare(
+                           item( low )->data( role ).toString(),
+                           pivot->data( role ).toString(),
+                           Qt::CaseInsensitive
+                           ) < 0
+                       )
+                    low++;
+            else
+                while( low < high &&
+                       QString::compare(
+                           item( low )->data( role ).toString(),
+                           pivot->data( role ).toString(),
+                           Qt::CaseInsensitive
+                           ) > 0
+                       )
+                    low++;
             break;
         }
 
         if( low < high )
-        {
+        {                                       // item[high] = item[low]
             delete takeItem( high );
             insertItem( high, item( low )->clone() );
-            qDebug() << QString("item[%1] = item[%2], count: %3").arg(high).arg(low).arg(count());
         }
     }
 
     if( left < low )
-    {
-        takeItem( low );
+    {                                           // itemp[low] = pivot
+        delete takeItem( low );
         insertItem( low, pivot );
-        qDebug() << QString("item[%1] = item[%2], count: %3").arg(low).arg(left).arg(count());
     }
     else
         delete pivot;
 
-    quickSort( role, left, low - 1 );
-    quickSort( role, low + 1, right );
+    quickSort( role, left, low - 1, isDescending );
+    quickSort( role, low + 1, right, isDescending );
 }

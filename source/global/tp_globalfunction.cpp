@@ -22,8 +22,8 @@ TP::extension( const QString &path )
 void
 TP::storeInformation( QListWidgetItem * I_item )
 {
-    QUrl fileURL = I_item->data( TP::role_URL ).value< QUrl >();
-    QString qstr_localFilePath = fileURL.toLocalFile();
+    QUrl url = I_item->data( TP::role_URL ).toUrl();
+    QString qstr_localFilePath = url.toLocalFile();
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
     QString qstr_Filename = fileInfo.fileName();
 
@@ -41,7 +41,7 @@ TP::storeInformation( QListWidgetItem * I_item )
     int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
     int bitDepth = -1 ;
 
-    QString extension { QFileInfo { fileURL.toLocalFile() }.suffix().toLower() };
+    QString extension { QFileInfo { url.toLocalFile() }.suffix().toLower() };
     if( extension == QString { "flac" } )
         bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
 

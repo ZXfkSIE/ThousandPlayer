@@ -533,6 +533,29 @@
     <string>By &amp;duration</string>
    </property>
   </action>
+  <action name="action_sortByPath">
+   <property name="text">
+    <string>By &amp;path</string>
+   </property>
+  </action>
+  <action name="action_sortByFilename">
+   <property name="text">
+    <string>By &amp;filename</string>
+   </property>
+  </action>
+  <action name="action_sortByDescription">
+   <property name="text">
+    <string>By &amp;description</string>
+   </property>
+  </action>
+  <action name="action_setDescending">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Descending &amp;order</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

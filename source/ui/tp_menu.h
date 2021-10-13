@@ -11,8 +11,9 @@
 class TP_Menu : public QMenu
 {
     Q_OBJECT
+
 public:
-    TP_Menu(QWidget *parent = nullptr);
+    explicit TP_Menu( QWidget *parent = nullptr );
 };
 
 #endif // TP_MENU_H

@@ -74,6 +74,10 @@ private slots:
     void on_action_reverseSelection_triggered();
 
     void on_action_sortByDuration_triggered();
+    void on_action_sortByPath_triggered();
+    void on_action_sortByFilename_triggered();
+    void on_action_sortByDescription_triggered();
+    void on_action_setDescending_triggered( bool checked );
 
 private:
     Ui::TP_PlaylistWindow *ui;
@@ -96,7 +100,7 @@ private:
     TP_Menu *menu_Select;
     TP_Menu *menu_Sort;
 
-    bool b_reverseOrder;
+    bool b_isDescending;
 };
 
 #endif // TP_PLAYLIST_H

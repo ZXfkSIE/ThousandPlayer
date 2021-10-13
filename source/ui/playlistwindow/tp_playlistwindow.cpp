@@ -17,6 +17,7 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
   , ui                      { new Ui::TP_PlaylistWindow }
   , currentFileListWidget   {}
   , vector_FileListWidget   {}
+  , b_isDescending          { false }
 {
     ui->setupUi( this );
     // Qt::Tool is used for getting rid of the window tab in taskbar
@@ -282,8 +283,38 @@ TP_PlaylistWindow::on_action_reverseSelection_triggered()
 void
 TP_PlaylistWindow::on_action_sortByDuration_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_Duration );
+    currentFileListWidget->sortByData( TP::role_Duration, b_isDescending );
 }
+
+
+void
+TP_PlaylistWindow::on_action_sortByPath_triggered()
+{
+    currentFileListWidget->sortByData( TP::role_URL, b_isDescending );
+}
+
+
+void
+TP_PlaylistWindow::on_action_sortByFilename_triggered()
+{
+    currentFileListWidget->sortByData( TP::role_FileName, b_isDescending );
+}
+
+
+void
+TP_PlaylistWindow::on_action_sortByDescription_triggered()
+{
+    currentFileListWidget->sortByData( TP::role_Description, b_isDescending );
+}
+
+
+void
+TP_PlaylistWindow::on_action_setDescending_triggered( bool checked )
+{
+    b_isDescending = checked;
+}
+
+
 
 // *****************************************************************
 // private override
@@ -352,6 +383,11 @@ TP_PlaylistWindow::initializeMenu()
     menu_Sort = new TP_Menu { ui->pushButton_Sort };
 
     menu_Sort->addAction( ui->action_sortByDuration );
+    menu_Sort->addAction( ui->action_sortByPath );
+    menu_Sort->addAction( ui->action_sortByFilename );
+    menu_Sort->addAction( ui->action_sortByDescription );
+    menu_Sort->addSeparator();
+    menu_Sort->addAction( ui->action_setDescending );
 
     ui->pushButton_Sort->setMenu( menu_Sort );
 }

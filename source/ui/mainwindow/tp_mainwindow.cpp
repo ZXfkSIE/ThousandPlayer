@@ -99,7 +99,7 @@ TP_MainWindow::setStop()
 void
 TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
 {
-    const QUrl url = I_item->data( TP::role_URL ).value<QUrl>();
+    const QUrl url = I_item->data( TP::role_URL ).toUrl();
 
     QString qstr_format { "N/A" };
 
