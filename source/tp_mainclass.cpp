@@ -1,7 +1,5 @@
 ﻿#include "tp_mainclass.h"
 
-#include "tp_globalconst.h"
-#include "tp_globalenum.h"
 #include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 

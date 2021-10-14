@@ -535,7 +535,7 @@
   </action>
   <action name="action_sortByPath">
    <property name="text">
-    <string>By &amp;path</string>
+    <string>By &amp;path (URI)</string>
    </property>
   </action>
   <action name="action_sortByFilename">
@@ -554,6 +554,16 @@
    </property>
    <property name="text">
     <string>Descending &amp;order</string>
+   </property>
+  </action>
+  <action name="action_find">
+   <property name="text">
+    <string>&amp;Find...</string>
+   </property>
+  </action>
+  <action name="action_findNext">
+   <property name="text">
+    <string>Find &amp;next</string>
    </property>
   </action>
  </widget>

@@ -6,6 +6,7 @@
 #include "tp_globalvariable.h"
 
 #include "tp_filelistwidget.h"
+#include "tp_filesearchdialog.h"
 #include "tp_menu.h"
 
 #include <QFileDialog>
@@ -315,6 +316,35 @@ TP_PlaylistWindow::on_action_setDescending_triggered( bool checked )
 }
 
 
+void
+TP_PlaylistWindow::on_action_find_triggered()
+{
+    if( ! currentFileListWidget->count() )
+        return;
+
+    TP_FileSearchDialog fileSearchDialog { this };
+    fileSearchDialog.setModal( true );
+    if( fileSearchDialog.exec() == QDialog::Accepted )
+        currentFileListWidget->searchByData(
+                    fileSearchDialog.getKeyword(),
+                    0,
+                    fileSearchDialog.isFilenameSearched(),
+                    fileSearchDialog.isAlbumSearched(),
+                    fileSearchDialog.isArtistSearched(),
+                    fileSearchDialog.isTitleSearched()
+                    );
+}
+
+
+void
+TP_PlaylistWindow::on_action_findNext_triggered()
+{
+    if( ! currentFileListWidget->count() )
+        return;
+
+    currentFileListWidget->findNext();
+}
+
 
 // *****************************************************************
 // private override
@@ -390,6 +420,14 @@ TP_PlaylistWindow::initializeMenu()
     menu_Sort->addAction( ui->action_setDescending );
 
     ui->pushButton_Sort->setMenu( menu_Sort );
+
+    // =============== Initialize menu of "Find" button ===============
+    menu_Find = new TP_Menu { ui->pushButton_Find };
+
+    menu_Find->addAction( ui->action_find );
+    menu_Find->addAction( ui->action_findNext );
+
+    ui->pushButton_Find->setMenu( menu_Find );
 }
 
 

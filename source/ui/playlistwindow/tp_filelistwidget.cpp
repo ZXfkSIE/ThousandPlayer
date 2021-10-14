@@ -8,13 +8,21 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QProgressDialog>
 
 TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
-    QListWidget     { parent }
-  , previousItem    { nullptr }
-  , nextItem        { nullptr }
-  , listName        { I_qstr }
-  , b_isConnected   { false }
+    QListWidget         { parent }
+  , previousItem        { nullptr }
+  , nextItem            { nullptr }
+  , qstr_listName       { I_qstr }
+  , b_isConnected       { false }
+  , progressDialog      { new QProgressDialog {
+                            {},                         // const QString &labelText (will be set in the loop)
+                            tr( "Abort" ),              // const QString &cancelButtonText
+                            0,                          // int minimum
+                            count(),                    // int maximum
+                            this } }                    // QWidget *parent = nullptr
+  , qstr_keyword        {}
 {
     setMouseTracking( true );
 
@@ -28,20 +36,25 @@ TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
     setStyleSheet( "color: rgb(255, 255, 255);" );
 
     initializeMenu();
+
+    progressDialog->setFixedWidth( 480 );
+    progressDialog->setMinimumDuration( 0 );
+    progressDialog->show();
+    progressDialog->reset();
 }
 
 
 void
 TP_FileListWidget::setListName( const QString &I_qstr )
 {
-    listName = I_qstr;
+    qstr_listName = I_qstr;
 }
 
 
 QString
 TP_FileListWidget::getListName() const
 {
-    return listName;
+    return qstr_listName;
 }
 
 void
@@ -190,7 +203,7 @@ TP_FileListWidget::getNextItem_shuffle()
     else
         currentRow = indexFromItem( TP::currentItem() ).row();
 
-    std::uniform_int_distribution<int> distribution { 0, count() - 1 } ;
+    std::uniform_int_distribution< int > distribution { 0, count() - 1 } ;
 
     do
         randomRow = distribution( TP::randomEngine() );
@@ -271,9 +284,9 @@ TP_FileListWidget::clearUnselectedItems()
     qsizetype numberOfSelectedItems { selectedItems().size() };
 
     // No item is selected or all items are selected
-    if( ! numberOfSelectedItems
+    if(     ! numberOfSelectedItems
         ||
-        numberOfSelectedItems == count() )
+            numberOfSelectedItems == count() )
         return;
 
     reverseSelection();
@@ -376,10 +389,10 @@ TP_FileListWidget::deleteSelectedItems()
 
         if( failureCount )
             QMessageBox::warning(
-                        this,                       // QWidget *parent
-                        tr( "Warning" ),            // const QString &title
+                        this,
+                        tr( "Warning" ),
                         tr( "Failed to delete %1 items.\nAnyway, they have been removed from the list." )
-                        .arg( failureCount )        // const QString &text
+                        .arg( failureCount )
                         );
 
         refreshShowingTitle ( 0, count() - 1 );
@@ -394,6 +407,7 @@ TP_FileListWidget::reverseSelection()
         item( i )->setSelected( ! item( i )->isSelected() );
 }
 
+
 void
 TP_FileListWidget::sortByData( const int role, const bool isDescending )
 {
@@ -403,6 +417,104 @@ TP_FileListWidget::sortByData( const int role, const bool isDescending )
     quickSort( role, 0, count() - 1, isDescending );
 
     refreshShowingTitle ( 0, count() - 1 );
+}
+
+
+void
+TP_FileListWidget::searchByData( const QString      &I_qstr_keyword,
+                                 const qsizetype    startingIndex,
+                                 const bool         isFilenameSearched,
+                                 const bool         isAlbumSearched,
+                                 const bool         isArtistSearched,
+                                 const bool         isTitleSearched)
+{
+    if( ! I_qstr_keyword.size() || ! count() )
+        return;
+
+    clearSelection();
+
+    qstr_keyword            = I_qstr_keyword;
+    b_isFilenameSearched    = isFilenameSearched;
+    b_isAlbumSearched       = isAlbumSearched;
+    b_isArtistSearched      = isArtistSearched;
+    b_isTitleSearched       = isTitleSearched;
+
+    progressDialog->setMaximum( count() );
+    progressDialog->show();
+
+    for( qsizetype i { startingIndex }; i < count(); i++ )
+    {
+        QListWidgetItem *currentItem = item( i );
+        QString qstr_filename = currentItem->data( TP::role_FileName ).toString();
+
+        progressDialog->setValue( i + 1 );
+        progressDialog->setLabelText(
+                    QString( "(%1 / %2) %3" ).arg( i ).arg( count() ).arg( qstr_filename )
+                    );
+
+        if(     isFilenameSearched &&
+                currentItem->data( TP::role_FileName ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
+            ||
+                isAlbumSearched &&
+                currentItem->data( TP::role_Album ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
+            ||
+                isArtistSearched &&
+                currentItem->data( TP::role_Artist ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
+        )
+        {
+            setCurrentItem( currentItem );
+            progressDialog->reset();
+            return;
+        }
+
+        // If the audio doesn't contain a valid title, search filename instead.
+        if( isTitleSearched )
+        {
+            QString title { currentItem->data( TP::role_Title ).toString() };
+            if(     title.size() && title.contains( qstr_keyword, Qt::CaseInsensitive )
+                ||
+                    ! isFilenameSearched &&
+                    currentItem->data( TP::role_FileName ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
+            )
+            {
+                setCurrentItem( currentItem );
+                progressDialog->reset();
+                return;
+            }
+        }
+
+        if( progressDialog->wasCanceled() )
+            return;
+    }
+
+    QMessageBox::warning(
+                this,
+                tr( "Warning" ),
+                tr( "No result found." )
+                );
+}
+
+
+void
+TP_FileListWidget::findNext()
+{
+    if( ! qstr_keyword.size() || ! count() )
+        return;
+
+    if( currentItem() )
+        searchByData( qstr_keyword,
+                      row( currentItem() ) + 1,
+                      b_isFilenameSearched,
+                      b_isAlbumSearched,
+                      b_isArtistSearched,
+                      b_isTitleSearched );
+    else
+        searchByData( qstr_keyword,
+                      0,
+                      b_isFilenameSearched,
+                      b_isAlbumSearched,
+                      b_isArtistSearched,
+                      b_isTitleSearched );
 }
 
 
@@ -499,7 +611,7 @@ TP_FileListWidget::mouseMoveEvent( QMouseEvent *event )
 
 
 void
-TP_FileListWidget::mouseReleaseEvent(QMouseEvent *event)
+TP_FileListWidget::mouseReleaseEvent( QMouseEvent *event )
 {
     if ( b_isLeftButtonPressed )
         b_isLeftButtonPressed = false;
@@ -510,7 +622,7 @@ TP_FileListWidget::mouseReleaseEvent(QMouseEvent *event)
 
 // Right-click context menu
 void
-TP_FileListWidget::contextMenuEvent(QContextMenuEvent *event)
+TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
 {
     QListWidgetItem *selectedItem = itemAt ( event->pos() );
     if ( selectedItem == nullptr )

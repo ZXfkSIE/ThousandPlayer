@@ -1,6 +1,7 @@
 ﻿#ifndef TP_MAINCLASS_H
 #define TP_MAINCLASS_H
 
+#include "tp_globalconst.h"
 #include "tp_globalenum.h"
 
 #include <QListWidgetItem>
@@ -70,7 +71,7 @@ private:
     QAudioOutput *      audioOutput;
     QMediaPlayer *      mediaPlayer;
 
-    bool snapStatus [4] [4];
+    bool snapStatus [TP::numberOfWindows][TP::numberOfWindows];
     QPoint snapPosition_playlistWindow;
 };
 

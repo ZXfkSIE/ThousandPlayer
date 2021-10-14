@@ -7,6 +7,8 @@
 
 class TP_Menu;
 
+class QProgressDialog;
+
 class TP_FileListWidget : public QListWidget
 {
     Q_OBJECT
@@ -37,6 +39,14 @@ public:
 
     void sortByData( const int role , const bool isDescending );
 
+    void searchByData( const QString    &I_qstr_keyword,
+                       const qsizetype  startingIndex,
+                       const bool       isFilenameSearched,
+                       const bool       isAlbumSearched,
+                       const bool       isArtistSearched,
+                       const bool       isTitleSearched);
+    void findNext();
+
 signals:
     void signal_currentItemRemoved();
 
@@ -61,9 +71,17 @@ private:
     // previousItem & currentItem are only used in shuffle mode
     QListWidgetItem *previousItem, *nextItem;
 
-    QString listName;
+    QString qstr_listName;
     bool    b_isConnected;
     bool    b_isLeftButtonPressed;
+
+    QProgressDialog *progressDialog;
+
+    QString         qstr_keyword;
+    bool            b_isFilenameSearched;
+    bool            b_isAlbumSearched;
+    bool            b_isArtistSearched;
+    bool            b_isTitleSearched;
 };
 
 #endif // TP_FILELISTWIDGET_H

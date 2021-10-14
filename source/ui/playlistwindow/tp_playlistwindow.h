@@ -79,6 +79,9 @@ private slots:
     void on_action_sortByDescription_triggered();
     void on_action_setDescending_triggered( bool checked );
 
+    void on_action_find_triggered();
+    void on_action_findNext_triggered();
+
 private:
     Ui::TP_PlaylistWindow *ui;
 
@@ -99,6 +102,7 @@ private:
     TP_Menu *menu_Remove;
     TP_Menu *menu_Select;
     TP_Menu *menu_Sort;
+    TP_Menu *menu_Find;
 
     bool b_isDescending;
 };
