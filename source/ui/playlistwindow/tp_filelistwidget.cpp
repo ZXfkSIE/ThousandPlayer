@@ -12,8 +12,8 @@
 
 TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
     QListWidget         { parent }
-  , previousItem        { nullptr }
-  , nextItem            { nullptr }
+  , previousItem        {}
+  , nextItem            {}
   , qstr_listName       { I_qstr }
   , b_isConnected       { false }
   , progressDialog      { new QProgressDialog {

@@ -11,7 +11,10 @@
 // Headers of TagLib
 #include <fileref.h>
 #include <tag.h>
+#include <tpropertymap.h>
+#include <flacfile.h>
 #include <flacproperties.h>
+#include <xiphcomment.h>
 
 QString
 TP::extension( const QString &path )
@@ -43,26 +46,56 @@ TP::storeInformation( QListWidgetItem * I_item )
 
     QString extension { QFileInfo { url.toLocalFile() }.suffix().toLower() };
     if( extension == QString { "flac" } )
-        bitDepth = dynamic_cast<TagLib::FLAC::Properties *>( fileRef.audioProperties() )->bitsPerSample();
+        bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
 
-    I_item->setData( TP::role_SourceType, TP::singleFile );     // set source type
-    I_item->setData( TP::role_Duration, duration );             // set duration
-    I_item->setData( TP::role_Bitrate, bitrate );               // set bitrate
-    I_item->setData( TP::role_SampleRate, sampleRate );         // set sample rate
-    I_item->setData( TP::role_BitDepth, bitDepth );             // set bit depth
-    I_item->setData(TP::role_FileName, qstr_Filename);          // set file name
+    I_item->setData( TP::role_SourceType,   TP::singleFile );     // set source type
+    I_item->setData( TP::role_Duration,     duration );             // set duration
+    I_item->setData( TP::role_Bitrate,      bitrate );               // set bitrate
+    I_item->setData( TP::role_SampleRate,   sampleRate );         // set sample rate
+    I_item->setData( TP::role_BitDepth,     bitDepth );             // set bit depth
+    I_item->setData( TP::role_FileName,     qstr_Filename );          // set file name
 
-    //set descrption, artist, title, album
-    if(qstr_title.length() == 0)
+    // set descrption, artist, title, album
+    if( qstr_title.length() == 0 )
     {
         // No title in tag, meaning that no valid tag is contained in the file
         I_item->setData( TP::role_Description, qstr_Filename );
     }
     else
     {
-        I_item->setData( TP::role_Description, qstr_artist + QString(" - ") + qstr_title );    // will be able to customized in the future
-        I_item->setData( TP::role_Artist, qstr_artist );
-        I_item->setData( TP::role_Title, qstr_title );
-        I_item->setData( TP::role_Album, qstr_album );
+        I_item->setData( TP::role_Description,  qstr_artist + QString(" - ") + qstr_title );    // will be able to customized in the future
+        I_item->setData( TP::role_Artist,       qstr_artist );
+        I_item->setData( TP::role_Title,        qstr_title );
+        I_item->setData( TP::role_Album,        qstr_album );
+    }
+
+    // set ReplayGains
+    if( extension == QString { "flac" } )
+    {
+        // The gain is stored as Xiph Comment in the format like "+6.49 dB"
+        TagLib::Ogg::XiphComment *xiphComment { static_cast< TagLib::FLAC::File * >( fileRef.file() )->xiphComment() };
+        if( xiphComment->contains( "REPLAYGAIN_TRACK_GAIN" ) )
+        {
+            float gainTrack {
+                TStringToQString( xiphComment->properties()["REPLAYGAIN_TRACK_GAIN"][0] )
+                    .split(' ')[0]
+                    .toFloat()
+            };
+            I_item->setData( TP::role_ReplayGainTrack, gainTrack );
+        }
+        else
+            I_item->setData( TP::role_ReplayGainTrack, std::numeric_limits<float>::max() );
+
+        if( xiphComment->contains( "REPLAYGAIN_ALBUM_GAIN" ) )
+        {
+            float gainAlbum {
+                TStringToQString( xiphComment->properties()["REPLAYGAIN_ALBUM_GAIN"][0] )
+                    .split(' ')[0]
+                    .toFloat()
+            };
+            I_item->setData( TP::role_ReplayGainAlbum, gainAlbum );
+        }
+        else
+            I_item->setData( TP::role_ReplayGainAlbum, std::numeric_limits<float>::max() );
     }
 }

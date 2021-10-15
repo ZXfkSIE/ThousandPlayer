@@ -1003,19 +1003,22 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 }
 
 QImage
-TP_MainClass::getCoverImageFromFLAC( const QString &filePath )
+TP_MainClass::getCoverImageFromFLAC( const QString &I_qstr_FilePath )
 {
 #ifdef Q_OS_WINDOWS
-    TagLib::FLAC::File flacFile { filePath.toStdWString().c_str() };
+    TagLib::FLAC::File flacFile { I_qstr_FilePath.toStdWString().c_str() };
 #else
-    TagLib::FLAC::File flacFile { filePath.toLocal8Bit().constData() };
+    TagLib::FLAC::File flacFile { I_qstr_FilePath.toLocal8Bit().constData() };
 #endif
 
-    const TagLib::List < TagLib::FLAC::Picture * > &pictureList { flacFile.pictureList() };
-    if( pictureList.size() > 0 )
-        return QImage::fromData(
-                    QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
-                    );
+    if( flacFile.isValid() )
+    {
+        const TagLib::List < TagLib::FLAC::Picture * > &pictureList { flacFile.pictureList() };
+        if( pictureList.size() > 0 )
+            return QImage::fromData(
+                        QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
+                        );
+    }
 
     return {};
 }
@@ -1029,20 +1032,24 @@ TP_MainClass::getCoverImageFromID3V2( const QString &filePath )
     TagLib::MPEG::File mpegFile { filePath.toLocal8Bit().constData() };
 #endif
 
-    TagLib::ID3v2::Tag *id3v2Tag { nullptr };
-
-    if( TP::extension( filePath ) == QString{ "MP3" } )
-        id3v2Tag = mpegFile.ID3v2Tag();
-
-    if( id3v2Tag )
+    if( mpegFile.isValid() )
     {
-        TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList( "APIC" ) };
-        TagLib::ID3v2::AttachedPictureFrame *pictureFrame {
-            static_cast< TagLib::ID3v2::AttachedPictureFrame * >( frameList.front() )
-        };
-        return QImage::fromData(
-                    QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
-                    );
+        TagLib::ID3v2::Tag *id3v2Tag { nullptr };
+
+        if( TP::extension( filePath ) == QString{ "MP3" } )
+            id3v2Tag = mpegFile.ID3v2Tag();
+
+        if( id3v2Tag )
+        {
+            TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList( "APIC" ) };
+            TagLib::ID3v2::AttachedPictureFrame *pictureFrame {
+                static_cast< TagLib::ID3v2::AttachedPictureFrame * >( frameList.front() )
+            };
+            return QImage::fromData(
+                        QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
+                        );
+        }
     }
+
     return {};
 }

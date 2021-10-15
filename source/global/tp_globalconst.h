@@ -18,17 +18,19 @@ static const QString configDirectoryPath    { "./userData" };
 static const QString configFilePath         { configDirectoryPath + QString { "/config.ini" } };
 static const QString playlistFilePath       { configDirectoryPath + QString { "/playlists.xml" } };
 
-static const int role_Duration      = 0x0100;   // int
-static const int role_Bitrate       = 0x0101;   // int
-static const int role_SampleRate    = 0x0102;   // int
-static const int role_BitDepth      = 0x0103;   // int
-static const int role_Artist        = 0x0104;   // QString
-static const int role_Title         = 0x0105;   // QString
-static const int role_Album         = 0x0106;   // QString
-static const int role_FileName      = 0x0107;   // QString
-static const int role_URL           = 0x0108;   // QUrl
-static const int role_SourceType    = 0x0109;   // TP::SourceType
-static const int role_Description   = 0x010A;   // QString
+static const int role_Duration          = 0x0100;   // int
+static const int role_Bitrate           = 0x0101;   // int
+static const int role_SampleRate        = 0x0102;   // int
+static const int role_BitDepth          = 0x0103;   // int
+static const int role_Artist            = 0x0104;   // QString
+static const int role_Title             = 0x0105;   // QString
+static const int role_Album             = 0x0106;   // QString
+static const int role_FileName          = 0x0107;   // QString
+static const int role_URL               = 0x0108;   // QUrl
+static const int role_SourceType        = 0x0109;   // TP::SourceType
+static const int role_Description       = 0x010A;   // QString
+static const int role_ReplayGainTrack   = 0x010B;   // float
+static const int role_ReplayGainAlbum   = 0x010C;   // float
 
 
 static const int iconSize_Play          = 20;
