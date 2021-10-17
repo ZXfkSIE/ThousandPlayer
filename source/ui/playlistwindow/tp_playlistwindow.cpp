@@ -58,7 +58,13 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
 void
 TP_PlaylistWindow::initializePlaylist()
 {
-    if( std::filesystem::exists( TP::playlistFilePath.toStdWString() ) )
+    if( std::filesystem::exists( TP::playlistFilePath.
+#ifdef Q_OS_WIN
+    toStdWString()
+#else
+    toLocal8Bit().constData()
+#endif
+    ) )
     {
         qDebug() << "Existing playlist " << TP::playlistFilePath << " found.";
     }
@@ -510,6 +516,13 @@ TP_PlaylistWindow::initializeConnection()
 void
 TP_PlaylistWindow::storePlaylist()
 {
-    if( ! std::filesystem::exists( TP::configDirectoryPath.toStdWString() ) )
+    // Pending implementation
+    if( ! std::filesystem::exists( TP::configDirectoryPath.
+#ifdef Q_OS_WIN
+    toStdWString()
+#else
+    toLocal8Bit().constData()
+#endif
+    ) )
         std::filesystem::create_directory( TP::configDirectoryPath.toStdWString() );
 }

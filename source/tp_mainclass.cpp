@@ -780,7 +780,6 @@ TP_MainClass::slot_changePlayingPosition( int second )
 void
 TP_MainClass::slot_setVolume( float I_linearVolume )
 {
-    TP::config().setReplayGainMode( TP::RG_track );
     linearVolume = I_linearVolume;
 
     if( mediaPlayer->playbackState() != QMediaPlayer::PlayingState )
@@ -834,7 +833,7 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
 
     qDebug()<<"[Audio Output] A" << dB_Total << "dB ReplayGain is applied.";
     // 10^(Gain/20)
-    float multiplier = std::powf( 10, dB_Total / 20.0 );
+    float multiplier = std::pow( 10, dB_Total / 20.0 );
     audioOutput->setVolume( linearVolume * multiplier );
 }
 
@@ -1034,10 +1033,16 @@ void
 TP_MainClass::playFile ( QListWidgetItem *I_item )
 {
     QUrl url { I_item->data( TP::role_URL ).toUrl() };
-    qDebug() << "Start playing local file URL: " << url;
+    qDebug() << "[TP_MainClass::playFile] trying to play local file URL: " << url;
     QString localPath = url.toLocalFile();
 
-    if( std::filesystem::exists( localPath.toStdWString() ) )
+    if( std::filesystem::exists( localPath.
+#ifdef Q_OS_WIN
+    toStdWString()
+#else
+    toLocal8Bit().constData()
+#endif
+    ) )
     {
         mediaPlayer->stop();
 
@@ -1068,11 +1073,14 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 QImage
 TP_MainClass::getCoverImageFromFLAC( const QString &I_qstr_FilePath )
 {
-#ifdef Q_OS_WINDOWS
-    TagLib::FLAC::File flacFile { I_qstr_FilePath.toStdWString().c_str() };
+    TagLib::FLAC::File flacFile {
+        I_qstr_FilePath.
+#ifdef Q_OS_WIN
+        toStdWString().c_str()
 #else
-    TagLib::FLAC::File flacFile { I_qstr_FilePath.toLocal8Bit().constData() };
+        toLocal8Bit().constData()
 #endif
+    };
 
     if( flacFile.isValid() )
     {
@@ -1089,11 +1097,14 @@ TP_MainClass::getCoverImageFromFLAC( const QString &I_qstr_FilePath )
 QImage
 TP_MainClass::getCoverImageFromID3V2( const QString &filePath )
 {
-#ifdef Q_OS_WINDOWS
-    TagLib::MPEG::File mpegFile { filePath.toStdWString().c_str() };
+    TagLib::MPEG::File mpegFile {
+        filePath.
+#ifdef Q_OS_WIN
+        toStdWString().c_str()
 #else
-    TagLib::MPEG::File mpegFile { filePath.toLocal8Bit().constData() };
+        toLocal8Bit().constData()
 #endif
+    };
 
     if( mpegFile.isValid() )
     {
