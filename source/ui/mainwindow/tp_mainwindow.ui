@@ -38,7 +38,8 @@
    <string notr="true"/>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:#777;</string>
+   <string notr="true">color: white;
+background-color:#777;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -119,9 +120,6 @@
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string notr="true">ThousandPlayer v1.0</string>
@@ -281,8 +279,7 @@
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: #666;
-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: #666;</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>
@@ -442,9 +439,6 @@ color: rgb(255, 255, 255);</string>
                  <property name="mouseTracking">
                   <bool>true</bool>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">color: rgb(255, 255, 255);</string>
-                 </property>
                  <property name="frameShape">
                   <enum>QFrame::Box</enum>
                  </property>
@@ -477,9 +471,6 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="mouseTracking">
                   <bool>true</bool>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="frameShape">
                   <enum>QFrame::Box</enum>
@@ -514,9 +505,6 @@ color: rgb(255, 255, 255);</string>
                  <property name="mouseTracking">
                   <bool>true</bool>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">color: rgb(255, 255, 255);</string>
-                 </property>
                  <property name="frameShape">
                   <enum>QFrame::Box</enum>
                  </property>
@@ -549,9 +537,6 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="mouseTracking">
                   <bool>true</bool>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">color: rgb(255, 255, 255);</string>
                  </property>
                  <property name="frameShape">
                   <enum>QFrame::Box</enum>
@@ -629,8 +614,7 @@ color: rgb(255, 255, 255);</string>
                   <bool>true</bool>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">color: rgb(255, 255, 255);
-border: 0px;</string>
+                  <string notr="true">border: 0px;</string>
                  </property>
                  <property name="text">
                   <string notr="true">00:00</string>
@@ -669,8 +653,7 @@ border: 0px;</string>
                   <bool>true</bool>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">color: rgb(255, 255, 255);
-border: 0px;</string>
+                  <string notr="true">border: 0px;</string>
                  </property>
                  <property name="text">
                   <string notr="true">00:00</string>

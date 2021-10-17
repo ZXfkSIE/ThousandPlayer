@@ -20,12 +20,22 @@ TP_Config::TP_Config( QObject *parent ) :
             .toBool();
     config.endGroup();
 
+
     config.beginGroup( group_PLAYBACK );
-
-
     volume = config
             .value( key_PLAYBACK_volume, 50 )
             .toInt();
+    preAmp_dB = config
+            .value( key_PLAYBACK_preAmp_dB, 0.0 )
+            .toFloat();
+    replayGainMode = static_cast< TP::ReplayGainMode >(
+                config
+                .value( key_PLAYBACK_replayGainMode, TP::RG_disabled )
+                .toInt()
+                );
+    defaultGain_dB = config
+            .value( key_PLAYBACK_defaultGain_dB, 0.0 )
+            .toFloat();
     playMode = static_cast<TP::PlayMode>(
                 config
                 .value( key_PLAYBACK_playMode, TP::singleTime )
@@ -44,13 +54,16 @@ TP_Config::~TP_Config()
 
     config.beginGroup( group_PLAYBACK );
     config.setValue( key_PLAYBACK_volume, volume );
+    config.setValue( key_PLAYBACK_preAmp_dB, preAmp_dB );
+    config.setValue( key_PLAYBACK_replayGainMode, replayGainMode );
+    config.setValue( key_PLAYBACK_defaultGain_dB, defaultGain_dB );
     config.setValue( key_PLAYBACK_playMode, playMode );
     config.endGroup();
 
     config.sync();
 }
 
-// UI group
+// ==================== UI group ====================
 void
 TP_Config::setMainWindowPosition( const QPoint &input )
 {
@@ -88,19 +101,7 @@ TP_Config::isPlaylistWindowShown() const
 }
 
 
-// PLAYBACK group
-void
-TP_Config::setPlayMode( TP::PlayMode input )
-{
-    playMode = input;
-}
-
-TP::PlayMode
-TP_Config::getPlayMode() const
-{
-    return playMode;
-}
-
+// ==================== PLAYBACK group ====================
 void
 TP_Config::setVolume( int I_volume )
 {
@@ -111,4 +112,52 @@ int
 TP_Config::getVolume() const
 {
     return volume;
+}
+
+void
+TP_Config::setPreAmp_dB( float I_dB )
+{
+    preAmp_dB = I_dB;
+}
+
+float
+TP_Config::getPreAmp_dB()
+{
+    return preAmp_dB;
+}
+
+void
+TP_Config::setReplayGainMode( TP::ReplayGainMode input )
+{
+    replayGainMode = input;
+}
+
+TP::ReplayGainMode
+TP_Config::getReplayGainMode()
+{
+    return replayGainMode;
+}
+
+void
+TP_Config::setDefaultGain_dB( float I_dB )
+{
+    defaultGain_dB = I_dB;
+}
+
+float
+TP_Config::getDefaultGain_dB()
+{
+    return defaultGain_dB;
+}
+
+void
+TP_Config::setPlayMode( TP::PlayMode input )
+{
+    playMode = input;
+}
+
+TP::PlayMode
+TP_Config::getPlayMode() const
+{
+    return playMode;
 }

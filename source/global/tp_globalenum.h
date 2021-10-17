@@ -56,6 +56,13 @@ enum PlayMode
     shuffle
 };
 
+enum ReplayGainMode
+{
+    RG_disabled,
+    RG_track,
+    RG_album
+};
+
 }       //namespace TP
 
 #endif // TP_GLOBALENUM_H

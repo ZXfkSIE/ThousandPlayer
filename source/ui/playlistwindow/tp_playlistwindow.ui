@@ -566,6 +566,21 @@
     <string>Find &amp;next</string>
    </property>
   </action>
+  <action name="action_sortByTitle">
+   <property name="text">
+    <string>By &amp;title</string>
+   </property>
+  </action>
+  <action name="action_sortByAlbum">
+   <property name="text">
+    <string>By albu&amp;m</string>
+   </property>
+  </action>
+  <action name="action_sortByArtist">
+   <property name="text">
+    <string>By &amp;artist</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

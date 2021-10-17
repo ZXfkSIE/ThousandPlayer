@@ -6,8 +6,7 @@
 #include <QListWidget>
 
 class TP_Menu;
-
-class QProgressDialog;
+class TP_ProgressDialog;
 
 class TP_FileListWidget : public QListWidget
 {
@@ -63,8 +62,6 @@ private:
 
     void initializeMenu();
 
-    void quickSort( const int role, const int left, const int right, const bool isDescending );
-
     TP_Menu *menu_rightClick;
     QAction *action_remove;
 
@@ -74,8 +71,6 @@ private:
     QString qstr_listName;
     bool    b_isConnected;
     bool    b_isLeftButtonPressed;
-
-    QProgressDialog *progressDialog;
 
     QString         qstr_keyword;
     bool            b_isFilenameSearched;

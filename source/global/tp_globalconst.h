@@ -18,19 +18,19 @@ static const QString configDirectoryPath    { "./userData" };
 static const QString configFilePath         { configDirectoryPath + QString { "/config.ini" } };
 static const QString playlistFilePath       { configDirectoryPath + QString { "/playlists.xml" } };
 
-static const int role_Duration          = 0x0100;   // int
-static const int role_Bitrate           = 0x0101;   // int
-static const int role_SampleRate        = 0x0102;   // int
-static const int role_BitDepth          = 0x0103;   // int
-static const int role_Artist            = 0x0104;   // QString
-static const int role_Title             = 0x0105;   // QString
-static const int role_Album             = 0x0106;   // QString
-static const int role_FileName          = 0x0107;   // QString
-static const int role_URL               = 0x0108;   // QUrl
-static const int role_SourceType        = 0x0109;   // TP::SourceType
-static const int role_Description       = 0x010A;   // QString
-static const int role_ReplayGainTrack   = 0x010B;   // float
-static const int role_ReplayGainAlbum   = 0x010C;   // float
+static const int role_Duration          = Qt::UserRole;         // int              must have
+static const int role_Bitrate           = Qt::UserRole + 1;     // int
+static const int role_SampleRate        = Qt::UserRole + 2;     // int
+static const int role_BitDepth          = Qt::UserRole + 3;     // int
+static const int role_Artist            = Qt::UserRole + 4;     // QString
+static const int role_Title             = Qt::UserRole + 5;     // QString
+static const int role_Album             = Qt::UserRole + 6;     // QString
+static const int role_FileName          = Qt::UserRole + 7;     // QString          must have
+static const int role_URL               = Qt::UserRole + 8;     // QUrl             must have
+static const int role_SourceType        = Qt::UserRole + 9;     // TP::SourceType   must have
+static const int role_Description       = Qt::UserRole + 10;    // QString          must have
+static const int role_ReplayGainTrack   = Qt::UserRole + 11;    // float
+static const int role_ReplayGainAlbum   = Qt::UserRole + 12;    // float
 
 
 static const int iconSize_Play          = 20;

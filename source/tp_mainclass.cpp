@@ -688,8 +688,9 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[Media Player] Playback state changed to PlayingState.";
+        slot_setVolume( linearVolume );
         mainWindow->setPlay();
-
+        playlistWindow->setCurrentItemBold();
         break;
 
     case QMediaPlayer::PausedState:
@@ -776,6 +777,68 @@ TP_MainClass::slot_changePlayingPosition( int second )
 }
 
 
+void
+TP_MainClass::slot_setVolume( float I_linearVolume )
+{
+    TP::config().setReplayGainMode( TP::RG_track );
+    linearVolume = I_linearVolume;
+
+    if( mediaPlayer->playbackState() != QMediaPlayer::PlayingState )
+        return;
+
+    float dB_Track { TP::currentItem()->data( TP::role_ReplayGainTrack ).toFloat() };
+    float dB_Album { TP::currentItem()->data( TP::role_ReplayGainAlbum ).toFloat() };
+    float dB_Total { TP::config().getPreAmp_dB() };
+
+    switch ( TP::config().getReplayGainMode() )
+    {
+    case TP::RG_track :
+
+        if( dB_Track != std::numeric_limits<float>::max() )
+        {
+            dB_Total += dB_Track;
+            break;
+        }
+        else if( dB_Album != std::numeric_limits<float>::max() )
+        {
+            dB_Total += dB_Album;
+            break;
+        }
+        else
+        {
+            dB_Total += TP::config().getDefaultGain_dB();
+            break;
+        }
+
+    case TP::RG_album :
+
+        if( dB_Album != std::numeric_limits<float>::max() )
+        {
+            dB_Total += dB_Album;
+            break;
+        }
+        else if( dB_Track != std::numeric_limits<float>::max() )
+        {
+            dB_Total += dB_Track;
+            break;
+        }
+        else
+        {
+            dB_Total += TP::config().getDefaultGain_dB();
+            break;
+        }
+
+    default:
+        break;
+    }
+
+    qDebug()<<"[Audio Output] A" << dB_Total << "dB ReplayGain is applied.";
+    // 10^(Gain/20)
+    float multiplier = std::powf( 10, dB_Total / 20.0 );
+    audioOutput->setVolume( linearVolume * multiplier );
+}
+
+
 // *****************************************************************
 // private
 // *****************************************************************
@@ -813,10 +876,8 @@ TP_MainClass::initializeConnection()
             mediaPlayer,    &QMediaPlayer::stop);
 
     // Volume control related
-    connect(audioOutput,    &QAudioOutput::volumeChanged,
-            mainWindow,     &TP_MainWindow::slot_changeVolumeSliderFromLinearVolume);
-    connect(mainWindow,     &TP_MainWindow::signal_volumeSliderValueChanged,
-            audioOutput,    &QAudioOutput::setVolume);
+    connect(mainWindow, &TP_MainWindow::signal_volumeSliderValueChanged,
+            this,       &TP_MainClass::slot_setVolume);
 
     // Windows minimizing & restoring related
     connect(mainWindow,     &TP_MainWindow::signal_minimizeWindow,
@@ -859,7 +920,7 @@ TP_MainClass::initializeConnection()
 void
 TP_MainClass::unsnapInvisibleWindows()
 {
-    if( !playlistWindow->isVisible() )
+    if( ! playlistWindow->isVisible() )
         for( unsigned i {}; i < TP::numberOfWindows; i++ )
         {
             snapStatus [ i ][ TP::playlistWindow ] = false;
@@ -1000,6 +1061,8 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         mediaPlayer->setSource( url );
         mediaPlayer->play();
     }
+    else
+        mediaPlayer->stop();
 }
 
 QImage

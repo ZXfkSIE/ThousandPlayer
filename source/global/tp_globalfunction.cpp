@@ -48,12 +48,12 @@ TP::storeInformation( QListWidgetItem * I_item )
     if( extension == QString { "flac" } )
         bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
 
-    I_item->setData( TP::role_SourceType,   TP::singleFile );     // set source type
+    I_item->setData( TP::role_SourceType,   TP::singleFile );       // set source type
     I_item->setData( TP::role_Duration,     duration );             // set duration
-    I_item->setData( TP::role_Bitrate,      bitrate );               // set bitrate
-    I_item->setData( TP::role_SampleRate,   sampleRate );         // set sample rate
+    I_item->setData( TP::role_Bitrate,      bitrate );              // set bitrate
+    I_item->setData( TP::role_SampleRate,   sampleRate );           // set sample rate
     I_item->setData( TP::role_BitDepth,     bitDepth );             // set bit depth
-    I_item->setData( TP::role_FileName,     qstr_Filename );          // set file name
+    I_item->setData( TP::role_FileName,     qstr_Filename );        // set file name
 
     // set descrption, artist, title, album
     if( qstr_title.length() == 0 )
@@ -63,7 +63,8 @@ TP::storeInformation( QListWidgetItem * I_item )
     }
     else
     {
-        I_item->setData( TP::role_Description,  qstr_artist + QString(" - ") + qstr_title );    // will be able to customized in the future
+        // will be able to customized in the future
+        I_item->setData( TP::role_Description,  qstr_artist + QString(" - ") + qstr_title );
         I_item->setData( TP::role_Artist,       qstr_artist );
         I_item->setData( TP::role_Title,        qstr_title );
         I_item->setData( TP::role_Album,        qstr_album );

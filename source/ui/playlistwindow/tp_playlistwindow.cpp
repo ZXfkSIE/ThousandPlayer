@@ -2,12 +2,13 @@
 #include "ui_tp_playlistwindow.h"
 
 #include "tp_globalconst.h"
-#include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
 #include "tp_filelistwidget.h"
 #include "tp_filesearchdialog.h"
 #include "tp_menu.h"
+#include "tp_progressdialog.h"
+#include "tp_runnable_filereader.h"
 
 #include <QFileDialog>
 #include <QMenu>
@@ -18,19 +19,26 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
   , ui                      { new Ui::TP_PlaylistWindow }
   , currentFileListWidget   {}
   , vector_FileListWidget   {}
+  , progressDialog          { new TP_ProgressDialog {
+                                tr( "Reading files..." ),   // const QString &labelText
+                                tr( "Abort" ),              // const QString &cancelButtonText
+                                0,                          // int minimum
+                                0,                          // int maximum (will be set in the loop)
+                                this } }                    // QWidget *parent = nullptr
   , b_isDescending          { false }
 {
     ui->setupUi( this );
     // Qt::Tool is used for getting rid of the window tab in taskbar
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
 
-    initializeConnection();
+
 
     layout_FileListFrame = new QHBoxLayout { ui->frame_FileList };
     layout_FileListFrame->setContentsMargins( 0, 0, 0, 0 );
 
     ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
 
+    initializeConnection();
     initializeMenu();
 
     /****************************** WARNING *****************************************
@@ -71,12 +79,6 @@ TP_PlaylistWindow::initializePlaylist()
                 this,                   &TP_PlaylistWindow::slot_currentItemRemoved);
 
         emit signal_newFilelistWidgetCreated( currentFileListWidget );
-
-        /*test
-        currentFileListWidget->addItems( {"0","1","2","3","4"} );
-        delete currentFileListWidget->takeItem(1);
-        currentFileListWidget->insertItem( 1, currentFileListWidget->item(3)->clone() );
-        test*/
     }
 }
 
@@ -213,15 +215,48 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
                         "MP3 files (*.mp3)")
                 );
 
-    for (const QUrl& fileURL: fileURLs)
+    qsizetype n_Files = fileURLs.size();
+    if( n_Files == 0 )
+        return;
+
+    progressDialog->reset();
+    progressDialog->setMaximum( n_Files );
+    progressDialog->setValue( 0 );
+    progressDialog->show();
+
+    for ( const QUrl& fileURL: fileURLs )
     {
         QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
         item->setData( TP::role_URL, fileURL );         // set URL
-        TP::storeInformation( item );
         currentFileListWidget->addItem( item );
     }
 
-    currentFileListWidget->refreshShowingTitle( originalCount - 1, currentFileListWidget->count() - 1 );
+    const int step { 10 };
+    int nextPercent { step };
+    const int count { currentFileListWidget->count() };
+
+    for ( size_t i {}; i < count; i++ )
+    {
+        if( i * 100 / count >= nextPercent )
+        {
+            nextPercent += step;
+            progressDialog->setValue( i + 1 );
+        }
+
+        QThreadPool::globalInstance()->start(
+                    new TP_Runnable_FileReader{ currentFileListWidget->item( i ) }
+                    );
+
+        if( progressDialog->wasCanceled() )
+        {
+            progressDialog->cancel();
+            break;
+        }
+    }
+
+    QThreadPool::globalInstance()->waitForDone();
+    currentFileListWidget->refreshShowingTitle( originalCount - 1, count - 1 );
+    progressDialog->cancel();
 }
 
 
@@ -306,6 +341,24 @@ void
 TP_PlaylistWindow::on_action_sortByDescription_triggered()
 {
     currentFileListWidget->sortByData( TP::role_Description, b_isDescending );
+}
+
+
+void TP_PlaylistWindow::on_action_sortByAlbum_triggered()
+{
+    currentFileListWidget->sortByData( TP::role_Album, b_isDescending );
+}
+
+
+void TP_PlaylistWindow::on_action_sortByArtist_triggered()
+{
+    currentFileListWidget->sortByData( TP::role_Artist, b_isDescending );
+}
+
+
+void TP_PlaylistWindow::on_action_sortByTitle_triggered()
+{
+    currentFileListWidget->sortByData( TP::role_Title, b_isDescending );
 }
 
 
@@ -416,6 +469,10 @@ TP_PlaylistWindow::initializeMenu()
     menu_Sort->addAction( ui->action_sortByPath );
     menu_Sort->addAction( ui->action_sortByFilename );
     menu_Sort->addAction( ui->action_sortByDescription );
+    menu_Sort->addSeparator();
+    menu_Sort->addAction( ui->action_sortByAlbum );
+    menu_Sort->addAction( ui->action_sortByArtist );
+    menu_Sort->addAction( ui->action_sortByTitle );
     menu_Sort->addSeparator();
     menu_Sort->addAction( ui->action_setDescending );
 

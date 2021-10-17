@@ -50,19 +50,21 @@ private slots:
 
     void slot_changePlayingPosition( int second );
 
+    void slot_setVolume( float linearVolume );
+
 private:    
     void initializeConnection();
 
     void unsnapInvisibleWindows();
-    TP::SnapType checkSnapType ( const QRect &geometry1, const QRect &geometry2 ) const;
-    TP::SnapType checkAdjacentType ( const QRect &geometry1, const QRect &geometry2 ) const;
+    TP::SnapType checkSnapType      ( const QRect &geometry1, const QRect &geometry2 ) const;
+    TP::SnapType checkAdjacentType  ( const QRect &geometry1, const QRect &geometry2 ) const;
     bool breadthFirstSearch ( unsigned idx_Target ) const;
 
     void playItem ( QListWidgetItem *I_item );
     void playFile ( QListWidgetItem *I_item );
 
-    QImage getCoverImageFromFLAC( const QString &filePath );
-    QImage getCoverImageFromID3V2( const QString &filePath );
+    QImage getCoverImageFromFLAC    ( const QString &filePath );
+    QImage getCoverImageFromID3V2   ( const QString &filePath );
 
     TP_MainWindow *     mainWindow;
     TP_PlaylistWindow * playlistWindow;
@@ -70,8 +72,9 @@ private:
 
     QAudioOutput *      audioOutput;
     QMediaPlayer *      mediaPlayer;
+    float               linearVolume;
 
-    bool snapStatus [TP::numberOfWindows][TP::numberOfWindows];
+    bool snapStatus [ TP::numberOfWindows ][ TP::numberOfWindows ];
     QPoint snapPosition_playlistWindow;
 };
 

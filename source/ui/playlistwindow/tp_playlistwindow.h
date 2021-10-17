@@ -9,9 +9,9 @@
 
 class TP_FileListWidget;
 class TP_Menu;
+class TP_ProgressDialog;
 
 class QHBoxLayout;
-class QMediaPlayer;
 
 namespace Ui { class TP_PlaylistWindow; }
 
@@ -20,7 +20,7 @@ class TP_PlaylistWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit TP_PlaylistWindow(QWidget *parent = nullptr);
+    explicit TP_PlaylistWindow( QWidget *parent = nullptr );
     ~TP_PlaylistWindow();
 
     void initializePlaylist();
@@ -77,10 +77,15 @@ private slots:
     void on_action_sortByPath_triggered();
     void on_action_sortByFilename_triggered();
     void on_action_sortByDescription_triggered();
+    void on_action_sortByAlbum_triggered();
+    void on_action_sortByArtist_triggered();
+    void on_action_sortByTitle_triggered();
     void on_action_setDescending_triggered( bool checked );
 
     void on_action_find_triggered();
     void on_action_findNext_triggered();
+
+
 
 private:
     Ui::TP_PlaylistWindow *ui;
@@ -103,6 +108,8 @@ private:
     TP_Menu *menu_Select;
     TP_Menu *menu_Sort;
     TP_Menu *menu_Find;
+
+    TP_ProgressDialog *progressDialog;
 
     bool b_isDescending;
 };

@@ -3,6 +3,9 @@
     tp_filelistwidget.h
     tp_filelistwidget.cpp
 
+    tp_runnable_filereader.h
+    tp_runnable_filereader.cpp
+
     tp_filesearchdialog.h
     tp_filesearchdialog.cpp
     tp_filesearchdialog.ui
@@ -19,6 +22,9 @@
     tp_playlistwindow.h
     tp_playlistwindow.cpp
     tp_playlistwindow.ui
+    
+    tp_progressdialog.h
+    tp_progressdialog.cpp
 )
 
 add_library(TP_ui_playlistwindow ${TP_UI_PLAYLISTWINDOW_FILES})
