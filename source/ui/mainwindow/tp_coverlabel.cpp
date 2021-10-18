@@ -8,8 +8,8 @@
 #include <QMouseEvent>
 
 TP_CoverLabel::TP_CoverLabel( QWidget *parent ) :
-    QLabel          { parent }
-  , coverViewer     { new TP_CoverViewer { nullptr } }
+    QLabel      { parent }
+  , coverViewer { new TP_CoverViewer { nullptr } }
 {
     initializeMenu();
 
