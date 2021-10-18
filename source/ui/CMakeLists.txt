@@ -1,11 +1,9 @@
-﻿add_subdirectory(lyricswindow)
+﻿add_subdirectory(configwindow)
+add_subdirectory(lyricswindow)
 add_subdirectory(mainwindow)
 add_subdirectory(playlistwindow)
 
 set(TP_UI_FILES
-    tp_configwindow.h
-    tp_configwindow.cpp
-    tp_configwindow.ui
 
     tp_menu.h
     tp_menu.cpp

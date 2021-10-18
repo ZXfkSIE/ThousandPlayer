@@ -43,6 +43,11 @@
    </property>
    <item>
     <widget class="QGroupBox" name="groupBox_Keyword">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="title">
       <string>Keyword</string>
      </property>
@@ -64,6 +69,11 @@
       </property>
       <item>
        <widget class="QLineEdit" name="lineEdit">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: white</string>
         </property>
@@ -74,6 +84,11 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_searchOptions">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="title">
       <string>Search options</string>
      </property>
@@ -89,6 +104,11 @@
       </property>
       <item row="0" column="0">
        <widget class="QCheckBox" name="checkBox_Filename">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>&amp;Filename</string>
         </property>
@@ -96,6 +116,11 @@
       </item>
       <item row="0" column="1">
        <widget class="QCheckBox" name="checkBox_Album">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>Albu&amp;m</string>
         </property>
@@ -103,6 +128,11 @@
       </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="checkBox_Artist">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>&amp;Artist</string>
         </property>
@@ -110,6 +140,11 @@
       </item>
       <item row="1" column="1">
        <widget class="QCheckBox" name="checkBox_Title">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>&amp;Title</string>
         </property>
