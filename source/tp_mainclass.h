@@ -36,7 +36,7 @@ private slots:
 
     void slot_moveWindow ( QWidget *window, QRect newGeometry );
     void slot_resizeWindow ( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
-    void slot_leftButtonReleased();
+    void slot_refreshSnapStatus();
 
     void slot_connectFilelistWidget ( TP_FileListWidget* I_FilelistWidget );
     void slot_itemDoubleClicked ( QListWidgetItem *I_item );

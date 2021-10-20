@@ -29,43 +29,7 @@ TP_MainWindow::TP_MainWindow(QWidget *parent) :
 
     initializeConnection();
     initializeMenu();
-
-    ui->pushButton_Minimize->setIcon( QIcon{":/image/icon_Minimize.svg"} );
-    ui->pushButton_Expand->setIcon( QIcon{":/image/icon_Expand.svg"} );
-    ui->pushButton_Exit->setIcon( QIcon{":/image/icon_Exit.svg"} );
-
-    ui->label_VolumeIcon->initialize();
-
-    ui->label_Cover->setImage();
-
-    ui->pushButton_Previous->setIcon( QIcon{":/image/icon_Previous.svg"} );
-    ui->pushButton_Stop->setIcon( QIcon{":/image/icon_Stop.svg"} );
-    setIcon_Play();
-    ui->pushButton_Next->setIcon( QIcon{":/image/icon_Next.svg"} );
-
-    switch( TP::config().getPlayMode() )
-    {
-    case TP::singleTime :
-        on_action_setMode_SingleTime_triggered();
-        break;
-
-    case TP::repeat :
-        on_action_setMode_Repeat_triggered();
-        break;
-
-    case TP::sequential :
-        on_action_setMode_Sequential_triggered();
-        break;
-
-    case TP::shuffle :
-        on_action_setMode_Shuffle_triggered();
-        break;
-    }
-
-    setAudioPropertyLabels();
-
-    // Pending implementation
-    ui->pushButton_Lyrics->hide();
+    initializeUI();
 }
 
 TP_MainWindow::~TP_MainWindow()
@@ -138,26 +102,6 @@ TP_MainWindow::setCover( const QImage &I_image )
 // *****************************************************************
 // public slots:
 // *****************************************************************
-
-
-void
-TP_MainWindow::slot_setVolumeSliderValue( int I_volume )
-{
-    ui->slider_Volume->setValue( I_volume );
-}
-
-
-void
-TP_MainWindow::slot_changeVolumeSliderFromLinearVolume( float linearVolume )
-{
-    float logarithmicVolume =
-            QAudio::convertVolume( linearVolume,
-                                   QAudio::LinearVolumeScale,
-                                   QAudio::LogarithmicVolumeScale );
-
-    ui->slider_Volume->setValue( std::round( logarithmicVolume * 100 ) );
-}
-
 
 void
 TP_MainWindow::slot_playlistWindowShown()
@@ -491,10 +435,10 @@ TP_MainWindow::initializeConnection()
     connect(ui->slider_Time,    &TP_TimeSlider::signal_mouseReleased,
             this,               &TP_MainWindow::slot_timeSliderPressed);
 
-    connect(ui->slider_Volume,      &TP_VolumeSlider::valueChanged,
+    connect(ui->slider_Volume,      &QSlider::valueChanged,
             this,                   &TP_MainWindow::slot_volumeSliderChanged);
     connect(ui->label_VolumeIcon,   &TP_VolumeIcon::signal_setVolume,
-            this,                   &TP_MainWindow::slot_setVolumeSliderValue);
+            ui->slider_Volume,      &QSlider::setValue);
 }
 
 
@@ -519,9 +463,56 @@ TP_MainWindow::initializeMenu()
 
 
 void
+TP_MainWindow::initializeUI()
+{
+    ui->pushButton_Minimize ->setIcon( QIcon{ ":/image/icon_Minimize.svg" } );
+    ui->pushButton_Expand   ->setIcon( QIcon{ ":/image/icon_Expand.svg" } );
+    ui->pushButton_Exit     ->setIcon( QIcon{ ":/image/icon_Exit.svg" } );
+
+    // If the volume is 0, then the valueChanged signal will not be triggered
+    // since the original value is 0.
+    if( ! TP::config().getVolume() )
+        ui->slider_Volume->setValue( 50 );
+    ui->slider_Volume->setValue( TP::config().getVolume() );
+    ui->label_VolumeIcon->initialize();
+
+    ui->label_Cover->setImage();
+
+    ui->pushButton_Previous ->setIcon( QIcon{ ":/image/icon_Previous.svg" } );
+    ui->pushButton_Stop     ->setIcon( QIcon{ ":/image/icon_Stop.svg" } );
+    setIcon_Play();
+    ui->pushButton_Next     ->setIcon( QIcon{ ":/image/icon_Next.svg" } );
+
+    switch( TP::config().getPlayMode() )
+    {
+    case TP::singleTime :
+        on_action_setMode_SingleTime_triggered();
+        break;
+
+    case TP::repeat :
+        on_action_setMode_Repeat_triggered();
+        break;
+
+    case TP::sequential :
+        on_action_setMode_Sequential_triggered();
+        break;
+
+    case TP::shuffle :
+        on_action_setMode_Shuffle_triggered();
+        break;
+    }
+
+    setAudioPropertyLabels();
+
+    // Pending implementation
+    ui->pushButton_Lyrics->hide();
+}
+
+
+void
 TP_MainWindow::setIcon_Play()
 {
-    ui->pushButton_Play->setIcon( QIcon{":/image/icon_Play.svg"} );
+    ui->pushButton_Play->setIcon( QIcon{ ":/image/icon_Play.svg" } );
     ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Play, TP::iconSize_Play ) );
 }
 
@@ -529,7 +520,7 @@ TP_MainWindow::setIcon_Play()
 void
 TP_MainWindow::setIcon_Pause()
 {
-    ui->pushButton_Play->setIcon( QIcon{":/image/icon_Pause.svg"} );
+    ui->pushButton_Play->setIcon( QIcon{ ":/image/icon_Pause.svg" } );
     ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Pause, TP::iconSize_Pause ) );
 }
 
@@ -540,7 +531,7 @@ TP_MainWindow::setAudioPropertyLabels(
         int             bitDepth,
         int             sampleRate,
         int             bitRate,
-        int             duration)
+        int             duration )
 {
     ui->label_Format->setText( QString(" ") + I_qstr_Format + QString(" ") );
     ui->label_BitDepth->setText(
@@ -562,13 +553,13 @@ TP_MainWindow::setAudioPropertyLabels(
 
 
 TP::CursorPositionType
-TP_MainWindow::isAtBorder(const QPoint &I_point) const
+TP_MainWindow::isAtBorder( const QPoint &I_point ) const
 {
-    if (I_point.x() <= TP::borderSize)
+    if ( I_point.x() <= TP::borderSize )
     {
         return TP::leftBorder;
     }
-    else if (width() - I_point.x() <= TP::borderSize)
+    else if ( width() - I_point.x() <= TP::borderSize )
     {
         return TP::rightBorder;
     }
@@ -579,7 +570,7 @@ TP_MainWindow::isAtBorder(const QPoint &I_point) const
 QString
 TP_MainWindow::convertTime(qint64 second) const
 {
-    return QString("%1:%2")
-            .arg(second / 60, 2, 10, QLatin1Char('0') )
-            .arg(second % 60, 2, 10, QLatin1Char('0') );
+    return QString( "%1:%2" )
+            .arg( second / 60, 2, 10, QLatin1Char('0') )
+            .arg( second % 60, 2, 10, QLatin1Char('0') );
 }

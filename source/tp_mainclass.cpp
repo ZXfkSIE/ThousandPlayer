@@ -49,13 +49,6 @@ TP_MainClass::TP_MainClass() :
 
     mainWindow->show();
 
-    // If the volume is 0, then the valueChanged signal will not be triggered
-    // since the original value is 0.
-    if( ! TP::config().getVolume() )
-        mainWindow->slot_setVolumeSliderValue( 50 );
-
-    mainWindow->slot_setVolumeSliderValue( TP::config().getVolume() );
-
     playlistWindow->initializePlaylist();       // Must be executed before showing
 }
 
@@ -126,7 +119,7 @@ TP_MainClass::slot_initializePosition()
         mainWindow->slot_playlistWindowHidden();
 
     // Refresh snapping status
-    slot_leftButtonReleased();
+    slot_refreshSnapStatus();
 }
 
 
@@ -156,7 +149,7 @@ TP_MainClass::slot_restoreWindow()
         playlistWindow->raise();
     }
 
-    slot_leftButtonReleased();
+    slot_refreshSnapStatus();
 }
 
 void
@@ -392,7 +385,6 @@ TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeT
 {
     // While resizing, a window can only be snapped (or aligned) once.
     bool            isSnapped { false };
-    TP::SnapType    snapType;
 
     if ( window != mainWindow )
     {
@@ -594,7 +586,7 @@ Resize_window:
 
 
 void
-TP_MainClass::slot_leftButtonReleased()
+TP_MainClass::slot_refreshSnapStatus()
 {
     // main window and playlist window
     if( checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() ) != TP::notAdjacent )
@@ -892,14 +884,14 @@ TP_MainClass::initializeConnection()
     connect(mainWindow,     &TP_MainWindow::signal_resizeWindow,
             this,           &TP_MainClass::slot_resizeWindow);
     connect(mainWindow,     &TP_MainWindow::signal_leftButtonReleased,
-            this,           &TP_MainClass::slot_leftButtonReleased);
+            this,           &TP_MainClass::slot_refreshSnapStatus);
 
     connect(playlistWindow, &TP_PlaylistWindow::signal_moveWindow,
             this,           &TP_MainClass::slot_moveWindow);
     connect(playlistWindow, &TP_PlaylistWindow::signal_resizeWindow,
             this,           &TP_MainClass::slot_resizeWindow);
     connect(playlistWindow, &TP_PlaylistWindow::signal_leftButtonReleased,
-            this,           &TP_MainClass::slot_leftButtonReleased);
+            this,           &TP_MainClass::slot_refreshSnapStatus);
 
     // Showing and hiding PlaylistWindow
     connect(playlistWindow, &TP_PlaylistWindow::signal_hidden,

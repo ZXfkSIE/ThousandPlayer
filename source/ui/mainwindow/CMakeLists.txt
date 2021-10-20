@@ -15,9 +15,6 @@
 
     tp_volumeicon.h
     tp_volumeicon.cpp
-
-    tp_volumeslider.h
-    tp_volumeslider.cpp
 )
 
 add_library(TP_ui_mainwindow ${TP_UI_MAINWINDOW_FILES})

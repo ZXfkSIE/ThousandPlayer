@@ -51,9 +51,6 @@ signals:
     void signal_modeIsNotShuffle();
 
 public slots:
-    void slot_setVolumeSliderValue( int value );
-    void slot_changeVolumeSliderFromLinearVolume( float volume );
-
     void slot_playlistWindowShown();
     void slot_playlistWindowHidden();
 
@@ -95,6 +92,7 @@ private:
 
     void initializeConnection();
     void initializeMenu();
+    void initializeUI();
 
     void setIcon_Play();
     void setIcon_Pause();

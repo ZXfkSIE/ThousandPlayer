@@ -953,7 +953,7 @@ background-color:#777;</string>
           </widget>
          </item>
          <item>
-          <widget class="TP_VolumeSlider" name="slider_Volume">
+          <widget class="QSlider" name="slider_Volume">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1115,11 +1115,6 @@ background-color:#777;</string>
    <class>TP_TimeSlider</class>
    <extends>QSlider</extends>
    <header>tp_timeslider.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_VolumeSlider</class>
-   <extends>QSlider</extends>
-   <header>tp_volumeslider.h</header>
   </customwidget>
   <customwidget>
    <class>TP_CoverLabel</class>
