@@ -3,44 +3,61 @@
 #include "tp_globalconst.h"
 
 #include <QSettings>
+#include <QWidget>
 
 TP_Config::TP_Config( QObject *parent ) :
     QObject { parent }
   , config  { TP::configFilePath, QSettings::IniFormat, this }
 {
     config.beginGroup( group_UI );
+
     mainWindowPosition = config
             .value( key_UI_mainWindowPosition, QPoint { 100, 100 } )
             .toPoint();
+
     playlistWindowPosition = config
             .value( key_UI_playlistWindowPosition, QPoint { 100, 340 } )
             .toPoint();
+
     b_isPlaylistWindowShown = config
             .value( key_UI_isPlaylistWindowShown, true )
             .toBool();
+
+    QFont font = QWidget().font();
+    font.setPointSize( 10 );
+    playlistFont = config
+            .value( key_UI_playlistFont, font  )
+            .value< QFont >();
+
     config.endGroup();
 
 
     config.beginGroup( group_PLAYBACK );
+
     volume = config
             .value( key_PLAYBACK_volume, 50 )
             .toInt();
+
     preAmp_dB = config
             .value( key_PLAYBACK_preAmp_dB, 0.0 )
             .toFloat();
+
     replayGainMode = static_cast< TP::ReplayGainMode >(
                 config
                 .value( key_PLAYBACK_replayGainMode, TP::RG_disabled )
                 .toInt()
                 );
+
     defaultGain_dB = config
             .value( key_PLAYBACK_defaultGain_dB, 0.0 )
             .toFloat();
+
     playMode = static_cast<TP::PlayMode>(
                 config
                 .value( key_PLAYBACK_playMode, TP::singleTime )
                 .toInt()
                 );
+
     config.endGroup();
 }
 
@@ -50,6 +67,7 @@ TP_Config::~TP_Config()
     config.setValue( key_UI_mainWindowPosition, mainWindowPosition );
     config.setValue( key_UI_playlistWindowPosition, playlistWindowPosition );
     config.setValue( key_UI_isPlaylistWindowShown, b_isPlaylistWindowShown );
+    config.setValue( key_UI_playlistFont, playlistFont );
     config.endGroup();
 
     config.beginGroup( group_PLAYBACK );
@@ -100,6 +118,17 @@ TP_Config::isPlaylistWindowShown() const
     return b_isPlaylistWindowShown;
 }
 
+void
+TP_Config::setPlaylistFont( const QFont &input )
+{
+    playlistFont = input;
+}
+
+QFont
+TP_Config::getPlaylistFont()
+{
+    return playlistFont;
+}
 
 // ==================== PLAYBACK group ====================
 void

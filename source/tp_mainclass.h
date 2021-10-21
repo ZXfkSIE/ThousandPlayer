@@ -10,6 +10,7 @@
 
 #include <array>
 
+class TP_ConfigWindow;
 class TP_MainWindow;
 class TP_PlaylistWindow;
 class TP_FileListWidget;
@@ -66,9 +67,11 @@ private:
     QImage getCoverImageFromFLAC    ( const QString &filePath );
     QImage getCoverImageFromID3V2   ( const QString &filePath );
 
-    TP_MainWindow *     mainWindow;
-    TP_PlaylistWindow * playlistWindow;
-    bool                b_isPlaylistWindowVisible;
+    TP_MainWindow       *   mainWindow;
+    TP_PlaylistWindow   *   playlistWindow;
+    TP_ConfigWindow     *   configWindow;
+    bool                    b_isPlaylistWindowVisible;
+
 
     QAudioOutput *      audioOutput;
     QMediaPlayer *      mediaPlayer;

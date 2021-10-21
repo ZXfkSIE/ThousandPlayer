@@ -3,8 +3,8 @@
 #include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
+#include "tp_configwindow.h"
 #include "tp_mainwindow.h"
-
 #include "tp_playlistwindow.h"
 #include "tp_filelistwidget.h"
 
@@ -35,6 +35,7 @@ TP_MainClass::TP_MainClass() :
     QObject                     { nullptr }
   , mainWindow                  { new TP_MainWindow {} }
   , playlistWindow              { new TP_PlaylistWindow {} }
+  , configWindow                { new TP_ConfigWindow {} }
   , b_isPlaylistWindowVisible   { true }
   , audioOutput                 { new QAudioOutput { this } }
   , mediaPlayer                 { new QMediaPlayer { this } }
@@ -46,8 +47,6 @@ TP_MainClass::TP_MainClass() :
     TP::playbackState() = mediaPlayer->playbackState();
 
     initializeConnection();
-
-    mainWindow->show();
 
     playlistWindow->initializePlaylist();       // Must be executed before showing
 }
@@ -902,6 +901,10 @@ TP_MainClass::initializeConnection()
             playlistWindow, &TP_PlaylistWindow::show);
     connect(mainWindow,     &TP_MainWindow::signal_hidePlaylistWindow,
             playlistWindow, &TP_PlaylistWindow::hide);
+
+    // Showing ConfigWindow
+    connect(mainWindow,     &TP_MainWindow::signal_openConfigWindow,
+            configWindow,   &TP_ConfigWindow::exec);
 
     // Make PlaylistWindow be able to emit signal for connecting its FileListWidget
     connect(playlistWindow, &TP_PlaylistWindow::signal_newFilelistWidgetCreated,

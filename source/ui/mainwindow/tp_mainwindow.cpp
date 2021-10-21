@@ -221,6 +221,13 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
 
 
 void
+TP_MainWindow::on_pushButton_Config_clicked()
+{
+    emit signal_openConfigWindow();
+}
+
+
+void
 TP_MainWindow::on_pushButton_Play_clicked()
 {
     if ( TP::playbackState() == QMediaPlayer::PlayingState )
@@ -465,16 +472,18 @@ TP_MainWindow::initializeMenu()
 void
 TP_MainWindow::initializeUI()
 {
+    show();
+
     ui->pushButton_Minimize ->setIcon( QIcon{ ":/image/icon_Minimize.svg" } );
     ui->pushButton_Expand   ->setIcon( QIcon{ ":/image/icon_Expand.svg" } );
     ui->pushButton_Exit     ->setIcon( QIcon{ ":/image/icon_Exit.svg" } );
 
     // If the volume is 0, then the valueChanged signal will not be triggered
     // since the original value is 0.
+    ui->label_VolumeIcon->initialize();
     if( ! TP::config().getVolume() )
         ui->slider_Volume->setValue( 50 );
     ui->slider_Volume->setValue( TP::config().getVolume() );
-    ui->label_VolumeIcon->initialize();
 
     ui->label_Cover->setImage();
 

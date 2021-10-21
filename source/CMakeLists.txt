@@ -35,6 +35,7 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     TP::global
+    TP::ui::configwindow
     TP::ui::mainwindow
     TP::ui::playlistwindow
 

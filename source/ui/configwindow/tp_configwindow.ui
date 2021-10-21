@@ -50,19 +50,19 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>100</width>
+       <width>110</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>110</width>
        <height>16777215</height>
       </size>
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="frameShape">
@@ -72,7 +72,7 @@
       <enum>QFrame::Sunken</enum>
      </property>
      <property name="lineWidth">
-      <number>2</number>
+      <number>3</number>
      </property>
      <property name="verticalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -80,8 +80,8 @@
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
-     <property name="spacing">
-      <number>6</number>
+     <property name="currentRow">
+      <number>0</number>
      </property>
      <item>
       <property name="text">
@@ -132,7 +132,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_General"/>
      <widget class="QWidget" name="page_Playback">
@@ -353,16 +353,14 @@
              </item>
              <item>
               <widget class="QSlider" name="slider_PreAmp">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
                <property name="minimum">
-                <number>-15</number>
+                <number>-150</number>
                </property>
                <property name="maximum">
-                <number>15</number>
+                <number>150</number>
+               </property>
+               <property name="singleStep">
+                <number>1</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -371,7 +369,7 @@
                 <enum>QSlider::TicksAbove</enum>
                </property>
                <property name="tickInterval">
-                <number>3</number>
+                <number>30</number>
                </property>
               </widget>
              </item>
@@ -401,7 +399,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>0 dB</string>
+                <string notr="true">0 dB</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -463,16 +461,11 @@
              </item>
              <item>
               <widget class="QSlider" name="slider_DefaultReplayGain">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
                <property name="minimum">
-                <number>-15</number>
+                <number>-150</number>
                </property>
                <property name="maximum">
-                <number>15</number>
+                <number>150</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -481,7 +474,7 @@
                 <enum>QSlider::TicksAbove</enum>
                </property>
                <property name="tickInterval">
-                <number>3</number>
+                <number>30</number>
                </property>
               </widget>
              </item>
@@ -511,7 +504,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>0 dB</string>
+                <string notr="true">0 dB</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -566,7 +559,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_CurrentFont">
+           <widget class="QLabel" name="label_CurrentPlaylistFont">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -587,7 +580,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_CurrentFontExample">
+           <widget class="QLabel" name="label_CurrentPlaylistFontExample">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -600,7 +593,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_ChangeFont">
+           <widget class="QPushButton" name="pushButton_ChangePlaylistFont">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>

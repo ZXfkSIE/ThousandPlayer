@@ -26,10 +26,6 @@ TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
     setDragDropMode( QAbstractItemView::InternalMove );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-    QFont currentFont = font();
-    currentFont.setPointSize( 10 );
-    setFont( currentFont );
-
     setStyleSheet( "color: rgb(255, 255, 255);" );
 
     initializeMenu();

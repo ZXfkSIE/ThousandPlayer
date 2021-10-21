@@ -41,6 +41,7 @@ signals:
 
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
+    void signal_openConfigWindow();
 
     void signal_playButtonPushed();
     void signal_pauseButtonPushed();
@@ -70,6 +71,7 @@ private slots:
     void on_pushButton_Minimize_clicked();
 
     void on_pushButton_Playlist_clicked();
+    void on_pushButton_Config_clicked();
 
     void on_pushButton_Play_clicked();
     void on_pushButton_Stop_clicked();

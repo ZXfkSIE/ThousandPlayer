@@ -3,6 +3,7 @@
 
 #include "tp_globalenum.h"
 
+#include <QFont>
 #include <QObject>
 #include <QPoint>
 #include <QSettings>
@@ -15,13 +16,15 @@ public:
     explicit TP_Config( QObject *parent = nullptr );
     ~TP_Config();
 
-    // ==================== BOOT group ====================
+    // ==================== UI group ====================
     void    setMainWindowPosition( const QPoint &input );
     QPoint  getMainWindowPosition() const;
     void    setPlaylistWindowPosition( const QPoint &input );
     QPoint  getPlaylistWindowPosition() const;
     void    setPlaylistWindowShown( bool b );
     bool    isPlaylistWindowShown() const;
+    void    setPlaylistFont( const QFont &input );
+    QFont   getPlaylistFont();
 
     // ==================== PLAYBACK group ====================
     void                setVolume( int I_volume );
@@ -37,6 +40,9 @@ public:
 
 
 private:
+    QSettings config;
+
+
     // ************************************************************************************
     const   QString     group_UI                        { "UI" };
     // ************************************************************************************
@@ -46,6 +52,8 @@ private:
             QPoint      playlistWindowPosition;
     const   QString     key_UI_isPlaylistWindowShown    { "isPlaylistWindowShown" };
             bool        b_isPlaylistWindowShown;
+    const   QString     key_UI_playlistFont             { "playlistFont" };
+            QFont       playlistFont;
 
     // ************************************************************************************
     const   QString             group_PLAYBACK              { "PLAYBACK" };
@@ -61,9 +69,6 @@ private:
             float               defaultGain_dB;
     const   QString             key_PLAYBACK_playMode       { "playMode" };
             TP::PlayMode        playMode;
-
-
-    QSettings config;
 };
 
 #endif // TP_CONFIG_H
