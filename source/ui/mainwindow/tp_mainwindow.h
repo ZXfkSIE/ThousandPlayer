@@ -22,6 +22,7 @@ public:
     void setPause();
     void setStop();
 
+    void setVolume( const int I_volume );
     void setAudioInformation( QListWidgetItem *I_item );
     void setFileNotFound();
 
@@ -58,7 +59,7 @@ public slots:
     void slot_updateDuration( qint64 ms );
 
 private slots:
-    void slot_moveTitleBar( QRect newGeometry );
+    void slot_moveTitleBar( const QRect &newGeometry );
     void slot_leftButtonReleased();
 
     void slot_timeSliderChanged( int second );

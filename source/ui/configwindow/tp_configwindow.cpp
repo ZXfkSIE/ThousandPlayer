@@ -4,6 +4,7 @@
 #include "tp_globalvariable.h"
 
 #include <QAudioDevice>
+#include <QFontDialog>
 #include <QMediaDevices>
 
 TP_ConfigWindow::TP_ConfigWindow( QWidget *parent ) :
@@ -32,9 +33,12 @@ TP_ConfigWindow::slot_switchPage( const int currentRow )
     ui->stackedWidget->setCurrentIndex( currentRow );
 }
 
+
 void
-TP_ConfigWindow::slot_audioDeviceChanged( int index )
+TP_ConfigWindow::slot_audioDeviceChanged( const int index )
 {
+    qDebug() << "[Config Window] signal_audioDeviceChanged is emitted. Audio device shoule be changed to"
+             << ui->comboBox_AudioDevice->itemData( index ).value< QAudioDevice >().description();
     emit signal_audioDeviceChanged(
                 ui->comboBox_AudioDevice->itemData( index ).value< QAudioDevice >()
                 );
@@ -42,8 +46,9 @@ TP_ConfigWindow::slot_audioDeviceChanged( int index )
 
 
 void
-TP_ConfigWindow::slot_ReplayGainModeChanged( int index )
+TP_ConfigWindow::slot_ReplayGainModeChanged( const int index )
 {
+    qDebug() << "[Config Window] ReplayGain mode is changed to" << index;
     switch( index )
     {
     case 0:
@@ -68,16 +73,38 @@ TP_ConfigWindow::slot_ReplayGainModeChanged( int index )
 
 
 void
-TP_ConfigWindow::slot_setPreAmp( int value )
+TP_ConfigWindow::slot_setPreAmp( const int value )
 {
     TP::config().setPreAmp_dB( value / 10.0 );
 }
 
 
 void
-TP_ConfigWindow::slot_setDefaultReplayGain( int value )
+TP_ConfigWindow::slot_setDefaultReplayGain( const int value )
 {
     TP::config().setDefaultGain_dB( value / 10.0 );
+}
+
+
+void
+TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
+{
+    bool ok {};
+    QFont font {
+        QFontDialog::getFont(
+                    &ok,
+                    TP::config().getPlaylistFont(),
+                    this )
+    };
+
+    if( ok )
+    {
+        TP::config().setPlaylistFont( font );
+        ui->label_CurrentPlaylistFontExample->setText(
+                    QString( "%1, %2 pt" ).arg( font.family() ).arg( font.pointSize() ) );
+        ui->label_CurrentPlaylistFontExample->setFont( font );
+        emit signal_fontChanged();
+    }
 }
 
 // *****************************************************************
@@ -121,7 +148,8 @@ TP_ConfigWindow::initializeUI()
     switch( TP::config().getReplayGainMode() )
     {
     case TP::RG_disabled :
-        ui->comboBox_ReplayGainMode->setCurrentIndex( 0 );
+        ui->slider_PreAmp           ->setEnabled( false );
+        ui->slider_DefaultReplayGain->setEnabled( false );
         break;
 
     case TP::RG_track :
@@ -136,4 +164,11 @@ TP_ConfigWindow::initializeUI()
     // Initialize sliders
     ui->slider_PreAmp           ->setValue( TP::config().getPreAmp_dB()     * 10 );
     ui->slider_DefaultReplayGain->setValue( TP::config().getDefaultGain_dB()* 10 );
+
+    // ============================== Playlist page ==============================
+
+    QFont playlistFont { TP::config().getPlaylistFont() };
+    ui->label_CurrentPlaylistFontExample->setText(
+                QString( "%1, %2 pt" ).arg( playlistFont.family() ).arg( playlistFont.pointSize() ) );
+    ui->label_CurrentPlaylistFontExample->setFont( playlistFont );
 }

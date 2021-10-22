@@ -33,7 +33,6 @@ public slots:
 private slots:
     void slot_minimizeWindow();
     void slot_restoreWindow();
-    void slot_activateWindow();
 
     void slot_moveWindow ( QWidget *window, QRect newGeometry );
     void slot_resizeWindow ( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
@@ -48,6 +47,7 @@ private slots:
 
     void slot_playbackStateChanged ( QMediaPlayer::PlaybackState newState );
     void slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status );
+    void slot_deviceChanged();
 
     void slot_changePlayingPosition( int second );
 

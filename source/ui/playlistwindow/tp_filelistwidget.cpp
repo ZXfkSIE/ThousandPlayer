@@ -29,6 +29,8 @@ TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
     setStyleSheet( "color: rgb(255, 255, 255);" );
 
     initializeMenu();
+
+    qDebug() << "[TP_FileListWidget] emit signal_newFileListWidgetCreated (list name is" << qstr_listName << ")";
 }
 
 
@@ -230,7 +232,7 @@ TP_FileListWidget::getPreviousItem_shuffle()
     else
         currentRow = indexFromItem( TP::currentItem() ).row();
 
-    std::uniform_int_distribution<int> distribution { 0, count() - 1 } ;
+    std::uniform_int_distribution< int > distribution { 0, count() - 1 } ;
 
     do
         randomRow = distribution( TP::randomEngine() );
@@ -262,7 +264,7 @@ TP_FileListWidget::refreshShowingTitle( int idx_Min, const int idx_Max )
         item(i)->setText(
                     QString("%1. ").arg(i + 1)
                     +
-                    item(i)->data(TP::role_Description).toString() );
+                    item(i)->data( TP::role_Description ).toString() );
 }
 
 
@@ -299,6 +301,7 @@ TP_FileListWidget::clearInaccessibleItems()
                 i--;
             }
             break;
+
         default:
             break;
         }
@@ -335,7 +338,8 @@ TP_FileListWidget::deleteSelectedItems()
                 tr( "Are you really want to delete"
                     "<br>%1"
                     "<br>from the <b>DISK</b>?"
-                    "<br>NOTE: remote URLs will not be deleted." )
+                    "<br>NOTE: remote URLs cannot be deleted."
+                    "<br>They will just be removed.")
                 .arg( numberOfSelectedItems == 1
                       ? QString( "\"%1\"" ).arg( selectedItems()[0]->data( TP::role_FileName ).toString() )
                       : tr( "these %1 items" ).arg( numberOfSelectedItems )

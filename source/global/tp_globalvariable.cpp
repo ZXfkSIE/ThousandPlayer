@@ -1,5 +1,7 @@
 ﻿#include "tp_globalvariable.h"
 
+#include <QAudioDevice>
+
 TP_Config &
 TP::config()
 {

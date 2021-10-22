@@ -61,6 +61,12 @@ TP_MainWindow::setStop()
 
 
 void
+TP_MainWindow::setVolume( const int I_volume )
+{
+    ui->slider_Volume->setValue( I_volume );
+}
+
+void
 TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
 {
     const QUrl url = I_item->data( TP::role_URL ).toUrl();
@@ -137,7 +143,7 @@ TP_MainWindow::slot_updateDuration( qint64 ms )
 
 
 void
-TP_MainWindow::slot_moveTitleBar( QRect newGeometry )
+TP_MainWindow::slot_moveTitleBar( const QRect &newGeometry )
 {
     emit signal_moveWindow( this, newGeometry );
 }
@@ -167,7 +173,7 @@ TP_MainWindow::slot_timeSliderPressed( int second )
 void
 TP_MainWindow::slot_volumeSliderChanged( int I_volume )
 {
-    // qDebug() << "[SLOT] TP_MainWindow::slot_volumeSliderChanged(" << I_volume << ")";
+    // qDebug() << "[TP_MainWindow] slot_volumeSliderChanged(" << I_volume << ")";
     ui->label_VolumeIcon->setIcon( I_volume );
     QToolTip::showText( QCursor::pos(), QString::number( I_volume ), nullptr, {}, 1500);
     emit signal_volumeSliderValueChanged(
@@ -478,12 +484,7 @@ TP_MainWindow::initializeUI()
     ui->pushButton_Expand   ->setIcon( QIcon{ ":/image/icon_Expand.svg" } );
     ui->pushButton_Exit     ->setIcon( QIcon{ ":/image/icon_Exit.svg" } );
 
-    // If the volume is 0, then the valueChanged signal will not be triggered
-    // since the original value is 0.
     ui->label_VolumeIcon->initialize();
-    if( ! TP::config().getVolume() )
-        ui->slider_Volume->setValue( 50 );
-    ui->slider_Volume->setValue( TP::config().getVolume() );
 
     ui->label_Cover->setImage();
 

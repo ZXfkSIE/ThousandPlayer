@@ -43,12 +43,17 @@ TP_MainClass::TP_MainClass() :
   , snapPosition_playlistWindow {}
 {
     mediaPlayer->setAudioOutput( audioOutput );
-    qDebug()<< "Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
     TP::playbackState() = mediaPlayer->playbackState();
 
     initializeConnection();
 
     playlistWindow->initializePlaylist();       // Must be executed before showing
+
+    // If the volume is 0, then the valueChanged signal will not be triggered
+    // since the original value is 0.
+    if( ! TP::config().getVolume() )
+        mainWindow->setVolume( 50 );
+    mainWindow->setVolume( TP::config().getVolume() );
 }
 
 
@@ -139,6 +144,7 @@ TP_MainClass::slot_minimizeWindow()
         b_isPlaylistWindowVisible = false;
 }
 
+
 void
 TP_MainClass::slot_restoreWindow()
 {
@@ -151,12 +157,6 @@ TP_MainClass::slot_restoreWindow()
     slot_refreshSnapStatus();
 }
 
-void
-TP_MainClass::slot_activateWindow()
-{
-    if( playlistWindow->isVisible() )
-        playlistWindow->raise();
-}
 
 void
 TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
@@ -590,15 +590,12 @@ TP_MainClass::slot_refreshSnapStatus()
     // main window and playlist window
     if( checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() ) != TP::notAdjacent )
     {
-        //qDebug() << "[TP_MainClass] main window is snapped to playlist window at position "
-        //         << checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() );
         snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = true;
         snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = true;
         snapPosition_playlistWindow = playlistWindow->pos() - mainWindow->pos();
     }
     else
     {
-        //qDebug("[TP_MainClass] main window desnapped to playlist window.");
         snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = false;
         snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = false;
         snapPosition_playlistWindow = { 0, 0 };
@@ -611,7 +608,9 @@ TP_MainClass::slot_refreshSnapStatus()
 void
 TP_MainClass::slot_connectFilelistWidget( TP_FileListWidget *I_FilelistWidget )
 {
-    qDebug() << "[SLOT] slot_connectFilelistWidget -- list's name is " << I_FilelistWidget->getListName();
+    qDebug() << "[Main Class] slot_connectFilelistWidget: list name is" << I_FilelistWidget->getListName();
+    connect(I_FilelistWidget,   &TP_FileListWidget::signal_currentItemRemoved,
+            mediaPlayer,        &QMediaPlayer::stop);
     connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
             this,               &TP_MainClass::slot_itemDoubleClicked);
 }
@@ -762,6 +761,13 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 
 
 void
+TP_MainClass::slot_deviceChanged()
+{
+    qDebug()<< "[Audio Output] Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
+}
+
+
+void
 TP_MainClass::slot_changePlayingPosition( int second )
 {
     mediaPlayer->setPosition( second * 1000 );
@@ -775,6 +781,15 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
 
     if( mediaPlayer->playbackState() != QMediaPlayer::PlayingState )
         return;
+
+    TP::ReplayGainMode mode { TP::config().getReplayGainMode() };
+
+    if( mode == TP::RG_track )
+    {
+        qDebug()<<"[Audio Output] ReplayGain is disabled.";
+        audioOutput->setVolume( linearVolume );
+        return;
+    }
 
     float dB_Track { TP::currentItem()->data( TP::role_ReplayGainTrack ).toFloat() };
     float dB_Album { TP::currentItem()->data( TP::role_ReplayGainAlbum ).toFloat() };
@@ -823,8 +838,7 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
     }
 
     qDebug()<<"[Audio Output] A" << dB_Total << "dB ReplayGain is applied.";
-    // 10^(Gain/20)
-    float multiplier = std::pow( 10, dB_Total / 20.0 );
+    float multiplier = std::pow( 10, dB_Total / 20.0 );         // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }
 
@@ -838,76 +852,80 @@ void
 TP_MainClass::initializeConnection()
 {
     // Playerback control related
-    connect(mediaPlayer,    &QMediaPlayer::positionChanged,
-            mainWindow,     &TP_MainWindow::slot_updateDuration);
-    connect(mediaPlayer,    &QMediaPlayer::playbackStateChanged,
-            this,           &TP_MainClass::slot_playbackStateChanged);
-    connect(mediaPlayer,    &QMediaPlayer::mediaStatusChanged,
-            this,           &TP_MainClass::slot_mediaStatusChanged);
+    connect( mediaPlayer,   &QMediaPlayer::positionChanged,
+             mainWindow,    &TP_MainWindow::slot_updateDuration );
+    connect( mediaPlayer,   &QMediaPlayer::playbackStateChanged,
+             this,          &TP_MainClass::slot_playbackStateChanged );
+    connect( mediaPlayer,   &QMediaPlayer::mediaStatusChanged,
+             this,          &TP_MainClass::slot_mediaStatusChanged );
+    connect( audioOutput,   &QAudioOutput::deviceChanged,
+             this,          &TP_MainClass::slot_deviceChanged );
 
-    connect(mainWindow,     &TP_MainWindow::signal_playButtonPushed,
-            this,           &TP_MainClass::slot_playButtonPushed);
-    connect(mainWindow,     &TP_MainWindow::signal_pauseButtonPushed,
-            mediaPlayer,    &QMediaPlayer::pause);
-    connect(mainWindow,     &TP_MainWindow::signal_stopButtonPushed,
-            mediaPlayer,    &QMediaPlayer::stop);
+    connect( mainWindow,    &TP_MainWindow::signal_playButtonPushed,
+             this,          &TP_MainClass::slot_playButtonPushed );
+    connect( mainWindow,    &TP_MainWindow::signal_pauseButtonPushed,
+             mediaPlayer,   &QMediaPlayer::pause );
+    connect( mainWindow,    &TP_MainWindow::signal_stopButtonPushed,
+             mediaPlayer,   &QMediaPlayer::stop );
 
-    connect(mainWindow, &TP_MainWindow::signal_timeSliderPressed,
-            this,       &TP_MainClass::slot_changePlayingPosition);
+    connect( mainWindow,    &TP_MainWindow::signal_timeSliderPressed,
+             this,          &TP_MainClass::slot_changePlayingPosition );
 
     // Source switching related
-    connect(mainWindow,     &TP_MainWindow::signal_modeIsNotShuffle,
-            playlistWindow, &TP_PlaylistWindow::slot_clearPreviousAndNext);
-    connect(mainWindow,     &TP_MainWindow::signal_nextButtonPushed,
-            this,           &TP_MainClass::slot_nextButtonPushed);
-    connect(mainWindow,     &TP_MainWindow::signal_previousButtonPushed,
-            this,           &TP_MainClass::slot_previousButtonPushed);
-    connect(playlistWindow, &TP_PlaylistWindow::signal_currentItemRemoved,
-            mediaPlayer,    &QMediaPlayer::stop);
+    connect( mainWindow,        &TP_MainWindow::signal_modeIsNotShuffle,
+             playlistWindow,    &TP_PlaylistWindow::slot_clearPreviousAndNext );
+    connect( mainWindow,        &TP_MainWindow::signal_nextButtonPushed,
+             this,              &TP_MainClass::slot_nextButtonPushed );
+    connect( mainWindow,        &TP_MainWindow::signal_previousButtonPushed,
+             this,              &TP_MainClass::slot_previousButtonPushed );
 
     // Volume control related
-    connect(mainWindow, &TP_MainWindow::signal_volumeSliderValueChanged,
-            this,       &TP_MainClass::slot_setVolume);
+    connect( mainWindow,    &TP_MainWindow::signal_volumeSliderValueChanged,
+             this,          &TP_MainClass::slot_setVolume );
 
     // Windows minimizing & restoring related
-    connect(mainWindow,     &TP_MainWindow::signal_minimizeWindow,
-            this,           &TP_MainClass::slot_minimizeWindow);
-    connect(mainWindow,     &TP_MainWindow::signal_restoreWindow,
-            this,           &TP_MainClass::slot_restoreWindow);
-    connect(mainWindow,     &TP_MainWindow::signal_activateWindow,
-            this,           &TP_MainClass::slot_activateWindow);
+    connect( mainWindow,        &TP_MainWindow::signal_minimizeWindow,
+             this,              &TP_MainClass::slot_minimizeWindow );
+    connect( mainWindow,        &TP_MainWindow::signal_restoreWindow,
+             this,              &TP_MainClass::slot_restoreWindow );
+    connect( mainWindow,        &TP_MainWindow::signal_activateWindow,
+             playlistWindow,    &TP_PlaylistWindow::slot_activateWindow );
 
     // Windows moving & resizing related
-    connect(mainWindow,     &TP_MainWindow::signal_moveWindow,
-            this,           &TP_MainClass::slot_moveWindow);
-    connect(mainWindow,     &TP_MainWindow::signal_resizeWindow,
-            this,           &TP_MainClass::slot_resizeWindow);
-    connect(mainWindow,     &TP_MainWindow::signal_leftButtonReleased,
-            this,           &TP_MainClass::slot_refreshSnapStatus);
+    connect( mainWindow,    &TP_MainWindow::signal_moveWindow,
+             this,          &TP_MainClass::slot_moveWindow );
+    connect( mainWindow,    &TP_MainWindow::signal_resizeWindow,
+             this,          &TP_MainClass::slot_resizeWindow );
+    connect( mainWindow,    &TP_MainWindow::signal_leftButtonReleased,
+             this,          &TP_MainClass::slot_refreshSnapStatus );
 
-    connect(playlistWindow, &TP_PlaylistWindow::signal_moveWindow,
-            this,           &TP_MainClass::slot_moveWindow);
-    connect(playlistWindow, &TP_PlaylistWindow::signal_resizeWindow,
-            this,           &TP_MainClass::slot_resizeWindow);
-    connect(playlistWindow, &TP_PlaylistWindow::signal_leftButtonReleased,
-            this,           &TP_MainClass::slot_refreshSnapStatus);
+    connect( playlistWindow,    &TP_PlaylistWindow::signal_moveWindow,
+             this,              &TP_MainClass::slot_moveWindow );
+    connect( playlistWindow,    &TP_PlaylistWindow::signal_resizeWindow,
+             this,              &TP_MainClass::slot_resizeWindow );
+    connect( playlistWindow,    &TP_PlaylistWindow::signal_leftButtonReleased,
+             this,              &TP_MainClass::slot_refreshSnapStatus );
 
     // Showing and hiding PlaylistWindow
-    connect(playlistWindow, &TP_PlaylistWindow::signal_hidden,
-            mainWindow,     &TP_MainWindow::slot_playlistWindowHidden);
-    connect(playlistWindow, &TP_PlaylistWindow::signal_shown,
-            mainWindow,     &TP_MainWindow::slot_playlistWindowShown);
-    connect(mainWindow,     &TP_MainWindow::signal_openPlaylistWindow,
-            playlistWindow, &TP_PlaylistWindow::show);
-    connect(mainWindow,     &TP_MainWindow::signal_hidePlaylistWindow,
-            playlistWindow, &TP_PlaylistWindow::hide);
+    connect( playlistWindow,    &TP_PlaylistWindow::signal_hidden,
+             mainWindow,        &TP_MainWindow::slot_playlistWindowHidden );
+    connect( playlistWindow,    &TP_PlaylistWindow::signal_shown,
+             mainWindow,        &TP_MainWindow::slot_playlistWindowShown );
+    connect( mainWindow,        &TP_MainWindow::signal_openPlaylistWindow,
+             playlistWindow,    &TP_PlaylistWindow::show );
+    connect( mainWindow,        &TP_MainWindow::signal_hidePlaylistWindow,
+             playlistWindow,    &TP_PlaylistWindow::hide );
 
-    // Showing ConfigWindow
-    connect(mainWindow,     &TP_MainWindow::signal_openConfigWindow,
-            configWindow,   &TP_ConfigWindow::exec);
+    // ConfigWindow related
+    connect( mainWindow,        &TP_MainWindow::signal_openConfigWindow,
+             configWindow,      &TP_ConfigWindow::exec );
+    connect( configWindow,      &TP_ConfigWindow::signal_fontChanged,
+             playlistWindow,    &TP_PlaylistWindow::slot_changeFontOfCurrentList );
+    connect( configWindow,      &TP_ConfigWindow::signal_audioDeviceChanged,
+             audioOutput,       &QAudioOutput::setDevice );
 
     // Make PlaylistWindow be able to emit signal for connecting its FileListWidget
-    connect(playlistWindow, &TP_PlaylistWindow::signal_newFilelistWidgetCreated,
+    connect(playlistWindow, &TP_PlaylistWindow::signal_newFileListWidgetCreated,
             this,           &TP_MainClass::slot_connectFilelistWidget);
 }
 
@@ -1028,7 +1046,7 @@ void
 TP_MainClass::playFile ( QListWidgetItem *I_item )
 {
     QUrl url { I_item->data( TP::role_URL ).toUrl() };
-    qDebug() << "[TP_MainClass::playFile] trying to play local file URL: " << url;
+    qDebug() << "[Main Class] playFile() is trying to play local file URL: " << url;
     QString localPath = url.toLocalFile();
 
     if( std::filesystem::exists( localPath.

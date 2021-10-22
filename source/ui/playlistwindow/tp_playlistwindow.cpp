@@ -74,17 +74,12 @@ TP_PlaylistWindow::initializePlaylist()
         ui->playlistsWidget->addItem( tr( "Default" ) );
         ui->playlistsWidget->setCurrentRow( 0 );
 
-        currentFileListWidget = new TP_FileListWidget{ ui->frame_FileList, tr( "Default" ) };
-        vector_FileListWidget.push_back( currentFileListWidget );
-        layout_FileListFrame->addWidget( currentFileListWidget );
+        TP_FileListWidget *newWidget { new TP_FileListWidget{ ui->frame_FileList, tr( "Default" ) } };
+        emit signal_newFileListWidgetCreated( newWidget );
+        vector_FileListWidget.push_back( newWidget );
+        ui->playlistsWidget->item( 0 )->setData( Qt::UserRole, QVariant::fromValue( newWidget ) );
 
-        qDebug() << "[SIGNAL] signal_NewFilelistWidgetCreated -- list's name is " << currentFileListWidget->getListName();
-
-        // When current item is deleted
-        connect(currentFileListWidget,  &TP_FileListWidget::signal_currentItemRemoved,
-                this,                   &TP_PlaylistWindow::slot_currentItemRemoved);
-
-        emit signal_newFilelistWidgetCreated( currentFileListWidget );
+        switchList( newWidget );
     }
 }
 
@@ -156,7 +151,6 @@ TP_PlaylistWindow::getPreviousItem_shuffle()
     return currentFileListWidget->getPreviousItem_shuffle();
 }
 
-
 // *****************************************************************
 // public slots
 // *****************************************************************
@@ -168,13 +162,26 @@ TP_PlaylistWindow::slot_clearPreviousAndNext()
 }
 
 
+void
+TP_PlaylistWindow::slot_activateWindow()
+{
+    if( isVisible() )
+        raise();
+}
+
+
+void
+TP_PlaylistWindow::slot_changeFontOfCurrentList()
+{
+    currentFileListWidget->setFont( TP::config().getPlaylistFont() );
+}
+
 // *****************************************************************
 // private slots
 // *****************************************************************
 
-
 void
-TP_PlaylistWindow::slot_moveTitleBar( QRect newGeometry )
+TP_PlaylistWindow::slot_moveTitleBar( const QRect &newGeometry )
 {
     emit signal_moveWindow( this, newGeometry );
 }
@@ -188,17 +195,16 @@ TP_PlaylistWindow::slot_leftButtonReleased()
 
 
 void
-TP_PlaylistWindow::slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType )
+TP_PlaylistWindow::slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType )
 {
     emit signal_resizeWindow( this, newGeomtry, resizeType );
 }
 
 
 void
-TP_PlaylistWindow::slot_currentItemRemoved()
+TP_PlaylistWindow::slot_newFileListWidgetCreated( TP_FileListWidget *I_fileListWidget )
 {
-    qDebug() << "[SIGNAL] TP_PlaylistWindow::signal_currentItemRemoved";
-    emit signal_currentItemRemoved();
+    emit signal_newFileListWidgetCreated( I_fileListWidget );
 }
 
 
@@ -425,11 +431,9 @@ TP_PlaylistWindow::hideEvent( QHideEvent *event )
     emit signal_hidden();
 }
 
-
 // *****************************************************************
 // private
 // *****************************************************************
-
 
 void
 TP_PlaylistWindow::initializeMenu()
@@ -498,18 +502,18 @@ void
 TP_PlaylistWindow::initializeConnection()
 {
     // Window moving and resizing related
-    connect(ui->frame_Title,        &TP_TitleBar::signal_moveTitleBar,
-            this,                   &TP_PlaylistWindow::slot_moveTitleBar);
-    connect(ui->frame_Title,        &TP_TitleBar::signal_leftButtonReleased,
-            this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
-    connect(ui->playlistContainer,  &TP_PlaylistContainer::signal_resizeWindow,
-            this,                   &TP_PlaylistWindow::slot_resizeWindow);
-    connect(ui->playlistContainer,  &TP_PlaylistContainer::signal_leftButtonReleased,
-            this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
-    connect(ui->frame_Bottom,       &TP_PlaylistBottomFrame::signal_resizeWindow,
-            this,                   &TP_PlaylistWindow::slot_resizeWindow);
-    connect(ui->frame_Bottom,       &TP_PlaylistBottomFrame::signal_leftButtonReleased,
-            this,                   &TP_PlaylistWindow::slot_leftButtonReleased);
+    connect( ui->frame_Title,       &TP_TitleBar::signal_moveTitleBar,
+             this,                  &TP_PlaylistWindow::slot_moveTitleBar );
+    connect( ui->frame_Title,       &TP_TitleBar::signal_leftButtonReleased,
+             this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
+    connect( ui->playlistContainer, &TP_PlaylistContainer::signal_resizeWindow,
+             this,                  &TP_PlaylistWindow::slot_resizeWindow );
+    connect( ui->playlistContainer, &TP_PlaylistContainer::signal_leftButtonReleased,
+             this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
+    connect( ui->frame_Bottom,      &TP_PlaylistBottomFrame::signal_resizeWindow,
+             this,                  &TP_PlaylistWindow::slot_resizeWindow );
+    connect( ui->frame_Bottom,      &TP_PlaylistBottomFrame::signal_leftButtonReleased,
+             this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
 }
 
 
@@ -525,4 +529,18 @@ TP_PlaylistWindow::storePlaylist()
 #endif
     ) )
         std::filesystem::create_directory( TP::configDirectoryPath.toStdWString() );
+}
+
+
+void
+TP_PlaylistWindow::switchList( TP_FileListWidget *fileListWidget )
+{
+    if( fileListWidget != currentFileListWidget )
+    {
+        if( currentFileListWidget )
+            layout_FileListFrame->removeWidget( currentFileListWidget );
+        layout_FileListFrame->addWidget( currentFileListWidget = fileListWidget );
+    }
+
+    slot_changeFontOfCurrentList();
 }

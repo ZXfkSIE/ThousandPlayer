@@ -3,6 +3,7 @@
 
 #include "tp_globalenum.h"
 
+#include <QFont>
 #include <QListWidget>
 
 #include <vector>
@@ -44,20 +45,24 @@ signals:
 
     void signal_shown();
     void signal_hidden();
-    void signal_newFilelistWidgetCreated( TP_FileListWidget *I_fileListWidget );
+    void signal_newFileListWidgetCreated( TP_FileListWidget *I_fileListWidget );
 
     void signal_currentItemRemoved();
 
 public slots:
     void slot_clearPreviousAndNext();
 
+    void slot_activateWindow();
+
+    void slot_changeFontOfCurrentList();
+
 private slots:
-    void slot_moveTitleBar( QRect newGeometry );
+    void slot_moveTitleBar( const QRect &newGeometry );
     void slot_leftButtonReleased();
 
-    void slot_resizeWindow( QRect newGeomtry, TP::ResizeType resizeType );
+    void slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType );
 
-    void slot_currentItemRemoved();
+    void slot_newFileListWidgetCreated( TP_FileListWidget *I_fileListWidget );
 
     void on_pushButton_Close_clicked();
 
@@ -85,8 +90,6 @@ private slots:
     void on_action_find_triggered();
     void on_action_findNext_triggered();
 
-
-
 private:
     Ui::TP_PlaylistWindow *ui;
 
@@ -97,6 +100,8 @@ private:
     void initializeConnection();
 
     void storePlaylist();
+
+    void switchList( TP_FileListWidget *fileListWidget );
 
     QHBoxLayout *layout_FileListFrame;
 

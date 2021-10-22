@@ -11,7 +11,7 @@ TP_CoverViewer::TP_CoverViewer( QWidget *parent ) :
 {
     ui->setupUi( this );
     setWindowTitle( QString("ThousandPlayer - ") + tr("Cover Viewer") );
-    setWindowIcon( QIcon{":/image/icon_Frame.svg"} );
+    setWindowIcon( QIcon{":/image/icon_CoverViewer.svg"} );
 
     ui->label_Image->setBackgroundRole( QPalette::Base );
     ui->label_Image->setAlignment( Qt::AlignCenter );
