@@ -1,6 +1,7 @@
 ﻿/* =============== class TP_Menu ===============
  * A derived QPushButton class which
- * omits the menu indicator "▲".
+ * omits the menu indicator "▲" and
+ * change the style of tooltips.
  */
 
 #ifndef TP_PUSHBUTTON_H

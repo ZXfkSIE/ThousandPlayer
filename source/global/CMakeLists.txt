@@ -1,4 +1,8 @@
-﻿set(TP_GLOBAL_FILES
+﻿configure_file(tp_cmakeconfig.h.cmake tp_cmakeconfig.h @ONLY)
+
+set(TP_GLOBAL_FILES
+    tp_cmakeconfig.h
+
     tp_globalconst.h
 
     tp_globalenum.h
@@ -13,7 +17,7 @@
 add_library(TP_global ${TP_GLOBAL_FILES})
 add_library(TP::global ALIAS TP_global)
 
-target_include_directories(TP_global PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(TP_global PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 if(UNIX)
     target_include_directories(TP_global PRIVATE ${TAGLIB_INCLUDE_DIRS})
     target_link_directories(TP_global PRIVATE ${TAGLIB_LIBRARY_DIRS})

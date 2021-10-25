@@ -1,6 +1,7 @@
 ﻿#include "tp_configwindow.h"
 #include "ui_tp_configwindow.h"
 
+#include "tp_cmakeconfig.h"
 #include "tp_globalvariable.h"
 
 #include <QAudioDevice>
@@ -171,4 +172,10 @@ TP_ConfigWindow::initializeUI()
     ui->label_CurrentPlaylistFontExample->setText(
                 QString( "%1, %2 pt" ).arg( playlistFont.family() ).arg( playlistFont.pointSize() ) );
     ui->label_CurrentPlaylistFontExample->setFont( playlistFont );
+
+    // ============================== About page ==============================
+    ui->label_Icon->setPixmap( QIcon{ ":/image/MusicalNote.svg" }
+                               .pixmap( ui->label_Icon->size() )
+                               );
+    ui->label_SoftName->setText( QString("ThousandPlayer v") + TP_PROJECT_VERSION );
 }

@@ -676,7 +676,6 @@ TP_FileListWidget::searchByData( const QString      &I_qstr_keyword,
     for( qsizetype i { startingIndex }; i < count(); i++ )
     {
         QListWidgetItem *currentItem = item( i );
-        QString qstr_filename = currentItem->data( TP::role_FileName ).toString();
 
         if(     isFilenameSearched &&
                 currentItem->data( TP::role_FileName ).toString().contains( qstr_keyword, Qt::CaseInsensitive )

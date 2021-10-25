@@ -26,7 +26,8 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:#777;</string>
+   <string notr="true">color: white;
+background-color: #777;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -103,9 +104,6 @@
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Playlist</string>
@@ -585,11 +583,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TP_PushButton</class>
-   <extends>QPushButton</extends>
-   <header>tp_pushbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>TP_PlaylistContainer</class>
    <extends>QWidget</extends>
    <header>tp_playlistcontainer.h</header>
@@ -605,6 +598,11 @@
    <class>TP_PlaylistsWidget</class>
    <extends>QListWidget</extends>
    <header>tp_playlistswidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_PushButton</class>
+   <extends>QPushButton</extends>
+   <header>tp_pushbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

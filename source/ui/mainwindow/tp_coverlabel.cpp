@@ -32,7 +32,7 @@ TP_CoverLabel::setImage()
     coverViewer->setImage( {} );
 
     int noteSize = width() * 3 / 4;
-    setPixmap( QIcon(":/image/MusicalNote.svg")
+    setPixmap( QIcon{ ":/image/MusicalNote.svg" }
                .pixmap( QSize( noteSize, noteSize ) )
                );
 }

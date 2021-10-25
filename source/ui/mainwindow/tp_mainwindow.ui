@@ -121,9 +121,6 @@ background-color:#777;</string>
         <property name="mouseTracking">
          <bool>true</bool>
         </property>
-        <property name="text">
-         <string notr="true">ThousandPlayer v1.0</string>
-        </property>
        </widget>
       </item>
       <item>
@@ -704,7 +701,7 @@ background-color:#777;</string>
              <number>0</number>
             </property>
             <item>
-             <widget class="QPushButton" name="pushButton_Previous">
+             <widget class="TP_PushButton" name="pushButton_Previous">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -719,6 +716,9 @@ background-color:#777;</string>
               </property>
               <property name="mouseTracking">
                <bool>true</bool>
+              </property>
+              <property name="toolTip">
+               <string>Previous</string>
               </property>
               <property name="text">
                <string/>
@@ -735,7 +735,7 @@ background-color:#777;</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_Stop">
+             <widget class="TP_PushButton" name="pushButton_Stop">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -751,6 +751,9 @@ background-color:#777;</string>
               <property name="mouseTracking">
                <bool>true</bool>
               </property>
+              <property name="toolTip">
+               <string>Stop</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -763,7 +766,7 @@ background-color:#777;</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_Play">
+             <widget class="TP_PushButton" name="pushButton_Play">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -791,7 +794,7 @@ background-color:#777;</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_Next">
+             <widget class="TP_PushButton" name="pushButton_Next">
               <property name="minimumSize">
                <size>
                 <width>48</width>
@@ -806,6 +809,9 @@ background-color:#777;</string>
               </property>
               <property name="mouseTracking">
                <bool>true</bool>
+              </property>
+              <property name="toolTip">
+               <string>Next</string>
               </property>
               <property name="text">
                <string/>
@@ -1137,11 +1143,6 @@ background-color:#777;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TP_PushButton</class>
-   <extends>QPushButton</extends>
-   <header>tp_pushbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>TP_VolumeIcon</class>
    <extends>QLabel</extends>
    <header>tp_volumeicon.h</header>
@@ -1155,6 +1156,11 @@ background-color:#777;</string>
    <class>TP_CoverLabel</class>
    <extends>QLabel</extends>
    <header>tp_coverlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_PushButton</class>
+   <extends>QPushButton</extends>
+   <header>tp_pushbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

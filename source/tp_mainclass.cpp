@@ -49,11 +49,7 @@ TP_MainClass::TP_MainClass() :
 
     playlistWindow->initializePlaylist();       // Must be executed before showing
 
-    // If the volume is 0, then the valueChanged signal will not be triggered
-    // since the original value is 0.
-    if( ! TP::config().getVolume() )
-        mainWindow->setVolume( 50 );
-    mainWindow->setVolume( TP::config().getVolume() );
+    mainWindow->initializeVolume();
 }
 
 
@@ -784,7 +780,7 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
 
     TP::ReplayGainMode mode { TP::config().getReplayGainMode() };
 
-    if( mode == TP::RG_track )
+    if( mode == TP::RG_disabled )
     {
         qDebug()<<"[Audio Output] ReplayGain is disabled.";
         audioOutput->setVolume( linearVolume );
@@ -837,7 +833,8 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
         break;
     }
 
-    qDebug()<<"[Audio Output] A" << dB_Total << "dB ReplayGain is applied.";
+    qDebug()<< QString("[Audio Output] A %1%2 dB ReplayGain is applied.")
+               .arg( dB_Total > 0 ? QString( "+" ) : QString("") ).arg( dB_Total );
     float multiplier = std::pow( 10, dB_Total / 20.0 );         // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }

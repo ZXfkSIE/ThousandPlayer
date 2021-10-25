@@ -1,6 +1,7 @@
 ﻿#include "tp_mainwindow.h"
 #include "./ui_tp_mainwindow.h"
 
+#include "tp_cmakeconfig.h"
 #include "tp_globalconst.h"
 #include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
@@ -18,7 +19,7 @@
 
 #include <filesystem>
 
-TP_MainWindow::TP_MainWindow(QWidget *parent) :
+TP_MainWindow::TP_MainWindow( QWidget *parent ) :
     QWidget                 { parent }
   , ui                      { new Ui::TP_MainWindow }
   , b_isBorderBeingPressed  { false }
@@ -36,6 +37,16 @@ TP_MainWindow::~TP_MainWindow()
 {
     TP::config().setVolume( ui->slider_Volume->value() );
     delete ui;
+}
+
+void
+TP_MainWindow::initializeVolume()
+{
+    // If the volume is 0, then the valueChanged signal will not be triggered
+    // since the original value is 0.
+    if( ! TP::config().getVolume() )
+        ui->slider_Volume->setValue( 50 );
+    ui->slider_Volume->setValue( TP::config().getVolume() );
 }
 
 void
@@ -59,12 +70,6 @@ TP_MainWindow::setStop()
     setAudioPropertyLabels();
 }
 
-
-void
-TP_MainWindow::setVolume( const int I_volume )
-{
-    ui->slider_Volume->setValue( I_volume );
-}
 
 void
 TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
@@ -269,6 +274,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
+    ui->pushButton_Mode->setToolTip( tr( "Single time" ) );
     TP::config().setPlayMode( TP::singleTime );
     emit signal_modeIsNotShuffle();
 }
@@ -279,6 +285,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
+    ui->pushButton_Mode->setToolTip( tr( "Repeat" ) );
     TP::config().setPlayMode( TP::repeat );
     emit signal_modeIsNotShuffle();
 }
@@ -289,6 +296,7 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Sequential.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
+    ui->pushButton_Mode->setToolTip( tr( "Sequential" ) );
     TP::config().setPlayMode( TP::sequential );
     emit signal_modeIsNotShuffle();
 }
@@ -299,6 +307,7 @@ TP_MainWindow::on_action_setMode_Shuffle_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Shuffle.svg"} );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Shuffle, TP::iconSize_Shuffle } );
+    ui->pushButton_Mode->setToolTip( tr( "Shuffle" ) );
     TP::config().setPlayMode( TP::shuffle );
 }
 
@@ -480,6 +489,9 @@ TP_MainWindow::initializeUI()
 {
     show();
 
+    setWindowIcon( QIcon{ ":/image/MusicalNote.svg" } );
+    ui->label_Title->setText( QString( "ThousandPlayer v" ) + TP_PROJECT_VERSION );
+
     ui->pushButton_Minimize ->setIcon( QIcon{ ":/image/icon_Minimize.svg" } );
     ui->pushButton_Expand   ->setIcon( QIcon{ ":/image/icon_Expand.svg" } );
     ui->pushButton_Exit     ->setIcon( QIcon{ ":/image/icon_Exit.svg" } );
@@ -524,6 +536,7 @@ TP_MainWindow::setIcon_Play()
 {
     ui->pushButton_Play->setIcon( QIcon{ ":/image/icon_Play.svg" } );
     ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Play, TP::iconSize_Play ) );
+    ui->pushButton_Play->setToolTip( tr( "Play" ) );
 }
 
 
@@ -532,6 +545,7 @@ TP_MainWindow::setIcon_Pause()
 {
     ui->pushButton_Play->setIcon( QIcon{ ":/image/icon_Pause.svg" } );
     ui->pushButton_Play->setIconSize( QSize( TP::iconSize_Pause, TP::iconSize_Pause ) );
+    ui->pushButton_Play->setToolTip( tr( "Pause" ) );
 }
 
 

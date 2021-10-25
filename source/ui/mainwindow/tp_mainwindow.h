@@ -18,11 +18,12 @@ public:
     explicit TP_MainWindow( QWidget *parent = nullptr );
     ~TP_MainWindow();
 
+    void initializeVolume();
+
     void setPlay();
     void setPause();
     void setStop();
 
-    void setVolume( const int I_volume );
     void setAudioInformation( QListWidgetItem *I_item );
     void setFileNotFound();
 

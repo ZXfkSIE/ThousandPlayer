@@ -32,7 +32,7 @@
    <string>Find</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(235, 235, 235);</string>
+   <string notr="true">color: white;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="topMargin">
@@ -75,7 +75,8 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: white</string>
+         <string notr="true">color: black;
+background-color: white;</string>
         </property>
        </widget>
       </item>

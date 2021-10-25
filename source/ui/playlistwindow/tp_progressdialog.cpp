@@ -25,18 +25,12 @@ TP_ProgressDialog::TP_ProgressDialog(
 "           spread:pad, x1:0, y1:0, x2:1, y2:0,"
 "           stop:0   rgb( 20, 20, 20 ),"
 "           stop:0.6 rgb( 80, 80, 80 ),"
-"           stop:1   rgb( 210, 210, 210 )"
+"           stop:1   rgb( 230, 230, 230 )"
 "       );"
 "}"
-"QLabel"
-"{"
-"   color: white;"
-"   background-color: rgba( 0, 0, 0, 0 );"
-"}"
-"QPushButton"
-"{"
-"   color: white;"
-"}"
+"QLabel { color: white; background-color: rgba( 0, 0, 0, 0 ); }"
+"QPushButton { color: white; }"
+"QProgressBar { color: black; }"
 );
 
     setFixedSize( 480, height() );
