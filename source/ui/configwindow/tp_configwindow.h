@@ -30,11 +30,18 @@ private slots:
 
     void on_pushButton_ChangePlaylistFont_clicked();
 
+    void on_pushButton_GPL_clicked();
+    void on_pushButton_Courtesy_clicked();
+
 private:
     Ui::TP_ConfigWindow *ui;
 
+    void initializeStrings();
     void initializeConnection();
     void initializeUI();
+
+    std::string str_GPL;
+    std::string str_Courtesy;
 };
 
 #endif // TP_CONFIGWINDOW_H

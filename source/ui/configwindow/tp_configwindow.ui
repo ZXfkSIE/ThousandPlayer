@@ -78,11 +78,11 @@
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
      <property name="currentRow">
-      <number>0</number>
+      <number>-1</number>
      </property>
      <item>
       <property name="text">
-       <string>General</string>
+       <string>Main</string>
       </property>
       <property name="textAlignment">
        <set>AlignCenter</set>
@@ -129,9 +129,9 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="page_General"/>
+     <widget class="QWidget" name="page_Main"/>
      <widget class="QWidget" name="page_Playback">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
@@ -692,7 +692,7 @@
               <widget class="QLabel" name="label_SoftName">
                <property name="font">
                 <font>
-                 <pointsize>15</pointsize>
+                 <pointsize>16</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -703,11 +703,11 @@
               <widget class="QLabel" name="label_Copyright">
                <property name="font">
                 <font>
-                 <pointsize>11</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string notr="true">©2021 Zhang Xiang</string>
+                <string notr="true">© 2021 Zhang Xiang</string>
                </property>
               </widget>
              </item>
@@ -715,17 +715,11 @@
               <widget class="QLabel" name="label_OtherInfo">
                <property name="font">
                 <font>
-                 <pointsize>9</pointsize>
+                 <pointsize>1</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>&lt;html&gt;
-&lt;head/&gt;
-&lt;body&gt;
-&lt;p&gt;&lt;span style=&quot;font-size:9pt;&quot;&gt;Released under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;GNU GPL v3&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-size:9pt;&quot;&gt;Official Github page: &lt;/span&gt;&lt;a href=&quot;https://github.com/ZXfkSIE/ThousandPlayer&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/ZXfkSIE/ThousandPlayer&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt; </string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Released under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Github page: &lt;/span&gt;&lt;a href=&quot;https://github.com/ZXfkSIE/ThousandPlayer&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/ZXfkSIE/ThousandPlayer&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -739,22 +733,22 @@
         <widget class="QWidget" name="container_Buttons" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QPushButton" name="pushButton_License">
+           <widget class="QPushButton" name="pushButton_GPL">
             <property name="font">
              <font>
-              <pointsize>9</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>GPL 3.0 text</string>
+             <string>GPLv3 text</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3rdParty">
+           <widget class="QPushButton" name="pushButton_Courtesy">
             <property name="font">
              <font>
-              <pointsize>9</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -766,11 +760,13 @@
         </widget>
        </item>
        <item>
-        <widget class="QPlainTextEdit" name="plainTextEdit">
-         <property name="frameShape">
-          <enum>QFrame::Box</enum>
+        <widget class="QTextBrowser" name="textBrowser">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
          </property>
-         <property name="readOnly">
+         <property name="openExternalLinks">
           <bool>true</bool>
          </property>
         </widget>
