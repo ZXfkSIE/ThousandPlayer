@@ -18,7 +18,7 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget                 { parent }
   , ui                      { new Ui::TP_PlaylistWindow }
   , currentFileListWidget   {}
-  , vector_FileListWidget   {}
+  , vec_FileListWidget      {}
   , progressDialog          { new TP_ProgressDialog {
                                 tr( "Reading files..." ),   // const QString &labelText
                                 tr( "Abort" ),              // const QString &cancelButtonText
@@ -76,7 +76,7 @@ TP_PlaylistWindow::initializePlaylist()
 
         TP_FileListWidget *newWidget { new TP_FileListWidget{ ui->frame_FileList, tr( "Default" ) } };
         emit signal_newFileListWidgetCreated( newWidget );
-        vector_FileListWidget.push_back( newWidget );
+        vec_FileListWidget.push_back( newWidget );
         ui->playlistsWidget->item( 0 )->setData( Qt::UserRole, QVariant::fromValue( newWidget ) );
 
         switchList( newWidget );

@@ -245,33 +245,20 @@ background-color:#777;</string>
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="leftMargin">
+       <number>8</number>
+      </property>
       <property name="topMargin">
-       <number>5</number>
+       <number>4</number>
+      </property>
+      <property name="rightMargin">
+       <number>8</number>
       </property>
       <property name="bottomMargin">
-       <number>7</number>
+       <number>6</number>
       </property>
       <item>
-       <widget class="QLabel" name="label_Info">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
+       <widget class="TP_AudioInfoLabel" name="label_AudioInfo">
         <property name="mouseTracking">
          <bool>true</bool>
         </property>
@@ -286,9 +273,6 @@ background-color:#777;</string>
         </property>
         <property name="lineWidth">
          <number>3</number>
-        </property>
-        <property name="text">
-         <string>No File</string>
         </property>
        </widget>
       </item>
@@ -1161,6 +1145,11 @@ background-color:#777;</string>
    <class>TP_PushButton</class>
    <extends>QPushButton</extends>
    <header>tp_pushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TP_AudioInfoLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">tp_audioinfolabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -129,7 +129,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_Main"/>
      <widget class="QWidget" name="page_Playback">
@@ -203,7 +203,7 @@
            <number>6</number>
           </property>
           <property name="rightMargin">
-           <number>6</number>
+           <number>0</number>
           </property>
           <property name="bottomMargin">
            <number>3</number>
@@ -380,13 +380,13 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>45</width>
+                 <width>60</width>
                  <height>20</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>45</width>
+                 <width>60</width>
                  <height>20</height>
                 </size>
                </property>
@@ -485,13 +485,13 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>45</width>
+                 <width>60</width>
                  <height>20</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>45</width>
+                 <width>60</width>
                  <height>20</height>
                 </size>
                </property>

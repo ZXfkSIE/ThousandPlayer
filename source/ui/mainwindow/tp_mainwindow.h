@@ -101,6 +101,7 @@ private:
     void setIcon_Play();
     void setIcon_Pause();
 
+    void setAudioInfoLabel( QListWidgetItem *I_item = nullptr );
     void setAudioPropertyLabels(
             const QString & I_qstr_Format   = QString { "N/A" },
             int             bitDepth        = -1,

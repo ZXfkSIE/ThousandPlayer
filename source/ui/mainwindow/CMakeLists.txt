@@ -1,4 +1,8 @@
 ﻿set(TP_UI_MAINWINDOW_FILES
+
+    tp_audioinfolabel.h
+    tp_audioinfolabel.cpp
+
     tp_coverlabel.h
     tp_coverlabel.cpp
 

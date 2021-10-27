@@ -15,6 +15,10 @@ TP_Config::TP_Config( QObject *parent ) :
             .value( key_UI_mainWindowPosition, QPoint { 100, 100 } )
             .toPoint();
 
+    audioInfoScrollingInterval_sec = config
+            .value( key_UI_audioInfoScrollingInterval, 5 )
+            .toInt();
+
     playlistWindowPosition = config
             .value( key_UI_playlistWindowPosition, QPoint { 100, 340 } )
             .toPoint();
@@ -65,6 +69,7 @@ TP_Config::~TP_Config()
 {
     config.beginGroup( group_UI );
     config.setValue( key_UI_mainWindowPosition, mainWindowPosition );
+    config.setValue( key_UI_audioInfoScrollingInterval, audioInfoScrollingInterval_sec );
     config.setValue( key_UI_playlistWindowPosition, playlistWindowPosition );
     config.setValue( key_UI_isPlaylistWindowShown, b_isPlaylistWindowShown );
     config.setValue( key_UI_playlistFont, playlistFont );
@@ -92,6 +97,18 @@ QPoint
 TP_Config::getMainWindowPosition() const
 {
     return mainWindowPosition;
+}
+
+void
+TP_Config::setAudioInfoScrollingInterval ( const int I_sec )
+{
+    audioInfoScrollingInterval_sec = I_sec;
+}
+
+int
+TP_Config::getAudioInfoScrollingInterval () const
+{
+    return audioInfoScrollingInterval_sec;
 }
 
 void
@@ -125,14 +142,14 @@ TP_Config::setPlaylistFont( const QFont &input )
 }
 
 QFont
-TP_Config::getPlaylistFont()
+TP_Config::getPlaylistFont() const
 {
     return playlistFont;
 }
 
 // ==================== PLAYBACK group ====================
 void
-TP_Config::setVolume( int I_volume )
+TP_Config::setVolume( const int I_volume )
 {
     volume = I_volume;
 }
@@ -144,43 +161,43 @@ TP_Config::getVolume() const
 }
 
 void
-TP_Config::setPreAmp_dB( float I_dB )
+TP_Config::setPreAmp_dB( const float I_dB )
 {
     preAmp_dB = I_dB;
 }
 
 float
-TP_Config::getPreAmp_dB()
+TP_Config::getPreAmp_dB() const
 {
     return preAmp_dB;
 }
 
 void
-TP_Config::setReplayGainMode( TP::ReplayGainMode input )
+TP_Config::setReplayGainMode( const TP::ReplayGainMode input )
 {
     replayGainMode = input;
 }
 
 TP::ReplayGainMode
-TP_Config::getReplayGainMode()
+TP_Config::getReplayGainMode() const
 {
     return replayGainMode;
 }
 
 void
-TP_Config::setDefaultGain_dB( float I_dB )
+TP_Config::setDefaultGain_dB( const float I_dB )
 {
     defaultGain_dB = I_dB;
 }
 
 float
-TP_Config::getDefaultGain_dB()
+TP_Config::getDefaultGain_dB() const
 {
     return defaultGain_dB;
 }
 
 void
-TP_Config::setPlayMode( TP::PlayMode input )
+TP_Config::setPlayMode( const TP::PlayMode input )
 {
     playMode = input;
 }

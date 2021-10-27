@@ -834,7 +834,7 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
     }
 
     qDebug()<< QString("[Audio Output] A %1%2 dB ReplayGain is applied.")
-               .arg( dB_Total > 0 ? QString( "+" ) : QString("") ).arg( dB_Total );
+               .arg( dB_Total > 0 ? QString( "+" ) : QString() ).arg( dB_Total );
     float multiplier = std::pow( 10, dB_Total / 20.0 );         // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }

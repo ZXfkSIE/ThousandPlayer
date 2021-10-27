@@ -91,6 +91,8 @@ TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
                             I_item->data( TP::role_Bitrate ).toInt(),
                             I_item->data( TP::role_Duration ).toInt()
                             );
+
+    setAudioInfoLabel( I_item );
 }
 
 
@@ -489,8 +491,12 @@ TP_MainWindow::initializeUI()
 {
     show();
 
+    ui->label_AudioInfo->initialize();
+    setAudioInfoLabel();
+    setAudioPropertyLabels();
+
     setWindowIcon( QIcon{ ":/image/MusicalNote.svg" } );
-    ui->label_Title->setText( QString( "ThousandPlayer v" ) + TP_PROJECT_VERSION );
+    ui->label_Title->setText( QString{ "ThousandPlayer v" } + TP_PROJECT_VERSION );
 
     ui->pushButton_Minimize ->setIcon( QIcon{ ":/image/icon_Minimize.svg" } );
     ui->pushButton_Expand   ->setIcon( QIcon{ ":/image/icon_Expand.svg" } );
@@ -524,8 +530,6 @@ TP_MainWindow::initializeUI()
         break;
     }
 
-    setAudioPropertyLabels();
-
     // Pending implementation
     ui->pushButton_Lyrics->hide();
 }
@@ -550,6 +554,30 @@ TP_MainWindow::setIcon_Pause()
 
 
 void
+TP_MainWindow::setAudioInfoLabel( QListWidgetItem *I_item )
+{
+    if( ! I_item )
+        ui->label_AudioInfo->setStrings( { tr( "Idle" ) } );
+    else
+    {
+        std::vector < QString > vec_Qstr { I_item->data( TP::role_Description ).toString() };
+
+        if( ! I_item->data( TP::role_Title ).toString().isEmpty() )
+            vec_Qstr.push_back( tr( "Title" ) + QString( ": " )
+                                + I_item->data( TP::role_Title ).toString() );
+        if( ! I_item->data( TP::role_Artist ).toString().isEmpty() )
+            vec_Qstr.push_back( tr( "Artist" ) + QString( ": " )
+                                + I_item->data( TP::role_Artist ).toString() );
+        if( ! I_item->data( TP::role_Album ).toString().isEmpty() )
+            vec_Qstr.push_back( tr( "Album" ) + QString( ": " )
+                                + I_item->data( TP::role_Album ).toString() );
+
+        ui->label_AudioInfo->setStrings( std::move( vec_Qstr ) );
+    }
+}
+
+
+void
 TP_MainWindow::setAudioPropertyLabels(
         const QString & I_qstr_Format,
         int             bitDepth,
@@ -557,17 +585,17 @@ TP_MainWindow::setAudioPropertyLabels(
         int             bitRate,
         int             duration )
 {
-    ui->label_Format->setText( QString(" ") + I_qstr_Format + QString(" ") );
+    ui->label_Format->setText( QString(" ") + I_qstr_Format + QString( " " ) );
     ui->label_BitDepth->setText(
-                QString(" ") + ( ( bitDepth == -1 ) ? QString("-") : QString::number( bitDepth ) )
+                QString(" ") + ( ( bitDepth == -1 ) ? QString( "-" ) : QString::number( bitDepth ) )
                 + QString( " bits " )
                 );
     ui->label_SampleRate->setText(
-                QString(" ") + ( ( sampleRate == -1 ) ? QString("-") : QString::number( sampleRate ) )
+                QString(" ") + ( ( sampleRate == -1 ) ? QString( "-" ) : QString::number( sampleRate ) )
                 + QString( " KHz " )
                 );
     ui->label_Bitrate->setText(
-                QString(" ") + ( ( bitRate == -1 ) ? QString("-") : QString::number( bitRate ) )
+                QString(" ") + ( ( bitRate == -1 ) ? QString( "-" ) : QString::number( bitRate ) )
                 + QString( " kbps " )
                 );
     ui->label_DurationTime->setText( convertTime( duration ) );

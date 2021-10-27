@@ -77,14 +77,22 @@ TP_ConfigWindow::slot_ReplayGainModeChanged( const int index )
 void
 TP_ConfigWindow::slot_setPreAmp( const int value )
 {
-    TP::config().setPreAmp_dB( value / 10.0 );
+    float realValue = value / 10.0;
+    TP::config().setPreAmp_dB( realValue );
+    ui->label_PreAmpValue->setText(
+                ( realValue > 0 ? QString( "+" ) : QString() ) +
+                QString( "%1 dB" ).arg( realValue ) );
 }
 
 
 void
 TP_ConfigWindow::slot_setDefaultReplayGain( const int value )
 {
-    TP::config().setDefaultGain_dB( value / 10.0 );
+    float realValue = value / 10.0;
+    TP::config().setDefaultGain_dB( realValue );
+    ui->label_DefaultReplayGainValue->setText(
+                ( realValue > 0 ? QString( "+" ) : QString() ) +
+                QString( "%1 dB" ).arg( realValue ) );
 }
 
 
@@ -803,6 +811,9 @@ please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
     str_Courtesy =
 R"COURTESY(
+## Author
+* Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
+<br />
 ## 3rd-party libraries
 &nbsp;
 #### Qt Toolkit
@@ -879,8 +890,8 @@ TP_ConfigWindow::initializeUI()
     }
 
     // Initialize sliders
-    ui->slider_PreAmp           ->setValue( TP::config().getPreAmp_dB()     * 10 );
-    ui->slider_DefaultReplayGain->setValue( TP::config().getDefaultGain_dB()* 10 );
+    slot_setPreAmp              ( TP::config().getPreAmp_dB() );
+    slot_setDefaultReplayGain   ( TP::config().getDefaultGain_dB() );
 
     // ============================== Playlist page ==============================
 
@@ -893,8 +904,10 @@ TP_ConfigWindow::initializeUI()
     ui->label_Icon->setPixmap( QIcon{ ":/image/MusicalNote.svg" }
                                .pixmap( ui->label_Icon->size() )
                                );
-    ui->label_SoftName->setText( QString("ThousandPlayer v") + TP_PROJECT_VERSION );
+    ui->label_SoftName->setText( QString( "ThousandPlayer v" ) + TP_PROJECT_VERSION );
 }
+
+
 
 void
 TP_ConfigWindow::on_pushButton_GPL_clicked()
