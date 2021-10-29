@@ -70,6 +70,7 @@ TP_MainClass::~TP_MainClass()
         TP::config().setPlaylistWindowShown( false );
     }
 
+    delete configWindow;
     delete mainWindow;
     delete playlistWindow;
 }
@@ -916,7 +917,9 @@ TP_MainClass::initializeConnection()
     // ConfigWindow related
     connect( mainWindow,        &TP_MainWindow::signal_openConfigWindow,
              configWindow,      &TP_ConfigWindow::exec );
-    connect( configWindow,      &TP_ConfigWindow::signal_fontChanged,
+    connect( configWindow,      &TP_ConfigWindow::signal_audioInfoLabelFontChanged,
+             mainWindow,        &TP_MainWindow::slot_changeFontOfAudioInfoLabel );
+    connect( configWindow,      &TP_ConfigWindow::signal_playlistFontChanged,
              playlistWindow,    &TP_PlaylistWindow::slot_changeFontOfCurrentList );
     connect( configWindow,      &TP_ConfigWindow::signal_audioDeviceChanged,
              audioOutput,       &QAudioOutput::setDevice );

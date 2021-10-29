@@ -14,10 +14,6 @@ static const unsigned lyricsWindow      = 2;
 static const int borderSize = 5;
 static const int snapRange  = 8;
 
-static const QString configDirectoryPath    { "./userData" };
-static const QString configFilePath         { configDirectoryPath + QString { "/config.ini" } };
-static const QString playlistFilePath       { configDirectoryPath + QString { "/playlists.xml" } };
-
 static const int role_Duration          = Qt::UserRole;         // int              must have
 static const int role_Bitrate           = Qt::UserRole + 1;     // int
 static const int role_SampleRate        = Qt::UserRole + 2;     // int

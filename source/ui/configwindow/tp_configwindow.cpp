@@ -15,7 +15,6 @@ TP_ConfigWindow::TP_ConfigWindow( QWidget *parent ) :
     ui->setupUi( this );
 
     initializeStrings();
-    initializeConnection();
     initializeUI();
 }
 
@@ -30,16 +29,51 @@ TP_ConfigWindow::~TP_ConfigWindow()
 // *****************************************************************
 
 void
-TP_ConfigWindow::slot_switchPage( const int currentRow )
+TP_ConfigWindow::on_listWidget_Tab_currentRowChanged( const int currentRow )
 {
     ui->stackedWidget->setCurrentIndex( currentRow );
 }
 
 
 void
-TP_ConfigWindow::slot_audioDeviceChanged( const int index )
+TP_ConfigWindow::on_radioButton_ClickX_MinimizeToTray_toggled( const bool checked )
 {
-    qDebug() << "[Config Window] signal_audioDeviceChanged is emitted. Audio device shoule be changed to"
+    TP::config().setTrayIconEnabled( checked );
+}
+
+
+void TP_ConfigWindow::on_pushButton_ChangeAudioInfoLabelFont_clicked()
+{
+    bool ok {};
+    QFont font {
+        QFontDialog::getFont(
+                    &ok,
+                    TP::config().getAudioInfoLabelFont(),
+                    this )
+    };
+
+    if( ok )
+    {
+        TP::config().setAudioInfoLabelFont( font );
+        ui->label_CurrentAudioInfoLabelFontExample->setText(
+                    QString( "%1, %2 pt" ).arg( font.family() ).arg( font.pointSize() ) );
+        ui->label_CurrentAudioInfoLabelFontExample->setFont( font );
+        emit signal_audioInfoLabelFontChanged();
+    }
+}
+
+
+void
+TP_ConfigWindow::on_spinBox_AudioInfoLabelScrollingInterval_valueChanged( const int I_sec )
+{
+    TP::config().setAudioInfoScrollingInterval( I_sec );
+}
+
+
+void
+TP_ConfigWindow::on_comboBox_AudioDevice_currentIndexChanged( const int index )
+{
+    qDebug() << "[Config Window] signal_audioDeviceChanged is emitted to"
              << ui->comboBox_AudioDevice->itemData( index ).value< QAudioDevice >().description();
     emit signal_audioDeviceChanged(
                 ui->comboBox_AudioDevice->itemData( index ).value< QAudioDevice >()
@@ -48,7 +82,7 @@ TP_ConfigWindow::slot_audioDeviceChanged( const int index )
 
 
 void
-TP_ConfigWindow::slot_ReplayGainModeChanged( const int index )
+TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( const int index )
 {
     qDebug() << "[Config Window] ReplayGain mode is changed to" << index;
     switch( index )
@@ -75,7 +109,7 @@ TP_ConfigWindow::slot_ReplayGainModeChanged( const int index )
 
 
 void
-TP_ConfigWindow::slot_setPreAmp( const int value )
+TP_ConfigWindow::on_slider_PreAmp_valueChanged( const int value )
 {
     float realValue = value / 10.0;
     TP::config().setPreAmp_dB( realValue );
@@ -86,7 +120,7 @@ TP_ConfigWindow::slot_setPreAmp( const int value )
 
 
 void
-TP_ConfigWindow::slot_setDefaultReplayGain( const int value )
+TP_ConfigWindow::on_slider_DefaultReplayGain_valueChanged( const int value )
 {
     float realValue = value / 10.0;
     TP::config().setDefaultGain_dB( realValue );
@@ -113,7 +147,7 @@ TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
         ui->label_CurrentPlaylistFontExample->setText(
                     QString( "%1, %2 pt" ).arg( font.family() ).arg( font.pointSize() ) );
         ui->label_CurrentPlaylistFontExample->setFont( font );
-        emit signal_fontChanged();
+        emit signal_playlistFontChanged();
     }
 }
 
@@ -372,7 +406,9 @@ used to limit the access or legal rights of the compilation's users
 beyond what the individual works permit. Inclusion of a covered work
 in an aggregate does not cause this License to apply to the other
 parts of the aggregate.
+)GPL";
 
+    str_GPL += R"GPL(
 #### 6. Conveying Non-Source Forms.
 
 You may convey a covered work in object code form under the terms of
@@ -660,7 +696,9 @@ license was granted, prior to 28 March 2007.
 Nothing in this License shall be construed as excluding or limiting
 any implied license or other defenses to infringement that may
 otherwise be available to you under applicable patent law.
+)GPL";
 
+    str_GPL += R"GPL(
 #### 12. No Surrender of Others' Freedom.
 
 If conditions are imposed on you (whether by court order, agreement or
@@ -803,12 +841,6 @@ GNU Lesser General Public License instead of this License. But first,
 please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
 )GPL";
 
-    // Remove redundant returns
-    for( size_t i { str_GPL.find( "verbatim" ) }; i < str_GPL.size() - 1; i++ )
-        if( str_GPL[ i ] == '\n' && str_GPL[ i + 1 ] != '\n' && str_GPL[ i - 1 ] != '\n' )
-            str_GPL[ i ] = ' ';
-
-
     str_Courtesy =
 R"COURTESY(
 ## Author
@@ -834,24 +866,11 @@ Homepage: https://taglib.org/
 <br />
 ## Images
 
-All images used in this software, which were mainly downloaded from [Openclipart](https://openclipart.org/), were in public domain.
+All images used in this software, which were mainly downloaded from [Openclipart](https://openclipart.org/), are in public domain.
 )COURTESY";
+
 }
 
-
-void
-TP_ConfigWindow::initializeConnection()
-{
-    connect( ui->listWidget_Tab,    &QListWidget::currentRowChanged,
-             this,                  &TP_ConfigWindow::slot_switchPage );
-
-    connect( ui->comboBox_AudioDevice,      &QComboBox::currentIndexChanged,
-             this,                          &TP_ConfigWindow::slot_audioDeviceChanged );
-    connect( ui->comboBox_ReplayGainMode,   &QComboBox::currentIndexChanged,
-             this,                          &TP_ConfigWindow::slot_ReplayGainModeChanged );
-    connect( ui->slider_PreAmp, &QSlider::valueChanged,
-             this,              &TP_ConfigWindow::slot_setPreAmp );
-}
 
 void
 TP_ConfigWindow::initializeUI()
@@ -861,18 +880,36 @@ TP_ConfigWindow::initializeUI()
     ui->listWidget_Tab->setCurrentRow( 0 );
     ui->stackedWidget->setCurrentIndex( 0 );
 
+    // Expand height of list items
     for( int i {}; i < ui->listWidget_Tab->count(); i++ )
         ui->listWidget_Tab->item( i )->setSizeHint( QSize{ 0, 40 } );
 
+    // ============================== Main Page ==============================
+
+    // When click the X button
+    if( TP::config().isTrayIconEnabled() )
+        ui->radioButton_ClickX_MinimizeToTray->setChecked( true );
+    else
+        ui->radioButton_ClickX_Quit->setChecked( true );
+
+    // Audio information label font
+    QFont audioInfoLabelFont { TP::config().getAudioInfoLabelFont() };
+    ui->label_CurrentAudioInfoLabelFontExample->setText(
+                QString( "%1, %2 pt" ).arg( audioInfoLabelFont.family() ).arg( audioInfoLabelFont.pointSize() ) );
+    ui->label_CurrentAudioInfoLabelFontExample->setFont( audioInfoLabelFont );
+
+    // Audio information label font scrolling interval
+    ui->spinBox_AudioInfoLabelScrollingInterval->setValue( TP::config().getAudioInfoScrollingInterval() );
+
     // ============================== Playback page ==============================
 
-    // Initialize list of audio output device
+    // List of audio output device
     ui->comboBox_AudioDevice->addItem( tr( "Default" ), QVariant::fromValue( QAudioDevice() ) );
     for ( const auto &deviceInfo: QMediaDevices::audioOutputs() )
         ui->comboBox_AudioDevice->addItem( deviceInfo.description(), QVariant::fromValue( deviceInfo ) );
     ui->comboBox_AudioDevice->setCurrentIndex( 0 );
 
-    // Initialize ReplayGain mode ComboBox
+    // ReplayGain mode ComboBox
     switch( TP::config().getReplayGainMode() )
     {
     case TP::RG_disabled :
@@ -889,9 +926,9 @@ TP_ConfigWindow::initializeUI()
         break;
     }
 
-    // Initialize sliders
-    slot_setPreAmp              ( TP::config().getPreAmp_dB() );
-    slot_setDefaultReplayGain   ( TP::config().getDefaultGain_dB() );
+    // Sliders
+    on_slider_PreAmp_valueChanged           ( TP::config().getPreAmp_dB() );
+    on_slider_DefaultReplayGain_valueChanged( TP::config().getDefaultGain_dB() );
 
     // ============================== Playlist page ==============================
 
@@ -901,6 +938,7 @@ TP_ConfigWindow::initializeUI()
     ui->label_CurrentPlaylistFontExample->setFont( playlistFont );
 
     // ============================== About page ==============================
+
     ui->label_Icon->setPixmap( QIcon{ ":/image/MusicalNote.svg" }
                                .pixmap( ui->label_Icon->size() )
                                );
@@ -921,4 +959,3 @@ TP_ConfigWindow::on_pushButton_Courtesy_clicked()
 {
     ui->textBrowser->document()->setMarkdown( QString::fromStdString( str_Courtesy ) );
 }
-

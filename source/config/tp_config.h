@@ -16,11 +16,17 @@ public:
     explicit TP_Config( QObject *parent = nullptr );
     ~TP_Config();
 
-    // ==================== UI group ====================
+    // ==================== MAINWINDOW group ====================
     void    setMainWindowPosition ( const QPoint &input );
     QPoint  getMainWindowPosition () const;
+    void    setTrayIconEnabled ( const bool b );
+    bool    isTrayIconEnabled ();
+    void    setAudioInfoLabelFont( const QFont &input );
+    QFont   getAudioInfoLabelFont();
     void    setAudioInfoScrollingInterval ( const int I_sec );
     int     getAudioInfoScrollingInterval () const;
+
+    // ==================== PLAYLISTWINDOW group ====================
     void    setPlaylistWindowPosition ( const QPoint &input );
     QPoint  getPlaylistWindowPosition () const;
     void    setPlaylistWindowShown ( bool b );
@@ -46,32 +52,39 @@ private:
 
 
     // ************************************************************************************
-    const   QString     group_UI                            { "UI" };
+    const   QString     group_MAINWINDOW                            { "MAINWINDOW" };
     // ************************************************************************************
-    const   QString     key_UI_mainWindowPosition           { "mainWindowPosition" };
+    const   QString     key_MAINWINDOW_mainWindowPosition           { "mainWindowPosition" };
             QPoint      mainWindowPosition;
-    const   QString     key_UI_audioInfoScrollingInterval   { "audioInfoScrollingInterval" };
+    const   QString     key_MAINWINDOW_isTrayIconEnabled            { "isTrayIconEnabled" };
+            bool        b_isTrayIconEnabled;
+    const   QString     key_MAINWINDOW_audioInfoLabelFont           { "audioInfoLabelFont " };
+            QFont       audioInfoLabelFont;
+    const   QString     key_MAINWINDOW_audioInfoScrollingInterval   { "audioInfoScrollingInterval" };
             int         audioInfoScrollingInterval_sec;
-    const   QString     key_UI_playlistWindowPosition       { "playlistWindowPosition" };
+
+    // ************************************************************************************
+    const   QString     group_PLAYLISTWINDOW                        { "PLAYLISTWINDOW" };
+    // ************************************************************************************
+    const   QString     key_PLAYLISTWINDOW_playlistWindowPosition   { "playlistWindowPosition" };
             QPoint      playlistWindowPosition;
-    const   QString     key_UI_isPlaylistWindowShown        { "isPlaylistWindowShown" };
+    const   QString     key_PLAYLISTWINDOW_isPlaylistWindowShown    { "isPlaylistWindowShown" };
             bool        b_isPlaylistWindowShown;
-    const   QString     key_UI_playlistFont                 { "playlistFont" };
+    const   QString     key_PLAYLISTWINDOW_playlistFont             { "playlistFont" };
             QFont       playlistFont;
 
     // ************************************************************************************
-    const   QString             group_PLAYBACK              { "PLAYBACK" };
+    const   QString             group_PLAYBACK                      { "PLAYBACK" };
     // ************************************************************************************
-
-    const   QString             key_PLAYBACK_volume         { "volume" };
+    const   QString             key_PLAYBACK_volume                 { "volume" };
             int                 volume;
-    const   QString             key_PLAYBACK_preAmp_dB      { "preAmp_dB" };
+    const   QString             key_PLAYBACK_preAmp_dB              { "preAmp_dB" };
             float               preAmp_dB;
-    const   QString             key_PLAYBACK_replayGainMode { "replayGainMode" };
+    const   QString             key_PLAYBACK_replayGainMode         { "replayGainMode" };
             TP::ReplayGainMode  replayGainMode;
-    const   QString             key_PLAYBACK_defaultGain_dB { "defaultGain_dB" };
+    const   QString             key_PLAYBACK_defaultGain_dB         { "defaultGain_dB" };
             float               defaultGain_dB;
-    const   QString             key_PLAYBACK_playMode       { "playMode" };
+    const   QString             key_PLAYBACK_playMode               { "playMode" };
             TP::PlayMode        playMode;
 };
 

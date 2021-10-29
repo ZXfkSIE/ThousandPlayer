@@ -36,7 +36,6 @@ TP_AudioInfoLabel::setStrings( std::vector< QString > &&I_vec_Qstr )
     else
         timer->start( TP::config().getAudioInfoScrollingInterval() * 1000 );
 
-    b_isInitialPainting = true;
     currentIdx = 0;
     repaint();
 }
@@ -63,14 +62,8 @@ TP_AudioInfoLabel::paintEvent ( QPaintEvent * )
     QPainter painter { this };
     painter.setClipRect( contentsRect() );
 
-    if( b_isInitialPainting )
+    if( b_isTimerTriggered )
     {
-        b_isInitialPainting = false;
-        painter.drawText( initialX, initialMiddleY + ( font().pointSize() >> 1 ), vec_Qstr[ currentIdx ] );
-    }
-    else if( b_isTimerTriggered )
-    {
-        b_isTimerTriggered = false;
         if( b_isScrolling )
         {
             int offsetY { font().pointSize() >> 1 };
@@ -98,5 +91,9 @@ TP_AudioInfoLabel::paintEvent ( QPaintEvent * )
             b_isScrolling = true;
             timer->start( 50 );             // 20 fps
         }
+
+        b_isTimerTriggered = false;
     }
+    else
+        painter.drawText( initialX, initialMiddleY + ( font().pointSize() >> 1 ), vec_Qstr[ currentIdx ] );
 }

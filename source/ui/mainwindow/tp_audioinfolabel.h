@@ -25,7 +25,6 @@ private:
 
     QTimer *timer;
 
-    bool b_isInitialPainting;
     bool b_isScrolling;
     bool b_isTimerTriggered;
 

@@ -133,6 +133,13 @@ TP_MainWindow::slot_playlistWindowHidden()
 
 
 void
+TP_MainWindow::slot_changeFontOfAudioInfoLabel()
+{
+    ui->label_AudioInfo->setFont( TP::config().getAudioInfoLabelFont() );
+}
+
+
+void
 TP_MainWindow::slot_updateDuration( qint64 ms )
 {
     qint64 second = ms / 1000;                       // convert ms to s
@@ -164,7 +171,7 @@ TP_MainWindow::slot_leftButtonReleased()
 
 
 void
-TP_MainWindow::slot_timeSliderChanged( int second )
+TP_MainWindow::on_slider_Time_valueChanged( const int second )
 {
     ui->label_CurrentTime->setText( convertTime( second ) );
 }
@@ -178,7 +185,7 @@ TP_MainWindow::slot_timeSliderPressed( int second )
 
 
 void
-TP_MainWindow::slot_volumeSliderChanged( int I_volume )
+TP_MainWindow::on_slider_Volume_valueChanged( const int I_volume )
 {
     // qDebug() << "[TP_MainWindow] slot_volumeSliderChanged(" << I_volume << ")";
     ui->label_VolumeIcon->setIcon( I_volume );
@@ -454,13 +461,9 @@ TP_MainWindow::initializeConnection()
     connect(ui->frame_Title,    &TP_TitleBar::signal_leftButtonReleased,
             this,               &TP_MainWindow::slot_leftButtonReleased);
 
-    connect(ui->slider_Time,    &TP_TimeSlider::valueChanged,
-            this,               &TP_MainWindow::slot_timeSliderChanged);
     connect(ui->slider_Time,    &TP_TimeSlider::signal_mouseReleased,
             this,               &TP_MainWindow::slot_timeSliderPressed);
 
-    connect(ui->slider_Volume,      &QSlider::valueChanged,
-            this,                   &TP_MainWindow::slot_volumeSliderChanged);
     connect(ui->label_VolumeIcon,   &TP_VolumeIcon::signal_setVolume,
             ui->slider_Volume,      &QSlider::setValue);
 }
@@ -492,7 +495,9 @@ TP_MainWindow::initializeUI()
     show();
 
     ui->label_AudioInfo->initialize();
+    ui->label_AudioInfo->setFont( TP::config().getAudioInfoLabelFont() );
     setAudioInfoLabel();
+
     setAudioPropertyLabels();
 
     setWindowIcon( QIcon{ ":/image/MusicalNote.svg" } );

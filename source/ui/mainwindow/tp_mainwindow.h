@@ -57,16 +57,18 @@ public slots:
     void slot_playlistWindowShown();
     void slot_playlistWindowHidden();
 
+    void slot_changeFontOfAudioInfoLabel();
+
     void slot_updateDuration( qint64 ms );
 
 private slots:
     void slot_moveTitleBar( const QRect &newGeometry );
     void slot_leftButtonReleased();
 
-    void slot_timeSliderChanged( int second );
+    void on_slider_Time_valueChanged( const int second );
     void slot_timeSliderPressed( int second );
 
-    void slot_volumeSliderChanged( int volume );
+    void on_slider_Volume_valueChanged( const int volume );
 
     void on_pushButton_Exit_clicked() const;
     void on_pushButton_Expand_clicked();

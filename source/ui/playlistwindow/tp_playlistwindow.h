@@ -99,7 +99,7 @@ private:
     void initializeMenu();
     void initializeConnection();
 
-    void storePlaylist();
+    // void storePlaylist();
 
     void switchList( TP_FileListWidget *fileListWidget );
 

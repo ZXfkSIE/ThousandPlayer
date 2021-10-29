@@ -7,30 +7,51 @@
 
 TP_Config::TP_Config( QObject *parent ) :
     QObject { parent }
-  , config  { TP::configFilePath, QSettings::IniFormat, this }
+  , config  { QSettings::IniFormat,
+              QSettings::UserScope,
+              QString { "ThousandPlayer" },
+              QString { "ThousandPlayer" },
+              this }
 {
-    config.beginGroup( group_UI );
+    qDebug() << "[Config] The path of config file is" << config.fileName();
+
+    QFont defaultFont = QWidget().font();
+    defaultFont.setPointSize( 10 );
+
+    config.beginGroup( group_MAINWINDOW );
 
     mainWindowPosition = config
-            .value( key_UI_mainWindowPosition, QPoint { 100, 100 } )
+            .value( key_MAINWINDOW_mainWindowPosition, QPoint { 100, 100 } )
             .toPoint();
 
+    b_isTrayIconEnabled = config
+            .value( key_MAINWINDOW_isTrayIconEnabled, false )
+            .toBool();
+
+    audioInfoLabelFont = config
+            .value( key_MAINWINDOW_audioInfoLabelFont, defaultFont )
+            .value< QFont >();
+
     audioInfoScrollingInterval_sec = config
-            .value( key_UI_audioInfoScrollingInterval, 5 )
+            .value( key_MAINWINDOW_audioInfoScrollingInterval, 5 )
             .toInt();
 
+    config.endGroup();
+
+
+    config.beginGroup( group_PLAYLISTWINDOW );
+
     playlistWindowPosition = config
-            .value( key_UI_playlistWindowPosition, QPoint { 100, 340 } )
+            .value( key_PLAYLISTWINDOW_playlistWindowPosition, QPoint { 100, 340 } )
             .toPoint();
 
     b_isPlaylistWindowShown = config
-            .value( key_UI_isPlaylistWindowShown, true )
+            .value( key_PLAYLISTWINDOW_isPlaylistWindowShown, true )
             .toBool();
 
-    QFont font = QWidget().font();
-    font.setPointSize( 10 );
+
     playlistFont = config
-            .value( key_UI_playlistFont, font  )
+            .value( key_PLAYLISTWINDOW_playlistFont, defaultFont )
             .value< QFont >();
 
     config.endGroup();
@@ -67,12 +88,17 @@ TP_Config::TP_Config( QObject *parent ) :
 
 TP_Config::~TP_Config()
 {
-    config.beginGroup( group_UI );
-    config.setValue( key_UI_mainWindowPosition, mainWindowPosition );
-    config.setValue( key_UI_audioInfoScrollingInterval, audioInfoScrollingInterval_sec );
-    config.setValue( key_UI_playlistWindowPosition, playlistWindowPosition );
-    config.setValue( key_UI_isPlaylistWindowShown, b_isPlaylistWindowShown );
-    config.setValue( key_UI_playlistFont, playlistFont );
+    config.beginGroup( group_MAINWINDOW );
+    config.setValue( key_MAINWINDOW_mainWindowPosition, mainWindowPosition );
+    config.setValue( key_MAINWINDOW_isTrayIconEnabled, b_isTrayIconEnabled );
+    config.setValue( key_MAINWINDOW_audioInfoLabelFont, audioInfoLabelFont );
+    config.setValue( key_MAINWINDOW_audioInfoScrollingInterval, audioInfoScrollingInterval_sec );
+    config.endGroup();
+
+    config.beginGroup( group_PLAYLISTWINDOW );
+    config.setValue( key_PLAYLISTWINDOW_playlistWindowPosition, playlistWindowPosition );
+    config.setValue( key_PLAYLISTWINDOW_isPlaylistWindowShown, b_isPlaylistWindowShown );
+    config.setValue( key_PLAYLISTWINDOW_playlistFont, playlistFont );
     config.endGroup();
 
     config.beginGroup( group_PLAYBACK );
@@ -97,6 +123,30 @@ QPoint
 TP_Config::getMainWindowPosition() const
 {
     return mainWindowPosition;
+}
+
+void
+TP_Config::setTrayIconEnabled ( const bool b )
+{
+    b_isTrayIconEnabled = b;
+}
+
+bool
+TP_Config::isTrayIconEnabled ()
+{
+    return b_isTrayIconEnabled;
+}
+
+void
+TP_Config::setAudioInfoLabelFont( const QFont &input )
+{
+    audioInfoLabelFont = input;
+}
+
+QFont
+TP_Config::getAudioInfoLabelFont()
+{
+    return audioInfoLabelFont;
 }
 
 void

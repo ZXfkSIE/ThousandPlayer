@@ -50,14 +50,13 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
 TP_PlaylistWindow::~TP_PlaylistWindow()
 {
     delete ui;
-
-    storePlaylist();
 }
 
 
 void
 TP_PlaylistWindow::initializePlaylist()
 {
+    /*
     if( std::filesystem::exists( TP::playlistFilePath.
 #ifdef Q_OS_WIN
     toStdWString()
@@ -68,18 +67,18 @@ TP_PlaylistWindow::initializePlaylist()
     {
         qDebug() << "Existing playlist " << TP::playlistFilePath << " found.";
     }
-    else
+    else*/
     {
         qDebug() << "Existing playlist not found. Creating default playlist and filelist.";
         ui->playlistsWidget->addItem( tr( "Default" ) );
         ui->playlistsWidget->setCurrentRow( 0 );
 
         TP_FileListWidget *newWidget { new TP_FileListWidget{ ui->frame_FileList, tr( "Default" ) } };
-        emit signal_newFileListWidgetCreated( newWidget );
         vec_FileListWidget.push_back( newWidget );
         ui->playlistsWidget->item( 0 )->setData( Qt::UserRole, QVariant::fromValue( newWidget ) );
 
         switchList( newWidget );
+        emit signal_newFileListWidgetCreated( newWidget );
     }
 }
 
@@ -221,10 +220,10 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
 
     QList <QUrl> fileURLs = QFileDialog::getOpenFileUrls(
                 this,                               // QWidget *parent = nullptr
-                tr("Open files"),                   // const QString &caption = QString()
+                tr( "Open files" ),                 // const QString &caption = QString()
                 QString(),                          // const QString &dir = QString()
-                QString("FLAC files (*.flac);;"     // const QString &filter = QString()
-                        "MP3 files (*.mp3)")
+                QString( "FLAC files (*.flac);;"    // const QString &filter = QString()
+                         "MP3 files (*.mp3)" )
                 );
 
     qsizetype n_Files = fileURLs.size();
@@ -516,7 +515,7 @@ TP_PlaylistWindow::initializeConnection()
              this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
 }
 
-
+/*
 void
 TP_PlaylistWindow::storePlaylist()
 {
@@ -530,6 +529,7 @@ TP_PlaylistWindow::storePlaylist()
     ) )
         std::filesystem::create_directory( TP::configDirectoryPath.toStdWString() );
 }
+*/
 
 
 void

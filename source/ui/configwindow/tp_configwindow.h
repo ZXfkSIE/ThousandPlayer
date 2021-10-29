@@ -16,17 +16,22 @@ public:
     ~TP_ConfigWindow ();
 
 signals:
-    void signal_audioDeviceChanged( QAudioDevice device );
+    void signal_audioDeviceChanged ( QAudioDevice device );
 
-    void signal_fontChanged ();
+    void signal_audioInfoLabelFontChanged ();
+    void signal_playlistFontChanged ();
 
 private slots:
-    void slot_switchPage ( const int currentRow );
+    void on_listWidget_Tab_currentRowChanged( const int currentRow );
 
-    void slot_audioDeviceChanged ( const int index );
-    void slot_ReplayGainModeChanged ( const int index );
-    void slot_setPreAmp ( const int value );
-    void slot_setDefaultReplayGain ( const int value );
+    void on_radioButton_ClickX_MinimizeToTray_toggled( const bool checked );
+    void on_pushButton_ChangeAudioInfoLabelFont_clicked();
+    void on_spinBox_AudioInfoLabelScrollingInterval_valueChanged( const int I_sec );
+
+    void on_comboBox_AudioDevice_currentIndexChanged( const int index );
+    void on_comboBox_ReplayGainMode_currentIndexChanged ( const int index );
+    void on_slider_PreAmp_valueChanged ( const int value );
+    void on_slider_DefaultReplayGain_valueChanged ( const int value );
 
     void on_pushButton_ChangePlaylistFont_clicked ();
 
@@ -37,7 +42,6 @@ private:
     Ui::TP_ConfigWindow *ui;
 
     void initializeStrings ();
-    void initializeConnection ();
     void initializeUI ();
 
     std::string str_GPL;
