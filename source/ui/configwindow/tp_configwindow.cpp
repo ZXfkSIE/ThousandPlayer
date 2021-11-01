@@ -14,6 +14,8 @@ TP_ConfigWindow::TP_ConfigWindow( QWidget *parent ) :
 {
     ui->setupUi( this );
 
+    setWindowFlag( Qt::WindowStaysOnTopHint );
+
     initializeStrings();
     initializeUI();
 }
@@ -866,7 +868,8 @@ Homepage: https://taglib.org/
 <br />
 ## Images
 
-All images used in this software, which were mainly downloaded from [Openclipart](https://openclipart.org/), are in public domain.
+All images used in this software, which mainly originated from [Openclipart](https://openclipart.org/),
+are in public domain ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/)). Thank those selfless artists!
 )COURTESY";
 
 }

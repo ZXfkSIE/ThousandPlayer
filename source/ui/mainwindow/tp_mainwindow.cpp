@@ -456,16 +456,19 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 void
 TP_MainWindow::initializeConnection()
 {
-    connect(ui->frame_Title,    &TP_TitleBar::signal_moveTitleBar,
-            this,               &TP_MainWindow::slot_moveTitleBar);
-    connect(ui->frame_Title,    &TP_TitleBar::signal_leftButtonReleased,
-            this,               &TP_MainWindow::slot_leftButtonReleased);
+    // Windows moving
+    connect( ui->frame_Title,   &TP_TitleBar::signal_moveTitleBar,
+             this,              &TP_MainWindow::slot_moveTitleBar );
+    connect( ui->frame_Title,   &TP_TitleBar::signal_leftButtonReleased,
+             this,              &TP_MainWindow::slot_leftButtonReleased );
 
-    connect(ui->slider_Time,    &TP_TimeSlider::signal_mouseReleased,
-            this,               &TP_MainWindow::slot_timeSliderPressed);
+    // Playback position jumping
+    connect( ui->slider_Time,   &TP_TimeSlider::signal_mouseReleased,
+             this,              &TP_MainWindow::slot_timeSliderPressed );
 
-    connect(ui->label_VolumeIcon,   &TP_VolumeIcon::signal_setVolume,
-            ui->slider_Volume,      &QSlider::setValue);
+    // Volume setting
+    connect( ui->label_VolumeIcon,  &TP_VolumeIcon::signal_setVolume,
+             ui->slider_Volume,     &QSlider::setValue );
 }
 
 

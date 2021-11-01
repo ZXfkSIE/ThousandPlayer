@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>TP_CoverViewer</class>
- <widget class="QWidget" name="TP_CoverViewer">
+ <widget class="QDialog" name="TP_CoverViewer">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="container_ZoomingButtons" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -81,6 +81,9 @@
           <height>48</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Zoom in</string>
+        </property>
         <property name="iconSize">
          <size>
           <width>36</width>
@@ -108,6 +111,9 @@
           <width>48</width>
           <height>48</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>Zoom out</string>
         </property>
         <property name="iconSize">
          <size>
@@ -137,10 +143,44 @@
           <height>48</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Original size</string>
+        </property>
         <property name="iconSize">
          <size>
           <width>36</width>
           <height>36</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_Maximize">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Maximize</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
          </size>
         </property>
        </widget>

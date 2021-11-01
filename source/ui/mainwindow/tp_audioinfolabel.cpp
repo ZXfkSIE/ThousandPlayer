@@ -2,6 +2,7 @@
 
 #include "tp_globalvariable.h"
 
+#include <QMouseEvent>
 #include <QPainter>
 #include <QTimer>
 
@@ -36,6 +37,7 @@ TP_AudioInfoLabel::setStrings( std::vector< QString > &&I_vec_Qstr )
     else
         timer->start( TP::config().getAudioInfoScrollingInterval() * 1000 );
 
+    b_isTimerTriggered = false;
     currentIdx = 0;
     repaint();
 }
@@ -67,7 +69,7 @@ TP_AudioInfoLabel::paintEvent ( QPaintEvent * )
         if( b_isScrolling )
         {
             int offsetY { font().pointSize() >> 1 };
-            int nextIdx = currentIdx == vec_Qstr.size() - 1 ? 0 : currentIdx + 1;
+            int nextIdx = nextIndex();
 
             // draw the upper text
             painter.drawText( x, --y + offsetY , vec_Qstr[ currentIdx ] );
@@ -96,4 +98,32 @@ TP_AudioInfoLabel::paintEvent ( QPaintEvent * )
     }
     else
         painter.drawText( initialX, initialMiddleY + ( font().pointSize() >> 1 ), vec_Qstr[ currentIdx ] );
+}
+
+
+void
+TP_AudioInfoLabel::mousePressEvent( QMouseEvent *event )
+{
+    if( event->button() == Qt::LeftButton )
+    {
+        if( vec_Qstr.size() <= 1 )
+            timer->stop();
+        else
+            timer->start( TP::config().getAudioInfoScrollingInterval() * 1000 );
+
+        b_isTimerTriggered = false;
+        currentIdx = nextIndex();
+        repaint();
+    }
+    QLabel::mousePressEvent( event );
+}
+
+// *****************************************************************
+// private
+// *****************************************************************
+
+int
+TP_AudioInfoLabel::nextIndex()
+{
+    return ( currentIdx == vec_Qstr.size() - 1 ) ? 0 : currentIdx + 1;
 }

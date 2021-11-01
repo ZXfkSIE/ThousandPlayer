@@ -2,24 +2,32 @@
 #include "ui_tp_coverviewer.h"
 
 #include <QStyle>
+#include <QWheelEvent>
 
-TP_CoverViewer::TP_CoverViewer( QWidget *parent ) :
-    QWidget     { parent }
-  , ui          { new Ui::TP_CoverViewer }
-  , pixmap      {}
-  , scaleFactor { 1.0f }
+TP_CoverViewer::TP_CoverViewer( QDialog *parent ) :
+    QDialog                 { parent }
+  , ui                      { new Ui::TP_CoverViewer }
+  , pixmap                  {}
+  , scaleFactor             { 1.0f }
+  , b_isManuallyMaximized   { false }
 {
     ui->setupUi( this );
-    setWindowTitle( QString("ThousandPlayer - ") + tr("Cover Viewer") );
-    setWindowIcon( QIcon{":/image/icon_CoverViewer.svg"} );
+    originalGeometry = geometry();
+
+    setWindowFlags( Qt::Tool |
+                    Qt::WindowMaximizeButtonHint |
+                    Qt::WindowCloseButtonHint );
+    setWindowTitle( QString{ "ThousandPlayer - " } + tr("Cover Viewer") );
+    setWindowIcon( QIcon{ ":/image/icon_CoverViewer.svg" } );
 
     ui->label_Image->setBackgroundRole( QPalette::Base );
     ui->label_Image->setAlignment( Qt::AlignCenter );
     ui->label_Image->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
 
-    ui->pushButton_ZoomIn->setIcon( QIcon{":/image/icon_ZoomIn.svg"} );
-    ui->pushButton_ZoomOut->setIcon( QIcon{":/image/icon_ZoomOut.svg"} );
-    ui->pushButton_OriginalSize->setIcon( QIcon{":/image/icon_OriginalSize.svg"} );
+    ui->pushButton_ZoomIn       ->setIcon( QIcon{ ":/image/icon_ZoomIn.svg" } );
+    ui->pushButton_ZoomOut      ->setIcon( QIcon{ ":/image/icon_ZoomOut.svg" } );
+    ui->pushButton_OriginalSize ->setIcon( QIcon{ ":/image/icon_OriginalSize.svg" } );
+    ui->pushButton_Maximize     ->setIcon( QIcon{ ":/image/icon_Maximize.svg" } );
 }
 
 
@@ -67,6 +75,21 @@ TP_CoverViewer::on_pushButton_OriginalSize_clicked()
 }
 
 // *****************************************************************
+// private override
+// *****************************************************************
+
+void
+TP_CoverViewer::wheelEvent( QWheelEvent *event )
+{
+    if( event->angleDelta().y() > 0 && ui->pushButton_ZoomIn->isEnabled() )
+        on_pushButton_ZoomIn_clicked();
+    else if( event->angleDelta().y() < 0 && ui->pushButton_ZoomOut->isEnabled() )
+        on_pushButton_ZoomOut_clicked();
+
+    QWidget::wheelEvent( event );
+}
+
+// *****************************************************************
 // private
 // *****************************************************************
 
@@ -85,4 +108,24 @@ TP_CoverViewer::scaleImage( float I_multiplier )
 }
 
 
+void
+TP_CoverViewer::on_pushButton_Maximize_clicked()
+{
+    if( b_isManuallyMaximized )
+    {
+        setGeometry( originalGeometry );
+        ui->pushButton_Maximize->setIcon( QIcon{ ":/image/icon_Maximize.svg" } );
+        ui->pushButton_Maximize->setToolTip( tr( "Maximize" ) );
+        b_isManuallyMaximized = false;
+    }
+    else
+    {
+        originalGeometry = geometry();
+        setGeometry( QApplication::screenAt( pos() )->availableGeometry() );
+        ui->pushButton_Maximize->setIcon( QIcon{ ":/image/icon_Restore.svg" } );
+        ui->pushButton_Maximize->setToolTip( tr( "Minimize" ) );
+        b_isManuallyMaximized = true;
+    }
+
+}
 

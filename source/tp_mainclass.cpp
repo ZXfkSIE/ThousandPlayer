@@ -834,8 +834,9 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
         break;
     }
 
-    qDebug()<< QString("[Audio Output] A %1%2 dB ReplayGain is applied.")
-               .arg( dB_Total > 0 ? QString( "+" ) : QString() ).arg( dB_Total );
+    qDebug()<< "[Audio Output] A" << ( dB_Total > 0 ? "+"  : "" )
+            << dB_Total << "dB ReplayGain is applied.";
+
     float multiplier = std::pow( 10, dB_Total / 20.0 );         // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }
@@ -849,7 +850,7 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
 void
 TP_MainClass::initializeConnection()
 {
-    // Playerback control related
+    // Playerback control
     connect( mediaPlayer,   &QMediaPlayer::positionChanged,
              mainWindow,    &TP_MainWindow::slot_updateDuration );
     connect( mediaPlayer,   &QMediaPlayer::playbackStateChanged,
@@ -869,7 +870,7 @@ TP_MainClass::initializeConnection()
     connect( mainWindow,    &TP_MainWindow::signal_timeSliderPressed,
              this,          &TP_MainClass::slot_changePlayingPosition );
 
-    // Source switching related
+    // Source switching
     connect( mainWindow,        &TP_MainWindow::signal_modeIsNotShuffle,
              playlistWindow,    &TP_PlaylistWindow::slot_clearPreviousAndNext );
     connect( mainWindow,        &TP_MainWindow::signal_nextButtonPushed,
@@ -877,11 +878,11 @@ TP_MainClass::initializeConnection()
     connect( mainWindow,        &TP_MainWindow::signal_previousButtonPushed,
              this,              &TP_MainClass::slot_previousButtonPushed );
 
-    // Volume control related
+    // Volume control
     connect( mainWindow,    &TP_MainWindow::signal_volumeSliderValueChanged,
              this,          &TP_MainClass::slot_setVolume );
 
-    // Windows minimizing & restoring related
+    // Windows minimizing & restoring
     connect( mainWindow,        &TP_MainWindow::signal_minimizeWindow,
              this,              &TP_MainClass::slot_minimizeWindow );
     connect( mainWindow,        &TP_MainWindow::signal_restoreWindow,
@@ -889,7 +890,7 @@ TP_MainClass::initializeConnection()
     connect( mainWindow,        &TP_MainWindow::signal_activateWindow,
              playlistWindow,    &TP_PlaylistWindow::slot_activateWindow );
 
-    // Windows moving & resizing related
+    // Windows moving & resizing
     connect( mainWindow,    &TP_MainWindow::signal_moveWindow,
              this,          &TP_MainClass::slot_moveWindow );
     connect( mainWindow,    &TP_MainWindow::signal_resizeWindow,

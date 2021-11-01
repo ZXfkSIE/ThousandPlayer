@@ -5,7 +5,7 @@
 
 TP_VolumeIcon::TP_VolumeIcon( QWidget *parent ) :
     QLabel          { parent }
-  , originalVolume  { 50 }
+  , originalVolume  { 20 }
 {
 
 }
@@ -50,7 +50,7 @@ TP_VolumeIcon::mousePressEvent( QMouseEvent *event )
         else
         {
             if( ! originalVolume )
-                originalVolume = 50;
+                originalVolume = 20;
             emit signal_setVolume( originalVolume );
         }
     }

@@ -21,6 +21,10 @@ private slots:
 private:
     void paintEvent ( QPaintEvent * ) override;
 
+    void mousePressEvent( QMouseEvent *event ) override;
+
+    int nextIndex();
+
     std::vector< QString > vec_Qstr;
 
     QTimer *timer;

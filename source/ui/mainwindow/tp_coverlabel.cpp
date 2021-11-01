@@ -45,7 +45,7 @@ TP_CoverLabel::setImage( const QPixmap &I_pixmap )
     coverViewer->setImage( I_pixmap );
 
     setPixmap( I_pixmap.scaled(
-                   QSize(width() - 8, width() - 8),
+                   QSize( width() - 8, width() - 8 ),
                    Qt::KeepAspectRatio,
                    Qt::SmoothTransformation
                    )
@@ -62,12 +62,7 @@ void
 TP_CoverLabel::slot_viewCoverImage()
 {
     if( action_viewCoverImage->isEnabled() )
-    {
-        if( coverViewer->isVisible() )
-            coverViewer->close();
-
-        coverViewer->show();
-    }
+        coverViewer->exec();
 }
 
 
