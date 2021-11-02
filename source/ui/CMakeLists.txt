@@ -11,9 +11,6 @@ set(TP_UI_FILES
     tp_pushbutton.h
     tp_pushbutton.cpp
 
-    tp_systemtrayicon.h
-    tp_systemtrayicon.cpp
-
     tp_titlebar.h
     tp_titlebar.cpp
 )
