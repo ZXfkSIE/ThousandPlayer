@@ -88,9 +88,9 @@ TP_MainClass::slot_checkIfServiceAvailable()
     {
         QMessageBox msgBox_ServiceNotAvailable (
                     QMessageBox::Critical,
-                    tr("Service not available"),
-                    tr("The QMediaPlayer object does not have a valid service.\n"
-                       "Please check the media service plugins are installed."),
+                    tr("Not available"),
+                    tr("QMediaPlayer is not supported on this platform.\n"
+                       "The program will quit now."),
                     QMessageBox::NoButton );
         msgBox_ServiceNotAvailable.addButton(
                     tr("Exit"),

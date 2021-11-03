@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true"/>
   </property>
   <property name="styleSheet">
    <string notr="true">color: white;
@@ -464,9 +464,6 @@ background-color: #777;</string>
    <property name="text">
     <string>&amp;Files...</string>
    </property>
-   <property name="toolTip">
-    <string>Files</string>
-   </property>
   </action>
   <action name="action_addFolder">
    <property name="text">
@@ -486,9 +483,6 @@ background-color: #777;</string>
   <action name="action_clearUnselectedItems">
    <property name="text">
     <string>&amp;Unselected items</string>
-   </property>
-   <property name="toolTip">
-    <string>Unselected items</string>
    </property>
   </action>
   <action name="action_clearInaccessibleItems">

@@ -129,7 +129,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_Main">
       <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -327,7 +327,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Time interval between scrolling the text: </string>
+                <string>Time interval between scrolling the text:</string>
                </property>
               </widget>
              </item>

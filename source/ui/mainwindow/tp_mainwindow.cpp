@@ -319,7 +319,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_SingleTime.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
-    ui->pushButton_Mode->setToolTip( tr( "Single time" ) );
+    ui->pushButton_Mode->setToolTip( tr( "Single time mode" ) );
     TP::config().setPlayMode( TP::singleTime );
     emit signal_modeIsNotShuffle();
 }
@@ -330,7 +330,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Repeat.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
-    ui->pushButton_Mode->setToolTip( tr( "Repeat" ) );
+    ui->pushButton_Mode->setToolTip( tr( "Repeat mode" ) );
     TP::config().setPlayMode( TP::repeat );
     emit signal_modeIsNotShuffle();
 }
@@ -341,7 +341,7 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Sequential.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
-    ui->pushButton_Mode->setToolTip( tr( "Sequential" ) );
+    ui->pushButton_Mode->setToolTip( tr( "Sequential mode" ) );
     TP::config().setPlayMode( TP::sequential );
     emit signal_modeIsNotShuffle();
 }
@@ -352,7 +352,7 @@ TP_MainWindow::on_action_setMode_Shuffle_triggered()
 {
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Shuffle.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Shuffle, TP::iconSize_Shuffle } );
-    ui->pushButton_Mode->setToolTip( tr( "Shuffle" ) );
+    ui->pushButton_Mode->setToolTip( tr( "Shuffle mode" ) );
     TP::config().setPlayMode( TP::shuffle );
 }
 

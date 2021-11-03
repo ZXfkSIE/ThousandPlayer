@@ -17,7 +17,6 @@ TP_CoverViewer::TP_CoverViewer( QDialog *parent ) :
     setWindowFlags( Qt::Tool |
                     Qt::WindowMaximizeButtonHint |
                     Qt::WindowCloseButtonHint );
-    setWindowTitle( QString{ "ThousandPlayer - " } + tr("Cover Viewer") );
     setWindowIcon( QIcon{ ":/image/icon_CoverViewer.svg" } );
 
     ui->label_Image->setBackgroundRole( QPalette::Base );

@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.19)
+﻿cmake_minimum_required(VERSION 3.20)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(FATAL "[ThousandPlayer] Sorry, macOS is currently not supported.")
@@ -28,6 +28,8 @@ elseif(UNIX)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(TAGLIB REQUIRED taglib)
 endif()
+
+set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS false)
 
 find_package(Qt6 6.2.1...6.2.114514 COMPONENTS
     Widgets

@@ -2,30 +2,37 @@
 add_subdirectory(global)
 add_subdirectory(ui)
 
-add_subdirectory(test)
-
 set(TP_SOURCE_FILES
     main.cpp
 
     tp_mainclass.h
     tp_mainclass.cpp
-
-    ${TP_TS_FILES}
 )
 
-qt6_create_translation(TP_QM_FILES ${CMAKE_SOURCE_DIR} ${TP_TS_FILES})
+qt6_create_translation(TP_QM_FILES
+    ${PROJECT_SOURCE_DIR}/source
+    ${TP_TS_FILES}
+    )
 
 qt6_add_executable(${PROJECT_NAME}
     MANUAL_FINALIZATION
-    ${TP_QM_FILES}
     ${TP_SOURCE_FILES}
-)
+    ${TP_TS_FILES}
+    )
 
 qt6_add_resources(${PROJECT_NAME} "image"
     PREFIX "/image"
     BASE "${PROJECT_SOURCE_DIR}/image"
     FILES ${TP_IMAGE_FILES}
     )
+
+
+list(GET TP_QM_FILES 0 TP_FIRST_QM_FILE)
+cmake_path(GET TP_FIRST_QM_FILE PARENT_PATH TP_QM_PATH)
+qt6_add_resources(${PROJECT_NAME} "i18n"
+    PREFIX "/i18n"
+    BASE ${TP_QM_PATH}
+    FILES ${TP_QM_FILES})
 
 if(UNIX)
     target_include_directories(${PROJECT_NAME} PRIVATE ${TAGLIB_INCLUDE_DIRS})
