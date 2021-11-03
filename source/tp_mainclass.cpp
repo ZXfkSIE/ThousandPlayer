@@ -58,7 +58,7 @@ TP_MainClass::~TP_MainClass()
     QScreen *mainWindowScreen = QApplication::screenAt( mainWindow->pos() );
     TP::config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
 
-    if( playlistWindow->isVisible() )
+    if( playlistWindow->isVisible() || b_isPlaylistWindowVisible )
     {
         QScreen *playlistWindowScreen = QApplication::screenAt( playlistWindow->pos() );
         TP::config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );

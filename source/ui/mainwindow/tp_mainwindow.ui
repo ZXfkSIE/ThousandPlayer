@@ -1118,6 +1118,16 @@ background-color:#777;</string>
     <string>&amp;Shuffle mode</string>
    </property>
   </action>
+  <action name="action_trayIcon_Exit">
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+  </action>
+  <action name="action_trayIcon_Restore">
+   <property name="text">
+    <string>&amp;Restore</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

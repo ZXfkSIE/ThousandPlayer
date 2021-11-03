@@ -4,8 +4,10 @@
 #include "tp_globalenum.h"
 
 #include <QWidget>
+#include <QSystemTrayIcon>
 
 class TP_Menu;
+
 class QListWidgetItem;
 
 namespace Ui { class TP_MainWindow; }
@@ -62,6 +64,10 @@ public slots:
     void slot_updateDuration( qint64 ms );
 
 private slots:
+    void slot_trayIcon_activated( QSystemTrayIcon::ActivationReason reason );
+    void on_action_trayIcon_Restore_triggered();
+    void on_action_trayIcon_Exit_triggered();
+
     void slot_moveTitleBar( const QRect &newGeometry );
     void slot_leftButtonReleased();
 
@@ -70,7 +76,7 @@ private slots:
 
     void on_slider_Volume_valueChanged( const int volume );
 
-    void on_pushButton_Exit_clicked() const;
+    void on_pushButton_Exit_clicked();
     void on_pushButton_Expand_clicked();
     void on_pushButton_Minimize_clicked();
 
@@ -92,9 +98,9 @@ private:
 
     void changeEvent( QEvent *event ) override;
 
-    void mousePressEvent( QMouseEvent *event ) override;
-    void mouseMoveEvent( QMouseEvent *event ) override;
-    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void mousePressEvent    ( QMouseEvent *event ) override;
+    void mouseMoveEvent     ( QMouseEvent *event ) override;
+    void mouseReleaseEvent  ( QMouseEvent *event ) override;
 
     void initializeConnection();
     void initializeMenu();
@@ -121,7 +127,10 @@ private:
 
     bool b_isPlaylistWindowShown;
 
-    TP_Menu *menu_Mode;
+    TP_Menu         *   menu_Mode;
+
+    QSystemTrayIcon *   trayIcon;
+    QMenu           *   menu_trayIcon;
 
     TP::CursorPositionType cursorPositionType;
 };

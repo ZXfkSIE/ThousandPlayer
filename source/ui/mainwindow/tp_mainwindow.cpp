@@ -24,6 +24,7 @@ TP_MainWindow::TP_MainWindow( QWidget *parent ) :
   , ui                      { new Ui::TP_MainWindow }
   , b_isBorderBeingPressed  { false }
   , b_isCursorResize        { false }
+  , trayIcon                { new QSystemTrayIcon { this } }
 {
     ui->setupUi(this);
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint );
@@ -119,7 +120,7 @@ TP_MainWindow::setCover( const QImage &I_image )
 void
 TP_MainWindow::slot_playlistWindowShown()
 {
-    ui->pushButton_Playlist->setStyleSheet("color: rgb(255, 255, 255);");
+    ui->pushButton_Playlist->setStyleSheet( "color: rgb(255, 255, 255);" );
     b_isPlaylistWindowShown = true;
 }
 
@@ -127,7 +128,7 @@ TP_MainWindow::slot_playlistWindowShown()
 void
 TP_MainWindow::slot_playlistWindowHidden()
 {
-    ui->pushButton_Playlist->setStyleSheet("color: rgb(0, 0, 0);");
+    ui->pushButton_Playlist->setStyleSheet( "color: rgb(0, 0, 0);" );
     b_isPlaylistWindowShown = false;
 }
 
@@ -150,10 +151,38 @@ TP_MainWindow::slot_updateDuration( qint64 ms )
     // Let slot_timeSliderChanged do it.
 }
 
-
 // *****************************************************************
 // private slots:
 // *****************************************************************
+
+void
+TP_MainWindow::slot_trayIcon_activated( QSystemTrayIcon::ActivationReason reason )
+{
+    // The DoubleClick signal cannot be triggered under X11 and macOS.
+    // See https://doc.qt.io/qt-6/qsystemtrayicon.html#ActivationReason-enum
+    // and search "enum QSystemTrayIcon::ActivationReason".
+#ifdef Q_OS_WINDOWS
+    if( reason == QSystemTrayIcon::DoubleClick )
+#else
+    if( reason == QSystemTrayIcon::Trigger )
+#endif
+        on_action_trayIcon_Restore_triggered();
+}
+
+void
+TP_MainWindow::on_action_trayIcon_Restore_triggered()
+{
+    show();
+    trayIcon->hide();
+    emit signal_restoreWindow();
+}
+
+
+void
+TP_MainWindow::on_action_trayIcon_Exit_triggered()
+{
+    QApplication::exit();
+}
 
 
 void
@@ -199,9 +228,16 @@ TP_MainWindow::on_slider_Volume_valueChanged( const int I_volume )
 
 
 void
-TP_MainWindow::on_pushButton_Exit_clicked() const
+TP_MainWindow::on_pushButton_Exit_clicked()
 {
-    QApplication::exit();
+    if( TP::config().isTrayIconEnabled() )
+    {
+        hide();
+        trayIcon->show();
+        emit signal_minimizeWindow();
+    }
+    else
+        QApplication::exit();
 }
 
 
@@ -281,7 +317,7 @@ TP_MainWindow::on_pushButton_Previous_clicked()
 void
 TP_MainWindow::on_action_setMode_SingleTime_triggered()
 {
-    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
+    ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_SingleTime.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
     ui->pushButton_Mode->setToolTip( tr( "Single time" ) );
     TP::config().setPlayMode( TP::singleTime );
@@ -292,7 +328,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
 void
 TP_MainWindow::on_action_setMode_Repeat_triggered()
 {
-    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Repeat.svg"} );
+    ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Repeat.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
     ui->pushButton_Mode->setToolTip( tr( "Repeat" ) );
     TP::config().setPlayMode( TP::repeat );
@@ -303,7 +339,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
 void
 TP_MainWindow::on_action_setMode_Sequential_triggered()
 {
-    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Sequential.svg"} );
+    ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Sequential.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
     ui->pushButton_Mode->setToolTip( tr( "Sequential" ) );
     TP::config().setPlayMode( TP::sequential );
@@ -314,17 +350,15 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
 void
 TP_MainWindow::on_action_setMode_Shuffle_triggered()
 {
-    ui->pushButton_Mode->setIcon( QIcon{":/image/icon_Shuffle.svg"} );
+    ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Shuffle.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Shuffle, TP::iconSize_Shuffle } );
     ui->pushButton_Mode->setToolTip( tr( "Shuffle" ) );
     TP::config().setPlayMode( TP::shuffle );
 }
 
-
 // *****************************************************************
 // private override
 // *****************************************************************
-
 
 void
 TP_MainWindow::changeEvent( QEvent *event )
@@ -456,6 +490,10 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
 void
 TP_MainWindow::initializeConnection()
 {
+    // System tray icon activation
+    connect( trayIcon,  &QSystemTrayIcon::activated,
+             this,      &TP_MainWindow::slot_trayIcon_activated );
+
     // Windows moving
     connect( ui->frame_Title,   &TP_TitleBar::signal_moveTitleBar,
              this,              &TP_MainWindow::slot_moveTitleBar );
@@ -475,11 +513,19 @@ TP_MainWindow::initializeConnection()
 void
 TP_MainWindow::initializeMenu()
 {
-    // Initialize menu of playback mode button
-    ui->action_setMode_SingleTime->setIcon( QIcon{":/image/icon_SingleTime.svg"} );
-    ui->action_setMode_Repeat->setIcon( QIcon{":/image/icon_Repeat.svg"} );
-    ui->action_setMode_Sequential->setIcon( QIcon{":/image/icon_Sequential.svg"} );
-    ui->action_setMode_Shuffle->setIcon( QIcon{":/image/icon_Shuffle.svg"} );
+    // ============================== System tray icon ==============================
+    menu_trayIcon = new QMenu { this };
+
+    menu_trayIcon->addAction( ui->action_trayIcon_Restore );
+    menu_trayIcon->addAction( ui->action_trayIcon_Exit );
+
+    trayIcon->setContextMenu( menu_trayIcon );
+
+    // ============================== Playback mode button ==============================
+    ui->action_setMode_SingleTime   ->setIcon( QIcon{ ":/image/icon_SingleTime.svg" } );
+    ui->action_setMode_Repeat       ->setIcon( QIcon{ ":/image/icon_Repeat.svg" } );
+    ui->action_setMode_Sequential   ->setIcon( QIcon{ ":/image/icon_Sequential.svg" } );
+    ui->action_setMode_Shuffle      ->setIcon( QIcon{ ":/image/icon_Shuffle.svg" } );
 
     menu_Mode = new TP_Menu { ui->pushButton_Mode };
 
@@ -496,6 +542,8 @@ void
 TP_MainWindow::initializeUI()
 {
     show();
+
+    trayIcon->setIcon( QIcon{ ":/image/MusicalNote.svg" } );
 
     ui->label_AudioInfo->initialize();
     ui->label_AudioInfo->setFont( TP::config().getAudioInfoLabelFont() );

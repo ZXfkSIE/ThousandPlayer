@@ -30,7 +30,7 @@ TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
 
     initializeMenu();
 
-    qDebug() << "[TP_FileListWidget] emit signal_newFileListWidgetCreated (list name is" << qstr_listName << ")";
+    qDebug() << "[File List] emit signal_newFileListWidgetCreated (list name is" << qstr_listName << ")";
 }
 
 
