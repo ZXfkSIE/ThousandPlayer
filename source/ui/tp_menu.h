@@ -1,7 +1,7 @@
-﻿/* =============== class TP_Menu ===============
- * A derived QMenu class.
- * Has a customized appearance.
- */
+﻿/* ========================= class TP_Menu =========================
+ * A derived QMenu class with a customized appearance.
+*/
+
 
 #ifndef TP_MENU_H
 #define TP_MENU_H

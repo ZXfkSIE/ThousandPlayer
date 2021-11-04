@@ -119,7 +119,6 @@ TP_MainClass::slot_initializePosition()
     else
         mainWindow->slot_playlistWindowHidden();
 
-    // Refresh snapping status
     slot_refreshSnapStatus();
 }
 
@@ -895,7 +894,7 @@ TP_MainClass::initializeConnection()
              this,          &TP_MainClass::slot_moveWindow );
     connect( mainWindow,    &TP_MainWindow::signal_resizeWindow,
              this,          &TP_MainClass::slot_resizeWindow );
-    connect( mainWindow,    &TP_MainWindow::signal_leftButtonReleased,
+    connect( mainWindow,    &TP_MainWindow::signal_windowChanged,
              this,          &TP_MainClass::slot_refreshSnapStatus );
 
     connect( playlistWindow,    &TP_PlaylistWindow::signal_moveWindow,

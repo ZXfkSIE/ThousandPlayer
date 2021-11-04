@@ -8,7 +8,7 @@
 
 #include "tp_coverviewer.h"
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
     qDebug() << "[Main Function] the files integrated by developer are:";
     QDirIterator it( ":", QDirIterator::Subdirectories );
@@ -37,10 +37,10 @@ int main(int argc, char *argv[])
 
     TP_MainClass mainClass {};
 
-    QTimer::singleShot( 150, &mainClass, &TP_MainClass::slot_initializePosition );
-    mainClass.slot_initializePosition();
+    // Delay the position initialization to avoid some painting problem mainly under Linux
+    QTimer::singleShot( 200, &mainClass, &TP_MainClass::slot_initializePosition );
 
     // Need to be executed after QApplication object executed its exec()
-    QTimer::singleShot( 300, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable );
+    QTimer::singleShot( 400, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable );
     return a.exec();
 }

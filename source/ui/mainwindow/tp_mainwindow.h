@@ -36,7 +36,7 @@ signals:
     void signal_restoreWindow();
     void signal_activateWindow();
     void signal_moveWindow( QWidget *window, QRect newGeometry );
-    void signal_leftButtonReleased();
+    void signal_windowChanged();
 
     void signal_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
 

@@ -195,7 +195,7 @@ TP_MainWindow::slot_moveTitleBar( const QRect &newGeometry )
 void
 TP_MainWindow::slot_leftButtonReleased()
 {
-    emit signal_leftButtonReleased();
+    emit signal_windowChanged();
 }
 
 
@@ -256,6 +256,7 @@ TP_MainWindow::on_pushButton_Expand_clicked()
         CurrentGeometry.setRight( CurrentGeometry.left() + minimumWidth() - 1 );
 
     setGeometry( CurrentGeometry );
+    emit signal_windowChanged();
 }
 
 
@@ -475,7 +476,7 @@ TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
             setCursor( QCursor(Qt::ArrowCursor) );
             b_isCursorResize = false;
         }
-        emit signal_leftButtonReleased();
+        emit signal_windowChanged();
     }
 
     QWidget::mouseReleaseEvent(event);

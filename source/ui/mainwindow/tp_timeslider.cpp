@@ -4,21 +4,15 @@
 
 TP_TimeSlider::TP_TimeSlider( QWidget *parent ) :
     QSlider             { parent }
-  , b_invertMouseWheel  { false }
 {
-    setRange(0, 0);
-}
-
-void
-TP_TimeSlider::setInvertMouseWheel( bool b )
-{
-    b_invertMouseWheel = b;
+    setRange( 0, 0 );
 }
 
 // *****************************************************************
 // private override
 // *****************************************************************
 
+// It is not favorable to change the time position every time when valueChanged().
 void
 TP_TimeSlider::mouseReleaseEvent( QMouseEvent *event )
 {
@@ -33,23 +27,8 @@ TP_TimeSlider::mouseReleaseEvent( QMouseEvent *event )
 }
 
 void
-TP_TimeSlider::wheelEvent (QWheelEvent *event)
+TP_TimeSlider::wheelEvent( QWheelEvent *event )
 {
-    if( b_invertMouseWheel )
-    {
-        QPoint newAngleDelta = event->angleDelta();
-        newAngleDelta.setX( -newAngleDelta.x() );
-        newAngleDelta.setY( -newAngleDelta.y() );
-        QWheelEvent *newEvent = new QWheelEvent
-        {
-            event->position(), event->globalPosition(), event->pixelDelta(),
-            newAngleDelta,
-            event->buttons(), event->modifiers(), event->phase(), event->inverted(), event->source()
-        };
-        QSlider::wheelEvent( newEvent );
-    }
-    else
-        QSlider::wheelEvent( event );
-
     emit signal_mouseReleased( value() );
+    QSlider::wheelEvent( event );
 }
