@@ -1119,22 +1119,19 @@ TP_MainClass::getCoverImageFromID3V2( const QString &filePath )
 #endif
     };
 
-    if( mpegFile.isValid() )
+    if( mpegFile.isValid() && mpegFile.hasID3v2Tag() )
     {
-        TagLib::ID3v2::Tag *id3v2Tag { nullptr };
+        TagLib::ID3v2::Tag *id3v2Tag { id3v2Tag = mpegFile.ID3v2Tag() };
 
-        if( TP::extension( filePath ) == QString{ "MP3" } )
-            id3v2Tag = mpegFile.ID3v2Tag();
-
-        if( id3v2Tag )
+        TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList( "APIC" ) };
+        if( ! frameList.isEmpty() )
         {
-            TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList( "APIC" ) };
             TagLib::ID3v2::AttachedPictureFrame *pictureFrame {
                 static_cast< TagLib::ID3v2::AttachedPictureFrame * >( frameList.front() )
             };
             return QImage::fromData(
-                        QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
-                        );
+                    QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
+                    );
         }
     }
 

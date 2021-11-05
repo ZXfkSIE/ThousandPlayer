@@ -1016,14 +1016,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_Courtesy">
+           <widget class="QPushButton" name="pushButton_Credits">
             <property name="font">
              <font>
               <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>By courtesy of</string>
+             <string>Credits</string>
             </property>
            </widget>
           </item>

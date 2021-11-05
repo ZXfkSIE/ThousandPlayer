@@ -160,6 +160,11 @@ TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
 void
 TP_ConfigWindow::initializeStrings()
 {
+    // The assignment of str_GPL is divided into several parts in order to
+    // avoid Compiler Error C2026 of Microsoft Visual Studio. Check
+    // https://docs.microsoft.com/en-us/cpp/error-messages/compiler-errors-1/compiler-error-c2026
+    // for details.
+
     str_GPL =
 R"GPL(
 ### GNU GENERAL PUBLIC LICENSE
@@ -843,8 +848,8 @@ GNU Lesser General Public License instead of this License. But first,
 please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
 )GPL";
 
-    str_Courtesy =
-R"COURTESY(
+    str_Credits =
+R"CREDITS(
 ## Author
 * Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
 <br />
@@ -870,7 +875,7 @@ Homepage: https://taglib.org/
 
 All images used in this software, which mainly originated from [Openclipart](https://openclipart.org/),
 are in public domain ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/)). Thank those selfless artists!
-)COURTESY";
+)CREDITS";
 
 }
 
@@ -958,7 +963,7 @@ TP_ConfigWindow::on_pushButton_GPL_clicked()
 
 
 void
-TP_ConfigWindow::on_pushButton_Courtesy_clicked()
+TP_ConfigWindow::on_pushButton_Credits_clicked()
 {
-    ui->textBrowser->document()->setMarkdown( QString::fromStdString( str_Courtesy ) );
+    ui->textBrowser->document()->setMarkdown( QString::fromStdString( str_Credits ) );
 }

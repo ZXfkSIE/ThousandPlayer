@@ -219,11 +219,19 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
     int originalCount { currentFileListWidget->count() };
 
     QList <QUrl> fileURLs = QFileDialog::getOpenFileUrls(
-                this,                               // QWidget *parent = nullptr
-                tr( "Open files" ),                 // const QString &caption = QString()
-                QString(),                          // const QString &dir = QString()
-                QString( "FLAC files (*.flac);;"    // const QString &filter = QString()
-                         "MP3 files (*.mp3)" )
+                this,                                           // QWidget *parent = nullptr
+                tr( "Open files" ),                             // const QString &caption = QString()
+                {},                                             // const QString &dir = QString()
+
+                // const QString &filter = QString()
+
+                tr( "All supported formats" ) + QString( " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" ) +
+                tr( "FLAC files" ) + QString{ " (*.flac);;" } +
+                tr( "ALAC files" ) + QString{ " (*.alac);;" } +
+                tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" } +
+                tr( "MP3 files" ) + QString{ " (*.mp3);;" } +
+                tr( "WAV files" ) + QString{ " (*.wav);;" } +
+                tr( "Vorbis files" ) + QString{ " (*.ogg);;" }
                 );
 
     qsizetype n_Files = fileURLs.size();
@@ -239,6 +247,7 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
     {
         QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
         item->setData( TP::role_URL, fileURL );         // set URL
+        item->setData( TP::role_SourceType, TP::singleFile );
         currentFileListWidget->addItem( item );
     }
 
