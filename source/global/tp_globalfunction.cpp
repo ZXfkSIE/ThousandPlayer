@@ -9,45 +9,53 @@
 #include <filesystem>
 
 // Headers of TagLib
+#include <apetag.h>
 #include <fileref.h>
 #include <flacfile.h>
 #include <flacproperties.h>
 #include <id3v2tag.h>
+#include <mp4file.h>
+#include <mpegfile.h>
 #include <relativevolumeframe.h>
 #include <tpropertymap.h>
+#include <vorbisfile.h>
 #include <xiphcomment.h>
 
 QString
 TP::extension( const QString &path )
 {
-    return QFileInfo { path }.suffix().toLower();
+    auto extension { QFileInfo { path }.suffix().toLower() };
+
+    if( extension == QString { "m4a" } )
+        extension = QString { "aac" };
+
+    return extension;
 }
+
 
 void
 TP::storeInformation( QListWidgetItem * I_item )
 {
-    QUrl url = I_item->data( TP::role_URL ).toUrl();
-    QString qstr_localFilePath = url.toLocalFile();
+    auto url = I_item->data( TP::role_URL ).toUrl();
+    auto qstr_localFilePath = url.toLocalFile();
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
-    QString qstr_Filename = fileInfo.fileName();
+    auto qstr_Filename = fileInfo.fileName();
 
-#ifdef Q_OS_WINDOWS
+#ifdef Q_OS_WIN
     TagLib::FileRef fileRef { qstr_localFilePath.toStdWString().c_str() };
 #else
     TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
 #endif
-    QString qstr_title = TStringToQString( fileRef.tag()->title() );
-    QString qstr_artist = TStringToQString( fileRef.tag()->artist() );
-    QString qstr_album = TStringToQString( fileRef.tag()->album() );
+    auto qstr_title = TStringToQString( fileRef.tag()->title() );
+    auto qstr_artist = TStringToQString( fileRef.tag()->artist() );
+    auto qstr_album = TStringToQString( fileRef.tag()->album() );
 
-    int duration = fileRef.audioProperties()->lengthInSeconds();
-    int bitrate = fileRef.audioProperties()->bitrate();
-    int sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
-    int bitDepth = -1 ;
+    auto duration = fileRef.audioProperties()->lengthInSeconds();
+    auto bitrate = fileRef.audioProperties()->bitrate();
+    auto sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
+    auto bitDepth = -1 ;
 
-    QString extension { QFileInfo { url.toLocalFile() }.suffix().toLower() };
-    if( extension == QString { "m4a" } )
-        extension = QString { "aac" };
+    auto extension { TP::extension ( qstr_localFilePath ) };
 
     if( extension == QString { "flac" } )
         bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
@@ -74,51 +82,88 @@ TP::storeInformation( QListWidgetItem * I_item )
     }
 
     // ------------------------- set ReplayGains -------------------------
-    // The value of ReplayGain is usually stored in the format like "+1.14 dB", "-5.14 dB".
 
-    I_item->setData( TP::role_ReplayGainTrack, std::numeric_limits< float >::max() );
-    I_item->setData( TP::role_ReplayGainAlbum, std::numeric_limits< float >::max() );
+    auto replayGain_Track { std::numeric_limits< float >::max() };
+    auto replayGain_Album { std::numeric_limits< float >::max() };
+
 
     if( extension == QString { "flac" } )
     {
-        // FLAC files may contain Xiph Comment and ID3v2 tags.
-
-        TagLib::FLAC::File *flacFile { dynamic_cast< TagLib::FLAC::File * >( fileRef.file() ) };
+        // FLAC files may contain Xiph comments and ID3v2 frames.
+        auto *flacFile { dynamic_cast< TagLib::FLAC::File * >( fileRef.file() ) };
 
         if( flacFile->hasXiphComment() )
         {
-            TagLib::Ogg::XiphComment *xiphComment { flacFile->xiphComment() };
-            I_item->setData( TP::role_ReplayGainTrack, getReplayGainTrackFromTag( xiphComment ) );
-            I_item->setData( TP::role_ReplayGainAlbum, getReplayGainAlbumFromTag( xiphComment ) );
+            auto *xiphComment { flacFile->xiphComment() };
+            replayGain_Track = getReplayGainTrackFromTag( xiphComment );
+            replayGain_Album = getReplayGainAlbumFromTag( xiphComment );
         }
-
-        if( flacFile->hasID3v2Tag() )
+        if( flacFile->hasID3v2Tag()
+                && replayGain_Track == std::numeric_limits< float >::max()  // ReplayGains have not been set yet
+                && replayGain_Album == std::numeric_limits< float >::max()
+                )
         {
-            TagLib::ID3v2::Tag *id3v2Tag { flacFile->ID3v2Tag() };
-            I_item->setData( TP::role_ReplayGainTrack, getReplayGainTrackFromTag( id3v2Tag ) );
-            I_item->setData( TP::role_ReplayGainAlbum, getReplayGainAlbumFromTag( id3v2Tag ) );
+            auto *id3v2Tag { flacFile->ID3v2Tag() };
+            replayGain_Track = getReplayGainTrackFromTag( id3v2Tag );
+            replayGain_Album = getReplayGainAlbumFromTag( id3v2Tag );
         }
     }
     else if( extension == QString { "alac" } || extension == QString { "aac" } )
     {
-        // MPEG-4 audio files may contain ID3v2 tags and APE tags.
+        // MPEG-4 audio files may contain MP4 tags.
+        auto *mp4File { dynamic_cast< TagLib::MP4::File * >( fileRef.file() ) };
 
+        if( mp4File->hasMP4Tag() )
+        {
+            auto *mp4Tag { mp4File->tag() };
+            replayGain_Track = getReplayGainTrackFromTag( mp4Tag );
+            replayGain_Album = getReplayGainAlbumFromTag( mp4Tag );
+        }
     }
+    else if( extension == QString { "ogg" } )
+    {
+        // Vorbis audio files may contain Xiph Comments.
+        auto *vorbisFile { dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef.file() ) };
+        auto *xiphComment { vorbisFile->tag() };
+        replayGain_Track = getReplayGainTrackFromTag( xiphComment );
+        replayGain_Album = getReplayGainAlbumFromTag( xiphComment );
+    }
+    else if( extension == QString { "mp3" } )
+    {
+        // MP3 audio files may contain APE tags and ID3v2 frames.
+        auto *mp3File { dynamic_cast< TagLib::MPEG::File * >( fileRef.file() ) };
+
+        if( mp3File->hasAPETag() )
+        {
+            auto *apeTag { mp3File->APETag() };
+            replayGain_Track = getReplayGainTrackFromTag( apeTag );
+            replayGain_Album = getReplayGainAlbumFromTag( apeTag );
+        }
+        if( mp3File->hasID3v2Tag()
+                && replayGain_Track == std::numeric_limits< float >::max()  // ReplayGains have not been set yet
+                && replayGain_Album == std::numeric_limits< float >::max()
+                )
+        {
+            auto *id3v2Tag { mp3File->ID3v2Tag() };
+            replayGain_Track = getReplayGainTrackFromTag( id3v2Tag );
+            replayGain_Album = getReplayGainAlbumFromTag( id3v2Tag );
+        }
+    }
+
+    I_item->setData( TP::role_ReplayGainTrack, replayGain_Track );
+    I_item->setData( TP::role_ReplayGainAlbum, replayGain_Album );
 }
 
 
 float
 TP::getReplayGainTrackFromTag( TagLib::Ogg::XiphComment *xiphComment )
 {
+    // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
+
     if( xiphComment->contains( "REPLAYGAIN_TRACK_GAIN" ) )
-    {
-        float gainTrack {
-            TStringToQString( xiphComment->properties()[ "REPLAYGAIN_TRACK_GAIN" ][0] )
+        return TStringToQString( xiphComment->properties()[ "REPLAYGAIN_TRACK_GAIN" ][0] )
                 .split(' ')[0]
-                .toFloat()
-        };
-        return gainTrack;
-    }
+                .toFloat();
     else
         return std::numeric_limits< float >::max();
 }
@@ -128,14 +173,9 @@ float
 TP::getReplayGainAlbumFromTag( TagLib::Ogg::XiphComment *xiphComment )
 {
     if( xiphComment->contains( "REPLAYGAIN_ALBUM_GAIN" ) )
-    {
-        float gainAlbum {
-            TStringToQString( xiphComment->properties()[ "REPLAYGAIN_ALBUM_GAIN" ][0] )
+        return TStringToQString( xiphComment->properties()[ "REPLAYGAIN_ALBUM_GAIN" ][0] )
                 .split(' ')[0]
-                .toFloat()
-        };
-        return gainAlbum;
-    }
+                .toFloat();
     else
         return std::numeric_limits< float >::max();
 }
@@ -144,14 +184,11 @@ TP::getReplayGainAlbumFromTag( TagLib::Ogg::XiphComment *xiphComment )
 float
 TP::getReplayGainTrackFromTag( TagLib::ID3v2::Tag *tag )
 {
-    TagLib::ID3v2::FrameList frameList { tag->frameList( "RVA2" ) };
-    for( auto itr { frameList.begin() }; itr != frameList.end() ; itr++ )
+    auto frameList { tag->frameList( "RVA2" ) };
+    for( const auto &frame : frameList )
     {
-        TagLib::ID3v2::RelativeVolumeFrame *relativeVolumeFrame {
-            dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( *itr )
-        };
-
-        QString frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
+        auto *relativeVolumeFrame { dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( frame ) };
+        auto frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
 
         if( ! frameIdentification.contains( QString{ "album" }, Qt::CaseInsensitive )
                 && relativeVolumeFrame->channels().contains( TagLib::ID3v2::RelativeVolumeFrame::MasterVolume ) )
@@ -165,19 +202,69 @@ TP::getReplayGainTrackFromTag( TagLib::ID3v2::Tag *tag )
 float
 TP::getReplayGainAlbumFromTag( TagLib::ID3v2::Tag *tag )
 {
-    TagLib::ID3v2::FrameList frameList { tag->frameList( "RVA2" ) };
-    for( auto itr { frameList.begin() }; itr != frameList.end() ; itr++ )
+    auto frameList { tag->frameList( "RVA2" ) };
+    for( const auto &frame : frameList )
     {
-        TagLib::ID3v2::RelativeVolumeFrame *relativeVolumeFrame {
-            dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( *itr )
-        };
-
-        QString frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
+        auto *relativeVolumeFrame { dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( frame ) };
+        auto frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
 
         if( frameIdentification.contains( QString{ "album" }, Qt::CaseInsensitive )
                 && relativeVolumeFrame->channels().contains( TagLib::ID3v2::RelativeVolumeFrame::MasterVolume ) )
             return relativeVolumeFrame->volumeAdjustment();
     }
+
+    return std::numeric_limits< float >::max();
+}
+
+
+float
+TP::getReplayGainTrackFromTag( TagLib::MP4::Tag *tag )
+{
+    // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
+
+    if( tag->contains( "----:com.apple.iTunes:replaygain_track_gain" ) )
+        // For some reason, properties() does not work here.
+        return TStringToQString( tag->itemMap()[ "----:com.apple.iTunes:replaygain_track_gain" ].toStringList()[0] )
+                .split(' ')[0]
+                .toFloat();
+
+    return std::numeric_limits< float >::max();
+}
+
+
+float
+TP::getReplayGainAlbumFromTag( TagLib::MP4::Tag *tag )
+{
+    if( tag->contains( "----:com.apple.iTunes:replaygain_album_gain" ) )
+        return TStringToQString( tag->itemMap()[ "----:com.apple.iTunes:replaygain_album_gain" ].toStringList()[0] )
+                .split(' ')[0]
+                .toFloat();
+
+    return std::numeric_limits< float >::max();
+}
+
+
+float
+TP::getReplayGainTrackFromTag( TagLib::APE::Tag *tag )
+{
+    // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
+
+    const auto itemListMap { tag->itemListMap() };
+    for( const auto &pair : itemListMap )
+        if( TStringToQString( pair.first ) == QString{ "REPLAYGAIN_TRACK_GAIN" } )
+            return TStringToQString( pair.second.toString() ).split(' ')[0].toFloat();
+
+    return std::numeric_limits< float >::max();
+}
+
+
+float
+TP::getReplayGainAlbumFromTag( TagLib::APE::Tag *tag )
+{
+    const auto itemListMap { tag->itemListMap() };
+    for( const auto &pair : itemListMap )
+        if( TStringToQString( pair.first ) == QString{ "REPLAYGAIN_ALBUM_GAIN" } )
+            return TStringToQString( pair.second.toString() ).split(' ')[0].toFloat();
 
     return std::numeric_limits< float >::max();
 }

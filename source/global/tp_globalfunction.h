@@ -6,8 +6,12 @@
 
 namespace TagLib
 {
-namespace Ogg   { class XiphComment; }
+
+namespace APE   { class Tag; }
 namespace ID3v2 { class Tag; }
+namespace MP4   { class Tag; }
+namespace Ogg   { class XiphComment; }
+
 }
 
 namespace TP
@@ -20,6 +24,12 @@ namespace TP
 
     float getReplayGainTrackFromTag( TagLib::ID3v2::Tag *tag );
     float getReplayGainAlbumFromTag( TagLib::ID3v2::Tag *tag );
+
+    float getReplayGainTrackFromTag( TagLib::MP4::Tag *tag );
+    float getReplayGainAlbumFromTag( TagLib::MP4::Tag *tag );
+
+    float getReplayGainTrackFromTag( TagLib::APE::Tag *tag );
+    float getReplayGainAlbumFromTag( TagLib::APE::Tag *tag );
 }
 
 #endif // TP_GLOBALFUNCTION_H

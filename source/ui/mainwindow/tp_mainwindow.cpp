@@ -77,16 +77,9 @@ TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
 {
     const QUrl url = I_item->data( TP::role_URL ).toUrl();
 
-    QString qstr_format { "N/A" };
-
     QString extension { TP::extension( url.toLocalFile() ) };
 
-    if( extension == QString { "flac" } )
-        qstr_format = "FLAC";
-    if( extension == QString { "mp3" } )
-        qstr_format = "MP3";
-
-    setAudioPropertyLabels( qstr_format,
+    setAudioPropertyLabels( extension.toUpper(),
                             I_item->data( TP::role_BitDepth ).toInt(),
                             I_item->data( TP::role_SampleRate ).toInt(),
                             I_item->data( TP::role_Bitrate ).toInt(),

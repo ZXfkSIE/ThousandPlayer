@@ -15,6 +15,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS true)
+
 if(WIN32)
 # In Windows, use Conan to setup 3rd party packages
     message(STATUS "[ThousandPlayer] Windows build environment detected.")
@@ -28,8 +30,6 @@ elseif(UNIX)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(TAGLIB REQUIRED taglib)
 endif()
-
-set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS false)
 
 find_package(Qt6 6.2.1...6.2.114514 COMPONENTS
     Widgets

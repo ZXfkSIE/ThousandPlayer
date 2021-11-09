@@ -18,6 +18,16 @@ class TP_FileListWidget;
 class QAudioOutput;
 class QListWidgetItem;
 
+namespace TagLib
+{
+
+namespace APE   { class Tag; }
+namespace ID3v2 { class Tag; }
+namespace MP4   { class Tag; }
+namespace Ogg   { class XiphComment; }
+
+}
+
 class TP_MainClass : public QObject
 {
     Q_OBJECT
@@ -64,14 +74,14 @@ private:
     void playItem ( QListWidgetItem *I_item );
     void playFile ( QListWidgetItem *I_item );
 
-    QImage getCoverImageFromFLAC    ( const QString &filePath );
-    QImage getCoverImageFromID3V2   ( const QString &filePath );
+    QImage getCoverImage    ( TagLib::Ogg::XiphComment *xiphComment );
+    QImage getCoverImage    ( TagLib::ID3v2::Tag *tag );
+    QImage getCoverImage    ( TagLib::MP4::Tag *tag );
 
     TP_MainWindow       *   mainWindow;
     TP_PlaylistWindow   *   playlistWindow;
     TP_ConfigWindow     *   configWindow;
     bool                    b_isPlaylistWindowVisible;
-
 
     QAudioOutput *      audioOutput;
     QMediaPlayer *      mediaPlayer;

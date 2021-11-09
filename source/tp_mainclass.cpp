@@ -26,10 +26,15 @@
 
 // Headers of TagLib
 #include <attachedpictureframe.h>
+#include <fileref.h>
+#include <flacfile.h>
 #include <id3v2frame.h>
 #include <id3v2tag.h>
-#include <flacfile.h>
+#include <mp4file.h>
+#include <mp4tag.h>
 #include <mpegfile.h>
+#include <vorbisfile.h>
+#include <xiphcomment.h>
 
 TP_MainClass::TP_MainClass() :
     QObject                     { nullptr }
@@ -55,12 +60,12 @@ TP_MainClass::TP_MainClass() :
 
 TP_MainClass::~TP_MainClass()
 {
-    QScreen *mainWindowScreen = QApplication::screenAt( mainWindow->pos() );
+    const auto *mainWindowScreen { QApplication::screenAt( mainWindow->pos() ) };
     TP::config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
 
     if( playlistWindow->isVisible() || b_isPlaylistWindowVisible )
     {
-        QScreen *playlistWindowScreen = QApplication::screenAt( playlistWindow->pos() );
+        const auto *playlistWindowScreen { QApplication::screenAt( playlistWindow->pos() ) };
         TP::config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
         TP::config().setPlaylistWindowShown( true );
     }
@@ -158,8 +163,8 @@ void
 TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
 {
     // A window can only be snapped (or aligned) once at vertical and horizontal direction, respectively.
-    bool isVerticallySnapped = false;
-    bool isHorizontallySnapped = false;
+    bool isVerticallySnapped    { false };
+    bool isHorizontallySnapped  { false };
 
     // ============================== Snapping to main window ==============================
 
@@ -379,7 +384,7 @@ void
 TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType )
 {
     // While resizing, a window can only be snapped (or aligned) once.
-    bool            isSnapped { false };
+    bool isSnapped { false };
 
     if ( window != mainWindow )
     {
@@ -787,8 +792,8 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
         return;
     }
 
-    float dB_Track { TP::currentItem()->data( TP::role_ReplayGainTrack ).toFloat() };
-    float dB_Album { TP::currentItem()->data( TP::role_ReplayGainAlbum ).toFloat() };
+    const float dB_Track { TP::currentItem()->data( TP::role_ReplayGainTrack ).toFloat() };
+    const float dB_Album { TP::currentItem()->data( TP::role_ReplayGainAlbum ).toFloat() };
     float dB_Total { TP::config().getPreAmp_dB() };
 
     switch ( TP::config().getReplayGainMode() )
@@ -836,15 +841,13 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
     qDebug()<< "[Audio Output] A" << ( dB_Total > 0 ? "+"  : "" )
             << dB_Total << "dB ReplayGain is applied.";
 
-    float multiplier = std::pow( 10, dB_Total / 20.0 );         // 10^(Gain/20)
+    const float multiplier = std::pow( 10, dB_Total / 20.0 );         // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }
-
 
 // *****************************************************************
 // private
 // *****************************************************************
-
 
 void
 TP_MainClass::initializeConnection()
@@ -929,6 +932,7 @@ TP_MainClass::initializeConnection()
             this,           &TP_MainClass::slot_connectFilelistWidget);
 }
 
+
 void
 TP_MainClass::unsnapInvisibleWindows()
 {
@@ -939,6 +943,7 @@ TP_MainClass::unsnapInvisibleWindows()
             snapStatus [ TP::playlistWindow ][ i ] = false;
         }
 }
+
 
 TP::SnapType
 TP_MainClass::checkSnapType( const QRect &geometry1, const QRect &geometry2 ) const
@@ -966,6 +971,7 @@ TP_MainClass::checkSnapType( const QRect &geometry1, const QRect &geometry2 ) co
     return TP::notAdjacent;
 }
 
+
 TP::SnapType
 TP_MainClass::checkAdjacentType( const QRect &geometry1, const QRect &geometry2 ) const
 {
@@ -992,6 +998,7 @@ TP_MainClass::checkAdjacentType( const QRect &geometry1, const QRect &geometry2 
     return TP::notAdjacent;
 }
 
+
 bool
 TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
 {
@@ -1003,7 +1010,7 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
     isVisited [ TP::mainWindow ] = true;
     queue.push_back( TP::mainWindow );
 
-    while( !queue.empty() )
+    while( ! queue.empty() )
     {
         idx_Current = queue.front();
         queue.pop_front();
@@ -1026,6 +1033,7 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
     return false;
 }
 
+
 void
 TP_MainClass::playItem ( QListWidgetItem *I_item )
 {
@@ -1042,96 +1050,125 @@ TP_MainClass::playItem ( QListWidgetItem *I_item )
     }
 }
 
+
 void
 TP_MainClass::playFile ( QListWidgetItem *I_item )
 {
-    QUrl url { I_item->data( TP::role_URL ).toUrl() };
+    const auto &url { I_item->data( TP::role_URL ).toUrl() };
     qDebug() << "[Main Class] playFile() is trying to play local file URL: " << url;
-    QString localPath = url.toLocalFile();
+    const auto &qstr_localFilePath { url.toLocalFile() };
 
-    if( std::filesystem::exists( localPath.
+    if( std::filesystem::exists( qstr_localFilePath.
 #ifdef Q_OS_WIN
-    toStdWString()
+                                 toStdWString()
 #else
-    toLocal8Bit().constData()
+                                 toLocal8Bit().constData()
 #endif
-    ) )
+                                 ) )
     {
         mediaPlayer->stop();
 
-        QString extension = TP::extension ( localPath );
+        const auto &extension { TP::extension ( qstr_localFilePath ) };
 
         TP::storeInformation( I_item );                                 // Refresh audio info
         mainWindow->setAudioInformation( I_item );
 
+        // ------------------------------ Read cover art ------------------------------
+        QImage coverArt {};
+#ifdef Q_OS_WIN
+        TagLib::FileRef fileRef { qstr_localFilePath.toStdWString().c_str() };
+#else
+        TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
+#endif
+
         if( extension == QString( "flac" ) )
-            mainWindow->setCover(
-                        getCoverImageFromFLAC( localPath )
-                        );
-        else
-            mainWindow->setCover(
-                        getCoverImageFromID3V2( localPath )
-                        );
+        {
+            // FLAC files may store cover as Xiph comment or ID3v2 frame.
+            TagLib::FLAC::File *flacFile { dynamic_cast< TagLib::FLAC::File * >( fileRef.file() ) };
+
+            if( flacFile->hasXiphComment() )
+                coverArt = getCoverImage( flacFile->xiphComment() );
+
+            if( flacFile->hasID3v2Tag() && coverArt.isNull() )
+                coverArt = getCoverImage( flacFile->ID3v2Tag() );
+        }
+        else if( extension == QString { "alac" } || extension == QString { "aac" } )
+        {
+            // MPEG-4 audio files may store cover as MP4 tag.
+            TagLib::MP4::File *mp4File { dynamic_cast< TagLib::MP4::File * >( fileRef.file() ) };
+
+            if( mp4File->hasMP4Tag() )
+                coverArt = getCoverImage( mp4File->tag() );
+        }
+        else if( extension == QString { "ogg" } )
+        {
+            // Vorbis audio files may store cover as Xiph comment.
+            TagLib::Ogg::Vorbis::File *vorbisFile { dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef.file() ) };
+            coverArt = getCoverImage( vorbisFile->tag() );
+        }
+        else if( extension == QString { "mp3" } )
+        {
+            // MP3 audio files may store cover as ID3v2 frame.
+            TagLib::MPEG::File *mp3File { dynamic_cast< TagLib::MPEG::File * >( fileRef.file() ) };
+
+            if( mp3File->hasID3v2Tag() )
+                coverArt = getCoverImage( mp3File->ID3v2Tag() );
+        }
+
+        mainWindow->setCover( coverArt );
 
         playlistWindow->setCurrentItem( TP::currentItem() = I_item );
         playlistWindow->refreshShowingTitle( I_item );
 
         mediaPlayer->setSource( url );
         mediaPlayer->play();
-    }
+    }       // if( std::filesystem::exists
     else
         mediaPlayer->stop();
 }
 
-QImage
-TP_MainClass::getCoverImageFromFLAC( const QString &I_qstr_FilePath )
-{
-    TagLib::FLAC::File flacFile {
-        I_qstr_FilePath.
-#ifdef Q_OS_WIN
-        toStdWString().c_str()
-#else
-        toLocal8Bit().constData()
-#endif
-    };
 
-    if( flacFile.isValid() )
+QImage
+TP_MainClass::getCoverImage( TagLib::Ogg::XiphComment *xiphComment )
+{
+    const auto &pictureList { xiphComment->pictureList() };
+    if( pictureList.size() > 0 )
+        return QImage::fromData(
+                    QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
+                    );
+
+    return {};
+}
+
+
+QImage
+TP_MainClass::getCoverImage( TagLib::ID3v2::Tag *tag )
+{
+    const auto &frameList { tag->frameList( "APIC" ) };
+    if( ! frameList.isEmpty() )
     {
-        const TagLib::List < TagLib::FLAC::Picture * > &pictureList { flacFile.pictureList() };
-        if( pictureList.size() > 0 )
-            return QImage::fromData(
-                        QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
-                        );
+        auto *pictureFrame { static_cast< TagLib::ID3v2::AttachedPictureFrame * >( frameList.front() ) };
+        return QImage::fromData(
+                QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
+                );
     }
 
     return {};
 }
 
+
 QImage
-TP_MainClass::getCoverImageFromID3V2( const QString &filePath )
+TP_MainClass::getCoverImage( TagLib::MP4::Tag *tag )
 {
-    TagLib::MPEG::File mpegFile {
-        filePath.
-#ifdef Q_OS_WIN
-        toStdWString().c_str()
-#else
-        toLocal8Bit().constData()
-#endif
-    };
-
-    if( mpegFile.isValid() && mpegFile.hasID3v2Tag() )
+    if( tag->contains( "covr" ) )
     {
-        TagLib::ID3v2::Tag *id3v2Tag { id3v2Tag = mpegFile.ID3v2Tag() };
-
-        TagLib::ID3v2::FrameList frameList { id3v2Tag->frameList( "APIC" ) };
-        if( ! frameList.isEmpty() )
+        const auto &coverArtList { tag->itemMap()["covr"].toCoverArtList() };
+        if( !coverArtList.isEmpty() )
         {
-            TagLib::ID3v2::AttachedPictureFrame *pictureFrame {
-                static_cast< TagLib::ID3v2::AttachedPictureFrame * >( frameList.front() )
-            };
+            const auto &coverArt { coverArtList.front() };
             return QImage::fromData(
-                    QByteArray { pictureFrame->picture().data(), pictureFrame->picture().size() }
-                    );
+                        QByteArray { coverArt.data().data(), coverArt.data().size() }
+                        );
         }
     }
 

@@ -61,4 +61,4 @@ set_target_properties(ThousandPlayer PROPERTIES
 )
 ]]#
 
-qt_finalize_executable(ThousandPlayer)
+qt6_finalize_target(ThousandPlayer)
