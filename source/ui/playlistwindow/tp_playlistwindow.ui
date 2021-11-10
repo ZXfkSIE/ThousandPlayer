@@ -467,7 +467,7 @@ background-color: #777;</string>
   </action>
   <action name="action_addFolder">
    <property name="text">
-    <string>&amp;Folder...</string>
+    <string>Fol&amp;der...</string>
    </property>
   </action>
   <action name="action_addURL">

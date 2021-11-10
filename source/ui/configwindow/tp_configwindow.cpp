@@ -850,10 +850,22 @@ please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
     str_Credits =
 R"CREDITS(
-## Author
+## Programmer
+
 * Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
-<br />
+
+&nbsp;
+## Translator
+
+&nbsp;
+#### Chinese
+* Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
+#### Japanese
+* Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
+
+&nbsp;
 ## 3rd-party libraries
+
 &nbsp;
 #### Qt Toolkit
 
@@ -862,7 +874,8 @@ R"CREDITS(
 Licensed under [GNU LGPL v3](https://www.gnu.org/licenses/lgpl-3.0.html).
 
 Contact: https://www.qt.io/licensing/
-<br />
+
+&nbsp;
 #### TagLib
 
 © [Authors of TagLib](https://github.com/taglib/taglib/blob/master/AUTHORS)
@@ -870,11 +883,11 @@ Contact: https://www.qt.io/licensing/
 Licensed under [GNU LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
 
 Homepage: https://taglib.org/
-<br />
-## Images
 
-All images used in this software, which mainly originated from [Openclipart](https://openclipart.org/),
-are in public domain ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/)). Thank those selfless artists!
+&nbsp;
+## Images
+All images used in this software, which are mainly originated from [Openclipart](https://openclipart.org/),
+are in public domain ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/)). Many thanks to those selfless artists!
 )CREDITS";
 
 }
