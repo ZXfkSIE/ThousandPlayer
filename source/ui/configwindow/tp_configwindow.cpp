@@ -858,9 +858,9 @@ R"CREDITS(
 ## Translator
 
 &nbsp;
-#### Chinese
+#### ja (Japanese)
 * Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
-#### Japanese
+#### zh (Chinese)
 * Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
 
 &nbsp;

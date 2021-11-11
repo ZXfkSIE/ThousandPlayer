@@ -1,10 +1,10 @@
-<!--Last update: 2021-11-08 UTC-->
+<!--Last update: 2021-11-11 UTC-->
 
 # Page Languages
 
-- **US English**
+- **English**
 - [日本語](README_ja.md)
-- [简体中文](README_zh-CN.md) - [繁體中文（香港）](README_zh-HK.md) - [繁體中文（臺灣）](README_zh-TW.md)
+- [简体中文](README_zh-CN.md) - [繁體中文](README_zh-TW.md)
 
 ---
 
@@ -19,18 +19,18 @@ but already has the basic functions that a local audio player should have. Feel 
 - Cross-platform.
   - Linux and Microsoft Windows (Windows 10 and above) are supported at present. Need other developers' help to check the availability in macOS.
 - Most UI elements have text with proper font sizes instead of icon-only for the sake of localizability. Current supported UI languages are:
-  - English
-  - 日本語
-  - 简体中文
-  - 繁體中文（香港）
-  - 繁體中文（臺灣）
+  - en (English)
+  - ja (Japanese, 日本語)
+  - zh_CN (Simplified Chinese, 简体中文)
+  - zh_TW (Traditional Chinese, 繁體中文)
 - Currently supports following audio formats:
-  - WAV (`.wav`)
-  - FLAC (`.flac`)
-  - ALAC (`.alac`)
-  - MP3 (`.mp3`)
   - AAC (`.aac`, `.m4a`)
+  - ALAC (`.alac`)
+  - FLAC (`.flac`)
+  - MP3 (`.mp3`)
   - Vorbis (`.ogg`)
+  - WAV (`.wav`)
+  - For format support details about ReplayGain and cover art reading, see [here](SupportInfo.md).
 - A horizontally expandable main window. No need to worry about long music informations.
 - A cover viewer for viewing album covers.
 - Rich finding and sorting functions.
@@ -38,7 +38,6 @@ but already has the basic functions that a local audio player should have. Feel 
 - Customizable fonts of audio infomation label and playlist.
 - Multi-threaded file loading.
 - CMake-based automatic compilation.
-- For details about format supporting (including ReplayGain supports and cover art reading supports), see [here](FormatSupport.md).
 
 ## Planned features
 - Playlist persistence and multi-playlist support.
@@ -47,11 +46,11 @@ but already has the basic functions that a local audio player should have. Feel 
 - Music tag editor.
 - ReplayGain scanning function.
 - `.cue` sheet support.
-- Streaming audio.
+- Streaming audio. 
 
 ## Current serious bugs caused by Qt
 As of Qt 6.2.1.
-- [QTBUG-97757](https://bugreports.qt.io/browse/QTBUG-97757): While playing **FLAC** files in Windows, seeking becomes buggy.
+- [QTBUG-98191](https://bugreports.qt.io/browse/QTBUG-98191): While playing **FLAC** files in Windows, seeking becomes buggy.
 - [QTBUG-97758](https://bugreports.qt.io/browse/QTBUG-97758): The output device changing function does not work in Linux.
 
 # Compilation Tutorial
@@ -60,7 +59,7 @@ Before these steps, you should install
 - Latest version of Qt Creator.
 - Latest version of Qt 6.2 (or above versions such as 6.3) along with **Qt Multimedia**.
 - CMake 3.20 or above (which can be installed through QT Maintenance Tool).
-- Other required compilation tools (Ninja, etc.).
+- Other required compilation tools like GCC, MSVC, Ninja, etc.
 
 ## Linux
 1. Install required development package (Currently there is only one, i.e. [TagLib](https://taglib.org/)) in your system.
@@ -72,7 +71,7 @@ then configure the project with Qt 6.2 or above.
 3. Build.
 
 ## Windows
-1. Download and install [Conan](https://conan.io/downloads.html).
+1. Install [Conan](https://conan.io/downloads.html).
 2. Turn on Conan plugin in Qt Creator.
 
 ![](figure/ConanPlugin.png)
@@ -93,4 +92,4 @@ if(WIN32)
     conan_basic_setup()                                   # <-- COMMENT OUT!
     message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
 ```
-6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left should be available. Uncomment the 2 lines mentioned above, then you can build it.
+6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left should be available. Uncomment the 2 lines mentioned above, then you should be able to build it.
