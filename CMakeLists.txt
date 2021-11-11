@@ -42,7 +42,6 @@ find_package(Qt6 6.2.1...6.2.114514 COMPONENTS
 set(TP_TS_FILES
     ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_ja_JP.ts
     ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_zh_CN.ts
-    ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_zh_HK.ts
     ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_zh_TW.ts
     )
 

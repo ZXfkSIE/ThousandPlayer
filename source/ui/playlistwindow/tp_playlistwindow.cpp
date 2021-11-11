@@ -220,12 +220,12 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
 
     QList <QUrl> fileURLs = QFileDialog::getOpenFileUrls(
                 this,                                           // QWidget *parent = nullptr
-                tr( "Open files" ),                             // const QString &caption = QString()
+                {},                                             // const QString &caption = QString()
                 {},                                             // const QString &dir = QString()
 
                 // const QString &filter = QString()
 
-                tr( "All supported formats" ) + QString( " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" ) +
+                tr( "All supported formats" ) + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" } +
                 tr( "FLAC files" ) + QString{ " (*.flac);;" } +
                 tr( "ALAC files" ) + QString{ " (*.alac);;" } +
                 tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" } +

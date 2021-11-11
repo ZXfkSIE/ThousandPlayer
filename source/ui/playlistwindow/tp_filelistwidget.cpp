@@ -339,7 +339,7 @@ TP_FileListWidget::deleteSelectedItems()
                     "<br>%1"
                     "<br>from the <b>DISK</b>?"
                     "<br>NOTE: remote URLs cannot be deleted."
-                    "<br>They will just be removed.")
+                    "<br>They will only be removed from the list.")
                 .arg( numberOfSelectedItems == 1
                       ? QString( "\"%1\"" ).arg( selectedItems()[0]->data( TP::role_FileName ).toString() )
                       : tr( "these %1 items" ).arg( numberOfSelectedItems )

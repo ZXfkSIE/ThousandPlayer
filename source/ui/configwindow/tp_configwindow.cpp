@@ -925,7 +925,7 @@ TP_ConfigWindow::initializeUI()
     // ============================== Playback page ==============================
 
     // List of audio output device
-    ui->comboBox_AudioDevice->addItem( tr( "Default" ), QVariant::fromValue( QAudioDevice() ) );
+    ui->comboBox_AudioDevice->addItem( tr( "Default device" ), QVariant::fromValue( QAudioDevice() ) );
     for ( const auto &deviceInfo: QMediaDevices::audioOutputs() )
         ui->comboBox_AudioDevice->addItem( deviceInfo.description(), QVariant::fromValue( deviceInfo ) );
     ui->comboBox_AudioDevice->setCurrentIndex( 0 );
