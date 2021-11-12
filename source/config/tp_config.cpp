@@ -2,6 +2,7 @@
 
 #include "tp_globalconst.h"
 
+#include <QDir>
 #include <QSettings>
 #include <QWidget>
 
@@ -54,6 +55,10 @@ TP_Config::TP_Config( QObject *parent ) :
             .value( key_PLAYLISTWINDOW_playlistFont, defaultFont )
             .value< QFont >();
 
+    lastOpenedDirectory = config
+            .value( key_PLAYLISTWINDOW_lastOpenedDirectory, QUrl::fromLocalFile( QDir::homePath() ) )
+            .toUrl();
+
     config.endGroup();
 
 
@@ -99,6 +104,7 @@ TP_Config::~TP_Config()
     config.setValue( key_PLAYLISTWINDOW_playlistWindowPosition, playlistWindowPosition );
     config.setValue( key_PLAYLISTWINDOW_isPlaylistWindowShown, b_isPlaylistWindowShown );
     config.setValue( key_PLAYLISTWINDOW_playlistFont, playlistFont );
+    config.setValue( key_PLAYLISTWINDOW_lastOpenedDirectory, lastOpenedDirectory );
     config.endGroup();
 
     config.beginGroup( group_PLAYBACK );
@@ -195,6 +201,18 @@ QFont
 TP_Config::getPlaylistFont() const
 {
     return playlistFont;
+}
+
+void
+TP_Config::setLastOpenedDirectory ( const QUrl &input )
+{
+    lastOpenedDirectory = input;
+}
+
+QUrl
+TP_Config::getLastOpenedDirectory () const
+{
+    return lastOpenedDirectory;
 }
 
 // ==================== PLAYBACK group ====================

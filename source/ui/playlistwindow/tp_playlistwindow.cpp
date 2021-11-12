@@ -10,6 +10,7 @@
 #include "tp_progressdialog.h"
 #include "tp_runnable_filereader.h"
 
+#include <QDirIterator>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMouseEvent>
@@ -216,74 +217,59 @@ TP_PlaylistWindow::on_pushButton_Close_clicked()
 
 void TP_PlaylistWindow::on_action_addFiles_triggered()
 {
-    QList <QUrl> fileURLs { QFileDialog::getOpenFileUrls(
-                this,                                       // QWidget *parent = nullptr
-                {},                                         // const QString &caption = QString()
-                {},                                         // const QString &dir = QString()
+    QList <QUrl> fileURLs {
+        QFileDialog::getOpenFileUrls(
+                    this,                                       // QWidget *parent = nullptr
+                    {},                                         // const QString &caption = QString()
+                    TP::config().getLastOpenedDirectory(),      // const QString &dir = QString()
 
-                // const QString &filter = QString()
+                    // const QString &filter = QString()
 
-                tr( "All supported formats" ) + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" } +
-                tr( "FLAC files" ) + QString{ " (*.flac);;" } +
-                tr( "ALAC files" ) + QString{ " (*.alac);;" } +
-                tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" } +
-                tr( "MP3 files" ) + QString{ " (*.mp3);;" } +
-                tr( "WAV files" ) + QString{ " (*.wav);;" } +
-                tr( "Vorbis files" ) + QString{ " (*.ogg);;" }
-                );
+                    tr( "All supported formats" ) + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" } +
+                    tr( "FLAC files" ) + QString{ " (*.flac);;" } +
+                    tr( "ALAC files" ) + QString{ " (*.alac);;" } +
+                    tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" } +
+                    tr( "MP3 files" ) + QString{ " (*.mp3);;" } +
+                    tr( "WAV files" ) + QString{ " (*.wav);;" } +
+                    tr( "Vorbis files" ) + QString{ " (*.ogg);;" }
+                    )};
 
-    qsizetype n_Files = fileURLs.size();
-    if( n_Files == 0 )
+
+    if( fileURLs.isEmpty() )
         return;
 
-    int originalCount { currentFileListWidget->count() };
+    TP::config().setLastOpenedDirectory( fileURLs.front().adjusted( QUrl::RemoveFilename ) );
 
-    progressDialog->reset();
-    progressDialog->setMaximum( n_Files );
-    progressDialog->setValue( 0 );
-    progressDialog->show();
-
-    for ( const QUrl& fileURL: fileURLs )
-    {
-        QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
-        item->setData( TP::role_URL, fileURL );         // set URL
-        item->setData( TP::role_SourceType, TP::singleFile );
-        currentFileListWidget->addItem( item );
-    }
-
-    const int step { 10 };
-    int nextPercent { step };
-    const int count { currentFileListWidget->count() };
-
-    for ( size_t i {}; i < count; i++ )
-    {
-        if( i * 100 / count >= nextPercent )
-        {
-            nextPercent += step;
-            progressDialog->setValue( i + 1 );
-        }
-
-        QThreadPool::globalInstance()->start(
-                    new TP_Runnable_FileReader{ currentFileListWidget->item( i ) }
-                    );
-
-        if( progressDialog->wasCanceled() )
-        {
-            progressDialog->cancel();
-            break;
-        }
-    }
-
-    QThreadPool::globalInstance()->waitForDone();
-    currentFileListWidget->refreshShowingTitle( originalCount - 1, count - 1 );
-    progressDialog->cancel();
+    addFilesToCurrentList( fileURLs );
 }
 
 
 void
 TP_PlaylistWindow::on_action_addFolder_triggered()
 {
+    QUrl directoryURL {
+        QFileDialog::getExistingDirectoryUrl(
+                    this,                                   // QWidget *parent = nullptr
+                    {},                                     // const QString &caption = QString()
+                    TP::config().getLastOpenedDirectory()   // const QUrl &dir = QUrl()
+                    )};
 
+    TP::config().setLastOpenedDirectory( directoryURL );
+
+    QList< QUrl > fileURLs {};
+
+    QDirIterator dItr {
+        directoryURL.toLocalFile(),                     // const QString &path
+        { "*.flac","*.alac", "*.m4a", "*.aac",
+            "*.mp3", "*.wav", "*.ogg" },                // const QStringList &nameFilters
+        QDir::Files,                                    // QDir::Filters filters = QDir::NoFilter
+        QDirIterator::FollowSymlinks                    // QDirIterator::IteratorFlags flags = NoIteratorFlags
+    };
+
+    while( dItr.hasNext() )
+        fileURLs.push_back( QUrl::fromLocalFile( dItr.next() ) );
+
+    addFilesToCurrentList( fileURLs );
 }
 
 
@@ -457,8 +443,8 @@ TP_PlaylistWindow::initializeMenu()
     menu_Add = new TP_Menu { ui->pushButton_Add };
 
     menu_Add->addAction( ui->action_addFiles );
+    menu_Add->addAction( ui->action_addFolder );
     /* ----- Pending implementation ----- */
-    // menu_Add->addAction( ui->action_addFolder );
     // menu_Add->addSeparator();
     // menu_Add->addAction( ui->action_addURL );
 
@@ -559,4 +545,51 @@ TP_PlaylistWindow::switchList( TP_FileListWidget *fileListWidget )
     }
 
     slot_changeFontOfCurrentList();
+}
+
+
+void
+TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl >& fileURLs )
+{
+    int originalCount { currentFileListWidget->count() };
+
+    progressDialog->reset();
+    progressDialog->setMaximum( fileURLs.size() );
+    progressDialog->setValue( 0 );
+    progressDialog->show();
+
+    for ( const QUrl& fileURL: fileURLs )
+    {
+        QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
+        item->setData( TP::role_URL, fileURL );         // set URL
+        item->setData( TP::role_SourceType, TP::singleFile );
+        currentFileListWidget->addItem( item );
+    }
+
+    const int step { 10 };
+    int nextPercent { step };
+    const int count { currentFileListWidget->count() };
+
+    for ( size_t i {}; i < count; i++ )
+    {
+        if( i * 100 / count >= nextPercent )
+        {
+            nextPercent += step;
+            progressDialog->setValue( i + 1 );
+        }
+
+        QThreadPool::globalInstance()->start(
+                    new TP_Runnable_FileReader{ currentFileListWidget->item( i ) }
+                    );
+
+        if( progressDialog->wasCanceled() )
+        {
+            progressDialog->cancel();
+            break;
+        }
+    }
+
+    QThreadPool::globalInstance()->waitForDone();
+    currentFileListWidget->refreshShowingTitle( originalCount - 1, count - 1 );
+    progressDialog->cancel();
 }

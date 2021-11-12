@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QSettings>
+#include <QUrl>
 
 class TP_Config : public QObject
 {
@@ -33,6 +34,8 @@ public:
     bool    isPlaylistWindowShown () const;
     void    setPlaylistFont ( const QFont &input );
     QFont   getPlaylistFont () const;
+    void    setLastOpenedDirectory ( const QUrl &input );
+    QUrl    getLastOpenedDirectory () const;
 
     // ==================== PLAYBACK group ====================
     void                setVolume ( const int I_volume );
@@ -72,6 +75,8 @@ private:
             bool        b_isPlaylistWindowShown;
     const   QString     key_PLAYLISTWINDOW_playlistFont             { "playlistFont" };
             QFont       playlistFont;
+    const   QString     key_PLAYLISTWINDOW_lastOpenedDirectory      { "lastOpenedDirectory" };
+            QUrl        lastOpenedDirectory;
 
     // ************************************************************************************
     const   QString             group_PLAYBACK                      { "PLAYBACK" };
