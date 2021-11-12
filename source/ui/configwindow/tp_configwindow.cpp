@@ -980,3 +980,10 @@ TP_ConfigWindow::on_pushButton_Credits_clicked()
 {
     ui->textBrowser->document()->setMarkdown( QString::fromStdString( str_Credits ) );
 }
+
+
+void TP_ConfigWindow::on_buttonBox_OK_accepted()
+{
+    close();
+}
+

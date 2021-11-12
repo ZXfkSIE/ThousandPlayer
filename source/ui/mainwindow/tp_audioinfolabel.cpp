@@ -104,6 +104,8 @@ TP_AudioInfoLabel::paintEvent ( QPaintEvent * )
 void
 TP_AudioInfoLabel::mousePressEvent( QMouseEvent *event )
 {
+    // For unknown reason, mouse click ruins text drawing under Linux.
+#ifdef Q_OS_WIN
     if( event->button() == Qt::LeftButton )
     {
         if( vec_Qstr.size() <= 1 )
@@ -115,6 +117,7 @@ TP_AudioInfoLabel::mousePressEvent( QMouseEvent *event )
         currentIdx = nextIndex();
         repaint();
     }
+#endif
     QLabel::mousePressEvent( event );
 }
 

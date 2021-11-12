@@ -38,6 +38,8 @@ private slots:
     void on_pushButton_GPL_clicked ();
     void on_pushButton_Credits_clicked ();
 
+    void on_buttonBox_OK_accepted();
+
 private:
     Ui::TP_ConfigWindow *ui;
 
