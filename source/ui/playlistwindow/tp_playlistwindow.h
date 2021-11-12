@@ -67,6 +67,7 @@ private slots:
     void on_pushButton_Close_clicked();
 
     void on_action_addFiles_triggered();
+    void on_action_addFolder_triggered();
 
     void on_action_clearSelectedItems_triggered();
     void on_action_clearUnselectedItems_triggered();
@@ -102,6 +103,7 @@ private:
     // void storePlaylist();
 
     void switchList( TP_FileListWidget *fileListWidget );
+    void addFilesToCurrentList( const QList< QUrl >& urlList );
 
     QHBoxLayout *layout_FileListFrame;
 

@@ -216,12 +216,10 @@ TP_PlaylistWindow::on_pushButton_Close_clicked()
 
 void TP_PlaylistWindow::on_action_addFiles_triggered()
 {
-    int originalCount { currentFileListWidget->count() };
-
-    QList <QUrl> fileURLs = QFileDialog::getOpenFileUrls(
-                this,                                           // QWidget *parent = nullptr
-                {},                                             // const QString &caption = QString()
-                {},                                             // const QString &dir = QString()
+    QList <QUrl> fileURLs { QFileDialog::getOpenFileUrls(
+                this,                                       // QWidget *parent = nullptr
+                {},                                         // const QString &caption = QString()
+                {},                                         // const QString &dir = QString()
 
                 // const QString &filter = QString()
 
@@ -237,6 +235,8 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
     qsizetype n_Files = fileURLs.size();
     if( n_Files == 0 )
         return;
+
+    int originalCount { currentFileListWidget->count() };
 
     progressDialog->reset();
     progressDialog->setMaximum( n_Files );
@@ -277,6 +277,13 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
     QThreadPool::globalInstance()->waitForDone();
     currentFileListWidget->refreshShowingTitle( originalCount - 1, count - 1 );
     progressDialog->cancel();
+}
+
+
+void
+TP_PlaylistWindow::on_action_addFolder_triggered()
+{
+
 }
 
 
