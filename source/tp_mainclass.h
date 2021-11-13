@@ -58,6 +58,7 @@ private slots:
     void slot_playbackStateChanged ( QMediaPlayer::PlaybackState newState );
     void slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status );
     void slot_deviceChanged();
+    void slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString );
 
     void slot_changePlayingPosition( int second );
 

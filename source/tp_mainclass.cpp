@@ -643,7 +643,7 @@ TP_MainClass::slot_playButtonPushed()
         break;
 
     case QMediaPlayer::PlayingState :
-        qDebug() << "[ERROR] state status inconsistent! Program will fix it manually.";
+        qDebug() << "[Main Class] state status inconsistent! Program will fix it manually.";
         mainWindow->setPlay();
         break;
     }
@@ -708,31 +708,31 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
     switch ( status )
     {
     case QMediaPlayer::NoMedia :
-        qDebug("[Media Player] Media status changed to NoMedia.");
+        qDebug( "[Media Player] Media status changed to NoMedia." );
         break;
 
     case QMediaPlayer::LoadingMedia :
-        qDebug("[Media Player] Media status changed to LoadingMedia.");
+        qDebug( "[Media Player] Media status changed to LoadingMedia." );
         break;
 
     case QMediaPlayer::LoadedMedia :
-        qDebug("[Media Player] Media status changed to LoadedMedia.");
+        qDebug( "[Media Player] Media status changed to LoadedMedia." );
         break;
 
     case QMediaPlayer::StalledMedia :
-        qDebug("[Media Player] Media status changed to StalledMedia.");
+        qDebug( "[Media Player] Media status changed to StalledMedia." );
         break;
 
     case QMediaPlayer::BufferingMedia :
-        qDebug("[Media Player] Media status changed to BufferingMedia.");
+        qDebug( "[Media Player] Media status changed to BufferingMedia." );
         break;
 
     case QMediaPlayer::BufferedMedia :
-        qDebug("[Media Player] Media status changed to BufferedMedia.");
+        qDebug( "[Media Player] Media status changed to BufferedMedia." );
         break;
 
     case QMediaPlayer::EndOfMedia :
-        qDebug("[Media Player] Media status changed to EndOfMedia.");
+        qDebug( "[Media Player] Media status changed to EndOfMedia." );
 
         switch( TP::config().getPlayMode() )
         {
@@ -755,7 +755,7 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
         break;
 
     case QMediaPlayer::InvalidMedia :
-        qDebug("[Media Player] Media status changed to InvalidMedia.");
+        qDebug( "[Media Player] Media status changed to InvalidMedia." );
         break;
     }
 }
@@ -765,6 +765,13 @@ void
 TP_MainClass::slot_deviceChanged()
 {
     qDebug()<< "[Audio Output] Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
+}
+
+
+void
+TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString )
+{
+    qDebug() << "[Media Player] ERROR:" << error << "-" << errorString;
 }
 
 
@@ -859,6 +866,8 @@ TP_MainClass::initializeConnection()
              this,          &TP_MainClass::slot_playbackStateChanged );
     connect( mediaPlayer,   &QMediaPlayer::mediaStatusChanged,
              this,          &TP_MainClass::slot_mediaStatusChanged );
+    connect( mediaPlayer,   &QMediaPlayer::errorOccurred,
+             this,          &TP_MainClass::slot_mediaPlayerError );
     connect( audioOutput,   &QAudioOutput::deviceChanged,
              this,          &TP_MainClass::slot_deviceChanged );
 
@@ -1075,16 +1084,21 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
         // ------------------------------ Read cover art ------------------------------
         QImage coverArt {};
+        TagLib::FileRef *fileRef {
+            new TagLib::FileRef { qstr_localFilePath
 #ifdef Q_OS_WIN
-        TagLib::FileRef fileRef { qstr_localFilePath.toStdWString().c_str() };
+                        .toStdWString().c_str()
 #else
-        TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
+                        .toLocal8Bit().constData()
 #endif
+                                } };
 
         if( extension == QString( "flac" ) )
         {
             // FLAC files may store cover as Xiph comment or ID3v2 frame.
-            TagLib::FLAC::File *flacFile { dynamic_cast< TagLib::FLAC::File * >( fileRef.file() ) };
+            TagLib::FLAC::File *flacFile {
+                dynamic_cast< TagLib::FLAC::File * >( fileRef->file() )
+            };
 
             if( flacFile->hasXiphComment() )
                 coverArt = getCoverImage( flacFile->xiphComment() );
@@ -1095,7 +1109,9 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         else if( extension == QString { "alac" } || extension == QString { "aac" } )
         {
             // MPEG-4 audio files may store cover as MP4 tag.
-            TagLib::MP4::File *mp4File { dynamic_cast< TagLib::MP4::File * >( fileRef.file() ) };
+            TagLib::MP4::File *mp4File {
+                dynamic_cast< TagLib::MP4::File * >( fileRef->file() )
+            };
 
             if( mp4File->hasMP4Tag() )
                 coverArt = getCoverImage( mp4File->tag() );
@@ -1103,17 +1119,23 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         else if( extension == QString { "ogg" } )
         {
             // Vorbis audio files may store cover as Xiph comment.
-            TagLib::Ogg::Vorbis::File *vorbisFile { dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef.file() ) };
+            TagLib::Ogg::Vorbis::File *vorbisFile {
+                dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef->file() )
+            };
             coverArt = getCoverImage( vorbisFile->tag() );
         }
         else if( extension == QString { "mp3" } )
         {
             // MP3 audio files may store cover as ID3v2 frame.
-            TagLib::MPEG::File *mp3File { dynamic_cast< TagLib::MPEG::File * >( fileRef.file() ) };
+            TagLib::MPEG::File *mp3File {
+                dynamic_cast< TagLib::MPEG::File * >( fileRef->file() )
+            };
 
             if( mp3File->hasID3v2Tag() )
                 coverArt = getCoverImage( mp3File->ID3v2Tag() );
         }
+
+        delete fileRef;
 
         mainWindow->setCover( coverArt );
 

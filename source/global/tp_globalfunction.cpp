@@ -41,11 +41,14 @@ TP::storeInformation( QListWidgetItem * I_item )
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
     auto qstr_Filename = fileInfo.fileName();
 
+    TagLib::FileRef fileRef { qstr_localFilePath.
 #ifdef Q_OS_WIN
-    TagLib::FileRef fileRef { qstr_localFilePath.toStdWString().c_str() };
+    toStdWString().c_str()
 #else
-    TagLib::FileRef fileRef { qstr_localFilePath.toLocal8Bit().constData() };
+    .toLocal8Bit().constData()
 #endif
+                            };
+
     auto qstr_title = TStringToQString( fileRef.tag()->title() );
     auto qstr_artist = TStringToQString( fileRef.tag()->artist() );
     auto qstr_album = TStringToQString( fileRef.tag()->album() );
