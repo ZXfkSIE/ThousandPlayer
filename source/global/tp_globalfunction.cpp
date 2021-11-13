@@ -41,9 +41,9 @@ TP::storeInformation( QListWidgetItem * I_item )
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
     auto qstr_Filename = fileInfo.fileName();
 
-    TagLib::FileRef fileRef { qstr_localFilePath.
+    TagLib::FileRef fileRef { qstr_localFilePath
 #ifdef Q_OS_WIN
-    toStdWString().c_str()
+    .toStdWString().c_str()
 #else
     .toLocal8Bit().constData()
 #endif
