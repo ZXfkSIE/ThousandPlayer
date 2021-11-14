@@ -9,7 +9,7 @@ TP_CoverViewer::TP_CoverViewer( QDialog *parent ) :
   , ui                      { new Ui::TP_CoverViewer }
   , pixmap                  {}
   , scaleFactor             { 1.0f }
-  , b_isManuallyMaximized   { false }
+  , b_isMaximized           { false }
 {
     ui->setupUi( this );
     originalGeometry = geometry();
@@ -27,6 +27,10 @@ TP_CoverViewer::TP_CoverViewer( QDialog *parent ) :
     ui->pushButton_ZoomOut      ->setIcon( QIcon{ ":/image/icon_ZoomOut.svg" } );
     ui->pushButton_OriginalSize ->setIcon( QIcon{ ":/image/icon_OriginalSize.svg" } );
     ui->pushButton_Maximize     ->setIcon( QIcon{ ":/image/icon_Maximize.svg" } );
+
+#ifdef Q_OS_WIN
+    ui->pushButton_Maximize->hide();
+#endif
 }
 
 
@@ -110,12 +114,12 @@ TP_CoverViewer::scaleImage( float I_multiplier )
 void
 TP_CoverViewer::on_pushButton_Maximize_clicked()
 {
-    if( b_isManuallyMaximized )
+    if( b_isMaximized )
     {
         setGeometry( originalGeometry );
         ui->pushButton_Maximize->setIcon( QIcon{ ":/image/icon_Maximize.svg" } );
         ui->pushButton_Maximize->setToolTip( tr( "Maximize" ) );
-        b_isManuallyMaximized = false;
+        b_isMaximized = false;
     }
     else
     {
@@ -123,7 +127,7 @@ TP_CoverViewer::on_pushButton_Maximize_clicked()
         setGeometry( QApplication::screenAt( pos() )->availableGeometry() );
         ui->pushButton_Maximize->setIcon( QIcon{ ":/image/icon_Restore.svg" } );
         ui->pushButton_Maximize->setToolTip( tr( "Minimize" ) );
-        b_isManuallyMaximized = true;
+        b_isMaximized = true;
     }
 
 }

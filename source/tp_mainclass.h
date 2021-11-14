@@ -22,6 +22,7 @@ namespace TagLib
 {
 
 namespace APE   { class Tag; }
+namespace FLAC  { class File; }
 namespace ID3v2 { class Tag; }
 namespace MP4   { class Tag; }
 namespace Ogg   { class XiphComment; }
@@ -75,6 +76,7 @@ private:
     void playItem ( QListWidgetItem *I_item );
     void playFile ( QListWidgetItem *I_item );
 
+    QImage getCoverImage    ( TagLib::FLAC::File *flacFile );
     QImage getCoverImage    ( TagLib::Ogg::XiphComment *xiphComment );
     QImage getCoverImage    ( TagLib::ID3v2::Tag *tag );
     QImage getCoverImage    ( TagLib::MP4::Tag *tag );

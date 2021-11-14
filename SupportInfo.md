@@ -6,12 +6,13 @@
 
 |                        | Vorbis comment | ID3v2 tag | iTunes MP4 metadata | APEv2 tag |
 |------------------------|:--------------:|:---------:|:-------------------:|:---------:|
-| flac                   |     RG / CV    |  RG / CV  |                     |           |
+| FLAC<sup>1</sup>       |     RG / CV    |  RG / CV  |                     |           |
 | MPEG-4 (alac, aac/m4a) |                |           |       RG / CV       |           |
-| mp3                    |                |  RG / CV  |                     |     RG    |
+| MP3                    |                |  RG / CV  |                     |     RG    |
 | Vorbis (ogg)           |     RG / CV    |           |                     |           |
-| wav                    |                |           |                     |           |
+| WAV                    |                |           |                     |           |
 
+<sup>1</sup> FLAC files may store images by itself, which can also be read by this software.
 &nbsp;
 ## Supported ReplayGain formats
 - **Vorbis comment** & **APEv2 tag**: Values stored with the key

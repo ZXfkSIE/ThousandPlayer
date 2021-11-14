@@ -896,6 +896,8 @@ are in public domain ([CC0](https://creativecommons.org/share-your-work/public-d
 void
 TP_ConfigWindow::initializeUI()
 {
+    setWindowIcon( QIcon{ ":/image/icon_Config.svg" } );
+
     // ============================== Tab list ==============================
 
     ui->listWidget_Tab->setCurrentRow( 0 );

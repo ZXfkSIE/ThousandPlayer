@@ -32,7 +32,7 @@ private:
     float scaleFactor;
 
     QRect   originalGeometry;
-    bool    b_isManuallyMaximized;
+    bool    b_isMaximized;
 };
 
 #endif // TP_COVERVIEWER_H

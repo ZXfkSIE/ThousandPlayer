@@ -60,6 +60,7 @@ TP_MainClass::TP_MainClass() :
 
 TP_MainClass::~TP_MainClass()
 {
+    // Get current screen
     const auto *mainWindowScreen { QApplication::screenAt( mainWindow->pos() ) };
     TP::config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
 
@@ -1095,12 +1096,15 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
         if( extension == QString( "flac" ) )
         {
-            // FLAC files may store cover as Xiph comment or ID3v2 frame.
+            // FLAC files may store cover in the file itself,
+            // or as a part of Xiph comment or ID3v2 frame.
             TagLib::FLAC::File *flacFile {
                 dynamic_cast< TagLib::FLAC::File * >( fileRef->file() )
             };
 
-            if( flacFile->hasXiphComment() )
+            coverArt = getCoverImage( flacFile );
+
+            if( flacFile->hasXiphComment() && coverArt.isNull() )
                 coverArt = getCoverImage( flacFile->xiphComment() );
 
             if( flacFile->hasID3v2Tag() && coverArt.isNull() )
@@ -1135,18 +1139,31 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
                 coverArt = getCoverImage( mp3File->ID3v2Tag() );
         }
 
-        delete fileRef;
-
         mainWindow->setCover( coverArt );
 
         playlistWindow->setCurrentItem( TP::currentItem() = I_item );
         playlistWindow->refreshShowingTitle( I_item );
 
         mediaPlayer->setSource( url );
+
+        delete fileRef;
         mediaPlayer->play();
     }       // if( std::filesystem::exists
     else
         mediaPlayer->stop();
+}
+
+
+QImage
+TP_MainClass::getCoverImage( TagLib::FLAC::File *flacFile )
+{
+    const TagLib::List < TagLib::FLAC::Picture * > &pictureList { flacFile->pictureList() };
+    if( pictureList.size() > 0 )
+        return QImage::fromData(
+                    QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
+                    );
+
+    return {};
 }
 
 

@@ -20,13 +20,14 @@ qt6_add_executable(${PROJECT_NAME}
     ${TP_TS_FILES}
     )
 
+# Integrate images
 qt6_add_resources(${PROJECT_NAME} "image"
     PREFIX "/image"
     BASE "${PROJECT_SOURCE_DIR}/image"
     FILES ${TP_IMAGE_FILES}
     )
 
-
+# Integrate translation files
 list(GET TP_QM_FILES 0 TP_FIRST_QM_FILE)
 cmake_path(GET TP_FIRST_QM_FILE PARENT_PATH TP_QM_PATH)
 qt6_add_resources(${PROJECT_NAME} "i18n"
@@ -38,6 +39,12 @@ if(UNIX)
     target_include_directories(${PROJECT_NAME} PRIVATE ${TAGLIB_INCLUDE_DIRS})
     target_link_directories(${PROJECT_NAME} PRIVATE ${TAGLIB_LIBRARY_DIRS})
     target_compile_options(${PROJECT_NAME} PRIVATE ${TAGLIB_CFLAGS_OTHER})
+endif()
+
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        WIN32_EXECUTABLE TRUE
+        )
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
