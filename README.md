@@ -15,6 +15,8 @@ one of the most popular local music players for Microsoft Windows in China durin
 The software is still in early development stage,
 but already has the basic functions that a local audio player should have. Feel free to participate in the development!
 
+![](figure/screenshot.png)
+
 ## Features
 - Cross-platform.
   - Linux and Microsoft Windows (Windows 10 and above) are supported at present. Need other developers' help to check the availability in macOS.
