@@ -41,7 +41,9 @@ if(UNIX)
     target_compile_options(${PROJECT_NAME} PRIVATE ${TAGLIB_CFLAGS_OTHER})
 endif()
 
-if(WIN32)
+# For release build for Windows, it is necessary to set WIN32_EXECUTABLE to true
+# in order to get rid of the console window.
+if( WIN32 AND (CMAKE_BUILD_TYPE STREQUAL "Release") )
     set_target_properties(${PROJECT_NAME} PROPERTIES
         WIN32_EXECUTABLE TRUE
         )
