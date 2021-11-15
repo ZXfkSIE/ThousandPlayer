@@ -13,7 +13,7 @@ A Qt6-based open-source audio player developed from scratch. It is a tribute to 
 one of the most popular local music players for Microsoft Windows in China during 2000s.
 
 The software is still in early development stage,
-but already has the basic functions that a local audio player should have. Feel free to paticipate in the development!
+but already has the basic functions that a local audio player should have. Feel free to participate in the development!
 
 ## Features
 - Cross-platform.
@@ -44,9 +44,10 @@ but already has the basic functions that a local audio player should have. Feel 
 - Viewer and editor for `.lrc` lyrics files.
 - Audio format converting function.
 - Music tag editor.
+- Audio description customization.
 - ReplayGain scanning function.
 - `.cue` sheet support.
-- Streaming audio. 
+- Streaming audio.
 
 ## Current serious bugs caused by Qt
 As of Qt 6.2.1.
@@ -92,4 +93,4 @@ if(WIN32)
     conan_basic_setup()                                   # <-- COMMENT OUT!
     message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
 ```
-6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left should be available. Uncomment the 2 lines mentioned above, then you should be able to build it.
+6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left should become available. Uncomment the 2 lines mentioned above, then you should be able to build it.

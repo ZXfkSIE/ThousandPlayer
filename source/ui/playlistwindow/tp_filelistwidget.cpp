@@ -844,11 +844,15 @@ TP_FileListWidget::mouseReleaseEvent( QMouseEvent *event )
 void
 TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
 {
-    QListWidgetItem *selectedItem = itemAt ( event->pos() );
-    if ( selectedItem == nullptr )
+    QListWidgetItem *clickedItem = itemAt ( event->pos() );
+
+    if ( clickedItem == nullptr )
         return;
 
-    setCurrentItem( selectedItem, QItemSelectionModel::Select );
+    if ( ! clickedItem->isSelected() )
+        clearSelection();
+
+    setCurrentItem( clickedItem, QItemSelectionModel::Select );
 
     menu_rightClick->exec( event->globalPos() );
 }
