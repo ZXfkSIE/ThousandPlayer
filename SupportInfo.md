@@ -12,7 +12,7 @@
 | Vorbis (ogg)           |     RG / CV    |           |                     |           |
 | WAV                    |                |           |                     |           |
 
-<sup>1</sup> FLAC files may store images by itself, which can also be read by this software.
+<sup>1</sup> FLAC files may store images inside itself instead of as metadata, which can also be read by this software.
 &nbsp;
 ## Supported ReplayGain formats
 - **Vorbis comment** & **APEv2 tag**: Values stored with the key

@@ -231,7 +231,7 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
                     tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" } +
                     tr( "MP3 files" ) + QString{ " (*.mp3);;" } +
                     tr( "WAV files" ) + QString{ " (*.wav);;" } +
-                    tr( "Vorbis files" ) + QString{ " (*.ogg);;" }
+                    tr( "Vorbis files" ) + QString{ " (*.ogg)" }
                     )};
 
 
