@@ -260,10 +260,13 @@ background-color: #777;</string>
       <string notr="true">background-color: #666;</string>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Panel</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
+     </property>
+     <property name="lineWidth">
+      <number>3</number>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
@@ -577,6 +580,11 @@ background-color: #777;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>TP_PushButton</class>
+   <extends>QPushButton</extends>
+   <header>tp_pushbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>TP_PlaylistContainer</class>
    <extends>QWidget</extends>
    <header>tp_playlistcontainer.h</header>
@@ -592,11 +600,6 @@ background-color: #777;</string>
    <class>TP_PlaylistsWidget</class>
    <extends>QListWidget</extends>
    <header>tp_playlistswidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_PushButton</class>
-   <extends>QPushButton</extends>
-   <header>tp_pushbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
