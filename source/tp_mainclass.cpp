@@ -44,6 +44,7 @@ TP_MainClass::TP_MainClass() :
   , b_isPlaylistWindowVisible   { true }
   , audioOutput                 { new QAudioOutput { this } }
   , mediaPlayer                 { new QMediaPlayer { this } }
+  , b_isEndOfMedia              { false }
   , snapStatus                  { false }
   , snapPosition_playlistWindow {}
 {
@@ -94,12 +95,12 @@ TP_MainClass::slot_checkIfServiceAvailable()
     {
         QMessageBox msgBox_ServiceNotAvailable (
                     QMessageBox::Critical,
-                    tr("Not available"),
-                    tr("QMediaPlayer is not supported on this platform.\n"
-                       "The program will quit now."),
+                    tr( "Not available" ),
+                    tr( "QMediaPlayer is not supported on this platform.\n"
+                        "The program will quit now." ),
                     QMessageBox::NoButton );
         msgBox_ServiceNotAvailable.addButton(
-                    tr("Exit"),
+                    tr( "Exit" ),
                     QMessageBox::AcceptRole );
         connect( &msgBox_ServiceNotAvailable, &QMessageBox::buttonClicked, qApp, &QApplication::quit );
 
@@ -693,11 +694,32 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 
     case QMediaPlayer::StoppedState:
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
-        mediaPlayer->setSource( {} );               // Cease I/O operations of current file
-        mainWindow->setStop();
-        mainWindow->setCover( {} );
-        playlistWindow->unsetCurrentItemBold();
+        TP::PlayMode mode { TP::config().getPlayMode() };
 
+        if( b_isEndOfMedia && mode != TP::singleTime )
+            switch( mode )
+            {
+            case TP::repeat :
+                mediaPlayer->play();
+                break;
+
+            case TP::sequential :
+            case TP::shuffle :
+                slot_nextButtonPushed();
+                break;
+
+            default:
+                break;
+            }
+        else
+        {
+            mediaPlayer->setSource( {} );               // Cease I/O operations of current file
+            mainWindow->setStop();
+            mainWindow->setCover( {} );
+            playlistWindow->unsetCurrentItemBold();
+        }
+
+        b_isEndOfMedia = false;
         break;
     }
 }
@@ -735,24 +757,7 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
     case QMediaPlayer::EndOfMedia :
         qDebug( "[Media Player] Media status changed to EndOfMedia." );
 
-        switch( TP::config().getPlayMode() )
-        {
-        case TP::singleTime :
-            break;
-
-        case TP::repeat :
-            mediaPlayer->play();
-            break;
-
-        case TP::sequential :
-            playItem( playlistWindow->getNextItem() );
-            break;
-
-        case TP::shuffle :
-            playItem( playlistWindow->getPreviousItem() );
-            break;
-        }
-
+        b_isEndOfMedia = true;
         break;
 
     case QMediaPlayer::InvalidMedia :
@@ -1139,6 +1144,8 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
                 coverArt = getCoverImage( mp3File->ID3v2Tag() );
         }
 
+        delete fileRef;
+
         mainWindow->setCover( coverArt );
 
         playlistWindow->setCurrentItem( TP::currentItem() = I_item );
@@ -1146,7 +1153,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
         mediaPlayer->setSource( url );
 
-        delete fileRef;
+
         mediaPlayer->play();
     }       // if( std::filesystem::exists
     else
@@ -1201,7 +1208,7 @@ TP_MainClass::getCoverImage( TagLib::MP4::Tag *tag )
 {
     if( tag->contains( "covr" ) )
     {
-        const auto &coverArtList { tag->itemMap()["covr"].toCoverArtList() };
+        const auto &coverArtList { tag->itemMap()[ "covr" ].toCoverArtList() };
         if( !coverArtList.isEmpty() )
         {
             const auto &coverArt { coverArtList.front() };

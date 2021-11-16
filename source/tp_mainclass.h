@@ -89,6 +89,7 @@ private:
     QAudioOutput *      audioOutput;
     QMediaPlayer *      mediaPlayer;
     float               linearVolume;
+    bool                b_isEndOfMedia;
 
     bool snapStatus [ TP::numberOfWindows ][ TP::numberOfWindows ];
     QPoint snapPosition_playlistWindow;
