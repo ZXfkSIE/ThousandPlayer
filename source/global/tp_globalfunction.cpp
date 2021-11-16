@@ -12,7 +12,6 @@
 #include <apetag.h>
 #include <fileref.h>
 #include <flacfile.h>
-#include <flacproperties.h>
 #include <id3v2tag.h>
 #include <mp4file.h>
 #include <mpegfile.h>
@@ -62,6 +61,8 @@ TP::storeInformation( QListWidgetItem * I_item )
 
     if( extension == QString { "flac" } )
         bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
+    else if( extension == QString { "alac" } || extension == QString { "aac" } )
+        bitDepth = dynamic_cast< TagLib::MP4::Properties * >( fileRef.audioProperties() )->bitsPerSample();
 
     I_item->setData( TP::role_Duration,     duration );             // set duration
     I_item->setData( TP::role_Bitrate,      bitrate );              // set bitrate
