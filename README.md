@@ -15,7 +15,7 @@ one of the most popular local music players for Microsoft Windows in China durin
 The software is still in early development stage,
 but already has the basic functions that a local audio player should have. Feel free to participate in the development!
 
-![](figure/screenshot.png)
+![Captured in Fedora 34](figure/screenshot.png)
 
 ## Features
 - Cross-platform.
@@ -61,7 +61,7 @@ As of Qt 6.2.1.
 Before these steps, you should install
 - Latest version of Qt Creator.
 - Latest version of Qt 6.2 (or above versions such as 6.3) along with **Qt Multimedia**.
-- CMake 3.20 or above (which can be installed through QT Maintenance Tool).
+- CMake 3.20 or above (which can be installed through QT Maintenance Tool or [official website](https://cmake.org/download/)).
 - Other required compilation tools like GCC, MSVC, Ninja, etc.
 
 ## Linux
@@ -74,7 +74,7 @@ then configure the project with Qt 6.2 or above.
 3. Build.
 
 ## Windows
-1. Install [Conan](https://conan.io/downloads.html).
+1. Install [Conan] from Qt Maintenance Tool or [official website](https://conan.io/downloads.html).
 2. Turn on Conan plugin in Qt Creator.
 
 ![](figure/ConanPlugin.png)
