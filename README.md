@@ -19,7 +19,7 @@ but already has the basic functions that a local audio player should have. Feel 
 
 ## Features
 - Cross-platform.
-  - Linux and Microsoft Windows (Windows 10 and above) are supported at present. Need other developers' help to check the availability in macOS.
+  - Linux and Microsoft Windows (**Windows 10 1809 and above**) are supported at present. Need other developers' help to check the availability in macOS.
 - Most UI elements have text with proper font sizes instead of icon-only for the sake of localizability. Current supported UI languages are:
   - en (English)
   - ja (Japanese, 日本語)

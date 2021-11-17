@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.20)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    message(FATAL "[ThousandPlayer] Sorry, macOS is currently not supported.")
+    message(FATAL_ERROR "[ThousandPlayer] Sorry, macOS is currently not supported.")
 endif()
 
 project(ThousandPlayer VERSION 0.1 LANGUAGES CXX)
@@ -18,6 +18,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS true)
 
 if(WIN32)
+    if(${CMAKE_SYSTEM_VERSION} VERSION_LESS 10.0.17763)
+        message(FATAL_ERROR "[ThousandPlayer] Sorry, Qt 6 only supports Windows 10 1809 (10.0.17763) and above,"
+            " while your OS version is ${CMAKE_SYSTEM_VERSION}.")
+    endif()
+
 # In Windows, use Conan to setup 3rd party packages
     message(STATUS "[ThousandPlayer] Windows build environment detected.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
