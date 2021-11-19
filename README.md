@@ -54,7 +54,7 @@ but already has the basic functions that a local audio player should have. Feel 
 ## Current serious bugs caused by Qt
 As of Qt 6.2.1.
 - [QTBUG-98191](https://bugreports.qt.io/browse/QTBUG-98191): While playing **FLAC** files in Windows, seeking becomes buggy.
-- [QTBUG-97758](https://bugreports.qt.io/browse/QTBUG-97758): The output device changing function does not work in Linux.
+- [QTBUG-97758](https://bugreports.qt.io/browse/QTBUG-97758): The output device changing function does not work in some Linux distros (e.g. Fedora).
 
 # Compilation Tutorial
 
