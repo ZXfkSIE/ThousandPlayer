@@ -2,6 +2,7 @@
 
 #include "tp_globalconst.h"
 #include "tp_globalenum.h"
+#include "tp_globalvariable.h"
 
 #include <QFileInfo>
 #include <QUrl>
@@ -291,4 +292,62 @@ TP::getReplayGainAlbumFromTag( TagLib::APE::Tag *tag )
             return TStringToQString( pair.second.toString() ).split(' ')[0].toFloat();
 
     return std::numeric_limits< float >::max();
+}
+
+
+float
+TP::getReplayGainFromItem( QListWidgetItem * I_item )
+{
+    TP::ReplayGainMode mode { TP::config().getReplayGainMode() };
+
+    if( mode == TP::RG_disabled )
+        return 0;
+
+    const auto dB_Track { I_item->data( TP::role_ReplayGainTrack ).toFloat() };
+    const auto dB_Album { I_item->data( TP::role_ReplayGainAlbum ).toFloat() };
+    auto dB_Total { TP::config().getPreAmp_dB() };
+
+    switch ( mode )
+    {
+    case TP::RG_track :
+
+        if( dB_Track < 114514 )
+        {
+            dB_Total += dB_Track;
+            break;
+        }
+        else if( dB_Album < 114514 )
+        {
+            dB_Total += dB_Album;
+            break;
+        }
+        else
+        {
+            dB_Total += TP::config().getDefaultGain_dB();
+            break;
+        }
+
+    case TP::RG_album :
+
+        if( dB_Album < 114514 )
+        {
+            dB_Total += dB_Album;
+            break;
+        }
+        else if( dB_Track < 114514 )
+        {
+            dB_Total += dB_Track;
+            break;
+        }
+        else
+        {
+            dB_Total += TP::config().getDefaultGain_dB();
+            break;
+        }
+
+    default:
+        break;
+    }
+
+    return dB_Total;
 }

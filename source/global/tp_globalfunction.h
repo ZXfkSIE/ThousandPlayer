@@ -30,6 +30,8 @@ namespace TP
 
     float getReplayGainTrackFromTag( TagLib::APE::Tag *tag );
     float getReplayGainAlbumFromTag( TagLib::APE::Tag *tag );
+
+    float getReplayGainFromItem( QListWidgetItem * I_item );
 }
 
 #endif // TP_GLOBALFUNCTION_H

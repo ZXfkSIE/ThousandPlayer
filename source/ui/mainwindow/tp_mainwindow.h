@@ -115,7 +115,8 @@ private:
             int             bitDepth        = -1,
             int             sampleRate      = -1,
             int             bitRate         = -1,
-            int             duration        = 0
+            int             duration        = 0,
+            float           replayGain      = 0
             );
 
     QString convertTime( qint64 second ) const;

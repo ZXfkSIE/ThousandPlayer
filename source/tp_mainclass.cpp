@@ -796,65 +796,7 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
     if( mediaPlayer->playbackState() != QMediaPlayer::PlayingState )
         return;
 
-    TP::ReplayGainMode mode { TP::config().getReplayGainMode() };
-
-    if( mode == TP::RG_disabled )
-    {
-        qDebug()<<"[Audio Output] ReplayGain is disabled.";
-        audioOutput->setVolume( linearVolume );
-        return;
-    }
-
-    const float dB_Track { TP::currentItem()->data( TP::role_ReplayGainTrack ).toFloat() };
-    const float dB_Album { TP::currentItem()->data( TP::role_ReplayGainAlbum ).toFloat() };
-    float dB_Total { TP::config().getPreAmp_dB() };
-
-    switch ( TP::config().getReplayGainMode() )
-    {
-    case TP::RG_track :
-
-        if( dB_Track != std::numeric_limits<float>::max() )
-        {
-            dB_Total += dB_Track;
-            break;
-        }
-        else if( dB_Album != std::numeric_limits<float>::max() )
-        {
-            dB_Total += dB_Album;
-            break;
-        }
-        else
-        {
-            dB_Total += TP::config().getDefaultGain_dB();
-            break;
-        }
-
-    case TP::RG_album :
-
-        if( dB_Album != std::numeric_limits<float>::max() )
-        {
-            dB_Total += dB_Album;
-            break;
-        }
-        else if( dB_Track != std::numeric_limits<float>::max() )
-        {
-            dB_Total += dB_Track;
-            break;
-        }
-        else
-        {
-            dB_Total += TP::config().getDefaultGain_dB();
-            break;
-        }
-
-    default:
-        break;
-    }
-
-    qDebug()<< "[Audio Output] A" << ( dB_Total > 0 ? "+"  : "" )
-            << dB_Total << "dB ReplayGain is applied.";
-
-    const float multiplier = std::pow( 10, dB_Total / 20.0 );         // 10^(Gain/20)
+    const auto multiplier = std::pow( 10, TP::getReplayGainFromItem( TP::currentItem() ) / 20.0 );         // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }
 
@@ -938,7 +880,7 @@ TP_MainClass::initializeConnection()
     connect( configWindow,      &TP_ConfigWindow::signal_audioInfoLabelFontChanged,
              mainWindow,        &TP_MainWindow::slot_changeFontOfAudioInfoLabel );
     connect( configWindow,      &TP_ConfigWindow::signal_playlistFontChanged,
-             playlistWindow,    &TP_PlaylistWindow::slot_changeFontOfCurrentList );
+             playlistWindow,    &TP_PlaylistWindow::slot_changeFontOfLists );
     connect( configWindow,      &TP_ConfigWindow::signal_audioDeviceChanged,
              audioOutput,       &QAudioOutput::setDevice );
 

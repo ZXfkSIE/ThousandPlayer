@@ -171,9 +171,11 @@ TP_PlaylistWindow::slot_activateWindow()
 
 
 void
-TP_PlaylistWindow::slot_changeFontOfCurrentList()
+TP_PlaylistWindow::slot_changeFontOfLists()
 {
-    currentFileListWidget->setFont( TP::config().getPlaylistFont() );
+    const auto font { TP::config().getPlaylistFont() };
+    currentFileListWidget->setFont( font );
+    ui->playlistsWidget->setFont( font );
 }
 
 // *****************************************************************
@@ -544,7 +546,7 @@ TP_PlaylistWindow::switchList( TP_FileListWidget *fileListWidget )
         layout_FileListFrame->addWidget( currentFileListWidget = fileListWidget );
     }
 
-    slot_changeFontOfCurrentList();
+    slot_changeFontOfLists();
 }
 
 

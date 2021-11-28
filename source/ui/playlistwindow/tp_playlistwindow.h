@@ -54,7 +54,7 @@ public slots:
 
     void slot_activateWindow();
 
-    void slot_changeFontOfCurrentList();
+    void slot_changeFontOfLists();
 
 private slots:
     void slot_moveTitleBar( const QRect &newGeometry );

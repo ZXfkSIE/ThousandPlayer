@@ -83,7 +83,8 @@ TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
                             I_item->data( TP::role_BitDepth ).toInt(),
                             I_item->data( TP::role_SampleRate ).toInt(),
                             I_item->data( TP::role_Bitrate ).toInt(),
-                            I_item->data( TP::role_Duration ).toInt()
+                            I_item->data( TP::role_Duration ).toInt(),
+                            TP::getReplayGainFromItem( I_item )
                             );
 
     setAudioInfoLabel( I_item );
@@ -429,22 +430,22 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
     }
     else                        // if (b_isBorderBeingPressed)
     {
-        cursorPositionType = isAtBorder(eventPosition);
+        cursorPositionType = isAtBorder( eventPosition );
         switch ( cursorPositionType )
         {
         case TP::notAtBorder:
-            if (b_isCursorResize)
+            if ( b_isCursorResize )
             {
-                setCursor(QCursor(Qt::ArrowCursor));
+                setCursor( QCursor ( Qt::ArrowCursor ) );
                 b_isCursorResize = false;
             }
             break;
 
         case TP::leftBorder:
         case TP::rightBorder:
-            if (! b_isCursorResize)
+            if ( ! b_isCursorResize )
             {
-                setCursor(QCursor(Qt::SizeHorCursor));
+                setCursor( QCursor( Qt::SizeHorCursor ) );
                 b_isCursorResize = true;
             }
             break;
@@ -454,25 +455,25 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
         }
     }
 
-    QWidget::mouseMoveEvent(event);
+    QWidget::mouseMoveEvent( event );
 }
 
 
 void
-TP_MainWindow::mouseReleaseEvent(QMouseEvent *event)
+TP_MainWindow::mouseReleaseEvent( QMouseEvent *event )
 {
     if( b_isBorderBeingPressed )
     {
         b_isBorderBeingPressed = false;
         if( !isAtBorder(event->position().toPoint()) && b_isCursorResize )
         {
-            setCursor( QCursor(Qt::ArrowCursor) );
+            setCursor( QCursor( Qt::ArrowCursor ) );
             b_isCursorResize = false;
         }
         emit signal_windowChanged();
     }
 
-    QWidget::mouseReleaseEvent(event);
+    QWidget::mouseReleaseEvent( event );
 }
 
 
@@ -633,24 +634,44 @@ TP_MainWindow::setAudioPropertyLabels(
         int             bitDepth,
         int             sampleRate,
         int             bitRate,
-        int             duration )
+        int             duration,
+        float           replayGain )
 {
-    ui->label_Format->setText( QString(" ") + I_qstr_Format + QString( " " ) );
-    ui->label_BitDepth->setText(
-                QString(" ") + ( ( bitDepth == -1 ) ? QString( "-" ) : QString::number( bitDepth ) )
-                + QString( " bits " )
-                );
-    ui->label_SampleRate->setText(
-                QString(" ") + ( ( sampleRate == -1 ) ? QString( "-" ) : QString::number( sampleRate ) )
-                + QString( " KHz " )
-                );
-    ui->label_Bitrate->setText(
-                QString(" ") + ( ( bitRate == -1 ) ? QString( "-" ) : QString::number( bitRate ) )
-                + QString( " kbps " )
-                );
-    ui->label_DurationTime->setText( convertTime( duration ) );
+    ui->label_Format->setText(
+                QString{ " " }
+                + I_qstr_Format
+                + QString{ " " } );
 
+    ui->label_BitDepth->setText(
+                QString{ " " }
+                + ( bitDepth == -1 ? QString{ "-" } : QString::number( bitDepth ) )
+                + QString{ " bits " }
+                );
+
+    ui->label_SampleRate->setText(
+                QString{ " " } +
+                ( sampleRate == -1 ? QString{ "-" } : QString::number( sampleRate ) ) +
+                QString{ " KHz " }
+                );
+
+    ui->label_Bitrate->setText(
+                QString{ " " } +
+                ( bitRate == -1 ? QString( "-" ) : QString::number( bitRate ) ) +
+                QString{ " kbps " }
+                );
+
+    ui->label_DurationTime->setText( convertTime( duration ) );
     ui->slider_Time->setRange( 0, duration );
+
+    if( replayGain )
+        ui->label_ReplayGain->setText(
+                    QString{ " " } +
+                    ( replayGain > 0 ? QString{ "+" } : QString{} ) +
+                    QString::number( replayGain, 'f', 2 ) +
+                    QString{ " dB " }
+                    );
+    else
+        ui->label_ReplayGain->setText( QString {" - dB "} );
 }
 
 
