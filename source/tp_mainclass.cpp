@@ -44,7 +44,7 @@ TP_MainClass::TP_MainClass() :
   , b_isPlaylistWindowVisible   { true }
   , audioOutput                 { new QAudioOutput { this } }
   , mediaPlayer                 { new QMediaPlayer { this } }
-  , b_isEndOfMedia              { false }
+  , b_isStopButtonPressed       { false }
   , snapStatus                  { false }
   , snapPosition_playlistWindow {}
 {
@@ -476,7 +476,7 @@ TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeT
         default:
             break;
         }       // switch( snapType )
-    }   //if ( window != mainWindow )
+    }       //if ( window != mainWindow )
 
 RESIZE_End_of_snap_to_main_window:
 
@@ -673,6 +673,13 @@ TP_MainClass::slot_previousButtonPushed()
 
 
 void
+TP_MainClass::slot_stopButtonPushed()
+{
+    b_isStopButtonPressed = true;
+    mediaPlayer->stop();
+}
+
+void
 TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 {
     TP::playbackState() = newState;
@@ -696,7 +703,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
         TP::PlayMode mode { TP::config().getPlayMode() };
 
-        if( b_isEndOfMedia && mode != TP::singleTime )
+        if( ! b_isStopButtonPressed && mode != TP::singleTime )
             switch( mode )
             {
             case TP::repeat :
@@ -719,7 +726,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
             playlistWindow->unsetCurrentItemBold();
         }
 
-        b_isEndOfMedia = false;
+        b_isStopButtonPressed = false;
         break;
     }
 }
@@ -756,8 +763,6 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 
     case QMediaPlayer::EndOfMedia :
         qDebug( "[Media Player] Media status changed to EndOfMedia." );
-
-        b_isEndOfMedia = true;
         break;
 
     case QMediaPlayer::InvalidMedia :
@@ -824,7 +829,7 @@ TP_MainClass::initializeConnection()
     connect( mainWindow,    &TP_MainWindow::signal_pauseButtonPushed,
              mediaPlayer,   &QMediaPlayer::pause );
     connect( mainWindow,    &TP_MainWindow::signal_stopButtonPushed,
-             mediaPlayer,   &QMediaPlayer::stop );
+             this,          &TP_MainClass::slot_stopButtonPushed );
 
     connect( mainWindow,    &TP_MainWindow::signal_timeSliderPressed,
              this,          &TP_MainClass::slot_changePlayingPosition );
