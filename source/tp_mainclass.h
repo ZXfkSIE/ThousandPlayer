@@ -55,7 +55,7 @@ private slots:
     void slot_playButtonPushed();
     void slot_nextButtonPushed();
     void slot_previousButtonPushed();
-    void slot_stopButtonPushed();
+    void slot_interruptingStopTriggered();
 
     void slot_playbackStateChanged ( QMediaPlayer::PlaybackState newState );
     void slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status );
@@ -90,7 +90,7 @@ private:
     QAudioOutput *      audioOutput;
     QMediaPlayer *      mediaPlayer;
     float               linearVolume;
-    bool                b_isStopButtonPressed;
+    bool                b_isStopInterrupting;
 
     bool snapStatus [ TP::numberOfWindows ][ TP::numberOfWindows ];
     QPoint snapPosition_playlistWindow;

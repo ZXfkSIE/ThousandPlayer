@@ -44,7 +44,7 @@ TP_MainClass::TP_MainClass() :
   , b_isPlaylistWindowVisible   { true }
   , audioOutput                 { new QAudioOutput { this } }
   , mediaPlayer                 { new QMediaPlayer { this } }
-  , b_isStopButtonPressed       { false }
+  , b_isStopInterrupting        { false }
   , snapStatus                  { false }
   , snapPosition_playlistWindow {}
 {
@@ -673,9 +673,9 @@ TP_MainClass::slot_previousButtonPushed()
 
 
 void
-TP_MainClass::slot_stopButtonPushed()
+TP_MainClass::slot_interruptingStopTriggered()
 {
-    b_isStopButtonPressed = true;
+    b_isStopInterrupting = true;
     mediaPlayer->stop();
 }
 
@@ -703,7 +703,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
         TP::PlayMode mode { TP::config().getPlayMode() };
 
-        if( ! b_isStopButtonPressed && mode != TP::singleTime )
+        if( ! b_isStopInterrupting && mode != TP::singleTime )
             switch( mode )
             {
             case TP::repeat :
@@ -726,7 +726,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
             playlistWindow->unsetCurrentItemBold();
         }
 
-        b_isStopButtonPressed = false;
+        b_isStopInterrupting = false;
         break;
     }
 }
@@ -829,7 +829,7 @@ TP_MainClass::initializeConnection()
     connect( mainWindow,    &TP_MainWindow::signal_pauseButtonPushed,
              mediaPlayer,   &QMediaPlayer::pause );
     connect( mainWindow,    &TP_MainWindow::signal_stopButtonPushed,
-             this,          &TP_MainClass::slot_stopButtonPushed );
+             this,          &TP_MainClass::slot_interruptingStopTriggered );
 
     connect( mainWindow,    &TP_MainWindow::signal_timeSliderPressed,
              this,          &TP_MainClass::slot_changePlayingPosition );
@@ -1028,7 +1028,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 #endif
                                  ) )
     {
-        mediaPlayer->stop();
+        slot_interruptingStopTriggered();
 
         const auto &extension { TP::extension ( qstr_localFilePath ) };
 
@@ -1104,7 +1104,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         mediaPlayer->play();
     }       // if( std::filesystem::exists
     else
-        mediaPlayer->stop();
+        slot_interruptingStopTriggered();
 }
 
 

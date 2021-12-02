@@ -14,6 +14,7 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QThreadPool>
 
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget                 { parent }

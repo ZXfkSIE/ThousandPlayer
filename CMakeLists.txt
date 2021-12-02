@@ -36,11 +36,10 @@ elseif(UNIX)
     pkg_check_modules(TAGLIB REQUIRED taglib)
 endif()
 
-find_package(Qt6 6.2.1...6.2.114514 COMPONENTS
+find_package(Qt6 6.2.2...6.2.114514 COMPONENTS
     Widgets
     Multimedia
     LinguistTools
-    Test
     REQUIRED
     )
 
