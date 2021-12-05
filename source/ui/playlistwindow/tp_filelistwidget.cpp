@@ -13,12 +13,10 @@
 
 #include <stack>
 
-TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
+TP_FileListWidget::TP_FileListWidget( QWidget *parent ) :
     QListWidget     { parent }
   , previousItem    {}
   , nextItem        {}
-  , qstr_listName   { I_qstr }
-  , b_isConnected   { false }
   , qstr_keyword    {}
 {
     setMouseTracking( true );
@@ -29,22 +27,6 @@ TP_FileListWidget::TP_FileListWidget( QWidget *parent, const QString &I_qstr ) :
     setStyleSheet( "color: rgb(255, 255, 255);" );
 
     initializeMenu();
-
-    qDebug() << "[File List] emit signal_newFileListWidgetCreated (list name is" << qstr_listName << ")";
-}
-
-
-void
-TP_FileListWidget::setListName( const QString &I_qstr )
-{
-    qstr_listName = I_qstr;
-}
-
-
-QString
-TP_FileListWidget::getListName() const
-{
-    return qstr_listName;
 }
 
 void
@@ -56,25 +38,23 @@ TP_FileListWidget::setCurrentItemBold()
         return;
     }
 
-    const QUrl lURL = TP::currentItem()->data( TP::role_URL ).toUrl();
-    for( size_t i {}; i < count(); i++ )
+    auto idx_target { row( TP::currentItem() ) };
+    for( unsigned i {}; i < count(); i++ )
     {
-        const QUrl rURL = item( i )->data( TP::role_URL ).toUrl();
-        if( lURL == rURL )
+        auto *item_i { item( i ) };
+        if( i == idx_target )
         {
-            QFont font = item( i )->font();
-            item( i )->font();
+            auto font { item_i->font() };
             font.setBold( true );
-            item( i )->setFont( font );
-            item( i )->setBackground( QColor( "#444" ) );
+            item_i->setFont( font );
+            item_i->setBackground( QColor( "#444" ) );
         }
         else
         {
-            QFont font = item( i )->font();
-            item( i )->font();
+            auto font { item_i->font() };
             font.setBold( false );
-            item( i )->setFont( font );
-            item( i )->setBackground( QColor( "#777" ) );
+            item_i->setFont( font );
+            item_i->setBackground( QColor( "#777" ) );
         }
     }
 }
@@ -85,7 +65,7 @@ TP_FileListWidget::unsetCurrentItemBold()
 {
     for ( size_t i {}; i < count(); i++ )
     {
-        QFont font = item( i )->font();
+        auto font = item( i )->font();
         font.setBold( false );
         item( i )->setFont( font );
         item( i )->setBackground( QColor("#777") );
@@ -271,7 +251,7 @@ TP_FileListWidget::refreshShowingTitle( int idx_Min, const int idx_Max )
 void
 TP_FileListWidget::clearUnselectedItems()
 {
-    qsizetype numberOfSelectedItems { selectedItems().size() };
+    auto numberOfSelectedItems { selectedItems().size() };
 
     // No item is selected or all items are selected
     if(     ! numberOfSelectedItems
@@ -287,7 +267,7 @@ TP_FileListWidget::clearUnselectedItems()
 void
 TP_FileListWidget::clearInaccessibleItems()
 {
-    for( size_t i {}; i < count(); i++ )
+    for( unsigned i {}; i < count(); i++ )
     {
         switch ( item( i )->data( TP::role_SourceType ).value< TP::SourceType >() )
         {
@@ -350,7 +330,7 @@ TP_FileListWidget::deleteSelectedItems()
 
     if( messageBox.exec() == QMessageBox::Yes )
     {
-        size_t failureCount {};
+        unsigned failureCount {};
 
         for( QListWidgetItem *selectedItem : selectedItems() )
         {
@@ -395,7 +375,7 @@ TP_FileListWidget::deleteSelectedItems()
 void
 TP_FileListWidget::reverseSelection()
 {
-    for( size_t i {}; i < count(); i++ )
+    for( unsigned i {}; i < count(); i++ )
         item( i )->setSelected( ! item( i )->isSelected() );
 }
 
@@ -445,7 +425,7 @@ TP_FileListWidget::sortByData( const int role, const bool isDescending )
         auto [left, right] = stack.top();
         low = left, high = right;
         stack.pop();
-        QListWidgetItem *pivot = item( left )->clone();
+        auto *pivot = item( left )->clone();
 
         while( low < high )
         {
@@ -673,9 +653,9 @@ TP_FileListWidget::searchByData( const QString      &I_qstr_keyword,
     b_isArtistSearched      = isArtistSearched;
     b_isTitleSearched       = isTitleSearched;
 
-    for( qsizetype i { startingIndex }; i < count(); i++ )
+    for( auto i { startingIndex }; i < count(); i++ )
     {
-        QListWidgetItem *currentItem = item( i );
+        auto *currentItem = item( i );
 
         if(     isFilenameSearched &&
                 currentItem->data( TP::role_FileName ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
@@ -694,7 +674,7 @@ TP_FileListWidget::searchByData( const QString      &I_qstr_keyword,
         // If the audio doesn't contain a valid title, search filename instead.
         if( isTitleSearched )
         {
-            QString title { currentItem->data( TP::role_Title ).toString() };
+            auto title { currentItem->data( TP::role_Title ).toString() };
             if(     title.size() && title.contains( qstr_keyword, Qt::CaseInsensitive )
                 ||
                     ! isFilenameSearched &&
@@ -746,7 +726,7 @@ TP_FileListWidget::findNext()
 void
 TP_FileListWidget::slot_clearSelectedItems()
 {
-    qsizetype numberOfSelectedItems { selectedItems().size() };
+    auto numberOfSelectedItems { selectedItems().size() };
 
     // No item is selected
     if( numberOfSelectedItems == 0 )
@@ -759,7 +739,7 @@ TP_FileListWidget::slot_clearSelectedItems()
         return;
     }
 
-    for( QListWidgetItem *selectedItem : selectedItems() )
+    for( auto *selectedItem : selectedItems() )
     {
         if( previousItem == selectedItem )
             previousItem = nullptr;
@@ -784,7 +764,7 @@ TP_FileListWidget::slot_clearSelectedItems()
 
 
 void
-TP_FileListWidget::dropEvent(QDropEvent *event)
+TP_FileListWidget::dropEvent( QDropEvent *event )
 {
     if ( b_isLeftButtonPressed )
         b_isLeftButtonPressed = false;
@@ -844,7 +824,7 @@ TP_FileListWidget::mouseReleaseEvent( QMouseEvent *event )
 void
 TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
 {
-    QListWidgetItem *clickedItem = itemAt ( event->pos() );
+    auto *clickedItem = itemAt ( event->pos() );
 
     if ( clickedItem == nullptr )
         return;
@@ -866,11 +846,12 @@ TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
 void
 TP_FileListWidget::initializeMenu()
 {
+    menu_rightClick = new TP_Menu { this };
+
     action_remove = new QAction { tr( "&Remove" ), this };
 
-    connect(action_remove,  &QAction::triggered,
-            this,           &TP_FileListWidget::slot_clearSelectedItems);
+    connect( action_remove, &QAction::triggered,
+             this,          &TP_FileListWidget::slot_clearSelectedItems );
 
-    menu_rightClick = new TP_Menu { this };
     menu_rightClick->addAction( action_remove );
 }

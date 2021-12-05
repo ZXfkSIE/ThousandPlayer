@@ -6,8 +6,6 @@
 #include <QFont>
 #include <QListWidget>
 
-#include <vector>
-
 class TP_FileListWidget;
 class TP_Menu;
 class TP_ProgressDialog;
@@ -45,9 +43,10 @@ signals:
 
     void signal_shown();
     void signal_hidden();
-    void signal_newFileListWidgetCreated( TP_FileListWidget *I_fileListWidget );
 
+    // Generated from FileListWidget
     void signal_currentItemRemoved();
+    void signal_itemDoubleClicked( QListWidgetItem *I_item );
 
 public slots:
     void slot_clearPreviousAndNext();
@@ -62,7 +61,12 @@ private slots:
 
     void slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType );
 
-    void slot_newFileListWidgetCreated( TP_FileListWidget *I_fileListWidget );
+    void slot_fileListRemoved( TP_FileListWidget *I_fileListWidget );
+    void slot_fileListCreated( TP_FileListWidget *I_fileListWidget );
+    void slot_fileListSwitched( TP_FileListWidget *I_fileListWidget );
+
+    void slot_currentItemRemoved();
+    void slot_itemDoubleClicked( QListWidgetItem *I_item );
 
     void on_pushButton_Close_clicked();
 
@@ -102,13 +106,8 @@ private:
 
     // void storePlaylist();
 
-    void switchList( TP_FileListWidget *fileListWidget );
-    void addFilesToCurrentList( const QList< QUrl >& urlList );
-
-    QHBoxLayout *layout_FileListFrame;
-
-    TP_FileListWidget *currentFileListWidget;
-    std::vector<TP_FileListWidget *> vec_FileListWidget;
+    TP_FileListWidget * currentFileListWidget();
+    void                addFilesToCurrentList( const QList< QUrl >& urlList );
 
     TP_Menu *menu_Add;
     TP_Menu *menu_Remove;

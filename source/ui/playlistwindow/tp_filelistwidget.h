@@ -13,10 +13,7 @@ class TP_FileListWidget : public QListWidget
     Q_OBJECT
 
 public:
-    explicit TP_FileListWidget( QWidget *parent, const QString &I_qstr );
-
-    void setListName( const QString &I_qstr );
-    QString getListName() const;
+    explicit TP_FileListWidget( QWidget *parent );
 
     void setCurrentItemBold();
     void unsetCurrentItemBold();
@@ -53,12 +50,12 @@ public slots:
     void slot_clearSelectedItems();
 
 private:
-    void dropEvent( QDropEvent *event ) override;
-    void mousePressEvent( QMouseEvent *event ) override;
-    void mouseDoubleClickEvent( QMouseEvent *event ) override;
-    void mouseMoveEvent( QMouseEvent *event ) override;
-    void mouseReleaseEvent( QMouseEvent *event ) override;
-    void contextMenuEvent( QContextMenuEvent *event ) override;
+    void dropEvent              ( QDropEvent *event ) override;
+    void mousePressEvent        ( QMouseEvent *event ) override;
+    void mouseDoubleClickEvent  ( QMouseEvent *event ) override;
+    void mouseMoveEvent         ( QMouseEvent *event ) override;
+    void mouseReleaseEvent      ( QMouseEvent *event ) override;
+    void contextMenuEvent       ( QContextMenuEvent *event ) override;
 
     void initializeMenu();
 
@@ -68,8 +65,6 @@ private:
     // previousItem & currentItem are only used in shuffle mode
     QListWidgetItem *previousItem, *nextItem;
 
-    QString qstr_listName;
-    bool    b_isConnected;
     bool    b_isLeftButtonPressed;
 
     QString         qstr_keyword;

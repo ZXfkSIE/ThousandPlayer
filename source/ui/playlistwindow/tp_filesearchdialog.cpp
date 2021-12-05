@@ -9,7 +9,7 @@ TP_FileSearchDialog::TP_FileSearchDialog( QWidget *parent ) :
 {
     ui->setupUi( this );
 
-    setWindowIcon( QIcon{":/image/icon_FileSearchDialog.svg"} );
+    setWindowIcon( QIcon{ ":/image/icon_FileSearchDialog.svg" } );
 }
 
 

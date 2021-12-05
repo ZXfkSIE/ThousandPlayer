@@ -214,7 +214,7 @@ background-color: #777;</string>
           <enum>QAbstractItemView::InternalMove</enum>
          </property>
         </widget>
-        <widget class="QFrame" name="frame_FileList">
+        <widget class="QStackedWidget" name="stackedWidget_FileList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>4</horstretch>

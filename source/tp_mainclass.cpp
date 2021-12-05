@@ -609,17 +609,6 @@ TP_MainClass::slot_refreshSnapStatus()
 
 
 void
-TP_MainClass::slot_connectFilelistWidget( TP_FileListWidget *I_FilelistWidget )
-{
-    qDebug() << "[Main Class] slot_connectFilelistWidget: list name is" << I_FilelistWidget->getListName();
-    connect(I_FilelistWidget,   &TP_FileListWidget::signal_currentItemRemoved,
-            mediaPlayer,        &QMediaPlayer::stop);
-    connect(I_FilelistWidget,   &TP_FileListWidget::itemDoubleClicked,
-            this,               &TP_MainClass::slot_itemDoubleClicked);
-}
-
-
-void
 TP_MainClass::slot_itemDoubleClicked( QListWidgetItem *I_item )
 {
     // Double clicking list item interrupts the playing order.
@@ -801,7 +790,7 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
     if( mediaPlayer->playbackState() != QMediaPlayer::PlayingState )
         return;
 
-    const auto multiplier = std::pow( 10, TP::getReplayGainFromItem( TP::currentItem() ) / 20.0 );         // 10^(Gain/20)
+    const auto multiplier = std::pow( 10, TP::getReplayGainFromItem( TP::currentItem() ) / 20.0 );  // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }
 
@@ -889,9 +878,12 @@ TP_MainClass::initializeConnection()
     connect( configWindow,      &TP_ConfigWindow::signal_audioDeviceChanged,
              audioOutput,       &QAudioOutput::setDevice );
 
-    // Make PlaylistWindow be able to emit signal for connecting its FileListWidget
-    connect(playlistWindow, &TP_PlaylistWindow::signal_newFileListWidgetCreated,
-            this,           &TP_MainClass::slot_connectFilelistWidget);
+
+    // Signals from FileListWidgets through PlaylistWindow
+    connect( playlistWindow,    &TP_PlaylistWindow::signal_currentItemRemoved,
+             this,              &TP_MainClass::slot_interruptingStopTriggered );
+    connect( playlistWindow,    &TP_PlaylistWindow::signal_itemDoubleClicked,
+             this,              &TP_MainClass::slot_itemDoubleClicked );
 }
 
 

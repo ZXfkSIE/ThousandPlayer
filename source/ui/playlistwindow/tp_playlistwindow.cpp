@@ -19,8 +19,6 @@
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget                 { parent }
   , ui                      { new Ui::TP_PlaylistWindow }
-  , currentFileListWidget   {}
-  , vec_FileListWidget      {}
   , progressDialog          { new TP_ProgressDialog {
                                 tr( "Reading files..." ),   // const QString &labelText
                                 tr( "Abort" ),              // const QString &cancelButtonText
@@ -32,11 +30,6 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     ui->setupUi( this );
     // Qt::Tool is used for getting rid of the window tab in taskbar
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
-
-
-
-    layout_FileListFrame = new QHBoxLayout { ui->frame_FileList };
-    layout_FileListFrame->setContentsMargins( 0, 0, 0, 0 );
 
     ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
 
@@ -72,15 +65,8 @@ TP_PlaylistWindow::initializePlaylist()
     else*/
     {
         qDebug() << "Existing playlist not found. Creating default playlist and filelist.";
-        ui->playlistsWidget->addItem( tr( "Default" ) );
-        ui->playlistsWidget->setCurrentRow( 0 );
 
-        TP_FileListWidget *newWidget { new TP_FileListWidget{ ui->frame_FileList, tr( "Default" ) } };
-        vec_FileListWidget.push_back( newWidget );
-        ui->playlistsWidget->item( 0 )->setData( Qt::UserRole, QVariant::fromValue( newWidget ) );
-
-        switchList( newWidget );
-        emit signal_newFileListWidgetCreated( newWidget );
+        ui->playlistsWidget->addNewList( tr( "Default" ) );
     }
 }
 
@@ -88,21 +74,21 @@ TP_PlaylistWindow::initializePlaylist()
 void
 TP_PlaylistWindow::setCurrentItem( QListWidgetItem * I_item )
 {
-    currentFileListWidget->setCurrentItem( I_item );
+    currentFileListWidget()->setCurrentItem( I_item );
 }
 
 
 void
 TP_PlaylistWindow::setCurrentItemBold()
 {
-    currentFileListWidget->setCurrentItemBold();
+    currentFileListWidget()->setCurrentItemBold();
 }
 
 
 void
 TP_PlaylistWindow::unsetCurrentItemBold()
 {
-    currentFileListWidget->unsetCurrentItemBold();
+    currentFileListWidget()->unsetCurrentItemBold();
 }
 
 
@@ -111,9 +97,9 @@ void
 TP_PlaylistWindow::refreshShowingTitle( QListWidgetItem *I_item )
 {
     int index {
-        currentFileListWidget->indexFromItem( TP::currentItem() ).row()
+        currentFileListWidget()->indexFromItem( TP::currentItem() ).row()
     };
-    currentFileListWidget->refreshShowingTitle( index, index );
+    currentFileListWidget()->refreshShowingTitle( index, index );
 
 }
 
@@ -121,35 +107,35 @@ TP_PlaylistWindow::refreshShowingTitle( QListWidgetItem *I_item )
 QListWidgetItem *
 TP_PlaylistWindow::getCurrentItem()
 {
-    return currentFileListWidget->getCurrentItem();
+    return currentFileListWidget()->getCurrentItem();
 }
 
 
 QListWidgetItem *
 TP_PlaylistWindow::getNextItem()
 {
-    return currentFileListWidget->getNextItem();
+    return currentFileListWidget()->getNextItem();
 }
 
 
 QListWidgetItem *
 TP_PlaylistWindow::getPreviousItem()
 {
-    return currentFileListWidget->getPreviousItem();
+    return currentFileListWidget()->getPreviousItem();
 }
 
 
 QListWidgetItem *
 TP_PlaylistWindow::getNextItem_shuffle()
 {
-    return currentFileListWidget->getNextItem_shuffle();
+    return currentFileListWidget()->getNextItem_shuffle();
 }
 
 
 QListWidgetItem *
 TP_PlaylistWindow::getPreviousItem_shuffle()
 {
-    return currentFileListWidget->getPreviousItem_shuffle();
+    return currentFileListWidget()->getPreviousItem_shuffle();
 }
 
 // *****************************************************************
@@ -159,7 +145,7 @@ TP_PlaylistWindow::getPreviousItem_shuffle()
 void
 TP_PlaylistWindow::slot_clearPreviousAndNext()
 {
-    currentFileListWidget->clearPreviousAndNext();
+    currentFileListWidget()->clearPreviousAndNext();
 }
 
 
@@ -175,7 +161,7 @@ void
 TP_PlaylistWindow::slot_changeFontOfLists()
 {
     const auto font { TP::config().getPlaylistFont() };
-    currentFileListWidget->setFont( font );
+    currentFileListWidget()->setFont( font );
     ui->playlistsWidget->setFont( font );
 }
 
@@ -205,9 +191,51 @@ TP_PlaylistWindow::slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType re
 
 
 void
-TP_PlaylistWindow::slot_newFileListWidgetCreated( TP_FileListWidget *I_fileListWidget )
+TP_PlaylistWindow::slot_fileListRemoved( TP_FileListWidget *I_fileListWidget )
 {
-    emit signal_newFileListWidgetCreated( I_fileListWidget );
+    qDebug( "[TP_PlaylistWindow] slot_fileListRemoved" );
+    ui->stackedWidget_FileList->removeWidget( I_fileListWidget );
+    delete I_fileListWidget;
+}
+
+
+void
+TP_PlaylistWindow::slot_fileListCreated( TP_FileListWidget *I_fileListWidget )
+{
+    qDebug( "[TP_PlaylistWindow] slot_fileListCreated" );
+
+    connect( I_fileListWidget,  &TP_FileListWidget::signal_currentItemRemoved,
+             this,              &TP_PlaylistWindow::slot_currentItemRemoved );
+    connect( I_fileListWidget,  &TP_FileListWidget::itemDoubleClicked,
+             this,              &TP_PlaylistWindow::slot_itemDoubleClicked );
+
+    I_fileListWidget->setParent( ui->stackedWidget_FileList );
+    ui->stackedWidget_FileList->addWidget( I_fileListWidget );
+}
+
+
+void
+TP_PlaylistWindow::slot_fileListSwitched( TP_FileListWidget *I_fileListWidget )
+{
+    qDebug( "[TP_PlaylistWindow] slot_fileListSwitched" );
+    ui->stackedWidget_FileList->setCurrentWidget( I_fileListWidget );
+    TP::currentItem() = nullptr;
+    emit signal_currentItemRemoved();
+    slot_changeFontOfLists();
+}
+
+
+void
+TP_PlaylistWindow::slot_currentItemRemoved()
+{
+    emit signal_currentItemRemoved();
+}
+
+
+void
+TP_PlaylistWindow::slot_itemDoubleClicked( QListWidgetItem *I_item )
+{
+    emit signal_itemDoubleClicked( I_item );
 }
 
 
@@ -279,102 +307,102 @@ TP_PlaylistWindow::on_action_addFolder_triggered()
 void
 TP_PlaylistWindow::on_action_clearSelectedItems_triggered()
 {
-    currentFileListWidget->slot_clearSelectedItems();
+    currentFileListWidget()->slot_clearSelectedItems();
 }
 
 
 void
 TP_PlaylistWindow::on_action_clearUnselectedItems_triggered()
 {
-    currentFileListWidget->clearUnselectedItems();
+    currentFileListWidget()->clearUnselectedItems();
 }
 
 
 void
 TP_PlaylistWindow::on_action_clearAllItems_triggered()
 {
-    currentFileListWidget->clearAllItems();
+    currentFileListWidget()->clearAllItems();
 }
 
 
 void
 TP_PlaylistWindow::on_action_clearInaccessibleItems_triggered()
 {
-    currentFileListWidget->clearInaccessibleItems();
+    currentFileListWidget()->clearInaccessibleItems();
 }
 
 
 void
 TP_PlaylistWindow::on_action_deleteFromDisk_triggered()
 {
-    currentFileListWidget->deleteSelectedItems();
+    currentFileListWidget()->deleteSelectedItems();
 }
 
 
 void
 TP_PlaylistWindow::on_action_selectAll_triggered()
 {
-    currentFileListWidget->selectAll();
+    currentFileListWidget()->selectAll();
 }
 
 
 void
 TP_PlaylistWindow::on_action_unselectAll_triggered()
 {
-    currentFileListWidget->clearSelection();
+    currentFileListWidget()->clearSelection();
 }
 
 
 void
 TP_PlaylistWindow::on_action_reverseSelection_triggered()
 {
-    currentFileListWidget->reverseSelection();
+    currentFileListWidget()->reverseSelection();
 }
 
 
 void
 TP_PlaylistWindow::on_action_sortByDuration_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_Duration, b_isDescending );
+    currentFileListWidget()->sortByData( TP::role_Duration, b_isDescending );
 }
 
 
 void
 TP_PlaylistWindow::on_action_sortByPath_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_URL, b_isDescending );
+    currentFileListWidget()->sortByData( TP::role_URL, b_isDescending );
 }
 
 
 void
 TP_PlaylistWindow::on_action_sortByFilename_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_FileName, b_isDescending );
+    currentFileListWidget()->sortByData( TP::role_FileName, b_isDescending );
 }
 
 
 void
 TP_PlaylistWindow::on_action_sortByDescription_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_Description, b_isDescending );
+    currentFileListWidget()->sortByData( TP::role_Description, b_isDescending );
 }
 
 
 void TP_PlaylistWindow::on_action_sortByAlbum_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_Album, b_isDescending );
+    currentFileListWidget()->sortByData( TP::role_Album, b_isDescending );
 }
 
 
 void TP_PlaylistWindow::on_action_sortByArtist_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_Artist, b_isDescending );
+    currentFileListWidget()->sortByData( TP::role_Artist, b_isDescending );
 }
 
 
 void TP_PlaylistWindow::on_action_sortByTitle_triggered()
 {
-    currentFileListWidget->sortByData( TP::role_Title, b_isDescending );
+    currentFileListWidget()->sortByData( TP::role_Title, b_isDescending );
 }
 
 
@@ -388,13 +416,13 @@ TP_PlaylistWindow::on_action_setDescending_triggered( bool checked )
 void
 TP_PlaylistWindow::on_action_find_triggered()
 {
-    if( ! currentFileListWidget->count() )
+    if( ! currentFileListWidget()->count() )
         return;
 
     TP_FileSearchDialog fileSearchDialog { this };
     fileSearchDialog.setModal( true );
     if( fileSearchDialog.exec() == QDialog::Accepted )
-        currentFileListWidget->searchByData(
+        currentFileListWidget()->searchByData(
                     fileSearchDialog.getKeyword(),
                     0,
                     fileSearchDialog.isFilenameSearched(),
@@ -408,10 +436,10 @@ TP_PlaylistWindow::on_action_find_triggered()
 void
 TP_PlaylistWindow::on_action_findNext_triggered()
 {
-    if( ! currentFileListWidget->count() )
+    if( ! currentFileListWidget()->count() )
         return;
 
-    currentFileListWidget->findNext();
+    currentFileListWidget()->findNext();
 }
 
 
@@ -518,6 +546,14 @@ TP_PlaylistWindow::initializeConnection()
              this,                  &TP_PlaylistWindow::slot_resizeWindow );
     connect( ui->frame_Bottom,      &TP_PlaylistBottomFrame::signal_leftButtonReleased,
              this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
+
+    // PlaylistsWidget related
+    connect( ui->playlistsWidget,   &TP_PlaylistsWidget::signal_fileListCreated,
+             this,                  &TP_PlaylistWindow::slot_fileListCreated );
+    connect( ui->playlistsWidget,   &TP_PlaylistsWidget::signal_fileListRemoved,
+             this,                  &TP_PlaylistWindow::slot_fileListRemoved );
+    connect( ui->playlistsWidget,   &TP_PlaylistsWidget::signal_fileListSwitched,
+             this,                  &TP_PlaylistWindow::slot_fileListSwitched );
 }
 
 /*
@@ -536,25 +572,17 @@ TP_PlaylistWindow::storePlaylist()
 }
 */
 
-
-void
-TP_PlaylistWindow::switchList( TP_FileListWidget *fileListWidget )
+TP_FileListWidget *
+TP_PlaylistWindow::currentFileListWidget()
 {
-    if( fileListWidget != currentFileListWidget )
-    {
-        if( currentFileListWidget )
-            layout_FileListFrame->removeWidget( currentFileListWidget );
-        layout_FileListFrame->addWidget( currentFileListWidget = fileListWidget );
-    }
-
-    slot_changeFontOfLists();
+    return static_cast< TP_FileListWidget * >( ui->stackedWidget_FileList->currentWidget() );
 }
 
 
 void
 TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl >& fileURLs )
 {
-    int originalCount { currentFileListWidget->count() };
+    int originalCount { currentFileListWidget()->count() };
 
     progressDialog->reset();
     progressDialog->setMaximum( fileURLs.size() );
@@ -563,15 +591,15 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl >& fileURLs )
 
     for ( const QUrl& fileURL: fileURLs )
     {
-        QListWidgetItem *item = new QListWidgetItem { currentFileListWidget };
+        QListWidgetItem *item = new QListWidgetItem { currentFileListWidget() };
         item->setData( TP::role_URL, fileURL );         // set URL
         item->setData( TP::role_SourceType, TP::singleFile );
-        currentFileListWidget->addItem( item );
+        currentFileListWidget()->addItem( item );
     }
 
     const int step { 10 };
     int nextPercent { step };
-    const int count { currentFileListWidget->count() };
+    const int count { currentFileListWidget()->count() };
 
     for ( size_t i {}; i < count; i++ )
     {
@@ -582,7 +610,7 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl >& fileURLs )
         }
 
         QThreadPool::globalInstance()->start(
-                    new TP_Runnable_FileReader{ currentFileListWidget->item( i ) }
+                    new TP_Runnable_FileReader{ currentFileListWidget()->item( i ) }
                     );
 
         if( progressDialog->wasCanceled() )
@@ -593,6 +621,6 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl >& fileURLs )
     }
 
     QThreadPool::globalInstance()->waitForDone();
-    currentFileListWidget->refreshShowingTitle( originalCount - 1, count - 1 );
+    currentFileListWidget()->refreshShowingTitle( originalCount - 1, count - 1 );
     progressDialog->cancel();
 }
