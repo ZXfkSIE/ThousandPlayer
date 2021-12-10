@@ -21,6 +21,7 @@ namespace TP
     std::mt19937 &                  randomEngine();
     QListWidgetItem *&              currentItem();
     QMediaPlayer::PlaybackState &   playbackState();
+    QString                         playlistFilePath();
 }
 
 #endif // TP_GLOBALVARIABLE_H

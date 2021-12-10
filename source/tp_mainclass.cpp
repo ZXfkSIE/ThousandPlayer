@@ -53,7 +53,7 @@ TP_MainClass::TP_MainClass() :
 
     initializeConnection();
 
-    playlistWindow->initializePlaylist();       // Must be executed before showing
+    // playlistWindow->initializePlaylist();       // Must be executed before showing
 
     mainWindow->initializeVolume();
 }
@@ -77,8 +77,8 @@ TP_MainClass::~TP_MainClass()
         TP::config().setPlaylistWindowShown( false );
     }
 
-    delete configWindow;
     delete mainWindow;
+    delete configWindow;
     delete playlistWindow;
 }
 
@@ -95,7 +95,7 @@ TP_MainClass::slot_checkIfServiceAvailable()
     {
         QMessageBox msgBox_ServiceNotAvailable (
                     QMessageBox::Critical,
-                    tr( "Not available" ),
+                    tr( "Not Available" ),
                     tr( "QMediaPlayer is not supported on this platform.\n"
                         "The program will quit now." ),
                     QMessageBox::NoButton );

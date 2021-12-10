@@ -10,7 +10,7 @@ class TP_FileListWidget;
 class TP_Menu;
 class TP_ProgressDialog;
 
-class QHBoxLayout;
+class QJsonDocument;
 
 namespace Ui { class TP_PlaylistWindow; }
 
@@ -21,8 +21,6 @@ class TP_PlaylistWindow : public QWidget
 public:
     explicit TP_PlaylistWindow( QWidget *parent = nullptr );
     ~TP_PlaylistWindow();
-
-    void initializePlaylist();
 
     void setCurrentItem( QListWidgetItem *I_item );
     void setCurrentItemBold();
@@ -103,11 +101,13 @@ private:
 
     void initializeMenu();
     void initializeConnection();
+    void initializePlaylist();
 
-    // void storePlaylist();
+    void createPlaylistFromJSON( const QJsonDocument &I_jDoc );
+    void storePlaylist();
 
     TP_FileListWidget * currentFileListWidget();
-    void                addFilesToCurrentList( const QList< QUrl >& urlList );
+    void                addFilesToCurrentList( const QList< QUrl > &urlList );
 
     TP_Menu *menu_Add;
     TP_Menu *menu_Remove;

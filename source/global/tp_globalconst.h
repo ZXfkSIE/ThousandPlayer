@@ -1,11 +1,10 @@
 ﻿#ifndef TP_GLOBALCONST_H
-#define TP_GLOBALCOSNT_H
+#define TP_GLOBALCONST_H
 
 #include <QString>
 
 namespace TP
 {
-
 static const unsigned numberOfWindows   = 3;
 static const unsigned mainWindow        = 0;
 static const unsigned playlistWindow    = 1;

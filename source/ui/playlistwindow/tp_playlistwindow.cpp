@@ -12,7 +12,11 @@
 
 #include <QDirIterator>
 #include <QFileDialog>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMenu>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QThreadPool>
 
@@ -33,41 +37,17 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
 
     ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
 
-    initializeConnection();
     initializeMenu();
-
-    /****************************** WARNING *****************************************
-     *  The method initializePlaylist()
-     *  need to be executed manually after TP_MainClass initialized the connections.
-     ********************************************************************************/
+    initializeConnection();
+    initializePlaylist();
 }
+
 
 TP_PlaylistWindow::~TP_PlaylistWindow()
 {
+    storePlaylist();
+
     delete ui;
-}
-
-
-void
-TP_PlaylistWindow::initializePlaylist()
-{
-    /*
-    if( std::filesystem::exists( TP::playlistFilePath.
-#ifdef Q_OS_WIN
-    toStdWString()
-#else
-    toLocal8Bit().constData()
-#endif
-    ) )
-    {
-        qDebug() << "Existing playlist " << TP::playlistFilePath << " found.";
-    }
-    else*/
-    {
-        qDebug() << "Existing playlist not found. Creating default playlist and filelist.";
-
-        ui->playlistsWidget->addNewList( tr( "Default" ) );
-    }
 }
 
 
@@ -193,7 +173,6 @@ TP_PlaylistWindow::slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType re
 void
 TP_PlaylistWindow::slot_fileListRemoved( TP_FileListWidget *I_fileListWidget )
 {
-    qDebug( "[TP_PlaylistWindow] slot_fileListRemoved" );
     ui->stackedWidget_FileList->removeWidget( I_fileListWidget );
     delete I_fileListWidget;
 }
@@ -202,8 +181,6 @@ TP_PlaylistWindow::slot_fileListRemoved( TP_FileListWidget *I_fileListWidget )
 void
 TP_PlaylistWindow::slot_fileListCreated( TP_FileListWidget *I_fileListWidget )
 {
-    qDebug( "[TP_PlaylistWindow] slot_fileListCreated" );
-
     connect( I_fileListWidget,  &TP_FileListWidget::signal_currentItemRemoved,
              this,              &TP_PlaylistWindow::slot_currentItemRemoved );
     connect( I_fileListWidget,  &TP_FileListWidget::itemDoubleClicked,
@@ -217,7 +194,6 @@ TP_PlaylistWindow::slot_fileListCreated( TP_FileListWidget *I_fileListWidget )
 void
 TP_PlaylistWindow::slot_fileListSwitched( TP_FileListWidget *I_fileListWidget )
 {
-    qDebug( "[TP_PlaylistWindow] slot_fileListSwitched" );
     ui->stackedWidget_FileList->setCurrentWidget( I_fileListWidget );
     TP::currentItem() = nullptr;
     emit signal_currentItemRemoved();
@@ -556,21 +532,132 @@ TP_PlaylistWindow::initializeConnection()
              this,                  &TP_PlaylistWindow::slot_fileListSwitched );
 }
 
-/*
+
 void
-TP_PlaylistWindow::storePlaylist()
+TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 {
-    // Pending implementation
-    if( ! std::filesystem::exists( TP::configDirectoryPath.
+
+}
+
+
+void
+TP_PlaylistWindow::initializePlaylist()
+{
+    if( std::filesystem::exists( TP::playlistFilePath().
 #ifdef Q_OS_WIN
     toStdWString()
 #else
     toLocal8Bit().constData()
 #endif
     ) )
-        std::filesystem::create_directory( TP::configDirectoryPath.toStdWString() );
+    {
+        QFile jsonFile { TP::playlistFilePath() };
+        qDebug() << "[PlaylistWindow] Reading playlists from" << jsonFile.fileName();
+        if( ! jsonFile.open( QFile::ReadOnly ) )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
+                        + tr( "Cause: %1" ).arg( jsonFile.errorString() ) + "\n"
+                        + tr( "Default playlist and filelist will be created instead." )
+                        );
+            goto CREATE_DEFAULT_LISTS;
+        }
+
+        QJsonParseError jsonParseError {};
+        QJsonDocument jDoc {
+            QJsonDocument::fromJson( jsonFile.readAll(), &jsonParseError ),
+        };
+        if( jDoc.isNull() )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
+                        + tr( "The JSON file may be empty.\n" )
+                        + tr( "Default playlist and filelist will be created instead." )
+                        );
+            goto CREATE_DEFAULT_LISTS;
+        }
+        else if( jsonParseError.error != QJsonParseError::NoError )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
+                        + tr( "Cause: %1" ).arg( jsonParseError.errorString() )
+                        + tr( " (offset: %1)\n" ).arg( jsonParseError.offset )
+                        + tr( "Default playlist and filelist will be created instead." )
+                        );
+            goto CREATE_DEFAULT_LISTS;
+        }
+
+        createPlaylistFromJSON( jDoc );
+    }
+    else
+    {
+CREATE_DEFAULT_LISTS:
+        qDebug( "[PlaylistWindow] Existing playlist not found."
+                "Creating default playlist and filelist." );
+
+        ui->playlistsWidget->addNewList( tr( "Default" ) );
+    }
 }
-*/
+
+
+void
+TP_PlaylistWindow::storePlaylist()
+{
+    QJsonArray jArray_root {};
+    auto playlistsCount { ui->playlistsWidget->count() };
+
+    for( unsigned i {}; i < playlistsCount; i++ )
+    {
+        auto *currentPlaylistItem { ui->playlistsWidget->item( i ) };
+        QJsonObject jObject_list {};
+        jObject_list[ "name" ] = currentPlaylistItem->text();
+
+        QJsonArray jArray_list {};
+        auto *currentFileList {
+            currentPlaylistItem->data( TP::role_FileListAddress ).value< TP_FileListWidget* >()
+        };
+        auto filesCount { currentFileList->count() };
+
+        for( unsigned j {}; j < filesCount; j++ )
+        {
+            QJsonObject jObject_file {};
+            auto *currentFile { currentFileList->item( j ) };
+
+            jObject_file[ "type" ] = currentFile->data( TP::role_SourceType ).toInt();
+            jObject_file[ "url" ] = currentFile->data( TP::role_URL ).toUrl().toString();
+
+            jArray_list.append( jObject_file );
+        }
+
+        jObject_list[ "fileList" ] = jArray_list;
+        jArray_root.append( jObject_list );
+    }
+
+    // Save it to File
+    QJsonDocument jDoc { jArray_root };
+    QFile jsonFile { TP::playlistFilePath() };
+    qDebug() << "[PlaylistWindow] Saving playlists to" << jsonFile.fileName();
+
+    if( jsonFile.open( QIODevice::WriteOnly )
+            && jsonFile.write( jDoc.toJson( QJsonDocument::Compact ) ) != -1 )
+    {}
+    else
+        QMessageBox::critical(
+                    this,
+                    tr( "Playlist Writing Error" ),
+                    tr( "Failed to write playlists to %1.\n" ).arg( TP::playlistFilePath() )
+                    + tr( "Cause: %1" ).arg( jsonFile.errorString() ) + "\n"
+                    + tr( "Your playlists will not be saved." )
+                        );
+
+}
+
 
 TP_FileListWidget *
 TP_PlaylistWindow::currentFileListWidget()
@@ -580,18 +667,18 @@ TP_PlaylistWindow::currentFileListWidget()
 
 
 void
-TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl >& fileURLs )
+TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &fileURLs )
 {
-    int originalCount { currentFileListWidget()->count() };
+    auto originalCount { currentFileListWidget()->count() };
 
     progressDialog->reset();
     progressDialog->setMaximum( fileURLs.size() );
     progressDialog->setValue( 0 );
     progressDialog->show();
 
-    for ( const QUrl& fileURL: fileURLs )
+    for ( const auto& fileURL: fileURLs )
     {
-        QListWidgetItem *item = new QListWidgetItem { currentFileListWidget() };
+        auto *item = new QListWidgetItem { currentFileListWidget() };
         item->setData( TP::role_URL, fileURL );         // set URL
         item->setData( TP::role_SourceType, TP::singleFile );
         currentFileListWidget()->addItem( item );
@@ -599,9 +686,9 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl >& fileURLs )
 
     const int step { 10 };
     int nextPercent { step };
-    const int count { currentFileListWidget()->count() };
+    const auto count { currentFileListWidget()->count() };
 
-    for ( size_t i {}; i < count; i++ )
+    for ( unsigned i {}; i < count; i++ )
     {
         if( i * 100 / count >= nextPercent )
         {
