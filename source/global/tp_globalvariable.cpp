@@ -41,6 +41,7 @@ TP::playlistFilePath()
 {
     static const QString path {
         QStandardPaths::writableLocation( QStandardPaths::AppConfigLocation)
-                + "/playlists.json" };
+                + "/playlists.json"
+    };
     return path;
 }

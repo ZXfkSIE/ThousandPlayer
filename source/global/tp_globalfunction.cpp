@@ -72,7 +72,7 @@ TP::storeInformation( QListWidgetItem * I_item )
     I_item->setData( TP::role_FileName,     qstr_Filename );        // set file name
 
     // set descrption, artist, title, album
-    if( qstr_title.length() == 0 )
+    if( ! qstr_title.length() )
     {
         // No title in tag, meaning that no valid tag is contained in the file
         I_item->setData( TP::role_Description, qstr_Filename );

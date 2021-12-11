@@ -77,7 +77,7 @@ QListWidgetItem *
 TP_FileListWidget::getCurrentItem()
 {
     // No item in the list
-    if ( count() == 0 )
+    if ( ! count() )
         return nullptr;
 
     // Return stored pointer
@@ -106,7 +106,7 @@ QListWidgetItem *
 TP_FileListWidget::getNextItem()
 {
     // No item in the list
-    if ( count() == 0 )
+    if ( ! count() )
         return nullptr;
 
     // Return the only item in the list
@@ -127,7 +127,7 @@ QListWidgetItem *
 TP_FileListWidget::getPreviousItem()
 {
     // No item in the list
-    if ( count() == 0 )
+    if ( ! count() )
         return nullptr;
 
     // Return the only item in the list
@@ -137,7 +137,7 @@ TP_FileListWidget::getPreviousItem()
     // Return the previous item
     int currentRow = indexFromItem( TP::currentItem() ).row();
 
-    if( currentRow == 0 )
+    if( ! currentRow )
         return TP::currentItem() = item ( count() - 1 );
     else
         return TP::currentItem() = item ( currentRow - 1 );
@@ -148,7 +148,7 @@ QListWidgetItem *
 TP_FileListWidget::getNextItem_shuffle()
 {
     // No item in the list
-    if ( count() == 0 )
+    if ( ! count() )
         return nullptr;
 
     // Return stored pointer
@@ -187,7 +187,7 @@ QListWidgetItem *
 TP_FileListWidget::getPreviousItem_shuffle()
 {
     // No item in the list
-    if ( count() == 0 )
+    if ( ! count() )
         return nullptr;
 
     // Return stored pointer
@@ -240,11 +240,11 @@ TP_FileListWidget::refreshShowingTitle( int idx_Min, const int idx_Max )
     if ( idx_Min == -1 )
         idx_Min++;
 
-    for ( int i {idx_Min}; i <= idx_Max; i++ )
+    for ( int i { idx_Min }; i <= idx_Max; i++ )
         item(i)->setText(
-                    QString("%1. ").arg(i + 1)
+                    QString("%1. ").arg( i + 1 )
                     +
-                    item(i)->data( TP::role_Description ).toString() );
+                    item( i )->data( TP::role_Description ).toString() );
 }
 
 
@@ -267,7 +267,7 @@ TP_FileListWidget::clearUnselectedItems()
 void
 TP_FileListWidget::clearInaccessibleItems()
 {
-    for( unsigned i {}; i < count(); i++ )
+    for( int i {}; i < count(); i++ )
     {
         switch ( item( i )->data( TP::role_SourceType ).value< TP::SourceType >() )
         {
@@ -276,10 +276,8 @@ TP_FileListWidget::clearInaccessibleItems()
                      item( i )->data( TP::role_URL ).toUrl().toLocalFile().toStdWString()
                      )
                  )
-            {
-                delete takeItem( i );
-                i--;
-            }
+                delete takeItem( i-- );
+
             break;
 
         default:
@@ -309,7 +307,7 @@ TP_FileListWidget::deleteSelectedItems()
     qsizetype numberOfSelectedItems { selectedItems().size() };
 
     // No item is selected
-    if( numberOfSelectedItems == 0 )
+    if( ! numberOfSelectedItems )
         return;
 
     QMessageBox messageBox (
@@ -729,7 +727,7 @@ TP_FileListWidget::slot_clearSelectedItems()
     auto numberOfSelectedItems { selectedItems().size() };
 
     // No item is selected
-    if( numberOfSelectedItems == 0 )
+    if( ! numberOfSelectedItems )
         return;
 
     // All items are selected

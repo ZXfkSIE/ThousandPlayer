@@ -21,10 +21,12 @@ TP_PlaylistsWidget::TP_PlaylistsWidget( QWidget *parent ) :
 QListWidgetItem *
 TP_PlaylistsWidget::addNewList( QString I_listName )
 {
-    auto *const newItem       { new QListWidgetItem { I_listName } };
+    auto *const newItem {
+        new QListWidgetItem { I_listName , this }
+    };
     newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
 
-    auto *const newFileList   { new TP_FileListWidget { nullptr } };      // The parent will be assigned within TP_PlaylistWindow later
+    auto *const newFileList { new TP_FileListWidget { nullptr } };      // The parent will be assigned within TP_PlaylistWindow later
     newItem->setData( TP::role_FileListAddress, QVariant::fromValue( newFileList ) );
 
     addItem( newItem );
@@ -47,7 +49,7 @@ TP_PlaylistsWidget::slot_removeCurrentItem()
     if( itemToBeDeleted == currentVisibleItem )
     {
         auto idx_target { row( itemToBeDeleted ) };
-        idx_target = idx_target == 0 ? 1 : idx_target - 1;
+        idx_target = ( ! idx_target ) ? 1 : idx_target - 1;
         slot_switchVisibleFileList( item( idx_target ) );
     }
 
