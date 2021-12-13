@@ -536,12 +536,12 @@ TP_PlaylistWindow::initializeConnection()
 QString
 TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 {
-    auto jArray_Root { I_jDoc.array() };
-    jArray_Root = jArray_Root[0].toArray();     // https://bugreports.qt.io/browse/QTBUG-99152
+    // The braces {} should not be used here
+    // since they will trigger std::initializer_list constructor.
+    const auto jArray_Root ( I_jDoc.array() );
 
     for( const auto &jValue_Playlist : jArray_Root )
     {
-        qDebug() << "jValue_Playlist:"<<jValue_Playlist;
         const auto jObject_Playlist { jValue_Playlist.toObject() };
         if( jObject_Playlist.isEmpty() )
             return tr( "jObject_Playlist is empty" );
@@ -553,32 +553,33 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         auto *const newPlaylist { ui->playlistsWidget->addNewList( listName ) };
 
         const auto jValue_FileList { jObject_Playlist[ key_FileList ] };
-        auto jArray_FileList { jValue_FileList.toArray() };
-        jArray_FileList = jArray_FileList[0].toArray();     // https://bugreports.qt.io/browse/QTBUG-99152
+        auto jArray_FileList ( jValue_FileList.toArray() );
 
         if( jArray_FileList.isEmpty() )
             continue;
 
         auto *const newFileList {
-            newPlaylist->data( TP::role_FileListAddress ).value< TP_FileListWidget * >()
+            reinterpret_cast< TP_FileListWidget * >(
+                        newPlaylist->data( TP::role_FileListAddress ).value< quintptr >()
+                        )
         };
 
         for( int i {}; i < jArray_FileList.count(); i++ )
         {
             const auto jObject_File { jArray_FileList.at( i ).toObject() };
-            if( jObject_File[ key_SourceType ] != QJsonValue::Undefined
-                    && jObject_File[ key_URL ] != QJsonValue::Undefined )
-            {
-                const TP::SourceType sourceType {
-                    static_cast< TP::SourceType >( jObject_File[ key_SourceType ].toInt() )
-                };
-                const auto fileURL {
-                    QUrl { jObject_File[ key_URL ].toString() }
-                };
+            const TP::SourceType sourceType {
+                static_cast< TP::SourceType >( jObject_File[ key_SourceType ].toInt() )
+            };
+            const auto fileURL {
+                QUrl { jObject_File[ key_URL ].toString() }
+            };
 
+            if( ! fileURL.isEmpty() )
+            {
                 auto *const item = new QListWidgetItem { newFileList };
                 item->setData( TP::role_URL, fileURL );             // set URL
                 item->setData( TP::role_SourceType, sourceType );
+
                 newFileList->addItem( item );
             }
             else
@@ -713,7 +714,9 @@ TP_PlaylistWindow::storePlaylist()
 
         QJsonArray jArray_FileList {};
         auto *const currentFileList {
-            currentPlaylistItem->data( TP::role_FileListAddress ).value< TP_FileListWidget* >()
+            reinterpret_cast< TP_FileListWidget * >(
+                        currentPlaylistItem->data( TP::role_FileListAddress ).value< quintptr >()
+                        )
         };
         const auto filesCount { currentFileList->count() };
 
@@ -734,8 +737,9 @@ TP_PlaylistWindow::storePlaylist()
 
     // Save it to File
     QJsonDocument jDoc { jArray_Root };
+
     QFile jsonFile { TP::playlistFilePath() };
-    qDebug() << "[PlaylistWindow] Saving playlists to" << jsonFile.fileName();
+    qDebug() << "[PlaylistWindow] Saving playlists to" << TP::playlistFilePath();
 
     if( jsonFile.open( QIODevice::WriteOnly )
             && jsonFile.write( jDoc.toJson( QJsonDocument::Compact ) ) != -1 )

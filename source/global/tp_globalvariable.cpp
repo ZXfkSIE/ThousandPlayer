@@ -39,8 +39,18 @@ TP::playbackState()
 QString
 TP::playlistFilePath()
 {
+    /* Ensure that the playlist storage file is stored
+     * within the same directory as config file
+     * in both Linux and Windows. */
     static const QString path {
-        QStandardPaths::writableLocation( QStandardPaths::AppConfigLocation)
+        QStandardPaths::writableLocation(
+#ifdef Q_OS_LINUX
+                    QStandardPaths::AppConfigLocation
+#endif
+#ifdef Q_OS_WIN
+                    QStandardPaths::AppDataLocation
+#endif
+                    )
                 + "/playlists.json"
     };
     return path;

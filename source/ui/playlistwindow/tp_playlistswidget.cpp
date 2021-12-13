@@ -27,7 +27,9 @@ TP_PlaylistsWidget::addNewList( QString I_listName )
     newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
 
     auto *const newFileList { new TP_FileListWidget { nullptr } };      // The parent will be assigned within TP_PlaylistWindow later
-    newItem->setData( TP::role_FileListAddress, QVariant::fromValue( newFileList ) );
+    newItem->setData( TP::role_FileListAddress,
+                      QVariant::fromValue( reinterpret_cast< quintptr >( newFileList ) )
+                      );
 
     addItem( newItem );
     emit signal_fileListCreated( newFileList );
@@ -55,7 +57,9 @@ TP_PlaylistsWidget::slot_removeCurrentItem()
 
     removeItemWidget( itemToBeDeleted );
     emit signal_fileListRemoved(
-                itemToBeDeleted->data( TP::role_FileListAddress ).value< TP_FileListWidget * >()
+                reinterpret_cast< TP_FileListWidget * >(
+                    itemToBeDeleted->data( TP::role_FileListAddress ).value< quintptr >()
+                    )
                 );
     delete itemToBeDeleted;
 }

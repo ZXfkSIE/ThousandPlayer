@@ -27,7 +27,7 @@ static const int role_Description       = Qt::UserRole + 10;    // QString      
 static const int role_ReplayGainTrack   = Qt::UserRole + 11;    // float
 static const int role_ReplayGainAlbum   = Qt::UserRole + 12;    // float
 
-static const int role_FileListAddress   = Qt::UserRole;         // TP_FileListWidget *
+static const int role_FileListAddress   = Qt::UserRole;         // TP_FileListWidget * (stored as quintptr)
 
 static const int iconSize_Play          = 20;
 static const int iconSize_Pause         = 18;

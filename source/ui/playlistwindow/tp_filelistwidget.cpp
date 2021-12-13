@@ -22,6 +22,7 @@ TP_FileListWidget::TP_FileListWidget( QWidget *parent ) :
     setMouseTracking( true );
 
     setDragDropMode( QAbstractItemView::InternalMove );
+    setDragDropOverwriteMode(true);
     setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     setStyleSheet( "color: rgb(255, 255, 255);" );
