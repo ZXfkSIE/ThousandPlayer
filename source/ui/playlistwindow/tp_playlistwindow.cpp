@@ -533,16 +533,18 @@ TP_PlaylistWindow::initializeConnection()
 }
 
 
-bool
+QString
 TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 {
-    const auto jArray_Root { I_jDoc.array() };
+    auto jArray_Root { I_jDoc.array() };
+    jArray_Root = jArray_Root[0].toArray();     // https://bugreports.qt.io/browse/QTBUG-99152
 
     for( const auto &jValue_Playlist : jArray_Root )
     {
+        qDebug() << "jValue_Playlist:"<<jValue_Playlist;
         const auto jObject_Playlist { jValue_Playlist.toObject() };
         if( jObject_Playlist.isEmpty() )
-            return false;
+            return tr( "jObject_Playlist is empty" );
 
         auto listName { jObject_Playlist[ key_ListName ].toString() };
         if( listName.isEmpty() )
@@ -552,6 +554,8 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 
         const auto jValue_FileList { jObject_Playlist[ key_FileList ] };
         auto jArray_FileList { jValue_FileList.toArray() };
+        jArray_FileList = jArray_FileList[0].toArray();     // https://bugreports.qt.io/browse/QTBUG-99152
+
         if( jArray_FileList.isEmpty() )
             continue;
 
@@ -616,7 +620,7 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         progressDialog->cancel();
     }
 
-    return true;
+    return {};
 }
 
 
@@ -649,6 +653,7 @@ TP_PlaylistWindow::initializePlaylist()
         const auto jDoc {
             QJsonDocument::fromJson( jsonFile.readAll(), &jsonParseError ),
         };
+
         if( jDoc.isNull() )
         {
             QMessageBox::critical(
@@ -673,15 +678,22 @@ TP_PlaylistWindow::initializePlaylist()
             goto CREATE_DEFAULT_LISTS;
         }
 
-        if( ! createPlaylistFromJSON( jDoc ) )
+        QString result_createPlaylist { createPlaylistFromJSON( jDoc ) };
+        if( ! result_createPlaylist.isEmpty() )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
+                        + tr( "Cause: %1" ).arg( result_createPlaylist ) + "\n"
+                        + tr( "Default playlist and filelist will be created instead." )
+                        );
             goto CREATE_DEFAULT_LISTS;
+        }
     }
     else
     {
 CREATE_DEFAULT_LISTS:
-        qDebug( "[PlaylistWindow] Existing playlist not found."
-                "Creating default playlist and filelist." );
-
         ui->playlistsWidget->addNewList( tr( "Default" ) );
     }
 }

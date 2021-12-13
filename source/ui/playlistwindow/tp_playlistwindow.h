@@ -103,7 +103,7 @@ private:
     void initializeConnection();
     void initializePlaylist();
 
-    bool createPlaylistFromJSON( const QJsonDocument &I_jDoc );
+    QString createPlaylistFromJSON( const QJsonDocument &I_jDoc );
     void storePlaylist();
 
     TP_FileListWidget * currentFileListWidget();
@@ -121,10 +121,11 @@ private:
 
     const int percentageStep { 10 };
 
+    const QString key_Root          { "root" };
     const QString key_ListName      { "listName" };
     const QString key_FileList      { "fileList" };
     const QString key_SourceType    { "sourceType" };
-    const QString key_URL           { "url" };
+    const QString key_URL           { "url" };    
 };
 
 #endif // TP_PLAYLIST_H

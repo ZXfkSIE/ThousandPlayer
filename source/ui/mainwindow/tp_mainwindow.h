@@ -26,7 +26,7 @@ public:
     void setPause();
     void setStop();
 
-    void setAudioInformation( QListWidgetItem *I_item );
+    void setAudioInformation( QListWidgetItem *I_item = nullptr );
     void setFileNotFound();
 
     void setCover( const QImage &I_image );

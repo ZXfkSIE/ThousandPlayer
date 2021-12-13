@@ -68,24 +68,29 @@ void
 TP_MainWindow::setStop()
 {
     setIcon_Play();
-    setAudioPropertyLabels();
+    setAudioInformation();
 }
 
 
 void
 TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
 {
-    const QUrl url = I_item->data( TP::role_URL ).toUrl();
+    if( I_item )
+    {
+        const QUrl url = I_item->data( TP::role_URL ).toUrl();
 
-    QString extension { TP::extension( url.toLocalFile() ) };
+        QString extension { TP::extension( url.toLocalFile() ) };
 
-    setAudioPropertyLabels( extension.toUpper(),
-                            I_item->data( TP::role_BitDepth ).toInt(),
-                            I_item->data( TP::role_SampleRate ).toInt(),
-                            I_item->data( TP::role_Bitrate ).toInt(),
-                            I_item->data( TP::role_Duration ).toInt(),
-                            TP::getReplayGainFromItem( I_item )
-                            );
+        setAudioPropertyLabels( extension.toUpper(),
+                                I_item->data( TP::role_BitDepth ).toInt(),
+                                I_item->data( TP::role_SampleRate ).toInt(),
+                                I_item->data( TP::role_Bitrate ).toInt(),
+                                I_item->data( TP::role_Duration ).toInt(),
+                                TP::getReplayGainFromItem( I_item )
+                                );
+    }
+    else
+        setAudioPropertyLabels();
 
     setAudioInfoLabel( I_item );
 }
