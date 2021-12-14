@@ -4,7 +4,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(FATAL_ERROR "[ThousandPlayer] Sorry, macOS is currently not supported.")
 endif()
 
-project(ThousandPlayer VERSION 0.1 LANGUAGES CXX)
+project(ThousandPlayer VERSION 0.2 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

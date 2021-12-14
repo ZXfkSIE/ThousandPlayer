@@ -26,7 +26,8 @@ TP_PlaylistsWidget::addNewList( QString I_listName )
     };
     newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
 
-    auto *const newFileList { new TP_FileListWidget { nullptr } };      // The parent will be assigned within TP_PlaylistWindow later
+    auto *const newFileList { new TP_FileListWidget { nullptr } };  // The parent will be changed within TP_PlaylistWindow later
+
     newItem->setData( TP::role_FileListAddress,
                       QVariant::fromValue( reinterpret_cast< quintptr >( newFileList ) )
                       );
@@ -95,18 +96,22 @@ TP_PlaylistsWidget::slot_switchVisibleFileList( QListWidgetItem *I_item )
             auto font { item_i->font() };
             font.setBold( true );
             item_i->setFont( font );
-            item_i->setBackground( QColor( "#444" ) );
+            item_i->setBackground( QColor { "#444" } );
         }
         else
         {
             auto font { item_i->font() };
             font.setBold( false );
             item_i->setFont( font );
-            item_i->setBackground( QColor( "#777" ) );
+            item_i->setBackground( QColor { "#777" } );
         }
     }
 
-    emit signal_fileListSwitched( I_item->data( TP::role_FileListAddress ).value< TP_FileListWidget * >() );
+    emit signal_fileListSwitched(
+                reinterpret_cast< TP_FileListWidget * >(
+                    I_item->data( TP::role_FileListAddress ).value< quintptr >()
+                    )
+                );
     currentVisibleItem = I_item;
 }
 

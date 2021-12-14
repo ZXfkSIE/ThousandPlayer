@@ -1,4 +1,4 @@
-<!--Last update: 2021-11-11 UTC-->
+<!--Last update: 2021-12-14 UTC-->
 <!--
 # Page Languages
 
@@ -15,7 +15,7 @@ one of the most popular local music players for Microsoft Windows in China durin
 The software is still in early development stage,
 but already has the basic functions that a local audio player should have. Feel free to participate in the development!
 
-![Captured in Fedora 34](figure/screenshot.png)
+![](figure/screenshot.png)
 
 ## Features
 - Cross-platform.
@@ -38,23 +38,24 @@ but already has the basic functions that a local audio player should have. Feel 
 - Rich finding and sorting functions.
 - Standard ReplayGain support with pre-amplification and default ReplayGain.
 - Customizable fonts of audio infomation label and playlist.
+- Playlist persistence and multi-playlist support.
 - Multi-threaded file loading.
 - CMake-based automatic compilation.
 
 ## Planned features
-- Playlist persistence and multi-playlist support.
 - Viewer and editor for `.lrc` lyrics files.
-- Audio format converting function.
+- Audio format converting.
 - Music tag editor.
 - Audio description customization.
-- ReplayGain scanning function.
+- ReplayGain scanning.
 - `.cue` sheet support.
 - Streaming audio.
 
 ## Current serious bugs caused by Qt
-As of Qt 6.2.1.
-- [QTBUG-98191](https://bugreports.qt.io/browse/QTBUG-98191): While playing **FLAC** files in Windows, seeking becomes buggy.
+As of Qt 6.2.2.
+- [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.
 - [QTBUG-97758](https://bugreports.qt.io/browse/QTBUG-97758): The output device changing function does not work in some Linux distros (e.g. Fedora).
+- [QTBUG-98191](https://bugreports.qt.io/browse/QTBUG-98191): While playing **FLAC** files in Windows, seeking becomes buggy.
 
 # Compilation Tutorial
 
@@ -81,12 +82,12 @@ then configure the project with Qt 6.2 or above.
 
 3. Use Qt Creator to open the root `CMakeLists.txt`,
 then configure the project with Qt 6.2 or above. The first attempt of CMake configuration should be failed due to the lack of Conan-related scripts, but it's OK.
-4. Go to "Projects" tab, raise the "Conan install" build step to the top of the list and add the additional argument `--profile /replace/it/with/project/root/directory/conan_debug_windows_x64.txt` to it.
+4. Go to "Projects" tab, raise the existing "Conan install" build step to the top of the list and add the additional argument `--profile /replace/it/with/project/root/directory/conan_debug_windows_x64.txt` to it.
    - If you are making release build, change the filename to `conan_release_windows_x64.txt`.
 
 ![](figure/ConanInstallBuildStep.png)
 
-5.  Open the root `CMakeLists.txt` in the editor, comment out the 2 Conan-related lines, and save it by CTRL+S to trigger CMake configuration again.
+5.  Open the root `CMakeLists.txt` in your editor, comment out the 2 Conan-related lines, and save it by CTRL+S to trigger CMake configuration again.
 ```cmake
 if(WIN32)
 # In Windows, use Conan to setup 3rd party packages
@@ -95,4 +96,4 @@ if(WIN32)
     conan_basic_setup()                                   # <-- COMMENT OUT!
     message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
 ```
-6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left should become available. Uncomment the 2 lines mentioned above, then you should be able to build it.
+6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left becomes available. Uncomment the 2 lines mentioned above, then you should be able to build it.

@@ -47,14 +47,14 @@ TP_FileListWidget::setCurrentItemBold()
             auto font { item_i->font() };
             font.setBold( true );
             item_i->setFont( font );
-            item_i->setBackground( QColor( "#444" ) );
+            item_i->setBackground( QColor { "#444" } );
         }
         else
         {
             auto font { item_i->font() };
             font.setBold( false );
             item_i->setFont( font );
-            item_i->setBackground( QColor( "#777" ) );
+            item_i->setBackground( QColor { "#777" } );
         }
     }
 }
@@ -68,7 +68,7 @@ TP_FileListWidget::unsetCurrentItemBold()
         auto font = item( i )->font();
         font.setBold( false );
         item( i )->setFont( font );
-        item( i )->setBackground( QColor("#777") );
+        item( i )->setBackground( QColor {"#777"} );
     }
 }
 

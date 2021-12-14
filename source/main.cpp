@@ -15,17 +15,17 @@ int main( int argc, char *argv[] )
     while ( it.hasNext() )
     {
         it.next();
-        if( ! it.filePath().contains( QString{ ":/q" }, Qt::CaseSensitive ) )
+        if( ! it.filePath().contains( QString { ":/q" }, Qt::CaseSensitive ) )
             qDebug() << it.filePath();
     }
 
-    QApplication a(argc, argv);
+    QApplication a { argc, argv };
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages)
     {
-        const QString baseName = "ThousandPlayer_" + QLocale(locale).name();
+        const QString baseName = "ThousandPlayer_" + QLocale { locale }.name();
         qDebug() << "[Main Function] installing i18n file" << baseName;
         if ( translator.load( ":/i18n/" + baseName ) )
         {
@@ -37,7 +37,7 @@ int main( int argc, char *argv[] )
 
     TP_MainClass mainClass {};
 
-    // Delay the position initialization to avoid some painting problem mainly under Linux
+    // Delay the position initialization to avoid some painting problem mainly in Linux
     QTimer::singleShot( 200, &mainClass, &TP_MainClass::slot_initializePosition );
 
     // Need to be executed after QApplication object executed its exec()
