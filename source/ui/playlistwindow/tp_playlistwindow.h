@@ -103,7 +103,7 @@ private:
     void initializeConnection();
     void initializePlaylist();
 
-    QString createPlaylistFromJSON( const QJsonDocument &I_jDoc );
+    bool createPlaylistFromJSON( const QJsonDocument &I_jDoc );
     void storePlaylist();
 
     TP_FileListWidget * currentFileListWidget();

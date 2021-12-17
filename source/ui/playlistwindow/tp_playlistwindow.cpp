@@ -533,24 +533,27 @@ TP_PlaylistWindow::initializeConnection()
 }
 
 
-QString
+bool
 TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 {
     // The braces {} should not be used here
     // since they will trigger std::initializer_list constructor.
     const auto jArray_Root ( I_jDoc.array() );
 
+    bool isPlaylistCreated { false };
+
     for( const auto &jValue_Playlist : jArray_Root )
     {
         const auto jObject_Playlist { jValue_Playlist.toObject() };
         if( jObject_Playlist.isEmpty() )
-            return tr( "jObject_Playlist is empty" );
+            continue;
 
         auto listName { jObject_Playlist[ key_ListName ].toString() };
         if( listName.isEmpty() )
             listName = tr( "List " ) + QString::number( ui->playlistsWidget->count() + 1 );
 
         auto *const newPlaylist { ui->playlistsWidget->addNewList( listName ) };
+        isPlaylistCreated = true;
 
         const auto jValue_FileList { jObject_Playlist[ key_FileList ] };
         auto jArray_FileList ( jValue_FileList.toArray() );
@@ -621,7 +624,7 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         progressDialog->cancel();
     }
 
-    return {};
+    return isPlaylistCreated;
 }
 
 
@@ -644,8 +647,8 @@ TP_PlaylistWindow::initializePlaylist()
                         this,
                         tr( "Playlist Reading Error" ),
                         tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
-                        + tr( "Cause: %1" ).arg( jsonFile.errorString() ) + "\n"
-                        + tr( "Default playlist and filelist will be created instead." )
+                        + jsonFile.errorString() + "\n"
+                        + tr( "Default playlist will be created instead." )
                         );
             goto CREATE_DEFAULT_LISTS;
         }
@@ -661,8 +664,8 @@ TP_PlaylistWindow::initializePlaylist()
                         this,
                         tr( "Playlist Reading Error" ),
                         tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
-                        + tr( "The JSON file may be empty.\n" )
-                        + tr( "Default playlist and filelist will be created instead." )
+                        + tr( "Empty QJsonDocument object returned.\n" )
+                        + tr( "Default playlist will be created instead." )
                         );
             goto CREATE_DEFAULT_LISTS;
         }
@@ -672,22 +675,21 @@ TP_PlaylistWindow::initializePlaylist()
                         this,
                         tr( "Playlist Reading Error" ),
                         tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
-                        + tr( "Cause: %1" ).arg( jsonParseError.errorString() )
+                        + jsonParseError.errorString()
                         + tr( " (offset: %1)\n" ).arg( jsonParseError.offset )
-                        + tr( "Default playlist and filelist will be created instead." )
+                        + tr( "Default playlist will be created instead." )
                         );
             goto CREATE_DEFAULT_LISTS;
         }
 
-        QString result_createPlaylist { createPlaylistFromJSON( jDoc ) };
-        if( ! result_createPlaylist.isEmpty() )
+        if( ! createPlaylistFromJSON( jDoc ) )
         {
             QMessageBox::critical(
                         this,
                         tr( "Playlist Reading Error" ),
                         tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath() )
-                        + tr( "Cause: %1" ).arg( result_createPlaylist ) + "\n"
-                        + tr( "Default playlist and filelist will be created instead." )
+                        + tr( "No valid playlist found.\n" )
+                        + tr( "Default playlist will be created instead." )
                         );
             goto CREATE_DEFAULT_LISTS;
         }
@@ -749,9 +751,8 @@ TP_PlaylistWindow::storePlaylist()
                     this,
                     tr( "Playlist Writing Error" ),
                     tr( "Failed to write playlists to %1.\n" ).arg( TP::playlistFilePath() )
-                    + tr( "Cause: %1" ).arg( jsonFile.errorString() ) + "\n"
-                    + tr( "Your playlists will not be saved." )
-                        );
+                    + jsonFile.errorString()
+                    );
 
 }
 
