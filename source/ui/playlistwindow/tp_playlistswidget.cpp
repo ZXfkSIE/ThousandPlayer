@@ -19,14 +19,14 @@ TP_PlaylistsWidget::TP_PlaylistsWidget( QWidget *parent ) :
 
 
 QListWidgetItem *
-TP_PlaylistsWidget::addNewList( QString I_listName )
+TP_PlaylistsWidget::addNewList( const QString &I_listName )
 {
-    auto *const newItem {
+    auto *newItem {
         new QListWidgetItem { I_listName , this }
     };
     newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
 
-    auto *const newFileList { new TP_FileListWidget { nullptr } };  // The parent will be changed within TP_PlaylistWindow later
+    auto *newFileList { new TP_FileListWidget { nullptr } };  // The parent will be changed within TP_PlaylistWindow later
 
     newItem->setData( TP::role_FileListAddress,
                       QVariant::fromValue( reinterpret_cast< quintptr >( newFileList ) )
@@ -48,7 +48,7 @@ TP_PlaylistsWidget::addNewList( QString I_listName )
 void
 TP_PlaylistsWidget::slot_removeCurrentItem()
 {
-    auto *const itemToBeDeleted { currentItem() };
+    auto *itemToBeDeleted { currentItem() };
     if( itemToBeDeleted == currentVisibleItem )
     {
         auto idx_target { row( itemToBeDeleted ) };
@@ -86,11 +86,11 @@ TP_PlaylistsWidget::slot_switchVisibleFileList( QListWidgetItem *I_item )
     if( currentVisibleItem == I_item )
         return;
 
-    const auto idx_target { row( I_item ) };
+    auto idx_target { row( I_item ) };
 
     for( unsigned i {}; i < count(); i++ )
     {
-        auto *const item_i { item( i ) };
+        auto *item_i { item( i ) };
         if( i == idx_target )
         {
             auto font { item_i->font() };
@@ -122,7 +122,7 @@ TP_PlaylistsWidget::slot_switchVisibleFileList( QListWidgetItem *I_item )
 void
 TP_PlaylistsWidget::contextMenuEvent( QContextMenuEvent *event )
 {
-    auto *const clickedItem = itemAt ( event->pos() );
+    auto *clickedItem = itemAt ( event->pos() );
     if( clickedItem )
     {
         setCurrentItem( clickedItem );
@@ -144,7 +144,7 @@ TP_PlaylistsWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
     if( event->button() == Qt::LeftButton )
     {
-        auto *const clickedItem = itemAt ( event->pos() );
+        auto *clickedItem = itemAt ( event->pos() );
         if( clickedItem )
             slot_switchVisibleFileList( clickedItem );
     }

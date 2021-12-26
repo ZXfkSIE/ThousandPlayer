@@ -11,7 +11,7 @@
 int main( int argc, char *argv[] )
 {
     qDebug() << "[Main Function] the files integrated by developer are:";
-    QDirIterator it( ":", QDirIterator::Subdirectories );
+    QDirIterator it { ":", QDirIterator::Subdirectories };
     while ( it.hasNext() )
     {
         it.next();
@@ -22,8 +22,8 @@ int main( int argc, char *argv[] )
     QApplication a { argc, argv };
 
     QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages)
+    auto uiLanguages { QLocale::system().uiLanguages() };
+    for ( const QString &locale : uiLanguages )
     {
         const QString baseName = "ThousandPlayer_" + QLocale { locale }.name();
         qDebug() << "[Main Function] installing i18n file" << baseName;

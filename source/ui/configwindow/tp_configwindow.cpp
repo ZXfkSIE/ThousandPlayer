@@ -31,14 +31,14 @@ TP_ConfigWindow::~TP_ConfigWindow()
 // *****************************************************************
 
 void
-TP_ConfigWindow::on_listWidget_Tab_currentRowChanged( const int currentRow )
+TP_ConfigWindow::on_listWidget_Tab_currentRowChanged( int currentRow )
 {
     ui->stackedWidget->setCurrentIndex( currentRow );
 }
 
 
 void
-TP_ConfigWindow::on_radioButton_ClickX_MinimizeToTray_toggled( const bool checked )
+TP_ConfigWindow::on_radioButton_ClickX_MinimizeToTray_toggled( bool checked )
 {
     TP::config().setTrayIconEnabled( checked );
 }
@@ -47,7 +47,7 @@ TP_ConfigWindow::on_radioButton_ClickX_MinimizeToTray_toggled( const bool checke
 void TP_ConfigWindow::on_pushButton_ChangeAudioInfoLabelFont_clicked()
 {
     bool ok {};
-    QFont font {
+    const auto &font {
         QFontDialog::getFont(
                     &ok,
                     TP::config().getAudioInfoLabelFont(),
@@ -66,14 +66,14 @@ void TP_ConfigWindow::on_pushButton_ChangeAudioInfoLabelFont_clicked()
 
 
 void
-TP_ConfigWindow::on_spinBox_AudioInfoLabelScrollingInterval_valueChanged( const int I_sec )
+TP_ConfigWindow::on_spinBox_AudioInfoLabelScrollingInterval_valueChanged( int I_sec )
 {
     TP::config().setAudioInfoScrollingInterval( I_sec );
 }
 
 
 void
-TP_ConfigWindow::on_comboBox_AudioDevice_currentIndexChanged( const int index )
+TP_ConfigWindow::on_comboBox_AudioDevice_currentIndexChanged( int index )
 {
     qDebug() << "[Config Window] signal_audioDeviceChanged is emitted to"
              << ui->comboBox_AudioDevice->itemData( index ).value< QAudioDevice >().description();
@@ -84,7 +84,7 @@ TP_ConfigWindow::on_comboBox_AudioDevice_currentIndexChanged( const int index )
 
 
 void
-TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( const int index )
+TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( int index )
 {
     qDebug() << "[Config Window] ReplayGain mode is changed to" << index;
     switch( index )
@@ -111,7 +111,7 @@ TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( const int index
 
 
 void
-TP_ConfigWindow::on_slider_PreAmp_valueChanged( const int value )
+TP_ConfigWindow::on_slider_PreAmp_valueChanged( int value )
 {
     float realValue = value / 10.0;
     TP::config().setPreAmp_dB( realValue );
@@ -122,7 +122,7 @@ TP_ConfigWindow::on_slider_PreAmp_valueChanged( const int value )
 
 
 void
-TP_ConfigWindow::on_slider_DefaultReplayGain_valueChanged( const int value )
+TP_ConfigWindow::on_slider_DefaultReplayGain_valueChanged( int value )
 {
     float realValue = value / 10.0;
     TP::config().setDefaultGain_dB( realValue );
@@ -136,7 +136,7 @@ void
 TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
 {
     bool ok {};
-    QFont font {
+    const auto &font {
         QFontDialog::getFont(
                     &ok,
                     TP::config().getPlaylistFont(),
@@ -904,7 +904,7 @@ TP_ConfigWindow::initializeUI()
     ui->stackedWidget->setCurrentIndex( 0 );
 
     // Expand height of list items
-    for( int i {}; i < ui->listWidget_Tab->count(); i++ )
+    for( unsigned i {}; i < ui->listWidget_Tab->count(); i++ )
         ui->listWidget_Tab->item( i )->setSizeHint( QSize{ 0, 40 } );
 
     // ============================== Main Page ==============================
@@ -916,7 +916,7 @@ TP_ConfigWindow::initializeUI()
         ui->radioButton_ClickX_Quit->setChecked( true );
 
     // Audio information label font
-    QFont audioInfoLabelFont { TP::config().getAudioInfoLabelFont() };
+    const auto &audioInfoLabelFont { TP::config().getAudioInfoLabelFont() };
     ui->label_CurrentAudioInfoLabelFontExample->setText(
                 QString( "%1, %2 pt" ).arg( audioInfoLabelFont.family() ).arg( audioInfoLabelFont.pointSize() ) );
     ui->label_CurrentAudioInfoLabelFontExample->setFont( audioInfoLabelFont );
@@ -955,7 +955,7 @@ TP_ConfigWindow::initializeUI()
 
     // ============================== Playlist page ==============================
 
-    QFont playlistFont { TP::config().getPlaylistFont() };
+    const auto &playlistFont { TP::config().getPlaylistFont() };
     ui->label_CurrentPlaylistFontExample->setText(
                 QString( "%1, %2 pt" ).arg( playlistFont.family() ).arg( playlistFont.pointSize() ) );
     ui->label_CurrentPlaylistFontExample->setFont( playlistFont );

@@ -98,7 +98,7 @@ TP_CoverLabel::contextMenuEvent( QContextMenuEvent *event )
 void
 TP_CoverLabel::initializeMenu()
 {
-    action_viewCoverImage = new QAction { tr("&View cover"), this };
+    action_viewCoverImage = new QAction { tr( "&View cover" ), this };
 
     connect(action_viewCoverImage,  &QAction::triggered,
             this,                   &TP_CoverLabel::slot_viewCoverImage);

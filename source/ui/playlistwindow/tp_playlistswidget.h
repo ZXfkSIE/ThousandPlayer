@@ -13,7 +13,7 @@ class TP_PlaylistsWidget : public QListWidget
 public:
     explicit TP_PlaylistsWidget( QWidget *parent = nullptr );
 
-    QListWidgetItem * addNewList( QString I_listName );
+    QListWidgetItem * addNewList( const QString &I_listName );
 
 signals:
     void signal_fileListRemoved( TP_FileListWidget *I_fileListWidget );

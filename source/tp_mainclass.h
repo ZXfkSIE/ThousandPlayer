@@ -58,9 +58,10 @@ private slots:
 
     void slot_playbackStateChanged ( QMediaPlayer::PlaybackState newState );
     void slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status );
-    void slot_deviceChanged();
-    void slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString );
+    void slot_deviceChanged() const;
+    void slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString ) const;
 
+    void slot_positionChanged( qint64 ms );
     void slot_changePlayingPosition( int second );
 
     void slot_setVolume( float linearVolume );
@@ -86,10 +87,10 @@ private:
     TP_ConfigWindow     *   configWindow;
     bool                    b_isPlaylistWindowVisible;
 
-    QAudioOutput *      audioOutput;
-    QMediaPlayer *      mediaPlayer;
-    float               linearVolume;
-    bool                b_isStopInterrupting;
+    QAudioOutput *  audioOutput;
+    QMediaPlayer *  mediaPlayer;
+    float           linearVolume;
+    bool            b_isStopInterrupting;
 
     bool snapStatus [ TP::numberOfWindows ][ TP::numberOfWindows ];
     QPoint snapPosition_playlistWindow;

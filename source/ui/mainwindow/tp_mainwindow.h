@@ -26,7 +26,9 @@ public:
     void setPause();
     void setStop();
 
-    void setAudioInformation( QListWidgetItem *I_item = nullptr );
+    void updateDuration( qint64 ms );
+
+    void setAudioInformation( const QListWidgetItem *I_item = nullptr );
     void setFileNotFound();
 
     void setCover( const QImage &I_image );
@@ -35,10 +37,10 @@ signals:
     void signal_minimizeWindow();
     void signal_restoreWindow();
     void signal_activateWindow();
-    void signal_moveWindow( QWidget *window, QRect newGeometry );
+    void signal_moveWindow( QWidget *window, const QRect &newGeometry );
     void signal_windowChanged();
 
-    void signal_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( QWidget *window, const QRect &newGeometry, TP::ResizeType resizeType );
 
     void signal_timeSliderPressed( int second );
     void signal_volumeSliderValueChanged( float logarithmicVolume );
@@ -61,8 +63,6 @@ public slots:
 
     void slot_changeFontOfAudioInfoLabel();
 
-    void slot_updateDuration( qint64 ms );
-
 private slots:
     void slot_trayIcon_activated( QSystemTrayIcon::ActivationReason reason );
     void on_action_trayIcon_Restore_triggered();
@@ -71,10 +71,10 @@ private slots:
     void slot_moveTitleBar( const QRect &newGeometry );
     void slot_leftButtonReleased();
 
-    void on_slider_Time_valueChanged( const int second );
+    void on_slider_Time_valueChanged( int second );
     void slot_timeSliderPressed( int second );
 
-    void on_slider_Volume_valueChanged( const int volume );
+    void on_slider_Volume_valueChanged( int volume );
 
     void on_pushButton_Exit_clicked();
     void on_pushButton_Expand_clicked();
@@ -109,7 +109,7 @@ private:
     void setIcon_Play();
     void setIcon_Pause();
 
-    void setAudioInfoLabel( QListWidgetItem *I_item = nullptr );
+    void setAudioInfoLabel( const QListWidgetItem *I_item = nullptr );
     void setAudioPropertyLabels(
             const QString & I_qstr_Format   = QString { "N/A" },
             int             bitDepth        = -1,

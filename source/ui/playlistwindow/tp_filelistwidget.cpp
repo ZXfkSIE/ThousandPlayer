@@ -232,7 +232,7 @@ TP_FileListWidget::clearPreviousAndNext()
 
 
 void
-TP_FileListWidget::refreshShowingTitle( int idx_Min, const int idx_Max )
+TP_FileListWidget::refreshShowingTitle( int idx_Min, int idx_Max )
 {
     if ( idx_Max < 0 )
         return;
@@ -379,7 +379,7 @@ TP_FileListWidget::reverseSelection()
 
 
 void
-TP_FileListWidget::sortByData( const int role, const bool isDescending )
+TP_FileListWidget::sortByData( int role, bool isDescending )
 {
     if( count() <= 1 )
         return;
@@ -633,12 +633,12 @@ TP_FileListWidget::sortByData( const int role, const bool isDescending )
 
 
 void
-TP_FileListWidget::searchByData( const QString      &I_qstr_keyword,
-                                 const qsizetype    startingIndex,
-                                 const bool         isFilenameSearched,
-                                 const bool         isAlbumSearched,
-                                 const bool         isArtistSearched,
-                                 const bool         isTitleSearched)
+TP_FileListWidget::searchByData( const QString &I_qstr_keyword,
+                                 qsizetype      startingIndex,
+                                 bool           isFilenameSearched,
+                                 bool           isAlbumSearched,
+                                 bool           isArtistSearched,
+                                 bool           isTitleSearched)
 {
     if( ! I_qstr_keyword.size() || ! count() )
         return;
@@ -672,7 +672,7 @@ TP_FileListWidget::searchByData( const QString      &I_qstr_keyword,
         // If the audio doesn't contain a valid title, search filename instead.
         if( isTitleSearched )
         {
-            auto title { currentItem->data( TP::role_Title ).toString() };
+            const auto &title { currentItem->data( TP::role_Title ).toString() };
             if(     title.size() && title.contains( qstr_keyword, Qt::CaseInsensitive )
                 ||
                     ! isFilenameSearched &&

@@ -13,7 +13,7 @@ public:
     explicit TP_PlaylistBottomFrame( QWidget *parent = nullptr );
 
 signals:
-    void signal_resizeWindow( QRect newGeometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( const QRect &newGeometry, TP::ResizeType resizeType );
     void signal_leftButtonReleased();
 
 private:
@@ -21,7 +21,7 @@ private:
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
-    TP::CursorPositionType isAtBorder(const QPoint &I_point) const;
+    TP::CursorPositionType isAtBorder( const QPoint &I_point ) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;

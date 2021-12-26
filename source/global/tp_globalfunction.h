@@ -17,21 +17,21 @@ namespace Ogg   { class XiphComment; }
 namespace TP
 {
     QString extension( const QString &path );
-    void storeInformation( QListWidgetItem * I_item );
+    void storeInformation( QListWidgetItem *I_item );
 
-    float getReplayGainTrackFromTag( TagLib::Ogg::XiphComment *xiphComment );
-    float getReplayGainAlbumFromTag( TagLib::Ogg::XiphComment *xiphComment );
+    float getReplayGainTrackFromTag( const TagLib::Ogg::XiphComment *xiphComment );
+    float getReplayGainAlbumFromTag( const TagLib::Ogg::XiphComment *xiphComment );
 
-    float getReplayGainTrackFromTag( TagLib::ID3v2::Tag *tag );
-    float getReplayGainAlbumFromTag( TagLib::ID3v2::Tag *tag );
+    float getReplayGainTrackFromTag( const TagLib::ID3v2::Tag *tag );
+    float getReplayGainAlbumFromTag( const TagLib::ID3v2::Tag *tag );
 
-    float getReplayGainTrackFromTag( TagLib::MP4::Tag *tag );
-    float getReplayGainAlbumFromTag( TagLib::MP4::Tag *tag );
+    float getReplayGainTrackFromTag( const TagLib::MP4::Tag *tag );
+    float getReplayGainAlbumFromTag( const TagLib::MP4::Tag *tag );
 
-    float getReplayGainTrackFromTag( TagLib::APE::Tag *tag );
-    float getReplayGainAlbumFromTag( TagLib::APE::Tag *tag );
+    float getReplayGainTrackFromTag( const TagLib::APE::Tag *tag );
+    float getReplayGainAlbumFromTag( const TagLib::APE::Tag *tag );
 
-    float getReplayGainFromItem( QListWidgetItem * I_item );
+    float getReplayGainFromItem( const QListWidgetItem *I_item );
 }
 
 #endif // TP_GLOBALFUNCTION_H

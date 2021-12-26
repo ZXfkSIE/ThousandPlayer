@@ -140,7 +140,7 @@ TP_PlaylistWindow::slot_activateWindow()
 void
 TP_PlaylistWindow::slot_changeFontOfLists()
 {
-    const auto font { TP::config().getPlaylistFont() };
+    const auto &font { TP::config().getPlaylistFont() };
     currentFileListWidget()->setFont( font );
     ui->playlistsWidget->setFont( font );
 }
@@ -538,13 +538,13 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 {
     // The braces {} should not be used here
     // since they will trigger std::initializer_list constructor.
-    const auto jArray_Root ( I_jDoc.array() );
+    const auto &jArray_Root ( I_jDoc.array() );
 
     bool isPlaylistCreated { false };
 
     for( const auto &jValue_Playlist : jArray_Root )
     {
-        const auto jObject_Playlist { jValue_Playlist.toObject() };
+        const auto &jObject_Playlist { jValue_Playlist.toObject() };
         if( jObject_Playlist.isEmpty() )
             continue;
 
@@ -552,16 +552,16 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         if( listName.isEmpty() )
             listName = tr( "List " ) + QString::number( ui->playlistsWidget->count() + 1 );
 
-        auto *const newPlaylist { ui->playlistsWidget->addNewList( listName ) };
+        auto *newPlaylist { ui->playlistsWidget->addNewList( listName ) };
         isPlaylistCreated = true;
 
-        const auto jValue_FileList { jObject_Playlist[ key_FileList ] };
+        const auto &jValue_FileList { jObject_Playlist[ key_FileList ] };
         auto jArray_FileList ( jValue_FileList.toArray() );
 
         if( jArray_FileList.isEmpty() )
             continue;
 
-        auto *const newFileList {
+        auto *newFileList {
             reinterpret_cast< TP_FileListWidget * >(
                         newPlaylist->data( TP::role_FileListAddress ).value< quintptr >()
                         )
@@ -569,18 +569,18 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 
         for( int i {}; i < jArray_FileList.count(); i++ )
         {
-            const auto jObject_File { jArray_FileList.at( i ).toObject() };
-            const TP::SourceType sourceType {
+            const auto &jObject_File { jArray_FileList.at( i ).toObject() };
+            TP::SourceType sourceType {
                 static_cast< TP::SourceType >( jObject_File[ key_SourceType ].toInt() )
             };
-            const auto fileURL {
+            const auto &qstr_FileURL {
                 QUrl { jObject_File[ key_URL ].toString() }
             };
 
-            if( ! fileURL.isEmpty() )
+            if( ! qstr_FileURL.isEmpty() )
             {
-                auto *const item = new QListWidgetItem { newFileList };
-                item->setData( TP::role_URL, fileURL );             // set URL
+                auto *item = new QListWidgetItem { newFileList };
+                item->setData( TP::role_URL, qstr_FileURL );             // set URL
                 item->setData( TP::role_SourceType, sourceType );
 
                 newFileList->addItem( item );
@@ -589,7 +589,7 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
                 jArray_FileList.removeAt( i-- );
         }
 
-        const auto count { newFileList->count() };
+        auto count { newFileList->count() };
         if( ! count )
             continue;
 
@@ -654,7 +654,7 @@ TP_PlaylistWindow::initializePlaylist()
         }
 
         QJsonParseError jsonParseError {};
-        const auto jDoc {
+        const auto &jDoc {
             QJsonDocument::fromJson( jsonFile.readAll(), &jsonParseError ),
         };
 
@@ -706,21 +706,21 @@ void
 TP_PlaylistWindow::storePlaylist()
 {
     QJsonArray jArray_Root {};
-    const auto playlistsCount { ui->playlistsWidget->count() };
+    auto playlistsCount { ui->playlistsWidget->count() };
 
     for( unsigned i {}; i < playlistsCount; i++ )
     {
-        auto *const currentPlaylistItem { ui->playlistsWidget->item( i ) };
+        auto *currentPlaylistItem { ui->playlistsWidget->item( i ) };
         QJsonObject jObject_Playlist {};
         jObject_Playlist[ key_ListName ] = currentPlaylistItem->text();
 
         QJsonArray jArray_FileList {};
-        auto *const currentFileList {
+        auto *currentFileList {
             reinterpret_cast< TP_FileListWidget * >(
                         currentPlaylistItem->data( TP::role_FileListAddress ).value< quintptr >()
                         )
         };
-        const auto filesCount { currentFileList->count() };
+        auto filesCount { currentFileList->count() };
 
         for( unsigned j {}; j < filesCount; j++ )
         {
@@ -771,14 +771,14 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &fileURLs )
 
     for ( const auto &fileURL: fileURLs )
     {
-        auto *const item = new QListWidgetItem { currentFileListWidget() };
+        auto *item = new QListWidgetItem { currentFileListWidget() };
         item->setData( TP::role_URL, fileURL );         // set URL
         item->setData( TP::role_SourceType, TP::singleFile );
         currentFileListWidget()->addItem( item );
     }
 
     int nextPercent { percentageStep };
-    const auto count { currentFileListWidget()->count() };
+    auto count { currentFileListWidget()->count() };
 
     progressDialog->reset();
     progressDialog->setMaximum( fileURLs.size() );

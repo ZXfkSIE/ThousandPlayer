@@ -13,7 +13,7 @@ A Qt6-based open-source audio player developed from scratch. It is a tribute to 
 one of the most popular local music players for Microsoft Windows in China during 2000s.
 
 The software is still in early development stage,
-but already has the basic functions that a local audio player should have. Feel free to participate in the development!
+but already has the basic functions that a local audio player should have. Feel free to participate in the development! Here is the [format manual](Format.md) of this project.
 
 ![](figure/screenshot.png)
 

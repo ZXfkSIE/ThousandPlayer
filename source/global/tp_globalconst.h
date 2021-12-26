@@ -29,6 +29,8 @@ static const int role_ReplayGainAlbum   = Qt::UserRole + 12;    // float
 
 static const int role_FileListAddress   = Qt::UserRole;         // TP_FileListWidget * (stored as quintptr)
 
+static const int role_TimeStampInMs     = Qt::UserRole;
+
 static const int iconSize_Play          = 20;
 static const int iconSize_Pause         = 18;
 
@@ -36,7 +38,6 @@ static const int iconSize_SingleTime    = 26;
 static const int iconSize_Repeat        = 28;
 static const int iconSize_Sequential    = 22;
 static const int iconSize_Shuffle       = 29;
-
 }       //namespace TP
 
 #endif // TP_GLOBALCONST_H

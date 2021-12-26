@@ -45,7 +45,7 @@ TP_MainClass::TP_MainClass() :
   , audioOutput                 { new QAudioOutput { this } }
   , mediaPlayer                 { new QMediaPlayer { this } }
   , b_isStopInterrupting        { false }
-  , snapStatus                  { false }
+  , snapStatus                  {}
   , snapPosition_playlistWindow {}
 {
     mediaPlayer->setAudioOutput( audioOutput );
@@ -62,12 +62,12 @@ TP_MainClass::TP_MainClass() :
 TP_MainClass::~TP_MainClass()
 {
     // Get current screen
-    const auto *mainWindowScreen { QApplication::screenAt( mainWindow->pos() ) };
+    auto *mainWindowScreen { QApplication::screenAt( mainWindow->pos() ) };
     TP::config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
 
     if( playlistWindow->isVisible() || b_isPlaylistWindowVisible )
     {
-        const auto *playlistWindowScreen { QApplication::screenAt( playlistWindow->pos() ) };
+        auto *playlistWindowScreen { QApplication::screenAt( playlistWindow->pos() ) };
         TP::config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
         TP::config().setPlaylistWindowShown( true );
     }
@@ -165,8 +165,8 @@ void
 TP_MainClass::slot_moveWindow( QWidget *window, QRect newGeometry )
 {
     // A window can only be snapped (or aligned) once at vertical and horizontal direction, respectively.
-    bool isVerticallySnapped    { false };
-    bool isHorizontallySnapped  { false };
+    bool isVerticallySnapped    {};
+    bool isHorizontallySnapped  {};
 
     // ============================== Snapping to main window ==============================
 
@@ -386,7 +386,7 @@ void
 TP_MainClass::slot_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType )
 {
     // While resizing, a window can only be snapped (or aligned) once.
-    bool isSnapped { false };
+    bool isSnapped {};
 
     if ( window != mainWindow )
     {
@@ -762,16 +762,23 @@ TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
 
 
 void
-TP_MainClass::slot_deviceChanged()
+TP_MainClass::slot_deviceChanged() const
 {
     qDebug()<< "[Audio Output] Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
 }
 
 
 void
-TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString )
+TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString ) const
 {
     qDebug() << "[Media Player] ERROR:" << error << "-" << errorString;
+}
+
+
+void
+TP_MainClass::slot_positionChanged( qint64 ms )
+{
+    mainWindow->updateDuration( ms );
 }
 
 
@@ -790,7 +797,9 @@ TP_MainClass::slot_setVolume( float I_linearVolume )
     if( mediaPlayer->playbackState() != QMediaPlayer::PlayingState )
         return;
 
-    const auto multiplier = std::pow( 10, TP::getReplayGainFromItem( TP::currentItem() ) / 20.0 );  // 10^(Gain/20)
+    auto multiplier {
+        std::pow( 10, TP::getReplayGainFromItem( TP::currentItem() ) / 20.0 )
+    };                                              // 10^(Gain/20)
     audioOutput->setVolume( linearVolume * multiplier );
 }
 
@@ -803,7 +812,7 @@ TP_MainClass::initializeConnection()
 {
     // Playerback control
     connect( mediaPlayer,   &QMediaPlayer::positionChanged,
-             mainWindow,    &TP_MainWindow::slot_updateDuration );
+             this,          &TP_MainClass::slot_positionChanged );
     connect( mediaPlayer,   &QMediaPlayer::playbackStateChanged,
              this,          &TP_MainClass::slot_playbackStateChanged );
     connect( mediaPlayer,   &QMediaPlayer::mediaStatusChanged,
@@ -1091,8 +1100,6 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         playlistWindow->refreshShowingTitle( I_item );
 
         mediaPlayer->setSource( url );
-
-
         mediaPlayer->play();
     }       // if( std::filesystem::exists
     else
@@ -1103,7 +1110,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 QImage
 TP_MainClass::getCoverImage( TagLib::FLAC::File *flacFile )
 {
-    const TagLib::List < TagLib::FLAC::Picture * > &pictureList { flacFile->pictureList() };
+    const auto &pictureList { flacFile->pictureList() };
     if( pictureList.size() > 0 )
         return QImage::fromData(
                     QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }

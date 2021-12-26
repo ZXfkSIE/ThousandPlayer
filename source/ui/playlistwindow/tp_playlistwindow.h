@@ -34,10 +34,10 @@ public:
     QListWidgetItem * getPreviousItem_shuffle();
 
 signals:
-    void signal_moveWindow( QWidget *window, QRect newGeometry );
+    void signal_moveWindow( QWidget *window, const QRect &newGeometry );
     void signal_leftButtonReleased();
 
-    void signal_resizeWindow( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( QWidget *window, const QRect &newGeometry, TP::ResizeType resizeType );
 
     void signal_shown();
     void signal_hidden();

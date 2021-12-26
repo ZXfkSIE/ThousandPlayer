@@ -16,7 +16,7 @@ TP_Config::TP_Config( QObject *parent ) :
 {
     qDebug() << "[Config] The path of config file is" << config.fileName();
 
-    QFont defaultFont = QWidget().font();
+    auto defaultFont { QWidget().font() };
     defaultFont.setPointSize( 10 );
 
     config.beginGroup( group_MAINWINDOW );
@@ -125,7 +125,7 @@ TP_Config::setMainWindowPosition( const QPoint &input )
     mainWindowPosition = input;
 }
 
-QPoint
+const QPoint &
 TP_Config::getMainWindowPosition() const
 {
     return mainWindowPosition;
@@ -138,7 +138,7 @@ TP_Config::setTrayIconEnabled ( const bool b )
 }
 
 bool
-TP_Config::isTrayIconEnabled ()
+TP_Config::isTrayIconEnabled () const
 {
     return b_isTrayIconEnabled;
 }
@@ -149,8 +149,8 @@ TP_Config::setAudioInfoLabelFont( const QFont &input )
     audioInfoLabelFont = input;
 }
 
-QFont
-TP_Config::getAudioInfoLabelFont()
+const QFont &
+TP_Config::getAudioInfoLabelFont() const
 {
     return audioInfoLabelFont;
 }
@@ -173,14 +173,14 @@ TP_Config::setPlaylistWindowPosition( const QPoint &input )
     playlistWindowPosition = input;
 }
 
-QPoint
+const QPoint &
 TP_Config::getPlaylistWindowPosition() const
 {
     return playlistWindowPosition;
 }
 
 void
-TP_Config::setPlaylistWindowShown( bool b )
+TP_Config::setPlaylistWindowShown( const bool b )
 {
     b_isPlaylistWindowShown = b;
 }
@@ -197,7 +197,7 @@ TP_Config::setPlaylistFont( const QFont &input )
     playlistFont = input;
 }
 
-QFont
+const QFont &
 TP_Config::getPlaylistFont() const
 {
     return playlistFont;
@@ -209,7 +209,7 @@ TP_Config::setLastOpenedDirectory ( const QUrl &input )
     lastOpenedDirectory = input;
 }
 
-QUrl
+const QUrl &
 TP_Config::getLastOpenedDirectory () const
 {
     return lastOpenedDirectory;

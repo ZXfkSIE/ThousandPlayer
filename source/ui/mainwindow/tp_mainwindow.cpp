@@ -26,7 +26,7 @@ TP_MainWindow::TP_MainWindow( QWidget *parent ) :
   , b_isCursorResize        { false }
   , trayIcon                { new QSystemTrayIcon { this } }
 {
-    ui->setupUi(this);
+    ui->setupUi( this );
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint );
 
     initializeConnection();
@@ -73,11 +73,22 @@ TP_MainWindow::setStop()
 
 
 void
-TP_MainWindow::setAudioInformation( QListWidgetItem *I_item )
+TP_MainWindow::updateDuration( qint64 ms )
+{
+    if ( ! ui->slider_Time->isSliderDown() )
+        ui->slider_Time->setValue( ms / 1000 );     // convert ms to s
+
+    // DO NOT update time label here.
+    // Let on_slider_Time_valueChanged() do it.
+}
+
+
+void
+TP_MainWindow::setAudioInformation( const QListWidgetItem *I_item )
 {
     if( I_item )
     {
-        const QUrl url = I_item->data( TP::role_URL ).toUrl();
+        const auto &url { I_item->data( TP::role_URL ).toUrl() };
 
         QString extension { TP::extension( url.toLocalFile() ) };
 
@@ -138,18 +149,6 @@ TP_MainWindow::slot_changeFontOfAudioInfoLabel()
     ui->label_AudioInfo->setFont( TP::config().getAudioInfoLabelFont() );
 }
 
-
-void
-TP_MainWindow::slot_updateDuration( qint64 ms )
-{
-    qint64 second = ms / 1000;                       // convert ms to s
-    if ( !ui->slider_Time->isSliderDown() )
-        ui->slider_Time->setValue( second );
-
-    // DO NOT update time label here.
-    // Let slot_timeSliderChanged do it.
-}
-
 // *****************************************************************
 // private slots:
 // *****************************************************************
@@ -199,7 +198,7 @@ TP_MainWindow::slot_leftButtonReleased()
 
 
 void
-TP_MainWindow::on_slider_Time_valueChanged( const int second )
+TP_MainWindow::on_slider_Time_valueChanged( int second )
 {
     ui->label_CurrentTime->setText( convertTime( second ) );
 }
@@ -213,7 +212,7 @@ TP_MainWindow::slot_timeSliderPressed( int second )
 
 
 void
-TP_MainWindow::on_slider_Volume_valueChanged( const int I_volume )
+TP_MainWindow::on_slider_Volume_valueChanged( int I_volume )
 {
     // qDebug() << "[TP_MainWindow] slot_volumeSliderChanged(" << I_volume << ")";
     ui->label_VolumeIcon->setIcon( I_volume );
@@ -610,7 +609,7 @@ TP_MainWindow::setIcon_Pause()
 
 
 void
-TP_MainWindow::setAudioInfoLabel( QListWidgetItem *I_item )
+TP_MainWindow::setAudioInfoLabel( const QListWidgetItem *I_item )
 {
     if( ! I_item )
         ui->label_AudioInfo->setStrings( { tr( "Idle" ) } );

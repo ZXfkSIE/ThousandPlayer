@@ -91,7 +91,6 @@
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -157,7 +156,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame_Container">
+    <widget class="QStackedWidget" name="stackedWidget_Container">
      <property name="styleSheet">
       <string notr="true">QFrame
 {
@@ -166,6 +165,7 @@
 	border-right: 4px solid rgb(68, 68, 68);
 }</string>
      </property>
+     <widget class="QWidget" name="page"/>
     </widget>
    </item>
   </layout>

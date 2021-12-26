@@ -18,24 +18,24 @@ public:
     ~TP_Config();
 
     // ==================== MAINWINDOW group ====================
-    void    setMainWindowPosition ( const QPoint &input );
-    QPoint  getMainWindowPosition () const;
-    void    setTrayIconEnabled ( const bool b );
-    bool    isTrayIconEnabled ();
-    void    setAudioInfoLabelFont( const QFont &input );
-    QFont   getAudioInfoLabelFont();
-    void    setAudioInfoScrollingInterval ( const int I_sec );
-    int     getAudioInfoScrollingInterval () const;
+    void            setMainWindowPosition ( const QPoint &input );
+    const QPoint &  getMainWindowPosition () const;
+    void            setTrayIconEnabled  ( const bool b );
+    bool            isTrayIconEnabled   () const;
+    void            setAudioInfoLabelFont( const QFont &input );
+    const QFont &   getAudioInfoLabelFont() const;
+    void            setAudioInfoScrollingInterval ( const int I_sec );
+    int             getAudioInfoScrollingInterval () const;
 
     // ==================== PLAYLISTWINDOW group ====================
-    void    setPlaylistWindowPosition ( const QPoint &input );
-    QPoint  getPlaylistWindowPosition () const;
-    void    setPlaylistWindowShown ( bool b );
-    bool    isPlaylistWindowShown () const;
-    void    setPlaylistFont ( const QFont &input );
-    QFont   getPlaylistFont () const;
-    void    setLastOpenedDirectory ( const QUrl &input );
-    QUrl    getLastOpenedDirectory () const;
+    void            setPlaylistWindowPosition ( const QPoint &input );
+    const QPoint &  getPlaylistWindowPosition () const;
+    void            setPlaylistWindowShown  ( const bool b );
+    bool            isPlaylistWindowShown   () const;
+    void            setPlaylistFont ( const QFont &input );
+    const QFont &   getPlaylistFont () const;
+    void            setLastOpenedDirectory ( const QUrl &input );
+    const QUrl &    getLastOpenedDirectory () const;
 
     // ==================== PLAYBACK group ====================
     void                setVolume ( const int I_volume );

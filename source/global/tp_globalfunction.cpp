@@ -34,12 +34,12 @@ TP::extension( const QString &path )
 
 
 void
-TP::storeInformation( QListWidgetItem * I_item )
+TP::storeInformation( QListWidgetItem *I_item )
 {
-    auto url = I_item->data( TP::role_URL ).toUrl();
-    auto qstr_localFilePath = url.toLocalFile();
+    const auto &url { I_item->data( TP::role_URL ).toUrl() };
+    const auto &qstr_localFilePath { url.toLocalFile() };
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
-    auto qstr_Filename = fileInfo.fileName();
+    const auto &qstr_Filename { fileInfo.fileName() };
 
     TagLib::FileRef fileRef { qstr_localFilePath
 #ifdef Q_OS_WIN
@@ -49,16 +49,16 @@ TP::storeInformation( QListWidgetItem * I_item )
 #endif
                             };
 
-    auto qstr_title = TStringToQString( fileRef.tag()->title() );
-    auto qstr_artist = TStringToQString( fileRef.tag()->artist() );
-    auto qstr_album = TStringToQString( fileRef.tag()->album() );
+    const auto &qstr_title { TStringToQString( fileRef.tag()->title() ) };
+    const auto &qstr_artist { TStringToQString( fileRef.tag()->artist() ) };
+    const auto &qstr_album { TStringToQString( fileRef.tag()->album() ) };
 
-    auto duration = fileRef.audioProperties()->lengthInSeconds();
-    auto bitrate = fileRef.audioProperties()->bitrate();
-    auto sampleRate = fileRef.audioProperties()->sampleRate() / 1000;
-    auto bitDepth = -1 ;
+    auto duration { fileRef.audioProperties()->lengthInSeconds() };
+    auto bitrate { fileRef.audioProperties()->bitrate() };
+    auto sampleRate { fileRef.audioProperties()->sampleRate() / 1000 };
+    auto bitDepth { -1 };
 
-    auto extension { TP::extension ( qstr_localFilePath ) };
+    const auto &extension { TP::extension ( qstr_localFilePath ) };
 
     if( extension == QString { "flac" } )
         bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
@@ -161,7 +161,7 @@ TP::storeInformation( QListWidgetItem * I_item )
 
 
 float
-TP::getReplayGainTrackFromTag( TagLib::Ogg::XiphComment *xiphComment )
+TP::getReplayGainTrackFromTag( const TagLib::Ogg::XiphComment *xiphComment )
 {
     // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
 
@@ -180,7 +180,7 @@ TP::getReplayGainTrackFromTag( TagLib::Ogg::XiphComment *xiphComment )
 
 
 float
-TP::getReplayGainAlbumFromTag( TagLib::Ogg::XiphComment *xiphComment )
+TP::getReplayGainAlbumFromTag( const TagLib::Ogg::XiphComment *xiphComment )
 {
     if( xiphComment->contains( "REPLAYGAIN_ALBUM_GAIN" ) )
         return TStringToQString( xiphComment->properties()[ "REPLAYGAIN_ALBUM_GAIN" ][0] )
@@ -197,13 +197,13 @@ TP::getReplayGainAlbumFromTag( TagLib::Ogg::XiphComment *xiphComment )
 
 
 float
-TP::getReplayGainTrackFromTag( TagLib::ID3v2::Tag *tag )
+TP::getReplayGainTrackFromTag( const TagLib::ID3v2::Tag *tag )
 {
-    auto frameList { tag->frameList( "RVA2" ) };
+    const auto &frameList { tag->frameList( "RVA2" ) };
     for( const auto &frame : frameList )
     {
         auto *relativeVolumeFrame { dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( frame ) };
-        auto frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
+        const auto &frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
 
         if( ! frameIdentification.contains( QString{ "album" }, Qt::CaseInsensitive )
                 && relativeVolumeFrame->channels().contains( TagLib::ID3v2::RelativeVolumeFrame::MasterVolume ) )
@@ -215,13 +215,13 @@ TP::getReplayGainTrackFromTag( TagLib::ID3v2::Tag *tag )
 
 
 float
-TP::getReplayGainAlbumFromTag( TagLib::ID3v2::Tag *tag )
+TP::getReplayGainAlbumFromTag( const TagLib::ID3v2::Tag *tag )
 {
-    auto frameList { tag->frameList( "RVA2" ) };
+    const auto &frameList { tag->frameList( "RVA2" ) };
     for( const auto &frame : frameList )
     {
         auto *relativeVolumeFrame { dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( frame ) };
-        auto frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
+        const auto &frameIdentification { TStringToQString( relativeVolumeFrame->identification() ) };
 
         if( frameIdentification.contains( QString{ "album" }, Qt::CaseInsensitive )
                 && relativeVolumeFrame->channels().contains( TagLib::ID3v2::RelativeVolumeFrame::MasterVolume ) )
@@ -233,7 +233,7 @@ TP::getReplayGainAlbumFromTag( TagLib::ID3v2::Tag *tag )
 
 
 float
-TP::getReplayGainTrackFromTag( TagLib::MP4::Tag *tag )
+TP::getReplayGainTrackFromTag( const TagLib::MP4::Tag *tag )
 {
     // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
 
@@ -252,7 +252,7 @@ TP::getReplayGainTrackFromTag( TagLib::MP4::Tag *tag )
 
 
 float
-TP::getReplayGainAlbumFromTag( TagLib::MP4::Tag *tag )
+TP::getReplayGainAlbumFromTag( const TagLib::MP4::Tag *tag )
 {
     if( tag->contains( "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN" ) )
             return TStringToQString( tag->itemMap()[ "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN" ].toStringList()[0] )
@@ -268,11 +268,11 @@ TP::getReplayGainAlbumFromTag( TagLib::MP4::Tag *tag )
 
 
 float
-TP::getReplayGainTrackFromTag( TagLib::APE::Tag *tag )
+TP::getReplayGainTrackFromTag( const TagLib::APE::Tag *tag )
 {
     // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
 
-    const auto itemListMap { tag->itemListMap() };
+    const auto &itemListMap { tag->itemListMap() };
     for( const auto &pair : itemListMap )
         if( TStringToQString( pair.first ) == QString{ "REPLAYGAIN_TRACK_GAIN" } ||
             TStringToQString( pair.first ) == QString{ "replaygain_track_gain" } )
@@ -283,9 +283,9 @@ TP::getReplayGainTrackFromTag( TagLib::APE::Tag *tag )
 
 
 float
-TP::getReplayGainAlbumFromTag( TagLib::APE::Tag *tag )
+TP::getReplayGainAlbumFromTag( const TagLib::APE::Tag *tag )
 {
-    const auto itemListMap { tag->itemListMap() };
+    const auto &itemListMap { tag->itemListMap() };
     for( const auto &pair : itemListMap )
         if( TStringToQString( pair.first ) == QString{ "REPLAYGAIN_ALBUM_GAIN" } ||
             TStringToQString( pair.first ) == QString{ "replaygain_album_gain" } )
@@ -296,15 +296,15 @@ TP::getReplayGainAlbumFromTag( TagLib::APE::Tag *tag )
 
 
 float
-TP::getReplayGainFromItem( QListWidgetItem * I_item )
+TP::getReplayGainFromItem( const QListWidgetItem *I_item )
 {
-    TP::ReplayGainMode mode { TP::config().getReplayGainMode() };
+    auto mode { TP::config().getReplayGainMode() };
 
     if( mode == TP::RG_disabled )
         return 0;
 
-    const auto dB_Track { I_item->data( TP::role_ReplayGainTrack ).toFloat() };
-    const auto dB_Album { I_item->data( TP::role_ReplayGainAlbum ).toFloat() };
+    auto dB_Track { I_item->data( TP::role_ReplayGainTrack ).toFloat() };
+    auto dB_Album { I_item->data( TP::role_ReplayGainAlbum ).toFloat() };
     auto dB_Total { TP::config().getPreAmp_dB() };
 
     switch ( mode )

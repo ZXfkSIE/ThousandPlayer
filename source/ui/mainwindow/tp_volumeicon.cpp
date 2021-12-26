@@ -15,10 +15,10 @@ TP_VolumeIcon::TP_VolumeIcon( QWidget *parent ) :
 void
 TP_VolumeIcon::initialize()
 {
-    pixmap_Volume = QIcon( ":/image/icon_Volume.svg" )
-            .pixmap( QSize( width(), height() ) );
-    pixmap_Mute = QIcon( ":/image/icon_Mute.svg" )
-            .pixmap( QSize( width(), height() ) );
+    pixmap_Volume = QIcon{ ":/image/icon_Volume.svg" }
+            .pixmap( QSize{ width(), height() } );
+    pixmap_Mute = QIcon{ ":/image/icon_Mute.svg" }
+            .pixmap( QSize{ width(), height() } );
 }
 
 

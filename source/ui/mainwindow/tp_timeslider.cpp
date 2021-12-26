@@ -18,8 +18,9 @@ TP_TimeSlider::mouseReleaseEvent( QMouseEvent *event )
 {
     if( event->button() == Qt::LeftButton && maximum() )
     {
-        int second = minimum() +
-                ( ( maximum() - minimum() ) * event->position().x() ) / width();
+        auto second { static_cast< int >(
+            minimum() + ( ( maximum() - minimum() ) * event->position().x() ) / width()
+        )};
         setValue( second );
         emit signal_mouseReleased( second );
     }

@@ -13,7 +13,7 @@ public:
     explicit TP_PlaylistContainer( QWidget *parent = nullptr );
 
 signals:
-    void signal_resizeWindow( QRect newGeometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( const QRect &newGeometry, TP::ResizeType resizeType );
     void signal_leftButtonReleased();
 
 private:

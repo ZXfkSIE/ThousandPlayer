@@ -69,7 +69,7 @@ TP_AudioInfoLabel::paintEvent ( QPaintEvent * )
         if( b_isScrolling )
         {
             int offsetY { font().pointSize() >> 1 };
-            int nextIdx = nextIndex();
+            int nextIdx { nextIndex() };
 
             // draw the upper text
             painter.drawText( x, --y + offsetY , vec_Qstr[ currentIdx ] );
