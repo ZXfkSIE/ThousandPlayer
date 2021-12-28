@@ -45,8 +45,8 @@ private slots:
     void slot_minimizeWindow();
     void slot_restoreWindow();
 
-    void slot_moveWindow ( QWidget *window, QRect newGeometry );
-    void slot_resizeWindow ( QWidget *window, QRect newGeometry, TP::ResizeType resizeType );
+    void slot_moveWindow ( QWidget *I_window, QRect I_geometry );
+    void slot_resizeWindow ( QWidget *I_window, QRect I_geometry, TP::ResizeType I_resizeType );
     void slot_refreshSnapStatus();
 
     void slot_itemDoubleClicked ( QListWidgetItem *I_item );
@@ -61,10 +61,10 @@ private slots:
     void slot_deviceChanged() const;
     void slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString ) const;
 
-    void slot_positionChanged( qint64 ms );
-    void slot_changePlayingPosition( int second );
+    void slot_positionChanged( qint64 I_ms );
+    void slot_changePlayingPosition( int I_second );
 
-    void slot_setVolume( float linearVolume );
+    void slot_setVolume( float I_linearVolume );
 
 private:    
     void initializeConnection();

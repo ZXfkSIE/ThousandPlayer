@@ -1,12 +1,12 @@
-﻿#include "tp_playlistcontainer.h"
+﻿#include "tp_lyricsstackedwidget.h"
 
 #include "tp_globalconst.h"
 #include "tp_globalfunction.h"
 
 #include <QMouseEvent>
 
-TP_PlaylistContainer::TP_PlaylistContainer( QWidget *parent ) :
-    QWidget                 { parent }
+TP_LyricsStackedWidget::TP_LyricsStackedWidget( QWidget *parent ) :
+    QStackedWidget          { parent }
   , b_isBorderBeingPressed  { false }
   , b_isCursorResize        { false }
 {
@@ -18,17 +18,17 @@ TP_PlaylistContainer::TP_PlaylistContainer( QWidget *parent ) :
 // *****************************************************************
 
 void
-TP_PlaylistContainer::mousePressEvent( QMouseEvent *event )
+TP_LyricsStackedWidget::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton
          && cursorPositionType != TP::notAtBorder )
         b_isBorderBeingPressed = true;
 
-    QWidget::mousePressEvent( event );
+    QStackedWidget::mousePressEvent( event );
 }
 
 void
-TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
+TP_LyricsStackedWidget::mouseMoveEvent( QMouseEvent *event )
 {
     QPoint eventPosition = event->position().toPoint();
 
@@ -47,7 +47,7 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
             if( newGeometry != window()->geometry() )
                 emit signal_resizeWindow( newGeometry, TP::atLeft );
 
-            break;              // case TP_LEFT_BORDER
+            break;
 
         case TP::rightBorder:
 
@@ -58,7 +58,18 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
             if( newGeometry != window()->geometry() )
                 emit signal_resizeWindow( newGeometry, TP::atRight );
 
-            break;              // case TP_RIGHT_BORDER
+            break;
+
+        case TP::bottomBorder:
+
+            newGeometry.setBottom( event->globalPosition().toPoint().y() );
+            if( newGeometry.height() < window()->minimumHeight() )
+                newGeometry.setHeight( window()->minimumHeight() );
+
+            if( newGeometry != window()->geometry() )
+                emit signal_resizeWindow( newGeometry, TP::atBottom );
+
+            break;
 
         default:
             break;
@@ -79,6 +90,7 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
 
         case TP::leftBorder:
         case TP::rightBorder:
+        case TP::bottomBorder:
             if ( ! b_isCursorResize )
             {
                 setCursor( QCursor( Qt::SizeHorCursor ) );
@@ -91,11 +103,11 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
         }
     }                           // if (b_isBorderBeingPressed)
 
-    QWidget::mouseMoveEvent( event );
+    QStackedWidget::mouseMoveEvent( event );
 }
 
 void
-TP_PlaylistContainer::mouseReleaseEvent( QMouseEvent *event )
+TP_LyricsStackedWidget::mouseReleaseEvent( QMouseEvent *event )
 {
     if( b_isBorderBeingPressed )
     {
@@ -109,5 +121,5 @@ TP_PlaylistContainer::mouseReleaseEvent( QMouseEvent *event )
         emit signal_windowChanged();
     }
 
-    QWidget::mouseReleaseEvent( event );
+    QStackedWidget::mouseReleaseEvent( event );
 }

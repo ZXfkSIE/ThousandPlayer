@@ -21,10 +21,31 @@
 #include <vorbisfile.h>
 #include <xiphcomment.h>
 
-QString
-TP::extension( const QString &path )
+
+TP::CursorPositionType
+TP::getCursorPositionType( QWidget *I_widget, const QPoint &I_point )
 {
-    auto extension { QFileInfo { path }.suffix().toLower() };
+    if ( I_point.x() <= TP::borderSize )
+    {
+        return TP::leftBorder;
+    }
+    else if ( I_widget->width() - I_point.x() <= TP::borderSize )
+    {
+        return TP::rightBorder;
+    }
+    else if ( I_widget->height() - I_point.y() <= TP::borderSize )
+    {
+        return TP::bottomBorder;
+    }
+
+    return TP::notAtBorder;
+}
+
+
+QString
+TP::extension( const QString &I_path )
+{
+    auto extension { QFileInfo { I_path }.suffix().toLower() };
 
     if( extension == QString { "m4a" } )
         extension = QString { "aac" };

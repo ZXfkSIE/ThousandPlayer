@@ -1,16 +1,16 @@
-﻿#ifndef TP_PLAYLISTCONTAINER_H
-#define TP_PLAYLISTCONTAINER_H
+﻿#ifndef TP_LYRICSSTACKEDWIDGET_H
+#define TP_LYRICSSTACKEDWIDGET_H
 
 #include "tp_globalenum.h"
 
-#include <QWidget>
+#include <QStackedWidget>
 
-class TP_PlaylistContainer : public QWidget
+class TP_LyricsStackedWidget : public QStackedWidget
 {
     Q_OBJECT
 
 public:
-    explicit TP_PlaylistContainer( QWidget *parent = nullptr );
+    explicit TP_LyricsStackedWidget( QWidget *parent = nullptr );
 
 signals:
     void signal_resizeWindow( const QRect &newGeometry, TP::ResizeType resizeType );
@@ -27,4 +27,4 @@ private:
     TP::CursorPositionType cursorPositionType;
 };
 
-#endif // TP_PLAYLISTCONTAINER_H
+#endif // TP_LYRICSSTACKEDWIDGET_H

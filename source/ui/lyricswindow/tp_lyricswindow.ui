@@ -156,7 +156,10 @@
     </widget>
    </item>
    <item>
-    <widget class="QStackedWidget" name="stackedWidget_Container">
+    <widget class="TP_LyricsStackedWidget" name="lyricsStackedWidget">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">QFrame
 {
@@ -165,7 +168,6 @@
 	border-right: 4px solid rgb(68, 68, 68);
 }</string>
      </property>
-     <widget class="QWidget" name="page"/>
     </widget>
    </item>
   </layout>
@@ -175,6 +177,12 @@
    <class>TP_TitleBar</class>
    <extends>QFrame</extends>
    <header>tp_titlebar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TP_LyricsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>tp_lyricsstackedwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

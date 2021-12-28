@@ -184,7 +184,7 @@ TP_MainWindow::on_action_trayIcon_Exit_triggered()
 
 
 void
-TP_MainWindow::slot_moveTitleBar( const QRect &newGeometry )
+TP_MainWindow::slot_titleBarMoved( const QRect &newGeometry )
 {
     emit signal_moveWindow( this, newGeometry );
 }
@@ -387,7 +387,8 @@ TP_MainWindow::changeEvent( QEvent *event )
 void
 TP_MainWindow::mousePressEvent( QMouseEvent *event )
 {
-    if ( event->button() == Qt::LeftButton && cursorPositionType )
+    if ( event->button() == Qt::LeftButton
+         && cursorPositionType != TP::notAtBorder )
         b_isBorderBeingPressed = true;
 
     QWidget::mousePressEvent( event );
@@ -402,7 +403,7 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
 
     if ( b_isBorderBeingPressed )
     {
-        QRect newGeometry = geometry();
+        auto newGeometry = geometry();
 
         switch ( cursorPositionType )
         {
@@ -412,7 +413,7 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
             if ( newGeometry.width() < minimumWidth() )
                 newGeometry.setLeft( newGeometry.right() - minimumWidth() + 1 );
 
-            if( newGeometry != geometry() )
+            if( newGeometry != window()->geometry() )
                 emit signal_resizeWindow( this, newGeometry, TP::atLeft );
 
             break;              // case TP_LEFT_BORDER
@@ -423,7 +424,7 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
             if ( newGeometry.width() < minimumWidth() )
                 newGeometry.setWidth( minimumWidth() );
 
-            if( newGeometry != geometry() )
+            if( newGeometry != window()->geometry() )
                 emit signal_resizeWindow( this, newGeometry, TP::atRight );
 
             break;              // case TP_RIGHT_BORDER
@@ -432,9 +433,9 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
             break;
         }
     }
-    else                        // if (b_isBorderBeingPressed)
+    else                        // if ( b_isBorderBeingPressed )
     {
-        cursorPositionType = isAtBorder( eventPosition );
+        cursorPositionType = TP::getCursorPositionType( this, eventPosition );
         switch ( cursorPositionType )
         {
         case TP::notAtBorder:
@@ -469,7 +470,8 @@ TP_MainWindow::mouseReleaseEvent( QMouseEvent *event )
     if( b_isBorderBeingPressed )
     {
         b_isBorderBeingPressed = false;
-        if( !isAtBorder(event->position().toPoint()) && b_isCursorResize )
+        if( TP::getCursorPositionType( this, event->position().toPoint() ) == TP::notAtBorder
+                && b_isCursorResize )
         {
             setCursor( QCursor( Qt::ArrowCursor ) );
             b_isCursorResize = false;
@@ -495,7 +497,7 @@ TP_MainWindow::initializeConnection()
 
     // Windows moving
     connect( ui->frame_Title,   &TP_TitleBar::signal_moveTitleBar,
-             this,              &TP_MainWindow::slot_moveTitleBar );
+             this,              &TP_MainWindow::slot_titleBarMoved );
     connect( ui->frame_Title,   &TP_TitleBar::signal_leftButtonReleased,
              this,              &TP_MainWindow::slot_leftButtonReleased );
 
@@ -585,8 +587,7 @@ TP_MainWindow::initializeUI()
         break;
     }
 
-    // Pending implementation
-    ui->pushButton_Lyrics->hide();
+    setCursor( QCursor ( Qt::ArrowCursor ) );
 }
 
 
@@ -679,23 +680,8 @@ TP_MainWindow::setAudioPropertyLabels(
 }
 
 
-TP::CursorPositionType
-TP_MainWindow::isAtBorder( const QPoint &I_point ) const
-{
-    if ( I_point.x() <= TP::borderSize )
-    {
-        return TP::leftBorder;
-    }
-    else if ( width() - I_point.x() <= TP::borderSize )
-    {
-        return TP::rightBorder;
-    }
-    return TP::notAtBorder;
-}
-
-
 QString
-TP_MainWindow::convertTime(qint64 second) const
+TP_MainWindow::convertTime( qint64 second ) const
 {
     return QString( "%1:%2" )
             .arg( second / 60, 2, 10, QLatin1Char('0') )

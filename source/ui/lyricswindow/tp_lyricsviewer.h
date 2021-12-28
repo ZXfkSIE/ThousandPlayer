@@ -10,11 +10,15 @@ class TP_LyricsViewer : public QListWidget
 public:
     explicit TP_LyricsViewer( QWidget *parent = nullptr );
 
-    void updatePosition( qint64 ms );
+    void updatePosition( qint64 I_ms );
     void readLrcFile( const QString &I_qstr_Path );
 
 private:
+    void sortByTimestamp();
+
     bool b_hasLrcFile;
+
+    QListWidgetItem *currentItem;
 };
 
 #endif // TP_LYRICSVIEWER_H

@@ -1,6 +1,8 @@
 ﻿#ifndef TP_GLOBALFUNCTION_H
 #define TP_GLOBALFUNCTION_H
 
+#include "tp_globalenum.h"
+
 #include <QListWidgetItem>
 #include <QString>
 
@@ -16,7 +18,9 @@ namespace Ogg   { class XiphComment; }
 
 namespace TP
 {
-    QString extension( const QString &path );
+    TP::CursorPositionType getCursorPositionType( QWidget *I_widget, const QPoint &I_point );
+
+    QString extension( const QString &I_path );
     void storeInformation( QListWidgetItem *I_item );
 
     float getReplayGainTrackFromTag( const TagLib::Ogg::XiphComment *xiphComment );

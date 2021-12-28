@@ -183,6 +183,7 @@ TP_FileListWidget::getNextItem_shuffle()
     return TP::currentItem() = item ( randomRow );
 }
 
+
 QListWidgetItem *
 TP_FileListWidget::getPreviousItem_shuffle()
 {
@@ -384,11 +385,11 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
     if( count() <= 1 )
         return;
 
-    int maxIdx = count() - 1, r {}, low {}, high {};
+    int maxIdx { count() - 1 }, r {}, low {}, high {};
     std::uniform_int_distribution< int > distribution { 0, maxIdx } ;
 
     // Shuffle whole list to avoid worst situation
-    for( size_t i = 0; i <= maxIdx; i++ )
+    for( unsigned i {}; i <= maxIdx; i++ )
     {
         r = distribution( TP::randomEngine() );
 
@@ -420,7 +421,7 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
         if( stack.empty() )
             break;
 
-        auto [left, right] = stack.top();
+        auto [ left, right ] = stack.top();
         low = left, high = right;
         stack.pop();
         auto *pivot = item( left )->clone();
@@ -512,9 +513,12 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
             }
 
             if( low < high )
-            {                                       // item[low] = item[high]
+            {                                       // item[ low ] = item[ high ]
                 insertItem( low, item( high )->clone() );
                 delete takeItem( low + 1 );
+                // Now it is certain that item[ low ] < pivot (when in ascending order),
+                // thus item[ low ] can be jumped.
+                low++;
             }
 
             switch( role )
@@ -597,14 +601,17 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
             }
 
             if( low < high )
-            {                                       // item[high] = item[low]
+            {                                       // item[ high ] = item[ low ]
                 delete takeItem( high );
                 insertItem( high, item( low )->clone() );
+                // Now it is certain that item[ high ] >= pivot (when in ascending order),
+                // thus item[ high ] can be jumped.
+                high--;
             }
-        }
+        }       // while( low < high )
 
         if( left < low )
-        {                                           // itemp[low] = pivot
+        {                                           // item[ low ] = pivot
             delete takeItem( low );
             insertItem( low, pivot );
         }

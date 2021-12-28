@@ -37,10 +37,10 @@ signals:
     void signal_minimizeWindow();
     void signal_restoreWindow();
     void signal_activateWindow();
-    void signal_moveWindow( QWidget *window, const QRect &newGeometry );
-    void signal_windowChanged();
 
+    void signal_moveWindow( QWidget *window, const QRect &newGeometry );
     void signal_resizeWindow( QWidget *window, const QRect &newGeometry, TP::ResizeType resizeType );
+    void signal_windowChanged();
 
     void signal_timeSliderPressed( int second );
     void signal_volumeSliderValueChanged( float logarithmicVolume );
@@ -68,7 +68,7 @@ private slots:
     void on_action_trayIcon_Restore_triggered();
     void on_action_trayIcon_Exit_triggered();
 
-    void slot_moveTitleBar( const QRect &newGeometry );
+    void slot_titleBarMoved( const QRect &newGeometry );
     void slot_leftButtonReleased();
 
     void on_slider_Time_valueChanged( int second );
@@ -120,8 +120,6 @@ private:
             );
 
     QString convertTime( qint64 second ) const;
-
-    TP::CursorPositionType isAtBorder( const QPoint &I_point ) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;

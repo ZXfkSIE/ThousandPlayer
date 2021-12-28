@@ -35,9 +35,8 @@ public:
 
 signals:
     void signal_moveWindow( QWidget *window, const QRect &newGeometry );
-    void signal_leftButtonReleased();
-
     void signal_resizeWindow( QWidget *window, const QRect &newGeometry, TP::ResizeType resizeType );
+    void signal_windowChanged();
 
     void signal_shown();
     void signal_hidden();
@@ -54,10 +53,9 @@ public slots:
     void slot_changeFontOfLists();
 
 private slots:
-    void slot_moveTitleBar( const QRect &newGeometry );
-    void slot_leftButtonReleased();
-
+    void slot_titleBarMoved( const QRect &newGeometry );
     void slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType );
+    void slot_windowChanged();
 
     void slot_fileListRemoved( TP_FileListWidget *I_fileListWidget );
     void slot_fileListCreated( TP_FileListWidget *I_fileListWidget );

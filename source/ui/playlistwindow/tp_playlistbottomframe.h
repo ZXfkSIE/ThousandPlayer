@@ -14,18 +14,16 @@ public:
 
 signals:
     void signal_resizeWindow( const QRect &newGeometry, TP::ResizeType resizeType );
-    void signal_leftButtonReleased();
+    void signal_windowChanged();
 
 private:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
-    TP::CursorPositionType isAtBorder( const QPoint &I_point ) const;
-
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;
-    bool b_isExpandingDisabled;
+
     TP::CursorPositionType cursorPositionType;
 };
 

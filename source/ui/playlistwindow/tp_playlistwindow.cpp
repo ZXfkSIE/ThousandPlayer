@@ -141,7 +141,7 @@ void
 TP_PlaylistWindow::slot_changeFontOfLists()
 {
     const auto &font { TP::config().getPlaylistFont() };
-    currentFileListWidget()->setFont( font );
+    ui->stackedWidget_FileList->setFont( font );
     ui->playlistsWidget->setFont( font );
 }
 
@@ -150,23 +150,23 @@ TP_PlaylistWindow::slot_changeFontOfLists()
 // *****************************************************************
 
 void
-TP_PlaylistWindow::slot_moveTitleBar( const QRect &newGeometry )
+TP_PlaylistWindow::slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType )
+{
+    emit signal_resizeWindow( this, newGeomtry, resizeType );
+}
+
+
+void
+TP_PlaylistWindow::slot_titleBarMoved( const QRect &newGeometry )
 {
     emit signal_moveWindow( this, newGeometry );
 }
 
 
 void
-TP_PlaylistWindow::slot_leftButtonReleased()
+TP_PlaylistWindow::slot_windowChanged()
 {
-    emit signal_leftButtonReleased();
-}
-
-
-void
-TP_PlaylistWindow::slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType )
-{
-    emit signal_resizeWindow( this, newGeomtry, resizeType );
+    emit signal_windowChanged();
 }
 
 
@@ -511,17 +511,17 @@ TP_PlaylistWindow::initializeConnection()
 {
     // Window moving and resizing related
     connect( ui->frame_Title,       &TP_TitleBar::signal_moveTitleBar,
-             this,                  &TP_PlaylistWindow::slot_moveTitleBar );
+             this,                  &TP_PlaylistWindow::slot_titleBarMoved );
     connect( ui->frame_Title,       &TP_TitleBar::signal_leftButtonReleased,
-             this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
+             this,                  &TP_PlaylistWindow::slot_windowChanged );
     connect( ui->playlistContainer, &TP_PlaylistContainer::signal_resizeWindow,
              this,                  &TP_PlaylistWindow::slot_resizeWindow );
-    connect( ui->playlistContainer, &TP_PlaylistContainer::signal_leftButtonReleased,
-             this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
+    connect( ui->playlistContainer, &TP_PlaylistContainer::signal_windowChanged,
+             this,                  &TP_PlaylistWindow::slot_windowChanged );
     connect( ui->frame_Bottom,      &TP_PlaylistBottomFrame::signal_resizeWindow,
              this,                  &TP_PlaylistWindow::slot_resizeWindow );
-    connect( ui->frame_Bottom,      &TP_PlaylistBottomFrame::signal_leftButtonReleased,
-             this,                  &TP_PlaylistWindow::slot_leftButtonReleased );
+    connect( ui->frame_Bottom,      &TP_PlaylistBottomFrame::signal_windowChanged,
+             this,                  &TP_PlaylistWindow::slot_windowChanged );
 
     // PlaylistsWidget related
     connect( ui->playlistsWidget,   &TP_PlaylistsWidget::signal_fileListCreated,

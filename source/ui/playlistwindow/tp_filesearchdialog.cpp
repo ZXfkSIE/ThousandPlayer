@@ -22,7 +22,7 @@ TP_FileSearchDialog::~TP_FileSearchDialog()
 QString
 TP_FileSearchDialog::getKeyword() const
 {
-    return qstr_keyword;
+    return qstr_Keyword;
 }
 
 
@@ -80,7 +80,7 @@ TP_FileSearchDialog::accept()
     }
     else
     {
-        qstr_keyword = ui->lineEdit->text();
+        qstr_Keyword = ui->lineEdit->text();
         b_isFilenameSearched = ui->checkBox_Filename->isChecked();
         b_isAlbumSearched = ui->checkBox_Album->isChecked();
         b_isArtistSearched = ui->checkBox_Artist->isChecked();

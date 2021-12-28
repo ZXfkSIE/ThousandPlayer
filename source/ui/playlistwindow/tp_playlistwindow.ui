@@ -98,7 +98,6 @@ background-color: #777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -181,9 +180,7 @@ background-color: #777;</string>
       <item>
        <widget class="QSplitter" name="splitter">
         <property name="font">
-         <font>
-          <family>MT Extra</family>
-         </font>
+         <font/>
         </property>
         <property name="mouseTracking">
          <bool>true</bool>
@@ -307,7 +304,6 @@ background-color: #777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -342,7 +338,6 @@ background-color: #777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -377,7 +372,6 @@ background-color: #777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -412,7 +406,6 @@ background-color: #777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -447,7 +440,6 @@ background-color: #777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>

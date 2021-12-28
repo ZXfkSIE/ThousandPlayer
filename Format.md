@@ -37,6 +37,21 @@ Class::getValue() const
 }
 ```
 
+## Add prefix for function parameter names
+
+- It is generally favorable to add the prefix `I_`, which means "input", to names of function/method parameters.
+- Sometimes it is also acceptable to add a type prefix to variable names.
+
+```cpp
+void
+Class::changeName( QString I_qstr_Name )
+{
+    qstr_Name = I_qstr_Name;                // "qstr_Name" is a private member
+    auto str_name { qstr_name.toStdString() };
+    // ...
+}
+```
+
 ## Add spaces, indents and line breaks as you like
 
 Do not hesitate to do everything you can to make the codes as readable as possible.
