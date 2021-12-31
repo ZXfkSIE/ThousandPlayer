@@ -11,9 +11,10 @@
 #include <array>
 
 class TP_ConfigWindow;
+class TP_FileListWidget;
+class TP_LyricsWindow;
 class TP_MainWindow;
 class TP_PlaylistWindow;
-class TP_FileListWidget;
 
 class QAudioOutput;
 class QListWidgetItem;
@@ -56,10 +57,10 @@ private slots:
     void slot_previousButtonPushed();
     void slot_interruptingStopTriggered();
 
-    void slot_playbackStateChanged ( QMediaPlayer::PlaybackState newState );
-    void slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status );
+    void slot_playbackStateChanged ( QMediaPlayer::PlaybackState I_state );
+    void slot_mediaStatusChanged ( QMediaPlayer::MediaStatus I_status );
     void slot_deviceChanged() const;
-    void slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString ) const;
+    void slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString &I_errorString ) const;
 
     void slot_positionChanged( qint64 I_ms );
     void slot_changePlayingPosition( int I_second );
@@ -70,22 +71,24 @@ private:
     void initializeConnection();
 
     void unsnapInvisibleWindows();
-    TP::SnapType checkSnapType      ( const QRect &geometry1, const QRect &geometry2 ) const;
-    TP::SnapType checkAdjacentType  ( const QRect &geometry1, const QRect &geometry2 ) const;
-    bool breadthFirstSearch ( unsigned idx_Target ) const;
+    TP::SnapType checkSnapType      ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
+    TP::SnapType checkAdjacentType  ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
+    bool breadthFirstSearch ( unsigned I_idx ) const;
 
     void playItem ( QListWidgetItem *I_item );
     void playFile ( QListWidgetItem *I_item );
 
-    QImage getCoverImage    ( TagLib::FLAC::File *flacFile );
-    QImage getCoverImage    ( TagLib::Ogg::XiphComment *xiphComment );
-    QImage getCoverImage    ( TagLib::ID3v2::Tag *tag );
-    QImage getCoverImage    ( TagLib::MP4::Tag *tag );
+    QImage getCoverImage    ( TagLib::FLAC::File *I_flacFile );
+    QImage getCoverImage    ( TagLib::Ogg::XiphComment *I_xiphComment );
+    QImage getCoverImage    ( TagLib::ID3v2::Tag *I_id3v2Tag );
+    QImage getCoverImage    ( TagLib::MP4::Tag *I_mp4Tag );
 
     TP_MainWindow       *   mainWindow;
     TP_PlaylistWindow   *   playlistWindow;
     TP_ConfigWindow     *   configWindow;
+    TP_LyricsWindow     *   lyricsWindow;
     bool                    b_isPlaylistWindowVisible;
+    bool                    b_isLyricsWindowVisible;
 
     QAudioOutput *  audioOutput;
     QMediaPlayer *  mediaPlayer;

@@ -26,7 +26,7 @@ public:
     void setPause();
     void setStop();
 
-    void updateDuration( qint64 ms );
+    void updateDuration( qint64 I_ms );
 
     void setAudioInformation( const QListWidgetItem *I_item = nullptr );
     void setFileNotFound();
@@ -38,8 +38,8 @@ signals:
     void signal_restoreWindow();
     void signal_activateWindow();
 
-    void signal_moveWindow( QWidget *window, const QRect &newGeometry );
-    void signal_resizeWindow( QWidget *window, const QRect &newGeometry, TP::ResizeType resizeType );
+    void signal_moveWindow( QWidget *window, const QRect &geometry );
+    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
     void signal_windowChanged();
 
     void signal_timeSliderPressed( int second );
@@ -47,6 +47,8 @@ signals:
 
     void signal_openPlaylistWindow();
     void signal_hidePlaylistWindow();
+    void signal_openLyricsWindow();
+    void signal_hideLyricsWindow();
     void signal_openConfigWindow();
 
     void signal_playButtonPushed();
@@ -60,27 +62,30 @@ signals:
 public slots:
     void slot_playlistWindowShown();
     void slot_playlistWindowHidden();
+    void slot_lyricsWindowShown();
+    void slot_lyricsWindowHidden();
 
     void slot_changeFontOfAudioInfoLabel();
 
 private slots:
-    void slot_trayIcon_activated( QSystemTrayIcon::ActivationReason reason );
+    void slot_trayIcon_activated( QSystemTrayIcon::ActivationReason I_reason );
     void on_action_trayIcon_Restore_triggered();
     void on_action_trayIcon_Exit_triggered();
 
-    void slot_titleBarMoved( const QRect &newGeometry );
+    void slot_titleBarMoved( const QRect &I_geometry );
     void slot_leftButtonReleased();
 
-    void on_slider_Time_valueChanged( int second );
-    void slot_timeSliderPressed( int second );
+    void on_slider_Time_valueChanged( int I_second );
+    void slot_timeSliderPressed( int I_second );
 
-    void on_slider_Volume_valueChanged( int volume );
+    void on_slider_Volume_valueChanged( int I_volume );
 
     void on_pushButton_Exit_clicked();
     void on_pushButton_Expand_clicked();
     void on_pushButton_Minimize_clicked();
 
     void on_pushButton_Playlist_clicked();
+    void on_pushButton_Lyrics_clicked();
     void on_pushButton_Config_clicked();
 
     void on_pushButton_Play_clicked();
@@ -92,6 +97,7 @@ private slots:
     void on_action_setMode_Repeat_triggered();
     void on_action_setMode_Sequential_triggered();
     void on_action_setMode_Shuffle_triggered();
+
 
 private:
     Ui::TP_MainWindow *ui;
@@ -112,19 +118,20 @@ private:
     void setAudioInfoLabel( const QListWidgetItem *I_item = nullptr );
     void setAudioPropertyLabels(
             const QString & I_qstr_Format   = QString { "N/A" },
-            int             bitDepth        = -1,
-            int             sampleRate      = -1,
-            int             bitRate         = -1,
-            int             duration        = 0,
-            float           replayGain      = 0
+            int             I_bitDepth      = -1,
+            int             I_sampleRate    = -1,
+            int             I_bitRate       = -1,
+            int             I_duration      = 0,
+            float           I_replayGain    = 0
             );
 
-    QString convertTime( qint64 second ) const;
+    QString convertTime( qint64 I_second ) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;
 
     bool b_isPlaylistWindowShown;
+    bool b_isLyricsWindowShown;
 
     TP_Menu         *   menu_Mode;
 

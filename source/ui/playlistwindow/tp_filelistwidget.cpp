@@ -233,15 +233,15 @@ TP_FileListWidget::clearPreviousAndNext()
 
 
 void
-TP_FileListWidget::refreshShowingTitle( int idx_Min, int idx_Max )
+TP_FileListWidget::refreshShowingTitle( int I_minIdx, int I_maxIdx )
 {
-    if ( idx_Max < 0 )
+    if ( I_maxIdx < 0 )
         return;
 
-    if ( idx_Min == -1 )
-        idx_Min++;
+    if ( I_minIdx == -1 )
+        I_minIdx++;
 
-    for ( int i { idx_Min }; i <= idx_Max; i++ )
+    for ( int i { I_minIdx }; i <= I_maxIdx; i++ )
         item(i)->setText(
                     QString("%1. ").arg( i + 1 )
                     +
@@ -380,7 +380,7 @@ TP_FileListWidget::reverseSelection()
 
 
 void
-TP_FileListWidget::sortByData( int role, bool isDescending )
+TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
 {
     if( count() <= 1 )
         return;
@@ -428,17 +428,17 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
 
         while( low < high )
         {
-            switch( role )
+            switch( I_role )
             {
             case TP::role_Duration :
 
-                if( ! isDescending )
+                if( ! I_isDescending )
                     while( low < high &&
-                          item( high )->data( role ).toInt() >= pivot->data( role ).toInt() )
+                          item( high )->data( I_role ).toInt() >= pivot->data( I_role ).toInt() )
                         high--;
                 else
                     while( low < high &&
-                          item( high )->data( role ).toInt() <= pivot->data( role ).toInt() )
+                          item( high )->data( I_role ).toInt() <= pivot->data( I_role ).toInt() )
                         high--;
 
                 break;
@@ -449,19 +449,19 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
             case TP::role_Description :
             case TP::role_URL :
 
-                qstr_Pivot = pivot->data( role ).toString();
+                qstr_Pivot = pivot->data( I_role ).toString();
 
-                if( ! isDescending )
+                if( ! I_isDescending )
                     while( low < high &&
                            QString::compare(
-                               item( high )->data( role ).toString(), qstr_Pivot, Qt::CaseInsensitive
+                               item( high )->data( I_role ).toString(), qstr_Pivot, Qt::CaseInsensitive
                                ) >= 0
                            )
                         high--;
                 else
                     while( low < high &&
                            QString::compare(
-                               item( high )->data( role ).toString(), qstr_Pivot, Qt::CaseInsensitive
+                               item( high )->data( I_role ).toString(), qstr_Pivot, Qt::CaseInsensitive
                                ) <= 0
                            )
                         high--;
@@ -474,18 +474,18 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
             case TP::role_Artist :
             case TP::role_Title :
 
-                qstr_Pivot = pivot->data( role ).toString().isEmpty() ?
+                qstr_Pivot = pivot->data( I_role ).toString().isEmpty() ?
                             pivot->data( TP::role_FileName ).toString() :
-                            pivot->data( role ).toString();
+                            pivot->data( I_role ).toString();
 
-                if( ! isDescending )
+                if( ! I_isDescending )
                 {
                     while( low < high
                            &&
                            QString::compare(
-                               item( high )->data( role ).toString().isEmpty() ?
+                               item( high )->data( I_role ).toString().isEmpty() ?
                                item( high )->data( TP::role_FileName ).toString() :
-                               item( high )->data( role ).toString(),
+                               item( high )->data( I_role ).toString(),
                                qstr_Pivot,
                                Qt::CaseInsensitive ) >= 0
                            )
@@ -496,9 +496,9 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
                     while( low < high
                            &&
                            QString::compare(
-                               item( high )->data( role ).toString().isEmpty() ?
+                               item( high )->data( I_role ).toString().isEmpty() ?
                                item( high )->data( TP::role_FileName ).toString() :
-                               item( high )->data( role ).toString(),
+                               item( high )->data( I_role ).toString(),
                                qstr_Pivot,
                                Qt::CaseInsensitive ) <= 0
                            )
@@ -521,17 +521,17 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
                 low++;
             }
 
-            switch( role )
+            switch( I_role )
             {
             case TP::role_Duration :
 
-                if( ! isDescending )
+                if( ! I_isDescending )
                     while( low < high &&
-                           item( low )->data( role ).toInt() < pivot->data( role ).toInt() )
+                           item( low )->data( I_role ).toInt() < pivot->data( I_role ).toInt() )
                         low++;
                 else
                     while( low < high &&
-                           item( low )->data( role ).toInt() > pivot->data( role ).toInt() )
+                           item( low )->data( I_role ).toInt() > pivot->data( I_role ).toInt() )
                         low++;
 
                 break;
@@ -542,10 +542,10 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
             case TP::role_Description :
             case TP::role_URL :
 
-                if( ! isDescending )
+                if( ! I_isDescending )
                     while( low < high &&
                            QString::compare(
-                               item( low )->data( role ).toString(),
+                               item( low )->data( I_role ).toString(),
                                qstr_Pivot,
                                Qt::CaseInsensitive
                                ) < 0
@@ -554,7 +554,7 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
                 else
                     while( low < high &&
                            QString::compare(
-                               item( low )->data( role ).toString(),
+                               item( low )->data( I_role ).toString(),
                                qstr_Pivot,
                                Qt::CaseInsensitive
                                ) > 0
@@ -569,13 +569,13 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
             case TP::role_Artist :
             case TP::role_Title :
 
-                if( ! isDescending )
+                if( ! I_isDescending )
                     while( low < high
                            &&
                            QString::compare(
-                               item( low )->data( role ).toString().isEmpty() ?
+                               item( low )->data( I_role ).toString().isEmpty() ?
                                item( low )->data( TP::role_FileName ).toString() :
-                               item( low )->data( role ).toString(),
+                               item( low )->data( I_role ).toString(),
                                qstr_Pivot,
                                Qt::CaseInsensitive ) < 0
                            )
@@ -584,9 +584,9 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
                     while( low < high
                            &&
                            QString::compare(
-                               item( low )->data( role ).toString().isEmpty() ?
+                               item( low )->data( I_role ).toString().isEmpty() ?
                                item( low )->data( TP::role_FileName ).toString() :
-                               item( low )->data( role ).toString(),
+                               item( low )->data( I_role ).toString(),
                                qstr_Pivot,
                                Qt::CaseInsensitive ) > 0
                            )
@@ -640,12 +640,12 @@ TP_FileListWidget::sortByData( int role, bool isDescending )
 
 
 void
-TP_FileListWidget::searchByData( const QString &I_qstr_keyword,
-                                 qsizetype      startingIndex,
-                                 bool           isFilenameSearched,
-                                 bool           isAlbumSearched,
-                                 bool           isArtistSearched,
-                                 bool           isTitleSearched)
+TP_FileListWidget::searchByData( const QString &  I_qstr_keyword,
+                                 qsizetype        I_startingIdx,
+                                 bool             I_isFilenameSearched,
+                                 bool             I_isAlbumSearched,
+                                 bool             I_isArtistSearched,
+                                 bool             I_isTitleSearched )
 {
     if( ! I_qstr_keyword.size() || ! count() )
         return;
@@ -653,22 +653,22 @@ TP_FileListWidget::searchByData( const QString &I_qstr_keyword,
     clearSelection();
 
     qstr_keyword            = I_qstr_keyword;
-    b_isFilenameSearched    = isFilenameSearched;
-    b_isAlbumSearched       = isAlbumSearched;
-    b_isArtistSearched      = isArtistSearched;
-    b_isTitleSearched       = isTitleSearched;
+    b_isFilenameSearched    = I_isFilenameSearched;
+    b_isAlbumSearched       = I_isAlbumSearched;
+    b_isArtistSearched      = I_isArtistSearched;
+    b_isTitleSearched       = I_isTitleSearched;
 
-    for( auto i { startingIndex }; i < count(); i++ )
+    for( auto i { I_startingIdx }; i < count(); i++ )
     {
         auto *currentItem = item( i );
 
-        if(     isFilenameSearched &&
+        if(     I_isFilenameSearched &&
                 currentItem->data( TP::role_FileName ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
             ||
-                isAlbumSearched &&
+                I_isAlbumSearched &&
                 currentItem->data( TP::role_Album ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
             ||
-                isArtistSearched &&
+                I_isArtistSearched &&
                 currentItem->data( TP::role_Artist ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
         )
         {
@@ -677,12 +677,12 @@ TP_FileListWidget::searchByData( const QString &I_qstr_keyword,
         }
 
         // If the audio doesn't contain a valid title, search filename instead.
-        if( isTitleSearched )
+        if( I_isTitleSearched )
         {
             const auto &title { currentItem->data( TP::role_Title ).toString() };
             if(     title.size() && title.contains( qstr_keyword, Qt::CaseInsensitive )
                 ||
-                    ! isFilenameSearched &&
+                    ! I_isFilenameSearched &&
                     currentItem->data( TP::role_FileName ).toString().contains( qstr_keyword, Qt::CaseInsensitive )
             )
             {

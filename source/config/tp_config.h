@@ -17,10 +17,10 @@ public:
     explicit TP_Config( QObject *parent = nullptr );
     ~TP_Config();
 
-    // ==================== MAINWINDOW group ====================
-    void            setMainWindowPosition ( const QPoint &input );
+    // ====================== MAINWINDOW group ======================
+    void            setMainWindowPosition ( const QPoint &input = defaultMainWindowPosition );
     const QPoint &  getMainWindowPosition () const;
-    void            setTrayIconEnabled  ( const bool b );
+    void            setTrayIconEnabled  ( const bool input );
     bool            isTrayIconEnabled   () const;
     void            setAudioInfoLabelFont( const QFont &input );
     const QFont &   getAudioInfoLabelFont() const;
@@ -28,27 +28,34 @@ public:
     int             getAudioInfoScrollingInterval () const;
 
     // ==================== PLAYLISTWINDOW group ====================
-    void            setPlaylistWindowPosition ( const QPoint &input );
+    void            setPlaylistWindowPosition ( const QPoint &input = defaultPlaylistWindowPosition );
     const QPoint &  getPlaylistWindowPosition () const;
-    void            setPlaylistWindowShown  ( const bool b );
+    void            setPlaylistWindowShown  ( const bool input );
     bool            isPlaylistWindowShown   () const;
     void            setPlaylistFont ( const QFont &input );
     const QFont &   getPlaylistFont () const;
     void            setLastOpenedDirectory ( const QUrl &input );
     const QUrl &    getLastOpenedDirectory () const;
 
-    // ==================== PLAYBACK group ====================
-    void                setVolume ( const int I_volume );
+    // ===================== LYRICSWINDOW group =====================
+    void            setLyricsWindowPosition ( const QPoint &input = defaultLyricsWindowPosition );
+    const QPoint &  getLyricsWindowPosition () const;
+    void            setLyricsWindowShown  ( const bool input );
+    bool            isLyricsWindowShown   () const;
+    void            setLyricsFont ( const QFont &input );
+    const QFont &   getLyricsFont () const;
+
+    // ======================= PLAYBACK group =======================
+    void                setVolume ( const int input );
     int                 getVolume () const;
-    void                setPreAmp_dB ( const float I_dB );
+    void                setPreAmp_dB ( const float input );
     float               getPreAmp_dB () const;
     void                setReplayGainMode ( const TP::ReplayGainMode input );
     TP::ReplayGainMode  getReplayGainMode () const;
-    void                setDefaultGain_dB ( const float I_dB );
+    void                setDefaultGain_dB ( const float input );
     float               getDefaultGain_dB () const;
     void                setPlayMode ( const TP::PlayMode input );
     TP::PlayMode        getPlayMode () const;
-
 
 private:
     QSettings config;
@@ -79,6 +86,16 @@ private:
             QUrl        lastOpenedDirectory;
 
     // ************************************************************************************
+    const   QString             group_LYRICSWINDOW                  { "LYRICSWINDOW" };
+    // ************************************************************************************
+    const   QString     key_LYRICSWINDOW_lyricsWindowPosition       { "lyricsWindowPosition" };
+            QPoint      lyricsWindowPosition;
+    const   QString     key_LYRICSWINDOW_isLyricsWindowShown        { "isLyricsWindowShown" };
+            bool        b_isLyricsWindowShown;
+    const   QString     key_LYRICSWINDOW_lyricsFont                 { "lyricsFont" };
+            QFont       lyricsFont;
+
+    // ************************************************************************************
     const   QString             group_PLAYBACK                      { "PLAYBACK" };
     // ************************************************************************************
     const   QString             key_PLAYBACK_volume                 { "volume" };
@@ -91,6 +108,10 @@ private:
             float               defaultGain_dB;
     const   QString             key_PLAYBACK_playMode               { "playMode" };
             TP::PlayMode        playMode;
+
+    static constexpr QPoint defaultMainWindowPosition       { 100, 100 };
+    static constexpr QPoint defaultPlaylistWindowPosition   { 100, 340 };
+    static constexpr QPoint defaultLyricsWindowPosition     { 580, 100 };
 };
 
 #endif // TP_CONFIG_H

@@ -20,20 +20,23 @@ signals:
 
     void signal_audioInfoLabelFontChanged ();
     void signal_playlistFontChanged ();
+    void signal_lyricsFontChanged ();
 
 private slots:
-    void on_listWidget_Tab_currentRowChanged( int currentRow );
+    void on_listWidget_Tab_currentRowChanged( int I_row );
 
-    void on_radioButton_ClickX_MinimizeToTray_toggled( bool checked );
+    void on_radioButton_ClickX_MinimizeToTray_toggled( bool I_checked );
     void on_pushButton_ChangeAudioInfoLabelFont_clicked();
     void on_spinBox_AudioInfoLabelScrollingInterval_valueChanged( int I_sec );
 
-    void on_comboBox_AudioDevice_currentIndexChanged( int index );
-    void on_comboBox_ReplayGainMode_currentIndexChanged ( int index );
-    void on_slider_PreAmp_valueChanged ( int value );
-    void on_slider_DefaultReplayGain_valueChanged ( int value );
+    void on_comboBox_AudioDevice_currentIndexChanged( int I_idx );
+    void on_comboBox_ReplayGainMode_currentIndexChanged ( int I_idx );
+    void on_slider_PreAmp_valueChanged ( int I_value );
+    void on_slider_DefaultReplayGain_valueChanged ( int I_value );
 
     void on_pushButton_ChangePlaylistFont_clicked ();
+
+    void on_pushButton_ChangeLyricsFont_clicked();
 
     void on_pushButton_GPL_clicked ();
     void on_pushButton_Credits_clicked ();

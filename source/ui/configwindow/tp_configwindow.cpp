@@ -31,16 +31,16 @@ TP_ConfigWindow::~TP_ConfigWindow()
 // *****************************************************************
 
 void
-TP_ConfigWindow::on_listWidget_Tab_currentRowChanged( int currentRow )
+TP_ConfigWindow::on_listWidget_Tab_currentRowChanged( int I_row )
 {
-    ui->stackedWidget->setCurrentIndex( currentRow );
+    ui->stackedWidget->setCurrentIndex( I_row );
 }
 
 
 void
-TP_ConfigWindow::on_radioButton_ClickX_MinimizeToTray_toggled( bool checked )
+TP_ConfigWindow::on_radioButton_ClickX_MinimizeToTray_toggled( bool I_checked )
 {
-    TP::config().setTrayIconEnabled( checked );
+    TP::config().setTrayIconEnabled( I_checked );
 }
 
 
@@ -73,21 +73,21 @@ TP_ConfigWindow::on_spinBox_AudioInfoLabelScrollingInterval_valueChanged( int I_
 
 
 void
-TP_ConfigWindow::on_comboBox_AudioDevice_currentIndexChanged( int index )
+TP_ConfigWindow::on_comboBox_AudioDevice_currentIndexChanged( int I_index )
 {
     qDebug() << "[Config Window] signal_audioDeviceChanged is emitted to"
-             << ui->comboBox_AudioDevice->itemData( index ).value< QAudioDevice >().description();
+             << ui->comboBox_AudioDevice->itemData( I_index ).value< QAudioDevice >().description();
     emit signal_audioDeviceChanged(
-                ui->comboBox_AudioDevice->itemData( index ).value< QAudioDevice >()
+                ui->comboBox_AudioDevice->itemData( I_index ).value< QAudioDevice >()
                 );
 }
 
 
 void
-TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( int index )
+TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( int I_index )
 {
-    qDebug() << "[Config Window] ReplayGain mode is changed to" << index;
-    switch( index )
+    qDebug() << "[Config Window] ReplayGain mode is changed to" << I_index;
+    switch( I_index )
     {
     case 0:
         ui->slider_PreAmp           ->setEnabled( false );
@@ -111,9 +111,9 @@ TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( int index )
 
 
 void
-TP_ConfigWindow::on_slider_PreAmp_valueChanged( int value )
+TP_ConfigWindow::on_slider_PreAmp_valueChanged( int I_value )
 {
-    float realValue = value / 10.0;
+    float realValue = I_value / 10.0;
     TP::config().setPreAmp_dB( realValue );
     ui->label_PreAmpValue->setText(
                 ( realValue > 0 ? QString( "+" ) : QString() ) +
@@ -122,9 +122,9 @@ TP_ConfigWindow::on_slider_PreAmp_valueChanged( int value )
 
 
 void
-TP_ConfigWindow::on_slider_DefaultReplayGain_valueChanged( int value )
+TP_ConfigWindow::on_slider_DefaultReplayGain_valueChanged( int I_value )
 {
-    float realValue = value / 10.0;
+    float realValue = I_value / 10.0;
     TP::config().setDefaultGain_dB( realValue );
     ui->label_DefaultReplayGainValue->setText(
                 ( realValue > 0 ? QString( "+" ) : QString() ) +
@@ -150,6 +150,28 @@ TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
                     QString( "%1, %2 pt" ).arg( font.family() ).arg( font.pointSize() ) );
         ui->label_CurrentPlaylistFontExample->setFont( font );
         emit signal_playlistFontChanged();
+    }
+}
+
+
+void
+TP_ConfigWindow::on_pushButton_ChangeLyricsFont_clicked()
+{
+    bool ok {};
+    const auto &font {
+        QFontDialog::getFont(
+                    &ok,
+                    TP::config().getLyricsFont(),
+                    this )
+    };
+
+    if( ok )
+    {
+        TP::config().setLyricsFont( font );
+        ui->label_CurrentLyricsFontExample->setText(
+                    QString( "%1, %2 pt" ).arg( font.family() ).arg( font.pointSize() ) );
+        ui->label_CurrentLyricsFontExample->setFont( font );
+        emit signal_lyricsFontChanged();
     }
 }
 
@@ -960,6 +982,13 @@ TP_ConfigWindow::initializeUI()
                 QString( "%1, %2 pt" ).arg( playlistFont.family() ).arg( playlistFont.pointSize() ) );
     ui->label_CurrentPlaylistFontExample->setFont( playlistFont );
 
+    // ============================== Lyrics page ==============================
+
+    const auto &lyricsFont { TP::config().getLyricsFont() };
+    ui->label_CurrentLyricsFontExample->setText(
+                QString( "%1, %2 pt" ).arg( lyricsFont.family() ).arg( lyricsFont.pointSize() ) );
+    ui->label_CurrentLyricsFontExample->setFont( lyricsFont );
+
     // ============================== About page ==============================
 
     ui->label_Icon->setPixmap( QIcon{ ":/image/MusicalNote.svg" }
@@ -984,8 +1013,8 @@ TP_ConfigWindow::on_pushButton_Credits_clicked()
 }
 
 
-void TP_ConfigWindow::on_buttonBox_OK_accepted()
+void
+TP_ConfigWindow::on_buttonBox_OK_accepted()
 {
     close();
 }
-

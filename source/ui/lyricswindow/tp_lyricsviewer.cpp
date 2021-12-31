@@ -136,14 +136,14 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
                     b_hasLrcFile = true;
                 }       // for( auto &qstr : qstrList )
             }       // while( inputStream.atEnd() )
-        }
+        }       // if( file.open( QIODeviceBase::ReadOnly ) )
 
         if( b_hasLrcFile )
         {
             sortByTimestamp();
             return;
         }
-    }   // if( file.open( QIODeviceBase::ReadOnly ) )
+    }       // std::filesystem::exists
 
     // No valid LRC file
     addItem( QFileInfo { I_qstr_Path }.baseName() );

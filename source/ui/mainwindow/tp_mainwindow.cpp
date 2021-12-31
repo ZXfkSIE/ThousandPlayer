@@ -73,10 +73,10 @@ TP_MainWindow::setStop()
 
 
 void
-TP_MainWindow::updateDuration( qint64 ms )
+TP_MainWindow::updateDuration( qint64 I_ms )
 {
     if ( ! ui->slider_Time->isSliderDown() )
-        ui->slider_Time->setValue( ms / 1000 );     // convert ms to s
+        ui->slider_Time->setValue( I_ms / 1000 );     // convert ms to s
 
     // DO NOT update time label here.
     // Let on_slider_Time_valueChanged() do it.
@@ -144,6 +144,22 @@ TP_MainWindow::slot_playlistWindowHidden()
 
 
 void
+TP_MainWindow::slot_lyricsWindowShown()
+{
+    ui->pushButton_Lyrics->setStyleSheet( "color: rgb(255, 255, 255);" );
+    b_isLyricsWindowShown = true;
+}
+
+
+void
+TP_MainWindow::slot_lyricsWindowHidden()
+{
+    ui->pushButton_Lyrics->setStyleSheet( "color: rgb(0, 0, 0);" );
+    b_isLyricsWindowShown = false;
+}
+
+
+void
 TP_MainWindow::slot_changeFontOfAudioInfoLabel()
 {
     ui->label_AudioInfo->setFont( TP::config().getAudioInfoLabelFont() );
@@ -154,15 +170,15 @@ TP_MainWindow::slot_changeFontOfAudioInfoLabel()
 // *****************************************************************
 
 void
-TP_MainWindow::slot_trayIcon_activated( QSystemTrayIcon::ActivationReason reason )
+TP_MainWindow::slot_trayIcon_activated( QSystemTrayIcon::ActivationReason I_reason )
 {
     // The DoubleClick signal cannot be triggered under X11 and macOS.
     // See https://doc.qt.io/qt-6/qsystemtrayicon.html#ActivationReason-enum
     // and search "enum QSystemTrayIcon::ActivationReason".
 #ifdef Q_OS_WINDOWS
-    if( reason == QSystemTrayIcon::DoubleClick )
+    if( I_reason == QSystemTrayIcon::DoubleClick )
 #else
-    if( reason == QSystemTrayIcon::Trigger )
+    if( I_reason == QSystemTrayIcon::Trigger )
 #endif
         on_action_trayIcon_Restore_triggered();
 }
@@ -184,9 +200,9 @@ TP_MainWindow::on_action_trayIcon_Exit_triggered()
 
 
 void
-TP_MainWindow::slot_titleBarMoved( const QRect &newGeometry )
+TP_MainWindow::slot_titleBarMoved( const QRect &I_geometry )
 {
-    emit signal_moveWindow( this, newGeometry );
+    emit signal_moveWindow( this, I_geometry );
 }
 
 
@@ -198,16 +214,16 @@ TP_MainWindow::slot_leftButtonReleased()
 
 
 void
-TP_MainWindow::on_slider_Time_valueChanged( int second )
+TP_MainWindow::on_slider_Time_valueChanged( int I_second )
 {
-    ui->label_CurrentTime->setText( convertTime( second ) );
+    ui->label_CurrentTime->setText( convertTime( I_second ) );
 }
 
 
 void
-TP_MainWindow::slot_timeSliderPressed( int second )
+TP_MainWindow::slot_timeSliderPressed( int I_second )
 {
-    emit signal_timeSliderPressed( second );
+    emit signal_timeSliderPressed( I_second );
 }
 
 
@@ -272,6 +288,15 @@ TP_MainWindow::on_pushButton_Playlist_clicked()
         emit signal_hidePlaylistWindow();
     else
         emit signal_openPlaylistWindow();
+}
+
+
+void TP_MainWindow::on_pushButton_Lyrics_clicked()
+{
+    if( b_isLyricsWindowShown )
+        emit signal_hideLyricsWindow();
+    else
+        emit signal_openLyricsWindow();
 }
 
 
@@ -636,11 +661,11 @@ TP_MainWindow::setAudioInfoLabel( const QListWidgetItem *I_item )
 void
 TP_MainWindow::setAudioPropertyLabels(
         const QString & I_qstr_Format,
-        int             bitDepth,
-        int             sampleRate,
-        int             bitRate,
-        int             duration,
-        float           replayGain )
+        int             I_bitDepth,
+        int             I_sampleRate,
+        int             I_bitRate,
+        int             I_duration,
+        float           I_replayGain )
 {
     ui->label_Format->setText(
                 QString{ " " }
@@ -649,30 +674,30 @@ TP_MainWindow::setAudioPropertyLabels(
 
     ui->label_BitDepth->setText(
                 QString{ " " }
-                + ( bitDepth == -1 ? QString{ "-" } : QString::number( bitDepth ) )
+                + ( I_bitDepth == -1 ? QString{ "-" } : QString::number( I_bitDepth ) )
                 + QString{ " bits " }
                 );
 
     ui->label_SampleRate->setText(
                 QString{ " " } +
-                ( sampleRate == -1 ? QString{ "-" } : QString::number( sampleRate ) ) +
+                ( I_sampleRate == -1 ? QString{ "-" } : QString::number( I_sampleRate ) ) +
                 QString{ " KHz " }
                 );
 
     ui->label_Bitrate->setText(
                 QString{ " " } +
-                ( bitRate == -1 ? QString( "-" ) : QString::number( bitRate ) ) +
+                ( I_bitRate == -1 ? QString( "-" ) : QString::number( I_bitRate ) ) +
                 QString{ " kbps " }
                 );
 
-    ui->label_DurationTime->setText( convertTime( duration ) );
-    ui->slider_Time->setRange( 0, duration );
+    ui->label_DurationTime->setText( convertTime( I_duration ) );
+    ui->slider_Time->setRange( 0, I_duration );
 
-    if( replayGain )
+    if( I_replayGain )
         ui->label_ReplayGain->setText(
                     QString{ " " } +
-                    ( replayGain > 0 ? QString{ "+" } : QString{} ) +
-                    QString::number( replayGain, 'f', 2 ) +
+                    ( I_replayGain > 0 ? QString{ "+" } : QString{} ) +
+                    QString::number( I_replayGain, 'f', 2 ) +
                     QString{ " dB " }
                     );
     else
@@ -681,9 +706,9 @@ TP_MainWindow::setAudioPropertyLabels(
 
 
 QString
-TP_MainWindow::convertTime( qint64 second ) const
+TP_MainWindow::convertTime( qint64 I_second ) const
 {
     return QString( "%1:%2" )
-            .arg( second / 60, 2, 10, QLatin1Char('0') )
-            .arg( second % 60, 2, 10, QLatin1Char('0') );
+            .arg( I_second / 60, 2, 10, QLatin1Char( '0' ) )
+            .arg( I_second % 60, 2, 10, QLatin1Char( '0' ) );
 }

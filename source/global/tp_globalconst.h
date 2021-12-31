@@ -1,6 +1,7 @@
 ﻿#ifndef TP_GLOBALCONST_H
 #define TP_GLOBALCONST_H
 
+#include <QStandardPaths>
 #include <QString>
 
 namespace TP
@@ -38,6 +39,19 @@ static const int iconSize_SingleTime    = 26;
 static const int iconSize_Repeat        = 28;
 static const int iconSize_Sequential    = 22;
 static const int iconSize_Shuffle       = 29;
+
+static const QString playlistFilePath {
+    QStandardPaths::writableLocation(
+#ifdef Q_OS_LINUX
+                QStandardPaths::AppConfigLocation
+#endif
+#ifdef Q_OS_WIN
+                QStandardPaths::AppDataLocation
+#endif
+                )
+            + "/playlists.json"
+};
+
 }       //namespace TP
 
 #endif // TP_GLOBALCONST_H

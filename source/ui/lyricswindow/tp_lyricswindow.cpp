@@ -3,11 +3,17 @@
 
 #include "tp_globalvariable.h"
 
+#include "tp_lyricsviewer.h"
+
 TP_LyricsWindow::TP_LyricsWindow( QWidget *parent ) :
-    QWidget { parent },
-    ui      { new Ui::TP_LyricsWindow }
+    QWidget         { parent }
+  , ui              { new Ui::TP_LyricsWindow }
+  , lyricsViewer    { new TP_LyricsViewer { ui->lyricsStackedWidget } }
 {
     ui->setupUi( this );
+
+    initializeConnection();
+    initializeUI();
 }
 
 TP_LyricsWindow::~TP_LyricsWindow()
@@ -16,20 +22,30 @@ TP_LyricsWindow::~TP_LyricsWindow()
 }
 
 // *****************************************************************
+// public slots
+// *****************************************************************
+
+void
+TP_LyricsWindow::slot_changeFont()
+{
+    lyricsViewer->setFont( TP::config().getLyricsFont() );
+}
+
+// *****************************************************************
 // private slots
 // *****************************************************************
 
 void
-TP_LyricsWindow::slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType )
+TP_LyricsWindow::slot_resizeWindow( const QRect &I_geometry, TP::ResizeType I_resizeType )
 {
-    emit signal_resizeWindow( this, newGeomtry, resizeType );
+    emit signal_resizeWindow( this, I_geometry, I_resizeType );
 }
 
 
 void
-TP_LyricsWindow::slot_titleBarMoved( const QRect &newGeometry )
+TP_LyricsWindow::slot_titleBarMoved( const QRect &I_geometry )
 {
-    emit signal_moveWindow( this, newGeometry );
+    emit signal_moveWindow( this, I_geometry );
 }
 
 
@@ -39,11 +55,23 @@ TP_LyricsWindow::slot_windowChanged()
     emit signal_windowChanged();
 }
 
+// *****************************************************************
+// private override
+// *****************************************************************
 
 void
-TP_LyricsWindow::slot_changeFontOfWidgets()
+TP_LyricsWindow::showEvent( QShowEvent *event )
 {
-   // const auto &font { TP::config().getLyricsFont() };
+    QWidget::showEvent( event );
+    emit signal_shown();
+}
+
+
+void
+TP_LyricsWindow::hideEvent( QHideEvent *event )
+{
+    QWidget::hideEvent( event );
+    emit signal_hidden();
 }
 
 // *****************************************************************
@@ -62,4 +90,11 @@ TP_LyricsWindow::initializeConnection()
              this,                      &TP_LyricsWindow::slot_resizeWindow );
     connect( ui->lyricsStackedWidget,   &TP_LyricsStackedWidget::signal_windowChanged,
              this,                      &TP_LyricsWindow::slot_windowChanged );
+}
+
+void
+TP_LyricsWindow::initializeUI()
+{
+    ui->lyricsStackedWidget->setCurrentWidget( lyricsViewer );
+    slot_changeFont();
 }

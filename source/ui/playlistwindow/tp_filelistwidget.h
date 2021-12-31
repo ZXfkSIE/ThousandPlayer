@@ -24,7 +24,7 @@ public:
     QListWidgetItem * getPreviousItem_shuffle();
 
     void clearPreviousAndNext();
-    void refreshShowingTitle( int idx_Min, int idx_Max );
+    void refreshShowingTitle( int I_minIdx, int I_maxIdx );
 
     void clearUnselectedItems();
     void clearInaccessibleItems();
@@ -33,14 +33,14 @@ public:
 
     void reverseSelection();
 
-    void sortByData( int role, bool isDescending );
+    void sortByData( int I_role, bool I_isDescending );
 
     void searchByData( const QString &  I_qstr_keyword,
-                       qsizetype        startingIndex,
-                       bool             isFilenameSearched,
-                       bool             isAlbumSearched,
-                       bool             isArtistSearched,
-                       bool             isTitleSearched );
+                       qsizetype        I_startingIdx,
+                       bool             I_isFilenameSearched,
+                       bool             I_isAlbumSearched,
+                       bool             I_isArtistSearched,
+                       bool             I_isTitleSearched );
     void findNext();
 
 signals:

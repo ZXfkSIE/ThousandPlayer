@@ -34,8 +34,8 @@ public:
     QListWidgetItem * getPreviousItem_shuffle();
 
 signals:
-    void signal_moveWindow( QWidget *window, const QRect &newGeometry );
-    void signal_resizeWindow( QWidget *window, const QRect &newGeometry, TP::ResizeType resizeType );
+    void signal_moveWindow( QWidget *window, const QRect &geometry );
+    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
     void signal_windowChanged();
 
     void signal_shown();
@@ -50,11 +50,11 @@ public slots:
 
     void slot_activateWindow();
 
-    void slot_changeFontOfLists();
+    void slot_changeFont();
 
 private slots:
-    void slot_titleBarMoved( const QRect &newGeometry );
-    void slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType );
+    void slot_titleBarMoved( const QRect &I_geometry );
+    void slot_resizeWindow( const QRect &I_geometry, TP::ResizeType I_resizeType );
     void slot_windowChanged();
 
     void slot_fileListRemoved( TP_FileListWidget *I_fileListWidget );
@@ -86,7 +86,7 @@ private slots:
     void on_action_sortByAlbum_triggered();
     void on_action_sortByArtist_triggered();
     void on_action_sortByTitle_triggered();
-    void on_action_setDescending_triggered( bool checked );
+    void on_action_setDescending_triggered( bool I_isChecked );
 
     void on_action_find_triggered();
     void on_action_findNext_triggered();
@@ -105,7 +105,7 @@ private:
     void storePlaylist();
 
     TP_FileListWidget * currentFileListWidget();
-    void                addFilesToCurrentList( const QList< QUrl > &urlList );
+    void                addFilesToCurrentList( const QList< QUrl > &I_urlList );
 
     TP_Menu *menu_Add;
     TP_Menu *menu_Remove;
@@ -119,11 +119,10 @@ private:
 
     const int percentageStep { 10 };
 
-    const QString key_Root          { "root" };
-    const QString key_ListName      { "listName" };
-    const QString key_FileList      { "fileList" };
-    const QString key_SourceType    { "sourceType" };
-    const QString key_URL           { "url" };    
+    const QString key_listName      { "listName" };
+    const QString key_fileList      { "fileList" };
+    const QString key_sourceType    { "sourceType" };
+    const QString key_url           { "url" };
 };
 
 #endif // TP_PLAYLIST_H

@@ -5,6 +5,8 @@
 
 #include <QWidget>
 
+class TP_LyricsViewer;
+
 namespace Ui {
 class TP_LyricsWindow;
 }
@@ -18,21 +20,31 @@ public:
     ~TP_LyricsWindow();
 
 signals:
-    void signal_moveWindow( QWidget *window, const QRect &newGeometry );
-    void signal_resizeWindow( QWidget *window, const QRect &newGeometry, TP::ResizeType resizeType );
+    void signal_moveWindow( QWidget *window, const QRect &geometry );
+    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
     void signal_windowChanged();
 
-private slots:
-    void slot_titleBarMoved( const QRect &newGeometry );
-    void slot_resizeWindow( const QRect &newGeomtry, TP::ResizeType resizeType );
-    void slot_windowChanged();
+    void signal_shown();
+    void signal_hidden();
 
-    void slot_changeFontOfWidgets();
+public slots:
+    void slot_changeFont();
+
+private slots:
+    void slot_titleBarMoved( const QRect &I_geometry );
+    void slot_resizeWindow( const QRect &I_geomtry, TP::ResizeType I_resizeType );
+    void slot_windowChanged();
 
 private:
     Ui::TP_LyricsWindow *ui;
 
+    void showEvent( QShowEvent *event ) override;
+    void hideEvent( QHideEvent *event ) override;
+
     void initializeConnection();
+    void initializeUI();
+
+    TP_LyricsViewer *lyricsViewer;
 };
 
 #endif // TP_LYRICSWINDOW_H

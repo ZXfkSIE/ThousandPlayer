@@ -4,6 +4,7 @@
 #include "tp_globalvariable.h"
 
 #include "tp_configwindow.h"
+#include "tp_lyricswindow.h"
 #include "tp_mainwindow.h"
 #include "tp_playlistwindow.h"
 #include "tp_filelistwidget.h"
@@ -41,6 +42,7 @@ TP_MainClass::TP_MainClass() :
   , mainWindow                  { new TP_MainWindow {} }
   , playlistWindow              { new TP_PlaylistWindow {} }
   , configWindow                { new TP_ConfigWindow {} }
+  , lyricsWindow                { new TP_LyricsWindow {} }
   , b_isPlaylistWindowVisible   { true }
   , audioOutput                 { new QAudioOutput { this } }
   , mediaPlayer                 { new QMediaPlayer { this } }
@@ -52,8 +54,6 @@ TP_MainClass::TP_MainClass() :
     TP::playbackState() = mediaPlayer->playbackState();
 
     initializeConnection();
-
-    // playlistWindow->initializePlaylist();       // Must be executed before showing
 
     mainWindow->initializeVolume();
 }
@@ -73,12 +73,25 @@ TP_MainClass::~TP_MainClass()
     }
     else
     {
-        TP::config().setPlaylistWindowPosition( QPoint { 100, 340 } );
+        TP::config().setPlaylistWindowPosition();
         TP::config().setPlaylistWindowShown( false );
+    }
+
+    if( lyricsWindow->isVisible() || b_isLyricsWindowVisible )
+    {
+        auto *lyricsWindowScreen { QApplication::screenAt( lyricsWindow->pos() ) };
+        TP::config().setLyricsWindowPosition( lyricsWindow->pos() - lyricsWindowScreen->geometry().topLeft() );
+        TP::config().setLyricsWindowShown( true );
+    }
+    else
+    {
+        TP::config().setLyricsWindowPosition();
+        TP::config().setLyricsWindowShown( false );
     }
 
     delete mainWindow;
     delete configWindow;
+    delete lyricsWindow;
     delete playlistWindow;
 }
 
@@ -114,10 +127,14 @@ TP_MainClass::slot_initializePosition()
 {
     QScreen *currentScreen = QApplication::screenAt( QCursor::pos() );
 
-    mainWindow->move( TP::config().getMainWindowPosition() + currentScreen->geometry().topLeft() );
+    mainWindow->move(
+                TP::config().getMainWindowPosition() + currentScreen->geometry().topLeft()
+                );
     mainWindow->raise();
 
-    playlistWindow->move( TP::config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft() );
+    playlistWindow->move(
+                TP::config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft()
+                );
     if ( TP::config().isPlaylistWindowShown() )
     {
         playlistWindow->show();
@@ -125,6 +142,17 @@ TP_MainClass::slot_initializePosition()
     }
     else
         mainWindow->slot_playlistWindowHidden();
+
+    lyricsWindow->move(
+                TP::config().getLyricsWindowPosition() + currentScreen->geometry().topLeft()
+                );
+    if ( TP::config().isLyricsWindowShown() )
+    {
+        lyricsWindow->show();
+        lyricsWindow->raise();
+    }
+    else
+        mainWindow->slot_lyricsWindowHidden();
 
     slot_refreshSnapStatus();
 }
@@ -485,7 +513,7 @@ RESIZE_End_of_snap_to_main_window:
 
     // ============================== Snapping to playlist window ==============================
 
-    if( window != playlistWindow && playlistWindow->isVisible() )
+    if( I_window != playlistWindow && playlistWindow->isVisible() )
     {
         // ------------------ Step 1 (edge sticks to edge) ------------------
 
@@ -669,11 +697,11 @@ TP_MainClass::slot_interruptingStopTriggered()
 }
 
 void
-TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
+TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState I_state )
 {
-    TP::playbackState() = newState;
+    TP::playbackState() = I_state;
 
-    switch ( newState )
+    switch ( I_state )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[Media Player] Playback state changed to PlayingState.";
@@ -722,9 +750,9 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState newState )
 
 
 void
-TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus status )
+TP_MainClass::slot_mediaStatusChanged ( QMediaPlayer::MediaStatus I_status )
 {
-    switch ( status )
+    switch ( I_status )
     {
     case QMediaPlayer::NoMedia :
         qDebug( "[Media Player] Media status changed to NoMedia." );
@@ -769,9 +797,14 @@ TP_MainClass::slot_deviceChanged() const
 
 
 void
-TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error error, const QString &errorString ) const
+TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString &I_errorString ) const
 {
-    qDebug() << "[Media Player] ERROR:" << error << "-" << errorString;
+    QMessageBox::critical(
+                nullptr,                                // QWidget *parent
+                tr( "Media Player Error" ),             // const QString &title
+                // const QString &text
+                tr( "An error of QMediaPlayer has occurred:\n" ) +
+                I_errorString );
 }
 
 
@@ -877,13 +910,16 @@ TP_MainClass::initializeConnection()
     connect( mainWindow,        &TP_MainWindow::signal_hidePlaylistWindow,
              playlistWindow,    &TP_PlaylistWindow::hide );
 
+    // Showing and hiding LyricsWindow
+
+
     // ConfigWindow related
     connect( mainWindow,        &TP_MainWindow::signal_openConfigWindow,
              configWindow,      &TP_ConfigWindow::exec );
     connect( configWindow,      &TP_ConfigWindow::signal_audioInfoLabelFontChanged,
              mainWindow,        &TP_MainWindow::slot_changeFontOfAudioInfoLabel );
     connect( configWindow,      &TP_ConfigWindow::signal_playlistFontChanged,
-             playlistWindow,    &TP_PlaylistWindow::slot_changeFontOfLists );
+             playlistWindow,    &TP_PlaylistWindow::slot_changeFont );
     connect( configWindow,      &TP_ConfigWindow::signal_audioDeviceChanged,
              audioOutput,       &QAudioOutput::setDevice );
 
@@ -909,25 +945,27 @@ TP_MainClass::unsnapInvisibleWindows()
 
 
 TP::SnapType
-TP_MainClass::checkSnapType( const QRect &geometry1, const QRect &geometry2 ) const
+TP_MainClass::checkSnapType( const QRect &I_geometry1, const QRect &I_geometry2 ) const
 {
     // Intersect horizontally
-    if( geometry1.right() >= geometry2.left() && geometry1.left() <= geometry2.right() )
+    if( I_geometry1.right() >= I_geometry2.left()
+            && I_geometry1.left() <= I_geometry2.right() )
     {
-        if( std::abs( geometry1.top() - geometry2.bottom() ) <= TP::snapRange )
+        if( std::abs( I_geometry1.top() - I_geometry2.bottom() ) <= TP::snapRange )
             return TP::toBottom;
 
-        if( std::abs( geometry1.bottom() - geometry2.top() ) <= TP::snapRange)
+        if( std::abs( I_geometry1.bottom() - I_geometry2.top() ) <= TP::snapRange)
             return TP::toTop;
     }
 
     // Intersect vertically
-    if( geometry1.bottom() >= geometry2.top() && geometry1.top() <= geometry2.bottom() )
+    if( I_geometry1.bottom() >= I_geometry2.top()
+            && I_geometry1.top() <= I_geometry2.bottom() )
     {
-        if( std::abs( geometry1.right() - geometry2.left() ) <= TP::snapRange)
+        if( std::abs( I_geometry1.right() - I_geometry2.left() ) <= TP::snapRange)
             return TP::toLeft;
 
-        if( std::abs( geometry1.left() - geometry2.right() ) <= TP::snapRange)
+        if( std::abs( I_geometry1.left() - I_geometry2.right() ) <= TP::snapRange)
             return TP::toRight;
     }
 
@@ -936,25 +974,27 @@ TP_MainClass::checkSnapType( const QRect &geometry1, const QRect &geometry2 ) co
 
 
 TP::SnapType
-TP_MainClass::checkAdjacentType( const QRect &geometry1, const QRect &geometry2 ) const
+TP_MainClass::checkAdjacentType( const QRect &I_geometry1, const QRect &I_geometry2 ) const
 {
     // Intersect horizontally
-    if( geometry1.right() >= geometry2.left() && geometry1.left() <= geometry2.right() )
+    if( I_geometry1.right() >= I_geometry2.left()
+            && I_geometry1.left() <= I_geometry2.right() )
     {
-        if( geometry1.top() - geometry2.bottom() == 1 )
+        if( I_geometry1.top() - I_geometry2.bottom() == 1 )
             return TP::toBottom;
 
-        if( geometry2.top() - geometry1.bottom() == 1 )
+        if( I_geometry2.top() - I_geometry1.bottom() == 1 )
             return TP::toTop;
     }
 
     // Intersect vertically
-    if( geometry1.bottom() >= geometry2.top() && geometry1.top() <= geometry2.bottom() )
+    if( I_geometry1.bottom() >= I_geometry2.top()
+            && I_geometry1.top() <= I_geometry2.bottom() )
     {
-        if( geometry2.left() - geometry1.right() == 1 )
+        if( I_geometry2.left() - I_geometry1.right() == 1 )
             return TP::toLeft;
 
-        if( geometry1.left() - geometry2.right() == 1 )
+        if( I_geometry1.left() - I_geometry2.right() == 1 )
             return TP::toRight;
     }
 
@@ -963,7 +1003,7 @@ TP_MainClass::checkAdjacentType( const QRect &geometry1, const QRect &geometry2 
 
 
 bool
-TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
+TP_MainClass::breadthFirstSearch( unsigned I_idx ) const
 {
     // The search always start from main window.
     unsigned idx_Current {};
@@ -982,7 +1022,7 @@ TP_MainClass::breadthFirstSearch( unsigned idx_Target ) const
         {
             if( ! isVisited[ i ] && snapStatus[ idx_Current ][ i ] )
             {
-                if( i == idx_Target )
+                if( i == I_idx )
                     return true;
                 else
                 {
@@ -1108,9 +1148,9 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
 
 QImage
-TP_MainClass::getCoverImage( TagLib::FLAC::File *flacFile )
+TP_MainClass::getCoverImage( TagLib::FLAC::File *I_flacFile )
 {
-    const auto &pictureList { flacFile->pictureList() };
+    const auto &pictureList { I_flacFile->pictureList() };
     if( pictureList.size() > 0 )
         return QImage::fromData(
                     QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
@@ -1121,9 +1161,9 @@ TP_MainClass::getCoverImage( TagLib::FLAC::File *flacFile )
 
 
 QImage
-TP_MainClass::getCoverImage( TagLib::Ogg::XiphComment *xiphComment )
+TP_MainClass::getCoverImage( TagLib::Ogg::XiphComment *I_xiphComment )
 {
-    const auto &pictureList { xiphComment->pictureList() };
+    const auto &pictureList { I_xiphComment->pictureList() };
     if( pictureList.size() > 0 )
         return QImage::fromData(
                     QByteArray { pictureList[0]->data().data(), pictureList[0]->data().size() }
@@ -1134,9 +1174,9 @@ TP_MainClass::getCoverImage( TagLib::Ogg::XiphComment *xiphComment )
 
 
 QImage
-TP_MainClass::getCoverImage( TagLib::ID3v2::Tag *tag )
+TP_MainClass::getCoverImage( TagLib::ID3v2::Tag *I_id3v2Tag )
 {
-    const auto &frameList { tag->frameList( "APIC" ) };
+    const auto &frameList { I_id3v2Tag->frameList( "APIC" ) };
     if( ! frameList.isEmpty() )
     {
         auto *pictureFrame { static_cast< TagLib::ID3v2::AttachedPictureFrame * >( frameList.front() ) };
@@ -1150,11 +1190,11 @@ TP_MainClass::getCoverImage( TagLib::ID3v2::Tag *tag )
 
 
 QImage
-TP_MainClass::getCoverImage( TagLib::MP4::Tag *tag )
+TP_MainClass::getCoverImage( TagLib::MP4::Tag *I_mp4Tag )
 {
-    if( tag->contains( "covr" ) )
+    if( I_mp4Tag->contains( "covr" ) )
     {
-        const auto &coverArtList { tag->itemMap()[ "covr" ].toCoverArtList() };
+        const auto &coverArtList { I_mp4Tag->itemMap()[ "covr" ].toCoverArtList() };
         if( !coverArtList.isEmpty() )
         {
             const auto &coverArt { coverArtList.front() };

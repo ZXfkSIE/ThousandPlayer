@@ -182,34 +182,17 @@ TP::storeInformation( QListWidgetItem *I_item )
 
 
 float
-TP::getReplayGainTrackFromTag( const TagLib::Ogg::XiphComment *xiphComment )
+TP::getReplayGainTrackFromTag( const TagLib::Ogg::XiphComment *I_xiphComment )
 {
     // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
 
-    if( xiphComment->contains( "REPLAYGAIN_TRACK_GAIN" ) )
-        return TStringToQString( xiphComment->properties()[ "REPLAYGAIN_TRACK_GAIN" ][0] )
+    if( I_xiphComment->contains( "REPLAYGAIN_TRACK_GAIN" ) )
+        return TStringToQString( I_xiphComment->properties()[ "REPLAYGAIN_TRACK_GAIN" ][0] )
                 .split(' ')[0]
                 .toFloat();
 
-    if( xiphComment->contains( "replaygain_track_gain" ) )
-        return TStringToQString( xiphComment->properties()[ "replaygain_track_gain" ][0] )
-                .split(' ')[0]
-                .toFloat();
-
-    return std::numeric_limits< float >::max();
-}
-
-
-float
-TP::getReplayGainAlbumFromTag( const TagLib::Ogg::XiphComment *xiphComment )
-{
-    if( xiphComment->contains( "REPLAYGAIN_ALBUM_GAIN" ) )
-        return TStringToQString( xiphComment->properties()[ "REPLAYGAIN_ALBUM_GAIN" ][0] )
-                .split(' ')[0]
-                .toFloat();
-
-    if( xiphComment->contains( "replaygain_album_gain" ) )
-        return TStringToQString( xiphComment->properties()[ "replaygain_album_gain" ][0] )
+    if( I_xiphComment->contains( "replaygain_track_gain" ) )
+        return TStringToQString( I_xiphComment->properties()[ "replaygain_track_gain" ][0] )
                 .split(' ')[0]
                 .toFloat();
 
@@ -218,9 +201,26 @@ TP::getReplayGainAlbumFromTag( const TagLib::Ogg::XiphComment *xiphComment )
 
 
 float
-TP::getReplayGainTrackFromTag( const TagLib::ID3v2::Tag *tag )
+TP::getReplayGainAlbumFromTag( const TagLib::Ogg::XiphComment *I_xiphComment )
 {
-    const auto &frameList { tag->frameList( "RVA2" ) };
+    if( I_xiphComment->contains( "REPLAYGAIN_ALBUM_GAIN" ) )
+        return TStringToQString( I_xiphComment->properties()[ "REPLAYGAIN_ALBUM_GAIN" ][0] )
+                .split(' ')[0]
+                .toFloat();
+
+    if( I_xiphComment->contains( "replaygain_album_gain" ) )
+        return TStringToQString( I_xiphComment->properties()[ "replaygain_album_gain" ][0] )
+                .split(' ')[0]
+                .toFloat();
+
+    return std::numeric_limits< float >::max();
+}
+
+
+float
+TP::getReplayGainTrackFromTag( const TagLib::ID3v2::Tag *I_id3v2Tag )
+{
+    const auto &frameList { I_id3v2Tag->frameList( "RVA2" ) };
     for( const auto &frame : frameList )
     {
         auto *relativeVolumeFrame { dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( frame ) };
@@ -236,9 +236,9 @@ TP::getReplayGainTrackFromTag( const TagLib::ID3v2::Tag *tag )
 
 
 float
-TP::getReplayGainAlbumFromTag( const TagLib::ID3v2::Tag *tag )
+TP::getReplayGainAlbumFromTag( const TagLib::ID3v2::Tag *I_id3v2Tag )
 {
-    const auto &frameList { tag->frameList( "RVA2" ) };
+    const auto &frameList { I_id3v2Tag->frameList( "RVA2" ) };
     for( const auto &frame : frameList )
     {
         auto *relativeVolumeFrame { dynamic_cast< TagLib::ID3v2::RelativeVolumeFrame* >( frame ) };
@@ -254,17 +254,19 @@ TP::getReplayGainAlbumFromTag( const TagLib::ID3v2::Tag *tag )
 
 
 float
-TP::getReplayGainTrackFromTag( const TagLib::MP4::Tag *tag )
+TP::getReplayGainTrackFromTag( const TagLib::MP4::Tag *I_mp4Tag )
 {
     // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
 
-    if( tag->contains( "----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN" ) )
-            return TStringToQString( tag->itemMap()[ "----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN" ].toStringList()[0] )
-                    .split(' ')[0]
-                    .toFloat();
-    else if( tag->contains( "----:com.apple.iTunes:replaygain_track_gain" ) )
+    if( I_mp4Tag->contains( "----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN" ) )
+        return TStringToQString(
+                I_mp4Tag->itemMap()[ "----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN" ].toStringList()[0] )
+                .split(' ')[0]
+                .toFloat();
+    else if( I_mp4Tag->contains( "----:com.apple.iTunes:replaygain_track_gain" ) )
         // For some reason, properties() does not work here.
-        return TStringToQString( tag->itemMap()[ "----:com.apple.iTunes:replaygain_track_gain" ].toStringList()[0] )
+        return TStringToQString(
+                I_mp4Tag->itemMap()[ "----:com.apple.iTunes:replaygain_track_gain" ].toStringList()[0] )
                 .split(' ')[0]
                 .toFloat();
 
@@ -273,14 +275,16 @@ TP::getReplayGainTrackFromTag( const TagLib::MP4::Tag *tag )
 
 
 float
-TP::getReplayGainAlbumFromTag( const TagLib::MP4::Tag *tag )
+TP::getReplayGainAlbumFromTag( const TagLib::MP4::Tag *I_mp4Tag )
 {
-    if( tag->contains( "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN" ) )
-            return TStringToQString( tag->itemMap()[ "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN" ].toStringList()[0] )
-                    .split(' ')[0]
-                    .toFloat();
-    else if( tag->contains( "----:com.apple.iTunes:replaygain_album_gain" ) )
-        return TStringToQString( tag->itemMap()[ "----:com.apple.iTunes:replaygain_album_gain" ].toStringList()[0] )
+    if( I_mp4Tag->contains( "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN" ) )
+        return TStringToQString(
+                I_mp4Tag->itemMap()[ "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN" ].toStringList()[0] )
+                .split(' ')[0]
+                .toFloat();
+    else if( I_mp4Tag->contains( "----:com.apple.iTunes:replaygain_album_gain" ) )
+        return TStringToQString(
+                I_mp4Tag->itemMap()[ "----:com.apple.iTunes:replaygain_album_gain" ].toStringList()[0] )
                 .split(' ')[0]
                 .toFloat();
 
@@ -289,11 +293,11 @@ TP::getReplayGainAlbumFromTag( const TagLib::MP4::Tag *tag )
 
 
 float
-TP::getReplayGainTrackFromTag( const TagLib::APE::Tag *tag )
+TP::getReplayGainTrackFromTag( const TagLib::APE::Tag *I_apeTag )
 {
     // The value of ReplayGain is stored in the format like "+1.14 dB", "-5.14 dB".
 
-    const auto &itemListMap { tag->itemListMap() };
+    const auto &itemListMap { I_apeTag->itemListMap() };
     for( const auto &pair : itemListMap )
         if( TStringToQString( pair.first ) == QString{ "REPLAYGAIN_TRACK_GAIN" } ||
             TStringToQString( pair.first ) == QString{ "replaygain_track_gain" } )
@@ -304,9 +308,9 @@ TP::getReplayGainTrackFromTag( const TagLib::APE::Tag *tag )
 
 
 float
-TP::getReplayGainAlbumFromTag( const TagLib::APE::Tag *tag )
+TP::getReplayGainAlbumFromTag( const TagLib::APE::Tag *I_apeTag )
 {
-    const auto &itemListMap { tag->itemListMap() };
+    const auto &itemListMap { I_apeTag->itemListMap() };
     for( const auto &pair : itemListMap )
         if( TStringToQString( pair.first ) == QString{ "REPLAYGAIN_ALBUM_GAIN" } ||
             TStringToQString( pair.first ) == QString{ "replaygain_album_gain" } )

@@ -14,7 +14,7 @@ public:
     void setIcon( int I_volume );
 
 signals:
-    void signal_setVolume( int I_volume );
+    void signal_setVolume( int volume );
 
 private:
     void mousePressEvent( QMouseEvent *event ) override;
