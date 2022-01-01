@@ -44,11 +44,13 @@ TP_MainClass::TP_MainClass() :
   , configWindow                { new TP_ConfigWindow {} }
   , lyricsWindow                { new TP_LyricsWindow {} }
   , b_isPlaylistWindowVisible   { true }
+  , b_isLyricsWindowVisible     { true }
   , audioOutput                 { new QAudioOutput { this } }
   , mediaPlayer                 { new QMediaPlayer { this } }
   , b_isStopInterrupting        { false }
   , snapStatus                  {}
   , snapPosition_playlistWindow {}
+  , snapPosition_lyricsWindow   {}
 {
     mediaPlayer->setAudioOutput( audioOutput );
     TP::playbackState() = mediaPlayer->playbackState();
@@ -63,12 +65,16 @@ TP_MainClass::~TP_MainClass()
 {
     // Get current screen
     auto *mainWindowScreen { QApplication::screenAt( mainWindow->pos() ) };
-    TP::config().setMainWindowPosition( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
+    TP::config().setMainWindowPosition(
+                mainWindow->pos() - mainWindowScreen->geometry().topLeft()
+                );
 
     if( playlistWindow->isVisible() || b_isPlaylistWindowVisible )
     {
         auto *playlistWindowScreen { QApplication::screenAt( playlistWindow->pos() ) };
-        TP::config().setPlaylistWindowPosition( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
+        TP::config().setPlaylistWindowPosition(
+                    playlistWindow->pos() - playlistWindowScreen->geometry().topLeft()
+                    );
         TP::config().setPlaylistWindowShown( true );
     }
     else
@@ -80,7 +86,9 @@ TP_MainClass::~TP_MainClass()
     if( lyricsWindow->isVisible() || b_isLyricsWindowVisible )
     {
         auto *lyricsWindowScreen { QApplication::screenAt( lyricsWindow->pos() ) };
-        TP::config().setLyricsWindowPosition( lyricsWindow->pos() - lyricsWindowScreen->geometry().topLeft() );
+        TP::config().setLyricsWindowPosition(
+                    lyricsWindow->pos() - lyricsWindowScreen->geometry().topLeft()
+                    );
         TP::config().setLyricsWindowShown( true );
     }
     else
@@ -98,7 +106,6 @@ TP_MainClass::~TP_MainClass()
 // *****************************************************************
 // public slots:
 // *****************************************************************
-
 
 // Need to be executed manually after QApplication object executed its exec()
 void
@@ -131,6 +138,7 @@ TP_MainClass::slot_initializePosition()
                 TP::config().getMainWindowPosition() + currentScreen->geometry().topLeft()
                 );
     mainWindow->raise();
+    mainWindow->activateWindow();
 
     playlistWindow->move(
                 TP::config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft()
@@ -139,6 +147,7 @@ TP_MainClass::slot_initializePosition()
     {
         playlistWindow->show();
         playlistWindow->raise();
+        playlistWindow->activateWindow();
     }
     else
         mainWindow->slot_playlistWindowHidden();
@@ -150,6 +159,7 @@ TP_MainClass::slot_initializePosition()
     {
         lyricsWindow->show();
         lyricsWindow->raise();
+        lyricsWindow->activateWindow();
     }
     else
         mainWindow->slot_lyricsWindowHidden();
@@ -157,11 +167,9 @@ TP_MainClass::slot_initializePosition()
     slot_refreshSnapStatus();
 }
 
-
 // *****************************************************************
 // private slots:
 // *****************************************************************
-
 
 void
 TP_MainClass::slot_minimizeWindow()
@@ -173,6 +181,14 @@ TP_MainClass::slot_minimizeWindow()
     }
     else
         b_isPlaylistWindowVisible = false;
+
+    if( lyricsWindow->isVisible() )
+    {
+        b_isLyricsWindowVisible = true;
+        lyricsWindow->hide();
+    }
+    else
+        b_isLyricsWindowVisible = false;
 }
 
 
@@ -185,6 +201,12 @@ TP_MainClass::slot_restoreWindow()
         playlistWindow->raise();
     }
 
+    if( b_isLyricsWindowVisible )
+    {
+        lyricsWindow->show();
+        lyricsWindow->raise();
+    }
+
     slot_refreshSnapStatus();
 }
 
@@ -195,6 +217,7 @@ TP_MainClass::slot_moveWindow( QWidget *I_window, QRect I_geometry )
     // A window can only be snapped (or aligned) once at vertical and horizontal direction, respectively.
     bool isVerticallySnapped    {};
     bool isHorizontallySnapped  {};
+
 
     // ============================== Snapping to main window ==============================
 
@@ -288,7 +311,8 @@ TP_MainClass::slot_moveWindow( QWidget *I_window, QRect I_geometry )
 MOVE_End_of_snap_to_main_window:
 
     if( isVerticallySnapped && isHorizontallySnapped )
-        goto Move_window;
+        goto MOVE_setGeometry;
+
 
     // ============================== Snapping to playlist window ==============================
 
@@ -338,7 +362,7 @@ MOVE_End_of_snap_to_main_window:
             // Left edge alignment
             if( std::abs( I_geometry.left() - playlistWindow->geometry().left() )
                     <= TP::snapRange
-                && !isHorizontallySnapped )
+                && ! isHorizontallySnapped )
             {
                 I_geometry.moveLeft( playlistWindow->geometry().left() );
                 isHorizontallySnapped = true;
@@ -348,7 +372,7 @@ MOVE_End_of_snap_to_main_window:
             // Right edge alignment
             if( std::abs( I_geometry.right() - playlistWindow->geometry().right() )
                     <= TP::snapRange
-                && !isHorizontallySnapped )
+                && ! isHorizontallySnapped )
             {
                 I_geometry.moveRight( playlistWindow->geometry().right() );
                 isHorizontallySnapped = true;
@@ -363,7 +387,7 @@ MOVE_End_of_snap_to_main_window:
             // Top edge alignment
             if( std::abs( I_geometry.top() - playlistWindow->geometry().top() )
                     <= TP::snapRange
-                && !isVerticallySnapped )
+                && ! isVerticallySnapped )
             {
                 I_geometry.moveTop( playlistWindow->geometry().top() );
                 isVerticallySnapped = true;
@@ -373,7 +397,7 @@ MOVE_End_of_snap_to_main_window:
             // Bottom edge alignment
             if( std::abs( I_geometry.bottom() - playlistWindow->geometry().bottom() )
                     <= TP::snapRange
-                && !isVerticallySnapped )
+                && ! isVerticallySnapped )
             {
                 I_geometry.moveBottom( playlistWindow->geometry().bottom() );
                 isVerticallySnapped = true;
@@ -390,10 +414,105 @@ MOVE_End_of_snap_to_main_window:
 MOVE_End_of_snap_to_playlist_window:
 
     if( isVerticallySnapped && isHorizontallySnapped )
-        goto Move_window;
+        goto MOVE_setGeometry;
+
+
+    // ============================== Snapping to lyrics window ==============================
+
+    if( I_window != lyricsWindow && lyricsWindow->isVisible() )
+    {
+        // If it is main window and playlist window has already been snapped to it, jump.
+        if( I_window == mainWindow && breadthFirstSearch( TP::lyricsWindow ) )
+            goto MOVE_setGeometry;
+
+        // ------------------ Step 1 (edge sticks to edge) ------------------
+
+        TP::SnapType snapType { checkSnapType( I_geometry, lyricsWindow->geometry() ) };
+
+        switch( snapType )
+        {
+        case TP::toBottom :
+            I_geometry.moveTop( lyricsWindow->geometry().bottom() + 1 );
+            isVerticallySnapped = true;
+            break;
+
+        case TP::toTop :
+            I_geometry.moveBottom( lyricsWindow->geometry().top() - 1 );
+            isVerticallySnapped = true;
+            break;
+
+        case TP::toRight :
+            I_geometry.moveLeft( lyricsWindow->geometry().right() + 1 );
+            isHorizontallySnapped = true;
+            break;
+
+        case TP::toLeft :
+            I_geometry.moveRight( lyricsWindow->geometry().left() - 1 );
+            isHorizontallySnapped = true;
+            break;
+
+        case TP::notAdjacent :
+            goto MOVE_setGeometry;
+        }
+
+        // ---------- Step 2 (edge alignment in the vertical direction) ----------
+
+        switch( snapType )
+        {
+        case TP::toTop :
+        case TP::toBottom :
+
+            // Left edge alignment
+            if( std::abs( I_geometry.left() - lyricsWindow->geometry().left() )
+                    <= TP::snapRange
+                && ! isHorizontallySnapped )
+            {
+                I_geometry.moveLeft( lyricsWindow->geometry().left() );
+                break;
+            }
+
+            // Right edge alignment
+            if( std::abs( I_geometry.right() - lyricsWindow->geometry().right() )
+                    <= TP::snapRange
+                && ! isHorizontallySnapped )
+            {
+                I_geometry.moveRight( lyricsWindow->geometry().right() );
+                break;
+            }
+
+            break;
+
+        case TP::toLeft :
+        case TP::toRight :
+
+            // Top edge alignment
+            if( std::abs( I_geometry.top() - lyricsWindow->geometry().top() )
+                    <= TP::snapRange
+                && ! isVerticallySnapped )
+            {
+                I_geometry.moveTop( lyricsWindow->geometry().top() );
+                break;
+            }
+
+            // Bottom edge alignment
+            if( std::abs( I_geometry.bottom() - lyricsWindow->geometry().bottom() )
+                    <= TP::snapRange
+                && ! isVerticallySnapped )
+            {
+                I_geometry.moveBottom( lyricsWindow->geometry().bottom() );
+                break;
+            }
+
+            break;
+
+        default:
+            break;
+        }       // switch( snapType )
+    }       // if( window != lyricsWindow && lyricsWindow->isVisible() )
+
 
 // ==================== Move window ====================
-Move_window:
+MOVE_setGeometry:
 
     I_window->setGeometry( I_geometry );
     if( I_window == mainWindow )
@@ -405,7 +524,9 @@ Move_window:
         if ( breadthFirstSearch( TP::playlistWindow ) )
             playlistWindow->move( I_geometry.topLeft() + snapPosition_playlistWindow );
 
-        // Move other windows...
+        // Move lyrics window
+        if ( breadthFirstSearch( TP::lyricsWindow ) )
+            lyricsWindow->move( I_geometry.topLeft() + snapPosition_lyricsWindow );
     }
 }
 
@@ -414,52 +535,44 @@ void
 TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::ResizeType I_resizeType )
 {
     // While resizing, a window can only be snapped (or aligned) once.
-    bool isSnapped {};
 
     if ( I_window != mainWindow )
     {
-        TP::SnapType snapType { checkSnapType( I_geometry, mainWindow->geometry() ) };
-        TP::SnapType adjacentType { checkAdjacentType( I_geometry, mainWindow->geometry() ) };
+        // ------------------ Step 1 (edge sticks to edge) ------------------
 
-        if( snapType == TP::notAdjacent && adjacentType == TP::notAdjacent )
-            goto RESIZE_End_of_snap_to_main_window;
-
-        if( snapType != TP::notAdjacent )
-            switch( snapType )
+        switch( checkSnapType( I_geometry, mainWindow->geometry() ) )
+        {
+        case TP::toTop :
+            if( I_resizeType == TP::atBottom )
             {
-            case TP::toTop :
-                if( I_resizeType == TP::atBottom )
-                {
-                    I_geometry.setBottom( mainWindow->geometry().top() - 1 );
-                    isSnapped = true;
-                    goto RESIZE_End_of_snap_to_main_window;
-                }
-                break;
+                I_geometry.setBottom( mainWindow->geometry().top() - 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
 
-            case TP::toRight :
-                if( I_resizeType == TP::atLeft )
-                {
-                    I_geometry.setLeft( mainWindow->geometry().right() + 1 );
-                    isSnapped = true;
-                    goto RESIZE_End_of_snap_to_main_window;
-                }
-                break;
+        case TP::toRight :
+            if( I_resizeType == TP::atLeft )
+            {
+                I_geometry.setLeft( mainWindow->geometry().right() + 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
 
-            case TP::toLeft :
-                if( I_resizeType == TP::atRight )
-                {
-                    I_geometry.setRight( mainWindow->geometry().left() - 1 );
-                    isSnapped = true;
-                    goto RESIZE_End_of_snap_to_main_window;
-                }
-                break;
+        case TP::toLeft :
+            if( I_resizeType == TP::atRight )
+            {
+                I_geometry.setRight( mainWindow->geometry().left() - 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
 
-            default :
-                break;
-            }       // switch( snapType )
+        default :
+            break;
+        }       // switch( snapType )
 
-            // ---------- Step 2 (edge alignment in the vertical direction) ----------
-        switch( adjacentType )
+        // ---------- Step 2 (edge alignment in the vertical direction) ----------
+
+        switch( checkAdjacentType( I_geometry, mainWindow->geometry() ) )
         {
         case TP::toTop :
         case TP::toBottom :
@@ -470,8 +583,7 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
                     && I_resizeType == TP::atLeft )
             {
                 I_geometry.setLeft( mainWindow->geometry().left() );
-                isSnapped = true;
-                break;
+                goto RESIZE_setGeometry;
             }
 
             // Right edge alignment
@@ -480,8 +592,7 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
                 && I_resizeType == TP::atRight )
             {
                 I_geometry.setRight( mainWindow->geometry().right() );
-                isSnapped = true;
-                break;
+                goto RESIZE_setGeometry;
             }
 
             break;
@@ -495,8 +606,7 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
                 && I_resizeType == TP::atBottom )
             {
                 I_geometry.setBottom( mainWindow->geometry().bottom() );
-                isSnapped = true;
-                break;
+                goto RESIZE_setGeometry;
             }
 
             break;
@@ -506,59 +616,45 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
         }       // switch( snapType )
     }       //if ( window != mainWindow )
 
-RESIZE_End_of_snap_to_main_window:
-
-    if( isSnapped )
-        goto Resize_window;
-
     // ============================== Snapping to playlist window ==============================
 
     if( I_window != playlistWindow && playlistWindow->isVisible() )
     {
         // ------------------ Step 1 (edge sticks to edge) ------------------
 
-        TP::SnapType snapType { checkSnapType( I_geometry, playlistWindow->geometry() ) };
-        TP::SnapType adjacentType { checkAdjacentType( I_geometry, playlistWindow->geometry() ) };
-
-        if( snapType == TP::notAdjacent && adjacentType == TP::notAdjacent )
-            goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-
-        if( snapType != TP::notAdjacent )
-            switch( snapType )
+        switch( checkSnapType( I_geometry, playlistWindow->geometry() ) )
+        {
+        case TP::toTop :
+            if( I_resizeType == TP::atBottom )
             {
-            case TP::toTop :
-                if( I_resizeType == TP::atBottom )
-                {
-                    I_geometry.setBottom( playlistWindow->geometry().top() - 1 );
-                    isSnapped = true;
-                    goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-                }
-                break;
+                I_geometry.setBottom( playlistWindow->geometry().top() - 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
 
-            case TP::toRight :
-                if( I_resizeType == TP::atLeft )
-                {
-                    I_geometry.setLeft( playlistWindow->geometry().right() + 1 );
-                    isSnapped = true;
-                    goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-                }
-                break;
+        case TP::toRight :
+            if( I_resizeType == TP::atLeft )
+            {
+                I_geometry.setLeft( playlistWindow->geometry().right() + 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
 
-            case TP::toLeft :
-                if( I_resizeType == TP::atRight )
-                {
-                    I_geometry.setRight( playlistWindow->geometry().left() - 1 );
-                    isSnapped = true;
-                    goto RESIZE_End_of_main_window_snaps_to_playlist_window;
-                }
-                break;
+        case TP::toLeft :
+            if( I_resizeType == TP::atRight )
+            {
+                I_geometry.setRight( playlistWindow->geometry().left() - 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
 
-            default :
-                break;
-            }       // switch( snapType )
+        default :
+            break;
+        }       // switch( snapType )
 
-            // ---------- Step 2 (edge alignment in the vertical direction) ----------
-        switch( adjacentType )
+        // ---------- Step 2 (edge alignment in the vertical direction) ----------
+
+        switch( checkAdjacentType( I_geometry, playlistWindow->geometry() ) )
         {
         case TP::toTop :
         case TP::toBottom :
@@ -569,8 +665,7 @@ RESIZE_End_of_snap_to_main_window:
                     && I_resizeType == TP::atLeft )
             {
                 I_geometry.setLeft( playlistWindow->geometry().left() );
-                isSnapped = true;
-                break;
+                goto RESIZE_setGeometry;
             }
 
             // Right edge alignment
@@ -579,8 +674,7 @@ RESIZE_End_of_snap_to_main_window:
                 && I_resizeType == TP::atRight )
             {
                 I_geometry.setRight( playlistWindow->geometry().right() );
-                isSnapped = true;
-                break;
+                goto RESIZE_setGeometry;
             }
 
             break;
@@ -594,8 +688,7 @@ RESIZE_End_of_snap_to_main_window:
                 && I_resizeType == TP::atBottom )
             {
                 I_geometry.setBottom( playlistWindow->geometry().bottom() );
-                isSnapped = true;
-                break;
+                goto RESIZE_setGeometry;
             }
 
             break;
@@ -605,12 +698,91 @@ RESIZE_End_of_snap_to_main_window:
         }       // switch( snapType )
     }       // if( window != playlistWindow && playlistWindow->isVisible() )
 
-RESIZE_End_of_main_window_snaps_to_playlist_window:
 
-    if( isSnapped )
-        goto Resize_window;
+    // ============================== Snapping to lyrics window ==============================
 
-Resize_window:
+    if( I_window != lyricsWindow && lyricsWindow->isVisible() )
+    {
+        // ------------------ Step 1 (edge sticks to edge) ------------------
+
+        switch( checkSnapType( I_geometry, lyricsWindow->geometry() ) )
+        {
+        case TP::toTop :
+            if( I_resizeType == TP::atBottom )
+            {
+                I_geometry.setBottom( lyricsWindow->geometry().top() - 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
+
+        case TP::toRight :
+            if( I_resizeType == TP::atLeft )
+            {
+                I_geometry.setLeft( lyricsWindow->geometry().right() + 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
+
+        case TP::toLeft :
+            if( I_resizeType == TP::atRight )
+            {
+                I_geometry.setRight( lyricsWindow->geometry().left() - 1 );
+                goto RESIZE_setGeometry;
+            }
+            break;
+
+        default :
+            break;
+        }       // switch( snapType )
+
+        // ---------- Step 2 (edge alignment in the vertical direction) ----------
+
+        switch( checkAdjacentType( I_geometry, lyricsWindow->geometry() ) )
+        {
+        case TP::toTop :
+        case TP::toBottom :
+
+            // Left edge alignment
+            if( std::abs( I_geometry.left() - lyricsWindow->geometry().left() )
+                    <= TP::snapRange
+                    && I_resizeType == TP::atLeft )
+            {
+                I_geometry.setLeft( lyricsWindow->geometry().left() );
+                goto RESIZE_setGeometry;
+            }
+
+            // Right edge alignment
+            if( std::abs( I_geometry.right() - lyricsWindow->geometry().right() )
+                    <= TP::snapRange
+                && I_resizeType == TP::atRight )
+            {
+                I_geometry.setRight( lyricsWindow->geometry().right() );
+                goto RESIZE_setGeometry;
+            }
+
+            break;
+
+        case TP::toLeft :
+        case TP::toRight :
+
+            // Bottom edge alignment
+            if( std::abs( I_geometry.bottom() - lyricsWindow->geometry().bottom() )
+                    <= TP::snapRange
+                && I_resizeType == TP::atBottom )
+            {
+                I_geometry.setBottom( lyricsWindow->geometry().bottom() );
+                goto RESIZE_setGeometry;
+            }
+
+            break;
+
+        default:
+            break;
+        }       // switch( snapType )
+    }       // if( window != lyricsWindow && lyricsWindow->isVisible() )
+
+
+RESIZE_setGeometry:
     I_window->setGeometry( I_geometry );
 }
 
@@ -618,8 +790,9 @@ Resize_window:
 void
 TP_MainClass::slot_refreshSnapStatus()
 {
-    // main window and playlist window
-    if( checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() ) != TP::notAdjacent )
+    // main window <---> playlist window
+    if( playlistWindow->isVisible()
+            && checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() ) != TP::notAdjacent )
     {
         snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = true;
         snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = true;
@@ -629,10 +802,38 @@ TP_MainClass::slot_refreshSnapStatus()
     {
         snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = false;
         snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = false;
-        snapPosition_playlistWindow = { 0, 0 };
     }
 
-    // Check other window pairs...
+    // main window <---> lyrics window
+    if( lyricsWindow->isVisible()
+            && checkAdjacentType( mainWindow->geometry(), lyricsWindow->geometry() ) != TP::notAdjacent )
+    {
+        snapStatus [ TP::mainWindow ][ TP::lyricsWindow ] = true;
+        snapStatus [ TP::lyricsWindow ][ TP::mainWindow ] = true;
+        snapPosition_lyricsWindow = lyricsWindow->pos() - mainWindow->pos();
+    }
+    else
+    {
+        snapStatus [ TP::mainWindow ][ TP::lyricsWindow ] = false;
+        snapStatus [ TP::lyricsWindow ][ TP::mainWindow ] = false;
+    }
+
+    // playlist window <---> lyrics window
+    if( playlistWindow->isVisible() && lyricsWindow->isVisible()
+            && checkAdjacentType( playlistWindow->geometry(), lyricsWindow->geometry() ) != TP::notAdjacent )
+    {
+        snapStatus [ TP::playlistWindow ][ TP::lyricsWindow ] = true;
+        snapStatus [ TP::lyricsWindow ][ TP::playlistWindow ] = true;
+        if ( breadthFirstSearch( TP::playlistWindow ) )
+            snapPosition_playlistWindow = playlistWindow->pos() - mainWindow->pos();
+        if ( breadthFirstSearch( TP::lyricsWindow ) )
+            snapPosition_lyricsWindow = lyricsWindow->pos() - mainWindow->pos();
+    }
+    else
+    {
+        snapStatus [ TP::playlistWindow ][ TP::lyricsWindow ] = false;
+        snapStatus [ TP::lyricsWindow ][ TP::playlistWindow ] = false;
+    }
 }
 
 
@@ -738,9 +939,13 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState I_state )
         else
         {
             mediaPlayer->setSource( {} );               // Cease I/O operations of current file
+
             mainWindow->setStop();
             mainWindow->setCover( {} );
+
             playlistWindow->unsetCurrentItemBold();
+
+            lyricsWindow->clearLrcFile();
         }
 
         b_isStopInterrupting = false;
@@ -811,7 +1016,8 @@ TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString 
 void
 TP_MainClass::slot_positionChanged( qint64 I_ms )
 {
-    mainWindow->updateDuration( I_ms );
+    mainWindow  ->updatePosition( I_ms );
+    lyricsWindow->updatePosition( I_ms );
 }
 
 
@@ -884,6 +1090,8 @@ TP_MainClass::initializeConnection()
              this,              &TP_MainClass::slot_restoreWindow );
     connect( mainWindow,        &TP_MainWindow::signal_activateWindow,
              playlistWindow,    &TP_PlaylistWindow::slot_activateWindow );
+    connect( mainWindow,        &TP_MainWindow::signal_activateWindow,
+             lyricsWindow,      &TP_LyricsWindow::slot_activateWindow );
 
     // Windows moving & resizing
     connect( mainWindow,    &TP_MainWindow::signal_moveWindow,
@@ -900,6 +1108,13 @@ TP_MainClass::initializeConnection()
     connect( playlistWindow,    &TP_PlaylistWindow::signal_windowChanged,
              this,              &TP_MainClass::slot_refreshSnapStatus );
 
+    connect( lyricsWindow,  &TP_LyricsWindow::signal_moveWindow,
+             this,          &TP_MainClass::slot_moveWindow );
+    connect( lyricsWindow,  &TP_LyricsWindow::signal_resizeWindow,
+             this,          &TP_MainClass::slot_resizeWindow );
+    connect( lyricsWindow,  &TP_LyricsWindow::signal_windowChanged,
+             this,          &TP_MainClass::slot_refreshSnapStatus );
+
     // Showing and hiding PlaylistWindow
     connect( playlistWindow,    &TP_PlaylistWindow::signal_hidden,
              mainWindow,        &TP_MainWindow::slot_playlistWindowHidden );
@@ -911,18 +1126,26 @@ TP_MainClass::initializeConnection()
              playlistWindow,    &TP_PlaylistWindow::hide );
 
     // Showing and hiding LyricsWindow
-
+    connect( lyricsWindow,  &TP_LyricsWindow::signal_hidden,
+             mainWindow,    &TP_MainWindow::slot_playlistWindowHidden );
+    connect( lyricsWindow,  &TP_LyricsWindow::signal_shown,
+             mainWindow,    &TP_MainWindow::slot_playlistWindowShown );
+    connect( mainWindow,    &TP_MainWindow::signal_openPlaylistWindow,
+             lyricsWindow,  &TP_LyricsWindow::show );
+    connect( mainWindow,    &TP_MainWindow::signal_hidePlaylistWindow,
+             lyricsWindow,  &TP_LyricsWindow::hide );
 
     // ConfigWindow related
     connect( mainWindow,        &TP_MainWindow::signal_openConfigWindow,
              configWindow,      &TP_ConfigWindow::exec );
+    connect( configWindow,      &TP_ConfigWindow::signal_audioDeviceChanged,
+             audioOutput,       &QAudioOutput::setDevice );
     connect( configWindow,      &TP_ConfigWindow::signal_audioInfoLabelFontChanged,
              mainWindow,        &TP_MainWindow::slot_changeFontOfAudioInfoLabel );
     connect( configWindow,      &TP_ConfigWindow::signal_playlistFontChanged,
              playlistWindow,    &TP_PlaylistWindow::slot_changeFont );
-    connect( configWindow,      &TP_ConfigWindow::signal_audioDeviceChanged,
-             audioOutput,       &QAudioOutput::setDevice );
-
+    connect( configWindow,      &TP_ConfigWindow::signal_lyricsFontChanged,
+             lyricsWindow,      &TP_LyricsWindow::slot_changeFont );
 
     // Signals from FileListWidgets through PlaylistWindow
     connect( playlistWindow,    &TP_PlaylistWindow::signal_currentItemRemoved,
@@ -941,6 +1164,13 @@ TP_MainClass::unsnapInvisibleWindows()
             snapStatus [ i ][ TP::playlistWindow ] = false;
             snapStatus [ TP::playlistWindow ][ i ] = false;
         }
+
+    if( ! lyricsWindow->isVisible() )
+        for( unsigned i {}; i < TP::numberOfWindows; i++ )
+        {
+            snapStatus [ i ][ TP::lyricsWindow ] = false;
+            snapStatus [ TP::lyricsWindow ][ i ] = false;
+        }
 }
 
 
@@ -954,7 +1184,7 @@ TP_MainClass::checkSnapType( const QRect &I_geometry1, const QRect &I_geometry2 
         if( std::abs( I_geometry1.top() - I_geometry2.bottom() ) <= TP::snapRange )
             return TP::toBottom;
 
-        if( std::abs( I_geometry1.bottom() - I_geometry2.top() ) <= TP::snapRange)
+        if( std::abs( I_geometry1.bottom() - I_geometry2.top() ) <= TP::snapRange )
             return TP::toTop;
     }
 
@@ -962,10 +1192,10 @@ TP_MainClass::checkSnapType( const QRect &I_geometry1, const QRect &I_geometry2 
     if( I_geometry1.bottom() >= I_geometry2.top()
             && I_geometry1.top() <= I_geometry2.bottom() )
     {
-        if( std::abs( I_geometry1.right() - I_geometry2.left() ) <= TP::snapRange)
+        if( std::abs( I_geometry1.right() - I_geometry2.left() ) <= TP::snapRange )
             return TP::toLeft;
 
-        if( std::abs( I_geometry1.left() - I_geometry2.right() ) <= TP::snapRange)
+        if( std::abs( I_geometry1.left() - I_geometry2.right() ) <= TP::snapRange )
             return TP::toRight;
     }
 
@@ -1136,8 +1366,12 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
         mainWindow->setCover( coverArt );
 
-        playlistWindow->setCurrentItem( TP::currentItem() = I_item );
-        playlistWindow->refreshShowingTitle( I_item );
+        playlistWindow->unsetCurrentItemBold();
+        TP::currentItem() = I_item;
+        playlistWindow->setCurrentItem( I_item );
+        playlistWindow->refreshItemShowingTitle( I_item );
+
+        lyricsWindow->readLrcFileFromCurrentItem();
 
         mediaPlayer->setSource( url );
         mediaPlayer->play();

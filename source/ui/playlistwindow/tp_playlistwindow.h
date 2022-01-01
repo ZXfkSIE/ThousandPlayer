@@ -25,7 +25,7 @@ public:
     void setCurrentItem( QListWidgetItem *I_item );
     void setCurrentItemBold();
     void unsetCurrentItemBold();
-    void refreshShowingTitle( QListWidgetItem *I_item );
+    void refreshItemShowingTitle( QListWidgetItem *I_item );
 
     QListWidgetItem * getCurrentItem();
     QListWidgetItem * getNextItem();

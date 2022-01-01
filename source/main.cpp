@@ -38,9 +38,9 @@ int main( int argc, char *argv[] )
     TP_MainClass mainClass {};
 
     // Delay the position initialization to avoid some painting problem mainly in Linux
-    QTimer::singleShot( 200, &mainClass, &TP_MainClass::slot_initializePosition );
+    QTimer::singleShot( 250, &mainClass, &TP_MainClass::slot_initializePosition );
 
     // Need to be executed after QApplication object executed its exec()
-    QTimer::singleShot( 400, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable );
+    QTimer::singleShot( 500, &mainClass, &TP_MainClass::slot_checkIfServiceAvailable );
     return a.exec();
 }

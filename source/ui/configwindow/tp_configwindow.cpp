@@ -927,7 +927,7 @@ TP_ConfigWindow::initializeUI()
 
     // Expand height of list items
     for( unsigned i {}; i < ui->listWidget_Tab->count(); i++ )
-        ui->listWidget_Tab->item( i )->setSizeHint( QSize{ 0, 40 } );
+        ui->listWidget_Tab->item( i )->setSizeHint( { 0, 40 } );
 
     // ============================== Main Page ==============================
 

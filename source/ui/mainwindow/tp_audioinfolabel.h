@@ -19,7 +19,7 @@ private slots:
     void slot_timerIsTriggered();
 
 private:
-    void paintEvent ( QPaintEvent * ) override;
+    void paintEvent ( QPaintEvent *event ) override;
 
     void mousePressEvent( QMouseEvent *event ) override;
 

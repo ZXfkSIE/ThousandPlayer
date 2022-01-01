@@ -5,25 +5,33 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QMouseEvent>
 
 #include <stack>
 
 TP_LyricsViewer::TP_LyricsViewer( QWidget *parent ) :
     QListWidget     { parent }
   , b_hasLrcFile    {}
-  , currentItem     {}
+  , currentIdx      {}
 {
-    setMouseTracking( true );
-
+    initializeUI();
 }
 
 
 void
 TP_LyricsViewer::updatePosition( qint64 I_ms )
 {
-    if( b_hasLrcFile )
-    {
+    if( ! b_hasLrcFile )
+        return;
 
+    auto idx { findItemByTimestamp( I_ms ) };
+
+    if( idx != currentIdx )
+    {
+        unsetCurrentItemBold();
+        currentIdx = idx;
+        setCurrentItemBold();
+        scrollToItem( item( currentIdx ), QAbstractItemView::PositionAtCenter );
     }
 }
 
@@ -32,15 +40,23 @@ void
 TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
 {
     b_hasLrcFile = false;
+    setSelectionMode( QAbstractItemView::NoSelection );
+    setFocusPolicy( Qt::NoFocus );
     clear();
+    scrollToTop();
+    currentIdx = -1;
 
     // No audio file being played
     if( I_qstr_Path.isEmpty() )
     {
         addItem( tr( "Stopping" ) );
         item( 0 )->setData( TP::role_TimeStampInMs, -1 );
+        item( 0 )->setTextAlignment( Qt::AlignCenter );
+        changeFont( TP::config().getLyricsFont() );
         return;
     }
+
+    qDebug() << "[Lyrics Viewer] Reading LRC file from" << I_qstr_Path;
 
     if( std::filesystem::exists( I_qstr_Path
 #ifdef Q_OS_WIN
@@ -55,7 +71,7 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
         {
             QTextStream inputStream { &file };
 
-            while( inputStream.atEnd() )
+            while( ! inputStream.atEnd() )
             {
                 const auto &qstr_Line { inputStream.readLine() };
 
@@ -133,6 +149,7 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
 
                     addItem( qstr_Sentence );
                     item( count() - 1 )->setData( TP::role_TimeStampInMs, total_ms );
+                    item( count() - 1 )->setTextAlignment( Qt::AlignCenter );
                     b_hasLrcFile = true;
                 }       // for( auto &qstr : qstrList )
             }       // while( inputStream.atEnd() )
@@ -141,19 +158,64 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
         if( b_hasLrcFile )
         {
             sortByTimestamp();
+            changeFont( TP::config().getLyricsFont() );
+            setSelectionMode( QAbstractItemView::SingleSelection );
+            setFocusPolicy( Qt::StrongFocus );
             return;
         }
     }       // std::filesystem::exists
 
     // No valid LRC file
-    addItem( QFileInfo { I_qstr_Path }.baseName() );
+    addItem( tr( "No lyrics" ) );
     item( 0 )->setData( TP::role_TimeStampInMs, -1 );
+    item( 0 )->setTextAlignment( Qt::AlignCenter );
+    changeFont( TP::config().getLyricsFont() );
     return;
+}
+
+
+void
+TP_LyricsViewer::changeFont( const QFont &I_font )
+{
+    setFont( I_font );
+    auto height { I_font.pointSize() << 1 };   // I_font.pointSize() * 2
+    for( unsigned i {}; i < count(); i++ )
+        item( i )->setSizeHint( { 0, height } );
+}
+
+// *****************************************************************
+// private override
+// *****************************************************************
+
+void
+TP_LyricsViewer::mouseMoveEvent( QMouseEvent *event )
+{
+    event->ignore();
+}
+
+void
+TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
+{
+
 }
 
 // *****************************************************************
 // private
 // *****************************************************************
+
+void
+TP_LyricsViewer::initializeUI()
+{
+    setMouseTracking( true );
+    setStyleSheet(
+"color: #CCC;"
+"border-width: 0px;"
+                );
+    setFrameStyle( QFrame::NoFrame );
+    // setResizeMode( QListView::Adjust );
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+}
 
 void
 TP_LyricsViewer::sortByTimestamp()
@@ -203,8 +265,8 @@ TP_LyricsViewer::sortByTimestamp()
         while( low < high )
         {
             while( low < high &&
-                   item( high )->data( TP::role_TimeStampInMs ).toInt()
-                   >= pivot->data( TP::role_TimeStampInMs ).toInt() )
+                   item( high )->data( TP::role_TimeStampInMs ).value< qint64 >()
+                   >= pivot->data( TP::role_TimeStampInMs ).value< qint64 >() )
                 high--;
 
             if( low < high )
@@ -217,8 +279,8 @@ TP_LyricsViewer::sortByTimestamp()
             }
 
             while( low < high &&
-                   item( low )->data( TP::role_TimeStampInMs ).toInt()
-                   < pivot->data( TP::role_TimeStampInMs ).toInt() )
+                   item( low )->data( TP::role_TimeStampInMs ).value< qint64 >()
+                   < pivot->data( TP::role_TimeStampInMs ).value< qint64 >() )
                 low++;
 
             if( low < high )
@@ -254,4 +316,58 @@ TP_LyricsViewer::sortByTimestamp()
                 stack.push( { low + 1, right } );
         }
     }       // while( true )
+}
+
+int
+TP_LyricsViewer::findItemByTimestamp( qint64 I_ms )
+{
+    if( I_ms < item( 0 )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+        return -1;
+
+    if( I_ms >= item( count() - 1 )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+        return count() - 1;
+
+    int left {}, right { count() - 2 };
+
+    // Target of the binary searching is to find an index i
+    // which satisfies time[ i ] <= I_ms < time[ i + 1 ].
+    while( left <= right )
+    {
+        auto middle { ( left + right ) >> 1 };
+
+        // I_ms >= time[ i + 1 ]
+        if( I_ms >= item( middle + 1 )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+            left = middle + 1;
+        // I_ms < time[ i ]
+        else if( I_ms < item( middle )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+            right = middle - 1;
+        else
+            return middle;
+    }
+
+    return left;
+}
+
+
+void
+TP_LyricsViewer::setCurrentItemBold()
+{
+    if( currentIdx < 0 )
+        return;
+
+    auto font { TP::config().getLyricsFont() };
+    font.setBold( true );
+    item( currentIdx )->setFont( font );
+    item( currentIdx )->setForeground( Qt::white );
+}
+
+
+void
+TP_LyricsViewer::unsetCurrentItemBold()
+{
+    if( currentIdx < 0 )
+        return;
+
+    item( currentIdx )->setFont( TP::config().getLyricsFont() );
+    item( currentIdx )->setForeground( QColor { "#ccc" } );
 }

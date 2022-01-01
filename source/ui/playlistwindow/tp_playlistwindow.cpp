@@ -40,6 +40,8 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     initializeMenu();
     initializeConnection();
     initializePlaylist();
+
+    slot_changeFont();
 }
 
 
@@ -74,7 +76,7 @@ TP_PlaylistWindow::unsetCurrentItemBold()
 
 
 void
-TP_PlaylistWindow::refreshShowingTitle( QListWidgetItem *I_item )
+TP_PlaylistWindow::refreshItemShowingTitle( QListWidgetItem *I_item )
 {
     int index {
         currentFileListWidget()->indexFromItem( TP::currentItem() ).row()
@@ -140,9 +142,11 @@ TP_PlaylistWindow::slot_activateWindow()
 void
 TP_PlaylistWindow::slot_changeFont()
 {
-    const auto &font { TP::config().getPlaylistFont() };
-    ui->stackedWidget_FileList->setFont( font );
-    ui->playlistsWidget->setFont( font );
+    for( unsigned i {}; i < ui->stackedWidget_FileList->count(); i++ )
+        ui->stackedWidget_FileList->widget( i )
+                ->setFont( TP::config().getPlaylistFont() );
+
+    ui->playlistsWidget         ->setFont( TP::config().getPlaylistFont() );
 }
 
 // *****************************************************************
@@ -194,6 +198,7 @@ TP_PlaylistWindow::slot_fileListCreated( TP_FileListWidget *I_fileListWidget )
 void
 TP_PlaylistWindow::slot_fileListSwitched( TP_FileListWidget *I_fileListWidget )
 {
+    currentFileListWidget()->unsetCurrentItemBold();
     ui->stackedWidget_FileList->setCurrentWidget( I_fileListWidget );
     TP::currentItem() = nullptr;
     emit signal_currentItemRemoved();

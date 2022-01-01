@@ -12,13 +12,22 @@ public:
 
     void updatePosition( qint64 I_ms );
     void readLrcFile( const QString &I_qstr_Path );
+    void changeFont( const QFont &I_font );
 
 private:
+    void mouseMoveEvent         ( QMouseEvent *event ) override;
+    void mouseDoubleClickEvent  ( QMouseEvent *event ) override;
+
+    void initializeUI();
+
     void sortByTimestamp();
+    int findItemByTimestamp( qint64 I_ms );
+
+    void setCurrentItemBold();
+    void unsetCurrentItemBold();
 
     bool b_hasLrcFile;
-
-    QListWidgetItem *currentItem;
+    int currentIdx;
 };
 
 #endif // TP_LYRICSVIEWER_H

@@ -16,6 +16,9 @@
     <height>360</height>
    </size>
   </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -160,14 +163,20 @@
      <property name="mouseTracking">
       <bool>true</bool>
      </property>
-     <property name="styleSheet">
-      <string notr="true">QFrame
+     <widget class="QWidget" name="page_LyricsViewer">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QWidget
 {
 	border-bottom: 5px solid #666;
 	border-left: 5px solid #666;
 	border-right: 4px solid rgb(68, 68, 68);
 }</string>
-     </property>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3"/>
+     </widget>
     </widget>
    </item>
   </layout>

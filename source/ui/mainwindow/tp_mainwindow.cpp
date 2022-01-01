@@ -73,7 +73,7 @@ TP_MainWindow::setStop()
 
 
 void
-TP_MainWindow::updateDuration( qint64 I_ms )
+TP_MainWindow::updatePosition( qint64 I_ms )
 {
     if ( ! ui->slider_Time->isSliderDown() )
         ui->slider_Time->setValue( I_ms / 1000 );     // convert ms to s

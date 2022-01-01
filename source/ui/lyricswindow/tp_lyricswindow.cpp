@@ -1,6 +1,7 @@
 ﻿#include "tp_lyricswindow.h"
 #include "ui_tp_lyricswindow.h"
 
+#include "tp_globalconst.h"
 #include "tp_globalvariable.h"
 
 #include "tp_lyricsviewer.h"
@@ -8,17 +9,44 @@
 TP_LyricsWindow::TP_LyricsWindow( QWidget *parent ) :
     QWidget         { parent }
   , ui              { new Ui::TP_LyricsWindow }
-  , lyricsViewer    { new TP_LyricsViewer { ui->lyricsStackedWidget } }
+  , lyricsViewer    { new TP_LyricsViewer { this } }
 {
     ui->setupUi( this );
+    setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
+    ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
 
     initializeConnection();
     initializeUI();
 }
 
+
 TP_LyricsWindow::~TP_LyricsWindow()
 {
     delete ui;
+}
+
+
+void
+TP_LyricsWindow::readLrcFileFromCurrentItem()
+{
+    auto qstr_localFilePath { TP::currentItem()->data( TP::role_URL ).toUrl().toLocalFile() };
+    auto idx_LastPositionOfPoint { qstr_localFilePath.lastIndexOf( '.' ) };
+    auto qstr_lrcPath { qstr_localFilePath.first( ++idx_LastPositionOfPoint ) + QString { "lrc" } };
+    lyricsViewer->readLrcFile( qstr_lrcPath );
+}
+
+
+void
+TP_LyricsWindow::clearLrcFile()
+{
+    lyricsViewer->readLrcFile( {} );
+}
+
+
+void
+TP_LyricsWindow::updatePosition( qint64 I_ms )
+{
+    lyricsViewer->updatePosition( I_ms );
 }
 
 // *****************************************************************
@@ -26,9 +54,17 @@ TP_LyricsWindow::~TP_LyricsWindow()
 // *****************************************************************
 
 void
+TP_LyricsWindow::slot_activateWindow()
+{
+    if( isVisible() )
+        raise();
+}
+
+
+void
 TP_LyricsWindow::slot_changeFont()
 {
-    lyricsViewer->setFont( TP::config().getLyricsFont() );
+    lyricsViewer->changeFont( TP::config().getLyricsFont() );
 }
 
 // *****************************************************************
@@ -95,6 +131,8 @@ TP_LyricsWindow::initializeConnection()
 void
 TP_LyricsWindow::initializeUI()
 {
-    ui->lyricsStackedWidget->setCurrentWidget( lyricsViewer );
+    lyricsViewer->readLrcFile( {} );
+    ui->page_LyricsViewer->layout()->addWidget( lyricsViewer );
+    ui->lyricsStackedWidget->setCurrentWidget( ui->page_LyricsViewer );
     slot_changeFont();
 }

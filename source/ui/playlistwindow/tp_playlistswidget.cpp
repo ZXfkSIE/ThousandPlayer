@@ -1,6 +1,7 @@
 ﻿#include "tp_playlistswidget.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalvariable.h"
 
 #include "tp_filelistwidget.h"
 #include "tp_menu.h"
@@ -31,6 +32,7 @@ TP_PlaylistsWidget::addNewList( const QString &I_listName )
     newItem->setData( TP::role_FileListAddress,
                       QVariant::fromValue( reinterpret_cast< quintptr >( newFileList ) )
                       );
+    newFileList->setFont( TP::config().getPlaylistFont() );
 
     addItem( newItem );
     emit signal_fileListCreated( newFileList );
@@ -51,6 +53,7 @@ TP_PlaylistsWidget::slot_removeCurrentItem()
     auto *itemToBeDeleted { currentItem() };
     if( itemToBeDeleted == currentVisibleItem )
     {
+        currentVisibleItem = nullptr;
         auto idx_target { row( itemToBeDeleted ) };
         idx_target = ( ! idx_target ) ? 1 : idx_target - 1;
         slot_switchVisibleFileList( item( idx_target ) );
@@ -86,33 +89,24 @@ TP_PlaylistsWidget::slot_switchVisibleFileList( QListWidgetItem *I_item )
     if( currentVisibleItem == I_item )
         return;
 
-    auto idx_target { row( I_item ) };
-
-    for( unsigned i {}; i < count(); i++ )
+    if( currentVisibleItem )
     {
-        auto *item_i { item( i ) };
-        if( i == idx_target )
-        {
-            auto font { item_i->font() };
-            font.setBold( true );
-            item_i->setFont( font );
-            item_i->setBackground( QColor { "#444" } );
-        }
-        else
-        {
-            auto font { item_i->font() };
-            font.setBold( false );
-            item_i->setFont( font );
-            item_i->setBackground( QColor { "#777" } );
-        }
+        currentVisibleItem->setFont( TP::config().getPlaylistFont() );
+        currentVisibleItem->setBackground( QColor { "#777" } );
     }
+
+    currentVisibleItem = I_item;
+    auto font { TP::config().getPlaylistFont() };
+    font.setBold( true );
+    currentVisibleItem->setFont( font );
+    currentVisibleItem->setBackground( QColor { "#444" } );
 
     emit signal_fileListSwitched(
                 reinterpret_cast< TP_FileListWidget * >(
                     I_item->data( TP::role_FileListAddress ).value< quintptr >()
                     )
                 );
-    currentVisibleItem = I_item;
+
 }
 
 // *****************************************************************

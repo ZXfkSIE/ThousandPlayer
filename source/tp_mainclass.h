@@ -97,6 +97,7 @@ private:
 
     bool snapStatus [ TP::numberOfWindows ][ TP::numberOfWindows ];
     QPoint snapPosition_playlistWindow;
+    QPoint snapPosition_lyricsWindow;
 };
 
 #endif // TP_MAINCLASS_H

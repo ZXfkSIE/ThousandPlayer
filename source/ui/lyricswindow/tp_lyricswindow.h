@@ -19,6 +19,10 @@ public:
     explicit TP_LyricsWindow( QWidget *parent = nullptr );
     ~TP_LyricsWindow();
 
+    void readLrcFileFromCurrentItem();
+    void clearLrcFile();
+    void updatePosition( qint64 I_ms );
+
 signals:
     void signal_moveWindow( QWidget *window, const QRect &geometry );
     void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
@@ -28,6 +32,8 @@ signals:
     void signal_hidden();
 
 public slots:
+    void slot_activateWindow();
+
     void slot_changeFont();
 
 private slots:

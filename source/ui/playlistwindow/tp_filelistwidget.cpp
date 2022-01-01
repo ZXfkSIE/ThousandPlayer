@@ -32,50 +32,32 @@ TP_FileListWidget::TP_FileListWidget( QWidget *parent ) :
 void
 TP_FileListWidget::setCurrentItemBold()
 {
-    if( TP::currentItem() == nullptr )
-    {
-        unsetCurrentItemBold();
+    if( ! TP::currentItem() )
         return;
-    }
 
-    auto idx_target { row( TP::currentItem() ) };
-    for( unsigned i {}; i < count(); i++ )
-    {
-        auto *item_i { item( i ) };
-        if( i == idx_target )
-        {
-            auto font { item_i->font() };
-            font.setBold( true );
-            item_i->setFont( font );
-            item_i->setBackground( QColor { "#444" } );
-        }
-        else
-        {
-            auto font { item_i->font() };
-            font.setBold( false );
-            item_i->setFont( font );
-            item_i->setBackground( QColor { "#777" } );
-        }
-    }
+    auto font = TP::config().getPlaylistFont();
+    font.setBold( true );
+    TP::currentItem()->setFont( font );
+    TP::currentItem()->setBackground( QColor { "#444" } );
 }
 
 
 void
 TP_FileListWidget::unsetCurrentItemBold()
 {
-    for ( size_t i {}; i < count(); i++ )
-    {
-        auto font = item( i )->font();
-        font.setBold( false );
-        item( i )->setFont( font );
-        item( i )->setBackground( QColor {"#777"} );
-    }
+    if( ! TP::currentItem() )
+        return;
+
+    TP::currentItem()->setFont( TP::config().getPlaylistFont() );
+    TP::currentItem()->setBackground( QColor { "#777" } );
 }
 
 
 QListWidgetItem *
 TP_FileListWidget::getCurrentItem()
 {
+    unsetCurrentItemBold();
+
     // No item in the list
     if ( ! count() )
         return nullptr;
@@ -105,6 +87,8 @@ TP_FileListWidget::getCurrentItem()
 QListWidgetItem *
 TP_FileListWidget::getNextItem()
 {
+    unsetCurrentItemBold();
+
     // No item in the list
     if ( ! count() )
         return nullptr;
@@ -126,6 +110,8 @@ TP_FileListWidget::getNextItem()
 QListWidgetItem *
 TP_FileListWidget::getPreviousItem()
 {
+    unsetCurrentItemBold();
+
     // No item in the list
     if ( ! count() )
         return nullptr;
@@ -147,6 +133,8 @@ TP_FileListWidget::getPreviousItem()
 QListWidgetItem *
 TP_FileListWidget::getNextItem_shuffle()
 {
+    unsetCurrentItemBold();
+
     // No item in the list
     if ( ! count() )
         return nullptr;
@@ -187,6 +175,8 @@ TP_FileListWidget::getNextItem_shuffle()
 QListWidgetItem *
 TP_FileListWidget::getPreviousItem_shuffle()
 {
+    unsetCurrentItemBold();
+
     // No item in the list
     if ( ! count() )
         return nullptr;

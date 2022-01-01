@@ -75,7 +75,7 @@ TP_LyricsStackedWidget::mouseMoveEvent( QMouseEvent *event )
             break;
         }
     }
-    else                        // if (b_isBorderBeingPressed)
+    else                        // if ( ! b_isBorderBeingPressed )
     {
         cursorPositionType = TP::getCursorPositionType( this, eventPosition );
         switch ( cursorPositionType )
@@ -90,10 +90,17 @@ TP_LyricsStackedWidget::mouseMoveEvent( QMouseEvent *event )
 
         case TP::leftBorder:
         case TP::rightBorder:
-        case TP::bottomBorder:
             if ( ! b_isCursorResize )
             {
                 setCursor( QCursor( Qt::SizeHorCursor ) );
+                b_isCursorResize = true;
+            }
+            break;
+
+        case TP::bottomBorder:
+            if ( ! b_isCursorResize )
+            {
+                setCursor( QCursor( Qt::SizeVerCursor ) );
                 b_isCursorResize = true;
             }
             break;

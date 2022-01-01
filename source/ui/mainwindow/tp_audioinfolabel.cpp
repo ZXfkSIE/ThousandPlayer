@@ -58,9 +58,9 @@ TP_AudioInfoLabel::slot_timerIsTriggered()
 // *****************************************************************
 
 void
-TP_AudioInfoLabel::paintEvent ( QPaintEvent * )
+TP_AudioInfoLabel::paintEvent ( QPaintEvent *event )
 {
-    QLabel::paintEvent( {} );
+    QLabel::paintEvent( event );
     QPainter painter { this };
     painter.setClipRect( contentsRect() );
 

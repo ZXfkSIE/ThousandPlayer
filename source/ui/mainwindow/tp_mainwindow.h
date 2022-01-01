@@ -26,7 +26,7 @@ public:
     void setPause();
     void setStop();
 
-    void updateDuration( qint64 I_ms );
+    void updatePosition( qint64 I_ms );
 
     void setAudioInformation( const QListWidgetItem *I_item = nullptr );
     void setFileNotFound();
