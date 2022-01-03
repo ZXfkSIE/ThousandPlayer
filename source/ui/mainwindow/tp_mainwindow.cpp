@@ -223,7 +223,7 @@ TP_MainWindow::on_slider_Time_valueChanged( int I_second )
 void
 TP_MainWindow::slot_timeSliderPressed( int I_second )
 {
-    emit signal_timeSliderPressed( I_second );
+    emit signal_timeSliderPressed( I_second * 1000 );
 }
 
 
@@ -232,11 +232,11 @@ TP_MainWindow::on_slider_Volume_valueChanged( int I_volume )
 {
     // qDebug() << "[TP_MainWindow] slot_volumeSliderChanged(" << I_volume << ")";
     ui->label_VolumeIcon->setIcon( I_volume );
-    QToolTip::showText( QCursor::pos(), QString::number( I_volume ), nullptr, {}, 1500);
+    QToolTip::showText( QCursor::pos(), QString::number( I_volume ), nullptr, {}, 1500 );
     emit signal_volumeSliderValueChanged(
-                QAudio::convertVolume(ui->slider_Volume->value() / 100.0,
-                                      QAudio::LogarithmicVolumeScale,
-                                      QAudio::LinearVolumeScale)
+                QAudio::convertVolume( ui->slider_Volume->value() / 100.0,
+                                       QAudio::LogarithmicVolumeScale,
+                                       QAudio::LinearVolumeScale )
                 );
 }
 
@@ -258,8 +258,8 @@ TP_MainWindow::on_pushButton_Exit_clicked()
 void
 TP_MainWindow::on_pushButton_Expand_clicked()
 {
-    QRect ScreenGeometry = window()->windowHandle()->screen()->geometry();
-    QRect CurrentGeometry = geometry();
+    auto ScreenGeometry = window()->windowHandle()->screen()->geometry();
+    auto CurrentGeometry = geometry();
 
     if( width() < ScreenGeometry.width() )
     {

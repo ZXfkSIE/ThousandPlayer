@@ -42,7 +42,7 @@ signals:
     void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
     void signal_windowChanged();
 
-    void signal_timeSliderPressed( int second );
+    void signal_timeSliderPressed( qint64 ms );
     void signal_volumeSliderValueChanged( float logarithmicVolume );
 
     void signal_openPlaylistWindow();

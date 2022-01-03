@@ -5,7 +5,7 @@
 
 #include <QFont>
 #include <QObject>
-#include <QPoint>
+#include <QRect>
 #include <QSettings>
 #include <QUrl>
 
@@ -18,8 +18,8 @@ public:
     ~TP_Config();
 
     // ====================== MAINWINDOW group ======================
-    void            setMainWindowPosition ( const QPoint &input = defaultMainWindowPosition );
-    const QPoint &  getMainWindowPosition () const;
+    void            setMainWindowGeometry ( const QRect &input = defaultMainWindowGeometry );
+    const QRect &   getMainWindowGeometry () const;
     void            setTrayIconEnabled  ( const bool input );
     bool            isTrayIconEnabled   () const;
     void            setAudioInfoLabelFont( const QFont &input );
@@ -28,8 +28,8 @@ public:
     int             getAudioInfoScrollingInterval () const;
 
     // ==================== PLAYLISTWINDOW group ====================
-    void            setPlaylistWindowPosition ( const QPoint &input = defaultPlaylistWindowPosition );
-    const QPoint &  getPlaylistWindowPosition () const;
+    void            setPlaylistWindowGeometry ( const QRect &input = defaultPlaylistWindowGeometry );
+    const QRect &   getPlaylistWindowGeometry () const;
     void            setPlaylistWindowShown  ( const bool input );
     bool            isPlaylistWindowShown   () const;
     void            setPlaylistFont ( const QFont &input );
@@ -38,8 +38,8 @@ public:
     const QUrl &    getLastOpenedDirectory () const;
 
     // ===================== LYRICSWINDOW group =====================
-    void            setLyricsWindowPosition ( const QPoint &input = defaultLyricsWindowPosition );
-    const QPoint &  getLyricsWindowPosition () const;
+    void            setLyricsWindowGeometry ( const QRect &input = defaultLyricsWindowGeometry );
+    const QRect &   getLyricsWindowGeometry () const;
     void            setLyricsWindowShown  ( const bool input );
     bool            isLyricsWindowShown   () const;
     void            setLyricsFont ( const QFont &input );
@@ -64,8 +64,8 @@ private:
     // ************************************************************************************
     const   QString     group_MAINWINDOW                            { "MAINWINDOW" };
     // ************************************************************************************
-    const   QString     key_MAINWINDOW_mainWindowPosition           { "mainWindowPosition" };
-            QPoint      mainWindowPosition;
+    const   QString     key_MAINWINDOW_mainWindowGeometry           { "mainWindowGeometry" };
+            QRect       mainWindowGeometry;
     const   QString     key_MAINWINDOW_isTrayIconEnabled            { "isTrayIconEnabled" };
             bool        b_isTrayIconEnabled;
     const   QString     key_MAINWINDOW_audioInfoLabelFont           { "audioInfoLabelFont " };
@@ -76,8 +76,8 @@ private:
     // ************************************************************************************
     const   QString     group_PLAYLISTWINDOW                        { "PLAYLISTWINDOW" };
     // ************************************************************************************
-    const   QString     key_PLAYLISTWINDOW_playlistWindowPosition   { "playlistWindowPosition" };
-            QPoint      playlistWindowPosition;
+    const   QString     key_PLAYLISTWINDOW_playlistWindowGeometry   { "playlistWindowGeometry" };
+            QRect       playlistWindowGeometry;
     const   QString     key_PLAYLISTWINDOW_isPlaylistWindowShown    { "isPlaylistWindowShown" };
             bool        b_isPlaylistWindowShown;
     const   QString     key_PLAYLISTWINDOW_playlistFont             { "playlistFont" };
@@ -88,8 +88,8 @@ private:
     // ************************************************************************************
     const   QString             group_LYRICSWINDOW                  { "LYRICSWINDOW" };
     // ************************************************************************************
-    const   QString     key_LYRICSWINDOW_lyricsWindowPosition       { "lyricsWindowPosition" };
-            QPoint      lyricsWindowPosition;
+    const   QString     key_LYRICSWINDOW_lyricsWindowGeometry       { "lyricsWindowGeometry" };
+            QRect       lyricsWindowGeometry;
     const   QString     key_LYRICSWINDOW_isLyricsWindowShown        { "isLyricsWindowShown" };
             bool        b_isLyricsWindowShown;
     const   QString     key_LYRICSWINDOW_lyricsFont                 { "lyricsFont" };
@@ -109,9 +109,9 @@ private:
     const   QString             key_PLAYBACK_playMode               { "playMode" };
             TP::PlayMode        playMode;
 
-    static constexpr QPoint defaultMainWindowPosition       { 100, 100 };
-    static constexpr QPoint defaultPlaylistWindowPosition   { 100, 340 };
-    static constexpr QPoint defaultLyricsWindowPosition     { 580, 100 };
+    static constexpr QRect defaultMainWindowGeometry       { 100, 100, 480, 240 };
+    static constexpr QRect defaultPlaylistWindowGeometry   { 100, 340, 480, 360 };
+    static constexpr QRect defaultLyricsWindowGeometry     { 580, 100, 360, 600 };
 };
 
 #endif // TP_CONFIG_H

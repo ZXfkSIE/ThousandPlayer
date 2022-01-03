@@ -14,6 +14,9 @@ public:
     void readLrcFile( const QString &I_qstr_Path );
     void changeFont( const QFont &I_font );
 
+signals:
+    void signal_lyricsDoubleClicked( qint64 ms );
+
 private:
     void mouseMoveEvent         ( QMouseEvent *event ) override;
     void mouseDoubleClickEvent  ( QMouseEvent *event ) override;

@@ -27,6 +27,7 @@ signals:
     void signal_moveWindow( QWidget *window, const QRect &geometry );
     void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
     void signal_windowChanged();
+    void signal_lyricsDoubleClicked( qint64 ms );
 
     void signal_shown();
     void signal_hidden();
@@ -40,6 +41,8 @@ private slots:
     void slot_titleBarMoved( const QRect &I_geometry );
     void slot_resizeWindow( const QRect &I_geomtry, TP::ResizeType I_resizeType );
     void slot_windowChanged();
+
+    void slot_lyricsDoubleClicked( qint64 I_ms );
 
 private:
     Ui::TP_LyricsWindow *ui;

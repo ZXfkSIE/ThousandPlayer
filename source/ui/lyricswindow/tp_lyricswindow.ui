@@ -19,9 +19,6 @@
   <property name="mouseTracking">
    <bool>true</bool>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <property name="styleSheet">
    <string notr="true">background-color:#777;</string>
   </property>

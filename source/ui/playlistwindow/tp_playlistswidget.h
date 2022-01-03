@@ -24,13 +24,14 @@ private slots:
     void slot_removeCurrentItem();
     void slot_renameCurrentItem();
     void slot_addItemFromContextMenu();
-    void slot_switchVisibleFileList( QListWidgetItem *I_item );
 
 private:
     void contextMenuEvent       ( QContextMenuEvent *event ) override;
     void mouseDoubleClickEvent  ( QMouseEvent *event ) override;
 
     void initializeMenu();
+
+    void switchVisibleFileList( QListWidgetItem *I_item );
 
     TP_Menu *menu_rightClick;
     QAction *action_remove;

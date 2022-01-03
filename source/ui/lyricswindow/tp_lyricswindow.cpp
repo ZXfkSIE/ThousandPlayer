@@ -91,6 +91,13 @@ TP_LyricsWindow::slot_windowChanged()
     emit signal_windowChanged();
 }
 
+
+void
+TP_LyricsWindow::slot_lyricsDoubleClicked( qint64 I_ms )
+{
+    emit signal_lyricsDoubleClicked( I_ms );
+}
+
 // *****************************************************************
 // private override
 // *****************************************************************
@@ -126,6 +133,10 @@ TP_LyricsWindow::initializeConnection()
              this,                      &TP_LyricsWindow::slot_resizeWindow );
     connect( ui->lyricsStackedWidget,   &TP_LyricsStackedWidget::signal_windowChanged,
              this,                      &TP_LyricsWindow::slot_windowChanged );
+
+    // Lyrics viewer related
+    connect( lyricsViewer,  &TP_LyricsViewer::signal_lyricsDoubleClicked,
+             this,          &TP_LyricsWindow::slot_lyricsDoubleClicked );
 }
 
 void

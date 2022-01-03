@@ -28,6 +28,7 @@ TP_LyricsViewer::updatePosition( qint64 I_ms )
 
     if( idx != currentIdx )
     {
+        clearSelection();
         unsetCurrentItemBold();
         currentIdx = idx;
         setCurrentItemBold();
@@ -49,7 +50,7 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
     // No audio file being played
     if( I_qstr_Path.isEmpty() )
     {
-        addItem( tr( "Stopping" ) );
+        addItem( tr( "No lyrics" ) );
         item( 0 )->setData( TP::role_TimeStampInMs, -1 );
         item( 0 )->setTextAlignment( Qt::AlignCenter );
         changeFont( TP::config().getLyricsFont() );
@@ -196,7 +197,16 @@ TP_LyricsViewer::mouseMoveEvent( QMouseEvent *event )
 void
 TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
 {
-
+    if( event->button() == Qt::LeftButton )
+    {
+        auto *clickedItem = itemAt ( event->pos() );
+        if( clickedItem )
+            emit signal_lyricsDoubleClicked(
+                    clickedItem->data( TP::role_TimeStampInMs ).value< qint64 >()
+                    );
+    }
+    else
+        event->ignore();
 }
 
 // *****************************************************************

@@ -38,7 +38,7 @@ TP_PlaylistsWidget::addNewList( const QString &I_listName )
     emit signal_fileListCreated( newFileList );
 
     if( count() == 1 )
-        slot_switchVisibleFileList( newItem );
+        switchVisibleFileList( newItem );
 
     return newItem;
 }
@@ -56,7 +56,7 @@ TP_PlaylistsWidget::slot_removeCurrentItem()
         currentVisibleItem = nullptr;
         auto idx_target { row( itemToBeDeleted ) };
         idx_target = ( ! idx_target ) ? 1 : idx_target - 1;
-        slot_switchVisibleFileList( item( idx_target ) );
+        switchVisibleFileList( item( idx_target ) );
     }
 
     removeItemWidget( itemToBeDeleted );
@@ -80,33 +80,6 @@ void
 TP_PlaylistsWidget::slot_addItemFromContextMenu()
 {
     editItem( addNewList( tr( "List " ) + QString::number( count() + 1 ) ) );
-}
-
-
-void
-TP_PlaylistsWidget::slot_switchVisibleFileList( QListWidgetItem *I_item )
-{
-    if( currentVisibleItem == I_item )
-        return;
-
-    if( currentVisibleItem )
-    {
-        currentVisibleItem->setFont( TP::config().getPlaylistFont() );
-        currentVisibleItem->setBackground( QColor { "#777" } );
-    }
-
-    currentVisibleItem = I_item;
-    auto font { TP::config().getPlaylistFont() };
-    font.setBold( true );
-    currentVisibleItem->setFont( font );
-    currentVisibleItem->setBackground( QColor { "#444" } );
-
-    emit signal_fileListSwitched(
-                reinterpret_cast< TP_FileListWidget * >(
-                    I_item->data( TP::role_FileListAddress ).value< quintptr >()
-                    )
-                );
-
 }
 
 // *****************************************************************
@@ -140,7 +113,7 @@ TP_PlaylistsWidget::mouseDoubleClickEvent( QMouseEvent *event )
     {
         auto *clickedItem = itemAt ( event->pos() );
         if( clickedItem )
-            slot_switchVisibleFileList( clickedItem );
+            switchVisibleFileList( clickedItem );
     }
     else
         event->ignore();
@@ -170,4 +143,31 @@ TP_PlaylistsWidget::initializeMenu()
     menu_rightClick->addAction( action_rename );
     menu_rightClick->addSeparator();
     menu_rightClick->addAction( action_add );
+}
+
+
+void
+TP_PlaylistsWidget::switchVisibleFileList( QListWidgetItem *I_item )
+{
+    if( currentVisibleItem == I_item )
+        return;
+
+    if( currentVisibleItem )
+    {
+        currentVisibleItem->setFont( TP::config().getPlaylistFont() );
+        currentVisibleItem->setBackground( QColor { "#777" } );
+    }
+
+    currentVisibleItem = I_item;
+    auto font { TP::config().getPlaylistFont() };
+    font.setBold( true );
+    currentVisibleItem->setFont( font );
+    currentVisibleItem->setBackground( QColor { "#444" } );
+
+    emit signal_fileListSwitched(
+                reinterpret_cast< TP_FileListWidget * >(
+                    I_item->data( TP::role_FileListAddress ).value< quintptr >()
+                    )
+                );
+
 }

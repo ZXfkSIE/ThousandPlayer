@@ -65,35 +65,35 @@ TP_MainClass::~TP_MainClass()
 {
     // Get current screen
     auto *mainWindowScreen { QApplication::screenAt( mainWindow->pos() ) };
-    TP::config().setMainWindowPosition(
-                mainWindow->pos() - mainWindowScreen->geometry().topLeft()
-                );
+    auto mainWindowGeometry { mainWindow->geometry() };
+    mainWindowGeometry.moveTopLeft( mainWindow->pos() - mainWindowScreen->geometry().topLeft() );
+    TP::config().setMainWindowGeometry( mainWindowGeometry );
 
     if( playlistWindow->isVisible() || b_isPlaylistWindowVisible )
     {
         auto *playlistWindowScreen { QApplication::screenAt( playlistWindow->pos() ) };
-        TP::config().setPlaylistWindowPosition(
-                    playlistWindow->pos() - playlistWindowScreen->geometry().topLeft()
-                    );
+        auto playlistWindowGeometry { playlistWindow->geometry() };
+        playlistWindowGeometry.moveTopLeft( playlistWindow->pos() - playlistWindowScreen->geometry().topLeft() );
+        TP::config().setPlaylistWindowGeometry( playlistWindowGeometry );
         TP::config().setPlaylistWindowShown( true );
     }
     else
     {
-        TP::config().setPlaylistWindowPosition();
+        TP::config().setPlaylistWindowGeometry();
         TP::config().setPlaylistWindowShown( false );
     }
 
     if( lyricsWindow->isVisible() || b_isLyricsWindowVisible )
     {
         auto *lyricsWindowScreen { QApplication::screenAt( lyricsWindow->pos() ) };
-        TP::config().setLyricsWindowPosition(
-                    lyricsWindow->pos() - lyricsWindowScreen->geometry().topLeft()
-                    );
+        auto lyricsWindowGeometry { lyricsWindow->geometry() };
+        lyricsWindowGeometry.moveTopLeft( lyricsWindow->pos() - lyricsWindowScreen->geometry().topLeft() );
+        TP::config().setLyricsWindowGeometry( lyricsWindowGeometry );
         TP::config().setLyricsWindowShown( true );
     }
     else
     {
-        TP::config().setLyricsWindowPosition();
+        TP::config().setLyricsWindowGeometry();
         TP::config().setLyricsWindowShown( false );
     }
 
@@ -132,17 +132,18 @@ TP_MainClass::slot_checkIfServiceAvailable()
 void
 TP_MainClass::slot_initializePosition()
 {
-    QScreen *currentScreen = QApplication::screenAt( QCursor::pos() );
+    auto *currentScreen { QApplication::screenAt( QCursor::pos() ) };
 
-    mainWindow->move(
-                TP::config().getMainWindowPosition() + currentScreen->geometry().topLeft()
-                );
+    auto mainWindowGeometry { TP::config().getMainWindowGeometry() };
+    mainWindowGeometry.moveTopLeft( mainWindowGeometry.topLeft() + currentScreen->geometry().topLeft() );
+    mainWindow->setGeometry( mainWindowGeometry );
+    mainWindow->show();
     mainWindow->raise();
     mainWindow->activateWindow();
 
-    playlistWindow->move(
-                TP::config().getPlaylistWindowPosition() + currentScreen->geometry().topLeft()
-                );
+    auto playlistWindowGeometry { TP::config().getPlaylistWindowGeometry() };
+    playlistWindowGeometry.moveTopLeft( playlistWindowGeometry.topLeft() + currentScreen->geometry().topLeft() );
+    playlistWindow->setGeometry( playlistWindowGeometry );
     if ( TP::config().isPlaylistWindowShown() )
     {
         playlistWindow->show();
@@ -152,9 +153,9 @@ TP_MainClass::slot_initializePosition()
     else
         mainWindow->slot_playlistWindowHidden();
 
-    lyricsWindow->move(
-                TP::config().getLyricsWindowPosition() + currentScreen->geometry().topLeft()
-                );
+    auto lyricsWindowGeometry { TP::config().getLyricsWindowGeometry() };
+    lyricsWindowGeometry.moveTopLeft( lyricsWindowGeometry.topLeft() + currentScreen->geometry().topLeft() );
+    lyricsWindow->setGeometry( lyricsWindowGeometry );
     if ( TP::config().isLyricsWindowShown() )
     {
         lyricsWindow->show();
@@ -217,7 +218,6 @@ TP_MainClass::slot_moveWindow( QWidget *I_window, QRect I_geometry )
     // A window can only be snapped (or aligned) once at vertical and horizontal direction, respectively.
     bool isVerticallySnapped    {};
     bool isHorizontallySnapped  {};
-
 
     // ============================== Snapping to main window ==============================
 
@@ -796,7 +796,6 @@ TP_MainClass::slot_refreshSnapStatus()
     {
         snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = true;
         snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = true;
-        snapPosition_playlistWindow = playlistWindow->pos() - mainWindow->pos();
     }
     else
     {
@@ -810,7 +809,6 @@ TP_MainClass::slot_refreshSnapStatus()
     {
         snapStatus [ TP::mainWindow ][ TP::lyricsWindow ] = true;
         snapStatus [ TP::lyricsWindow ][ TP::mainWindow ] = true;
-        snapPosition_lyricsWindow = lyricsWindow->pos() - mainWindow->pos();
     }
     else
     {
@@ -824,16 +822,19 @@ TP_MainClass::slot_refreshSnapStatus()
     {
         snapStatus [ TP::playlistWindow ][ TP::lyricsWindow ] = true;
         snapStatus [ TP::lyricsWindow ][ TP::playlistWindow ] = true;
-        if ( breadthFirstSearch( TP::playlistWindow ) )
-            snapPosition_playlistWindow = playlistWindow->pos() - mainWindow->pos();
-        if ( breadthFirstSearch( TP::lyricsWindow ) )
-            snapPosition_lyricsWindow = lyricsWindow->pos() - mainWindow->pos();
     }
     else
     {
         snapStatus [ TP::playlistWindow ][ TP::lyricsWindow ] = false;
         snapStatus [ TP::lyricsWindow ][ TP::playlistWindow ] = false;
     }
+
+    // QWidget::pos() cannot be used here.
+    // pos() is not always identical to geometry().topLeft().
+    if ( breadthFirstSearch( TP::playlistWindow ) )
+        snapPosition_playlistWindow = playlistWindow->geometry().topLeft() - mainWindow->geometry().topLeft();
+    if ( breadthFirstSearch( TP::lyricsWindow ) )
+        snapPosition_lyricsWindow = lyricsWindow->geometry().topLeft() - mainWindow->geometry().topLeft();
 }
 
 
@@ -1022,13 +1023,6 @@ TP_MainClass::slot_positionChanged( qint64 I_ms )
 
 
 void
-TP_MainClass::slot_changePlayingPosition( int I_second )
-{
-    mediaPlayer->setPosition( I_second * 1000 );
-}
-
-
-void
 TP_MainClass::slot_setVolume( float I_linearVolume )
 {
     linearVolume = I_linearVolume;
@@ -1069,7 +1063,9 @@ TP_MainClass::initializeConnection()
              this,          &TP_MainClass::slot_interruptingStopTriggered );
 
     connect( mainWindow,    &TP_MainWindow::signal_timeSliderPressed,
-             this,          &TP_MainClass::slot_changePlayingPosition );
+             mediaPlayer,   &QMediaPlayer::setPosition );
+    connect( lyricsWindow,  &TP_LyricsWindow::signal_lyricsDoubleClicked,
+             mediaPlayer,   &QMediaPlayer::setPosition );
 
     // Source switching
     connect( mainWindow,        &TP_MainWindow::signal_modeIsNotShuffle,

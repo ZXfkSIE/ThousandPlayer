@@ -586,11 +586,29 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
                 item->setData( TP::role_URL, qstr_FileURL );             // set URL
                 item->setData( TP::role_SourceType, sourceType );
 
-                newFileList->addItem( item );
+                switch( sourceType )
+                {
+                case TP::singleFile :
+                    if( std::filesystem::exists( qstr_FileURL.toLocalFile().
+#ifdef Q_OS_WIN
+                                                 toStdWString()
+#else
+                                                 toLocal8Bit().constData()
+#endif
+                                                 ) )
+                        newFileList->addItem( item );
+                else
+                    delete item;
+
+                    break;
+
+                default:
+                    delete item;
+                }
             }
             else
                 jArray_FileList.removeAt( i-- );
-        }
+        }       // for( int i {}; i < jArray_FileList.count(); i++ )
 
         auto count { newFileList->count() };
         if( ! count )
@@ -625,7 +643,7 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         QThreadPool::globalInstance()->waitForDone();
         newFileList->refreshShowingTitle( 0, count - 1 );
         progressDialog->cancel();
-    }
+    }       // for( const auto &jValue_Playlist : jArray_Root )
 
     return isPlaylistCreated;
 }

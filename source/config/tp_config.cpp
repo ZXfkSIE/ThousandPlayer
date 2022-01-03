@@ -20,9 +20,9 @@ TP_Config::TP_Config( QObject *parent ) :
     defaultFont.setPointSize( 10 );
 
     config.beginGroup( group_MAINWINDOW );
-    mainWindowPosition = config
-            .value( key_MAINWINDOW_mainWindowPosition, defaultMainWindowPosition )
-            .toPoint();
+    mainWindowGeometry = config
+            .value( key_MAINWINDOW_mainWindowGeometry, defaultMainWindowGeometry )
+            .toRect();
     b_isTrayIconEnabled = config
             .value( key_MAINWINDOW_isTrayIconEnabled, false )
             .toBool();
@@ -35,9 +35,9 @@ TP_Config::TP_Config( QObject *parent ) :
     config.endGroup();
 
     config.beginGroup( group_PLAYLISTWINDOW );
-    playlistWindowPosition = config
-            .value( key_PLAYLISTWINDOW_playlistWindowPosition, defaultPlaylistWindowPosition )
-            .toPoint();
+    playlistWindowGeometry = config
+            .value( key_PLAYLISTWINDOW_playlistWindowGeometry, defaultPlaylistWindowGeometry )
+            .toRect();
     b_isPlaylistWindowShown = config
             .value( key_PLAYLISTWINDOW_isPlaylistWindowShown, true )
             .toBool();
@@ -50,9 +50,9 @@ TP_Config::TP_Config( QObject *parent ) :
     config.endGroup();
 
     config.beginGroup( group_LYRICSWINDOW );
-    lyricsWindowPosition = config
-            .value( key_LYRICSWINDOW_lyricsWindowPosition, defaultLyricsWindowPosition )
-            .toPoint();
+    lyricsWindowGeometry = config
+            .value( key_LYRICSWINDOW_lyricsWindowGeometry, defaultLyricsWindowGeometry )
+            .toRect();
     b_isLyricsWindowShown = config
             .value( key_LYRICSWINDOW_isLyricsWindowShown, true )
             .toBool();
@@ -87,21 +87,21 @@ TP_Config::TP_Config( QObject *parent ) :
 TP_Config::~TP_Config()
 {
     config.beginGroup( group_MAINWINDOW );
-    config.setValue( key_MAINWINDOW_mainWindowPosition, mainWindowPosition );
+    config.setValue( key_MAINWINDOW_mainWindowGeometry, mainWindowGeometry );
     config.setValue( key_MAINWINDOW_isTrayIconEnabled, b_isTrayIconEnabled );
     config.setValue( key_MAINWINDOW_audioInfoLabelFont, audioInfoLabelFont );
     config.setValue( key_MAINWINDOW_audioInfoScrollingInterval, audioInfoScrollingInterval_sec );
     config.endGroup();
 
     config.beginGroup( group_PLAYLISTWINDOW );
-    config.setValue( key_PLAYLISTWINDOW_playlistWindowPosition, playlistWindowPosition );
+    config.setValue( key_PLAYLISTWINDOW_playlistWindowGeometry, playlistWindowGeometry );
     config.setValue( key_PLAYLISTWINDOW_isPlaylistWindowShown, b_isPlaylistWindowShown );
     config.setValue( key_PLAYLISTWINDOW_playlistFont, playlistFont );
     config.setValue( key_PLAYLISTWINDOW_lastOpenedDirectory, lastOpenedDirectory );
     config.endGroup();
 
     config.beginGroup( group_LYRICSWINDOW );
-    config.setValue( key_LYRICSWINDOW_lyricsWindowPosition, lyricsWindowPosition );
+    config.setValue( key_LYRICSWINDOW_lyricsWindowGeometry, lyricsWindowGeometry );
     config.setValue( key_LYRICSWINDOW_isLyricsWindowShown, b_isLyricsWindowShown );
     config.setValue( key_LYRICSWINDOW_lyricsFont, lyricsFont );
     config.endGroup();
@@ -119,15 +119,15 @@ TP_Config::~TP_Config()
 
 // ==================== UI group ====================
 void
-TP_Config::setMainWindowPosition( const QPoint &input )
+TP_Config::setMainWindowGeometry( const QRect &input )
 {
-    mainWindowPosition = input;
+    mainWindowGeometry = input;
 }
 
-const QPoint &
-TP_Config::getMainWindowPosition() const
+const QRect &
+TP_Config::getMainWindowGeometry() const
 {
-    return mainWindowPosition;
+    return mainWindowGeometry;
 }
 
 void
@@ -167,15 +167,15 @@ TP_Config::getAudioInfoScrollingInterval () const
 }
 
 void
-TP_Config::setPlaylistWindowPosition( const QPoint &input )
+TP_Config::setPlaylistWindowGeometry( const QRect &input )
 {
-    playlistWindowPosition = input;
+    playlistWindowGeometry = input;
 }
 
-const QPoint &
-TP_Config::getPlaylistWindowPosition() const
+const QRect &
+TP_Config::getPlaylistWindowGeometry() const
 {
-    return playlistWindowPosition;
+    return playlistWindowGeometry;
 }
 
 void
@@ -276,15 +276,15 @@ TP_Config::getPlayMode() const
 }
 
 void
-TP_Config::setLyricsWindowPosition ( const QPoint &input )
+TP_Config::setLyricsWindowGeometry ( const QRect &input )
 {
-    lyricsWindowPosition = input;
+    lyricsWindowGeometry = input;
 }
 
-const QPoint &
-TP_Config::getLyricsWindowPosition () const
+const QRect &
+TP_Config::getLyricsWindowGeometry () const
 {
-    return lyricsWindowPosition;
+    return lyricsWindowGeometry;
 }
 
 void

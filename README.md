@@ -13,7 +13,7 @@ A Qt6-based open-source audio player developed from scratch. It is a tribute to 
 one of the most popular local music players for Microsoft Windows in China during 2000s.
 
 The software is still in early development stage,
-but already has the basic functions that a local audio player should have. Feel free to participate in the development! Here is the [format manual](Format.md) of this project.
+but already has fundamental functions that a local audio player should have. Feel free to participate in the development! Here is the [format manual](Format.md) of this project.
 
 ![](figure/screenshot.png)
 
@@ -33,6 +33,7 @@ but already has the basic functions that a local audio player should have. Feel 
   - Vorbis (`.ogg`)
   - WAV (`.wav`)
   - For format support details about ReplayGain and cover art reading, see [here](SupportInfo.md).
+- `.lrc` lyrics file viewer.
 - A horizontally expandable main window. No need to worry about long music informations.
 - A cover viewer for viewing album covers.
 - Rich finding and sorting functions.
@@ -43,7 +44,7 @@ but already has the basic functions that a local audio player should have. Feel 
 - CMake-based automatic compilation.
 
 ## Planned features
-- Viewer and editor for `.lrc` lyrics files.
+- `.lrc` lyrics file generator.
 - Audio format converting.
 - Music tag editor.
 - Audio description customization.
@@ -61,9 +62,9 @@ As of Qt 6.2.2.
 
 Before these steps, you should install
 - Latest version of Qt Creator.
-- Latest version of Qt 6.2 (or above versions such as 6.3) along with **Qt Multimedia**.
-- CMake 3.20 or above (which can be installed through QT Maintenance Tool or [official website](https://cmake.org/download/)).
-- Other required compilation tools like GCC, MSVC, Ninja, etc.
+- Latest version of Qt 6.2 (or above versions such as 6.3) along with Qt Multimedia.
+- CMake 3.20 or later.
+- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), Ninja and so on.
 
 ## Linux
 1. Install required development package (Currently there is only one, i.e. [TagLib](https://taglib.org/)) in your system.
@@ -75,14 +76,14 @@ then configure the project with Qt 6.2 or above.
 3. Build.
 
 ## Windows
-1. Install [Conan] from Qt Maintenance Tool or [official website](https://conan.io/downloads.html).
+1. Install Conan from Qt Maintenance Tool or [official website](https://conan.io/downloads.html).
 2. Turn on Conan plugin in Qt Creator.
 
 ![](figure/ConanPlugin.png)
 
-3. Use Qt Creator to open the root `CMakeLists.txt`,
+3. Open the root `CMakeLists.txt` by Qt Creator,
 then configure the project with Qt 6.2 or above. The first attempt of CMake configuration should be failed due to the lack of Conan-related scripts, but it's OK.
-4. Go to "Projects" tab, raise the existing "Conan install" build step to the top of the list and add the additional argument `--profile /replace/it/with/project/root/directory/conan_debug_windows_x64.txt` to it.
+4. Go to "Projects" tab, raise the existing "Conan install" build step to top of the list and add additional argument `--profile /replace/it/with/project/root/directory/conan_debug_windows_x64.txt` to it.
    - If you are making release build, change the filename to `conan_release_windows_x64.txt`.
 
 ![](figure/ConanInstallBuildStep.png)

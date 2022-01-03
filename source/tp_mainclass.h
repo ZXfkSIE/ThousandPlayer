@@ -63,7 +63,6 @@ private slots:
     void slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString &I_errorString ) const;
 
     void slot_positionChanged( qint64 I_ms );
-    void slot_changePlayingPosition( int I_second );
 
     void slot_setVolume( float I_linearVolume );
 
