@@ -52,8 +52,11 @@ but already has fundamental functions that a local audio player should have. Fee
 - `.cue` sheet support.
 - Streaming audio.
 
-## Current serious bugs caused by Qt
-As of Qt 6.2.2.
+## Serious bugs caused by other libraries
+### PipeWire 0.3.40, 0.3.42
+- Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441))
+
+### Qt 6.2.2
 - [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.
 - [QTBUG-97758](https://bugreports.qt.io/browse/QTBUG-97758): The output device changing function does not work in some Linux distros (e.g. Fedora).
 - [QTBUG-98191](https://bugreports.qt.io/browse/QTBUG-98191): While playing **FLAC** files in Windows, seeking becomes buggy.
@@ -64,7 +67,7 @@ Before these steps, you should install
 - Latest version of Qt Creator.
 - Latest version of Qt 6.2 (or above versions such as 6.3) along with Qt Multimedia.
 - CMake 3.20 or later.
-- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), Ninja and so on.
+- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), libGL (for Linux), Ninja and so on.
 
 ## Linux
 1. Install required development package (Currently there is only one, i.e. [TagLib](https://taglib.org/)) in your system.
