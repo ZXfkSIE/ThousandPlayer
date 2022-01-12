@@ -1,4 +1,3 @@
-<!--Last update: 2021-12-14 UTC-->
 <!--
 # Page Languages
 
@@ -66,17 +65,20 @@ but already has fundamental functions that a local audio player should have. Fee
 
 # Compilation Tutorial
 
-Before these steps, you should install
+This page only provides complation steps with Qt Creator. Of course you can also build it with command lines, Visual Studio or anything else you like.
+
+Before proceeding with the following OS-specific steps, you have to install
 - Latest version of Qt Creator.
 - Latest version of Qt 6.2 (or above versions such as 6.3) along with Qt Multimedia.
 - CMake 3.20 or later.
-- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), libGL (for Linux), Ninja and so on.
+- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), Ninja and so on.
 
 ## Linux
-1. Install required development package (Currently there is only one, i.e. [TagLib](https://taglib.org/)) in your system.
+1. Install those packages required by Qt (e.g. libOpenGL) and Qt Multimedia (e.g. libGStreamer).
+2. Install the project's required development package (currently there is only one, i.e. [TagLib](https://taglib.org/)) in your system.
    - For Red Hat distros (RHEL, CentOS, Fedora, etc.), it may be done by `sudo dnf install taglib-devel`.
    - For Debian distros (Debian, Ubuntu, etc.), it may be done by `sudo apt install libtag1-dev`.
-2. Use Qt Creator to open the root `CMakeLists.txt`,
+3. Use Qt Creator to open the root `CMakeLists.txt`,
 then configure the project with Qt 6.2 or above.
    - If you are using Conan plugin in Qt Creator, you may turn off the plugin or remove the "Conan install" build step in "Projects" tab. Conan is not intended to be used in Linux.
 3. Build.
