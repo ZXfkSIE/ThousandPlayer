@@ -9,6 +9,8 @@
 ---
 -->
 
+[![ubuntu-latest](https://github.com/ZXfkSIE/ThousandPlayer/actions/workflows/ubuntu-latest.yml/badge.svg)](https://github.com/ZXfkSIE/ThousandPlayer/actions/workflows/ubuntu-latest.yml)
+
 # ThousandPlayer
 A Qt6-based open-source audio player developed from scratch. It is a tribute to [TTPlayer (千千静听)](https://zh.wikipedia.org/wiki/千千音乐播放器),
 one of the most popular local music players for Microsoft Windows in China during 2000s.
