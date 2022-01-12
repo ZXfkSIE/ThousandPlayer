@@ -8,6 +8,7 @@
 
 ---
 -->
+
 # ThousandPlayer
 A Qt6-based open-source audio player developed from scratch. It is a tribute to [TTPlayer (千千静听)](https://zh.wikipedia.org/wiki/千千音乐播放器),
 one of the most popular local music players for Microsoft Windows in China during 2000s.
@@ -44,7 +45,7 @@ but already has fundamental functions that a local audio player should have. Fee
 - CMake-based automatic compilation.
 
 ## Planned features
-- `.lrc` lyrics file generator.
+- `.lrc` lyrics file maker.
 - Audio format converting.
 - Music tag editor.
 - Audio description customization.
@@ -54,7 +55,7 @@ but already has fundamental functions that a local audio player should have. Fee
 
 ## Serious bugs caused by other libraries
 ### PipeWire 0.3.40, 0.3.42
-- Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441))
+- Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441), fixed by [0.3.43](https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/0.3.43))
 
 ### Qt 6.2.2
 - [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.
