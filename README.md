@@ -72,7 +72,7 @@ Before proceeding with the following OS-specific steps, you have to install
 - Latest version of Qt Creator.
 - Latest version of Qt 6.2 (or above versions such as 6.3) along with Qt Multimedia.
 - CMake 3.20 or later.
-- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), Ninja and so on.
+- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), and so on.
 
 ## Linux
 1. Install those packages required by Qt (e.g. libOpenGL) and Qt Multimedia (e.g. libGStreamer).
