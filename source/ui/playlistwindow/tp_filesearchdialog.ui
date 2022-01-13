@@ -32,7 +32,8 @@
    <string>Find</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">color: white;</string>
+   <string notr="true">color: black;
+background-color: #EEE;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="topMargin">

@@ -19,6 +19,7 @@
 #include <relativevolumeframe.h>
 #include <tpropertymap.h>
 #include <vorbisfile.h>
+#include <wavproperties.h>
 #include <xiphcomment.h>
 
 
@@ -85,6 +86,8 @@ TP::storeInformation( QListWidgetItem *I_item )
         bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
     else if( extension == QString { "alac" } || extension == QString { "aac" } )
         bitDepth = dynamic_cast< TagLib::MP4::Properties * >( fileRef.audioProperties() )->bitsPerSample();
+    else if( extension == QString { "wav" } )
+        bitDepth = dynamic_cast< TagLib::RIFF::WAV::Properties * >( fileRef.audioProperties() )->bitsPerSample();
 
     I_item->setData( TP::role_Duration,     duration );             // set duration
     I_item->setData( TP::role_Bitrate,      bitrate );              // set bitrate

@@ -62,9 +62,9 @@ TP_LyricsWindow::slot_activateWindow()
 
 
 void
-TP_LyricsWindow::slot_changeFont()
+TP_LyricsWindow::slot_refreshFont()
 {
-    lyricsViewer->changeFont( TP::config().getLyricsFont() );
+    lyricsViewer->refreshFont();
 }
 
 // *****************************************************************
@@ -145,5 +145,5 @@ TP_LyricsWindow::initializeUI()
     lyricsViewer->readLrcFile( {} );
     ui->page_LyricsViewer->layout()->addWidget( lyricsViewer );
     ui->lyricsStackedWidget->setCurrentWidget( ui->page_LyricsViewer );
-    slot_changeFont();
+    slot_refreshFont();
 }

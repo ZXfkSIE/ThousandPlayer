@@ -37,6 +37,7 @@ private slots:
     void on_pushButton_ChangePlaylistFont_clicked ();
 
     void on_pushButton_ChangeLyricsFont_clicked();
+    void on_spinBox_JumpingTimeOffset_valueChanged( int I_ms );
 
     void on_pushButton_GPL_clicked ();
     void on_pushButton_Credits_clicked ();

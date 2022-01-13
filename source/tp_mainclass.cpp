@@ -1139,9 +1139,9 @@ TP_MainClass::initializeConnection()
     connect( configWindow,      &TP_ConfigWindow::signal_audioInfoLabelFontChanged,
              mainWindow,        &TP_MainWindow::slot_changeFontOfAudioInfoLabel );
     connect( configWindow,      &TP_ConfigWindow::signal_playlistFontChanged,
-             playlistWindow,    &TP_PlaylistWindow::slot_changeFont );
+             playlistWindow,    &TP_PlaylistWindow::slot_refreshFont );
     connect( configWindow,      &TP_ConfigWindow::signal_lyricsFontChanged,
-             lyricsWindow,      &TP_LyricsWindow::slot_changeFont );
+             lyricsWindow,      &TP_LyricsWindow::slot_refreshFont );
 
     // Signals from FileListWidgets through PlaylistWindow
     connect( playlistWindow,    &TP_PlaylistWindow::signal_currentItemRemoved,

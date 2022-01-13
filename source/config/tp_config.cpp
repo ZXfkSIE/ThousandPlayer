@@ -59,6 +59,9 @@ TP_Config::TP_Config( QObject *parent ) :
     lyricsFont = config
             .value( key_LYRICSWINDOW_lyricsFont, defaultFont )
             .value< QFont >();
+    jumpingTimeOffset_ms = config
+            .value( key_LYRICSWINDOW_jumpingTimeOffset_ms, 0 )
+            .toInt();
     config.endGroup();
 
     config.beginGroup( group_PLAYBACK );
@@ -104,6 +107,7 @@ TP_Config::~TP_Config()
     config.setValue( key_LYRICSWINDOW_lyricsWindowGeometry, lyricsWindowGeometry );
     config.setValue( key_LYRICSWINDOW_isLyricsWindowShown, b_isLyricsWindowShown );
     config.setValue( key_LYRICSWINDOW_lyricsFont, lyricsFont );
+    config.setValue( key_LYRICSWINDOW_jumpingTimeOffset_ms, jumpingTimeOffset_ms );
     config.endGroup();
 
     config.beginGroup( group_PLAYBACK );
@@ -117,7 +121,8 @@ TP_Config::~TP_Config()
     config.sync();
 }
 
-// ==================== UI group ====================
+// ==================== MAINWINDOW group ====================
+
 void
 TP_Config::setMainWindowGeometry( const QRect &input )
 {
@@ -165,6 +170,8 @@ TP_Config::getAudioInfoScrollingInterval () const
 {
     return audioInfoScrollingInterval_sec;
 }
+
+// ==================== PLAYLISTWINDOW group ====================
 
 void
 TP_Config::setPlaylistWindowGeometry( const QRect &input )
@@ -214,7 +221,58 @@ TP_Config::getLastOpenedDirectory () const
     return lastOpenedDirectory;
 }
 
+// ==================== LYRICSWINDOW group ====================
+
+void
+TP_Config::setLyricsWindowGeometry ( const QRect &input )
+{
+    lyricsWindowGeometry = input;
+}
+
+const QRect &
+TP_Config::getLyricsWindowGeometry () const
+{
+    return lyricsWindowGeometry;
+}
+
+void
+TP_Config::setLyricsWindowShown ( const bool input )
+{
+    b_isLyricsWindowShown = input;
+}
+
+bool
+TP_Config::isLyricsWindowShown () const
+{
+    return b_isLyricsWindowShown;
+}
+
+void
+TP_Config::setLyricsFont ( const QFont &input )
+{
+    lyricsFont = input;
+}
+
+const QFont &
+TP_Config::getLyricsFont () const
+{
+    return lyricsFont;
+}
+
+void
+TP_Config::setJumpingTimeOffset_ms ( const int input )
+{
+    jumpingTimeOffset_ms = input;
+}
+
+int
+TP_Config::getJumpingTimeOffset_ms () const
+{
+    return jumpingTimeOffset_ms;
+}
+
 // ==================== PLAYBACK group ====================
+
 void
 TP_Config::setVolume( const int input )
 {
@@ -273,40 +331,4 @@ TP::PlayMode
 TP_Config::getPlayMode() const
 {
     return playMode;
-}
-
-void
-TP_Config::setLyricsWindowGeometry ( const QRect &input )
-{
-    lyricsWindowGeometry = input;
-}
-
-const QRect &
-TP_Config::getLyricsWindowGeometry () const
-{
-    return lyricsWindowGeometry;
-}
-
-void
-TP_Config::setLyricsWindowShown ( const bool input )
-{
-    b_isLyricsWindowShown = input;
-}
-
-bool
-TP_Config::isLyricsWindowShown () const
-{
-    return b_isLyricsWindowShown;
-}
-
-void
-TP_Config::setLyricsFont ( const QFont &input )
-{
-    lyricsFont = input;
-}
-
-const QFont &
-TP_Config::getLyricsFont () const
-{
-    return lyricsFont;
 }

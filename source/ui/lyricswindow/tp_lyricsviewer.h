@@ -12,7 +12,7 @@ public:
 
     void updatePosition( qint64 I_ms );
     void readLrcFile( const QString &I_qstr_Path );
-    void changeFont( const QFont &I_font );
+    void refreshFont();
 
 signals:
     void signal_lyricsDoubleClicked( qint64 ms );

@@ -18,6 +18,20 @@ TP_PlaylistsWidget::TP_PlaylistsWidget( QWidget *parent ) :
     initializeMenu();
 }
 
+void
+TP_PlaylistsWidget::refreshFont()
+{
+    setFont( TP::config().getPlaylistFont() );
+
+    for( unsigned i {}; i < count(); i++ )
+    {
+        if( item( i ) == currentVisibleItem )
+            setItemBold( item( i ) );
+        else
+            unsetItemBold( item( i ) );
+    }
+}
+
 
 QListWidgetItem *
 TP_PlaylistsWidget::addNewList( const QString &I_listName )
@@ -153,16 +167,10 @@ TP_PlaylistsWidget::switchVisibleFileList( QListWidgetItem *I_item )
         return;
 
     if( currentVisibleItem )
-    {
-        currentVisibleItem->setFont( TP::config().getPlaylistFont() );
-        currentVisibleItem->setBackground( QColor { "#777" } );
-    }
+        unsetItemBold( currentVisibleItem );
 
     currentVisibleItem = I_item;
-    auto font { TP::config().getPlaylistFont() };
-    font.setBold( true );
-    currentVisibleItem->setFont( font );
-    currentVisibleItem->setBackground( QColor { "#444" } );
+    setItemBold( currentVisibleItem );
 
     emit signal_fileListSwitched(
                 reinterpret_cast< TP_FileListWidget * >(
@@ -170,4 +178,21 @@ TP_PlaylistsWidget::switchVisibleFileList( QListWidgetItem *I_item )
                     )
                 );
 
+}
+
+void
+TP_PlaylistsWidget::setItemBold( QListWidgetItem *I_item )
+{
+    auto font { TP::config().getPlaylistFont() };
+    font.setBold( true );
+    I_item->setFont( font );
+    I_item->setBackground( QColor { "#444" } );
+}
+
+
+void
+TP_PlaylistsWidget::unsetItemBold( QListWidgetItem *I_item )
+{
+    I_item->setFont( TP::config().getPlaylistFont() );
+    I_item->setBackground( QColor { "#777" } );
 }
