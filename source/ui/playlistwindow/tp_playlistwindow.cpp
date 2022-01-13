@@ -41,7 +41,7 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     initializeConnection();
     initializePlaylist();
 
-    slot_changeFont();
+    slot_refreshFont();
 }
 
 
@@ -140,13 +140,14 @@ TP_PlaylistWindow::slot_activateWindow()
 
 
 void
-TP_PlaylistWindow::slot_changeFont()
+TP_PlaylistWindow::slot_refreshFont()
 {
     for( unsigned i {}; i < ui->stackedWidget_FileList->count(); i++ )
-        ui->stackedWidget_FileList->widget( i )
-                ->setFont( TP::config().getPlaylistFont() );
+    {
+        static_cast< TP_FileListWidget * >( ui->stackedWidget_FileList->widget( i ) )->refreshFont();
+    }
 
-    ui->playlistsWidget         ->setFont( TP::config().getPlaylistFont() );
+    ui->playlistsWidget->refreshFont();
 }
 
 // *****************************************************************

@@ -15,6 +15,8 @@ public:
 
     QListWidgetItem * addNewList( const QString &I_listName );
 
+    void refreshFont();
+
 signals:
     void signal_fileListRemoved( TP_FileListWidget *I_fileListWidget );
     void signal_fileListCreated( TP_FileListWidget *I_fileListWidget );
@@ -32,6 +34,8 @@ private:
     void initializeMenu();
 
     void switchVisibleFileList( QListWidgetItem *I_item );
+    void setItemBold( QListWidgetItem *I_item );
+    void unsetItemBold( QListWidgetItem *I_item );
 
     TP_Menu *menu_rightClick;
     QAction *action_remove;

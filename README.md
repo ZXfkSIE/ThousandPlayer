@@ -37,6 +37,7 @@ but already has fundamental functions that a local audio player should have. Fee
   - WAV (`.wav`)
   - For format support details about ReplayGain and cover art reading, see [here](SupportInfo.md).
 - `.lrc` lyrics file viewer.
+  - In order to view lyrics, a `.lrc` file must be put in the same directory of the corresponding music file. Also, their filenames must be identical except for the extension part (for example, the lyrics file to be viewed while playing `song.flac` must be named `song.lrc`).
 - A horizontally expandable main window. No need to worry about long music informations.
 - A cover viewer for viewing album covers.
 - Rich finding and sorting functions.
@@ -57,7 +58,7 @@ but already has fundamental functions that a local audio player should have. Fee
 
 ## Serious bugs caused by other libraries
 ### PipeWire 0.3.40, 0.3.42
-- Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441), fixed by [0.3.43](https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/0.3.43))
+- Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441), largely fixed by [version 0.3.43](https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/0.3.43))
 
 ### Qt 6.2.2
 - [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.

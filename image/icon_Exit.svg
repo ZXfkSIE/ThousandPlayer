@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg2"
+   sodipodi:docname="icon_Exit.svg"
+   viewBox="0 0 84.600002 84.600002"
+   sodipodi:version="0.32"
+   version="1.0"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   width="84.599998"
+   height="84.599998"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     guidetolerance="10"
+     pagecolor="#000000"
+     gridtolerance="10000"
+     inkscape:window-height="1039"
+     inkscape:zoom="7.9195959"
+     objecttolerance="10"
+     borderopacity="1.0"
+     inkscape:current-layer="layer1"
+     inkscape:cx="-19.382302"
+     inkscape:cy="48.613592"
+     inkscape:window-y="0"
+     inkscape:window-x="3840"
+     inkscape:window-width="1920"
+     inkscape:pageopacity="0"
+     inkscape:document-units="px"
+     inkscape:pagecheckerboard="true"
+     showgrid="false"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-153.29,-132.79)">
+    <path
+       style="fill:#ffffff;stroke-width:0.126269"
+       d="M 160.29736,210.38191 153.29,203.37382 167.43172,189.23191 181.57345,175.09 167.43172,160.94809 153.29,146.80618 l 7.00736,-7.00809 7.00735,-7.00809 14.14279,14.14213 14.14278,14.14212 14.14187,-14.14205 14.14187,-14.14205 7.00799,7.00787 7.00799,7.00788 -14.14186,14.14205 -14.14187,14.14205 14.14187,14.14206 14.14186,14.14205 -7.00799,7.00787 -7.00799,7.00787 L 209.73215,203.2478 195.59028,189.10575 181.4475,203.24788 167.30471,217.39 Z"
+       id="path176"
+       inkscape:label="path176" />
+  </g>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>X icon</dc:title>
+        <dc:date>2008-04-04T03:28:52</dc:date>
+        <dc:description>Game Design for pyweek#6</dc:description>
+        <dc:source>https://openclipart.org/detail/16155/x-icon-by-milker-16155</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>milker</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>game</rdf:li>
+            <rdf:li>icon</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

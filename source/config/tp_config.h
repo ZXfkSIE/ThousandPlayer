@@ -44,6 +44,8 @@ public:
     bool            isLyricsWindowShown   () const;
     void            setLyricsFont ( const QFont &input );
     const QFont &   getLyricsFont () const;
+    void            setJumpingTimeOffset_ms ( const int input );
+    int             getJumpingTimeOffset_ms () const;
 
     // ======================= PLAYBACK group =======================
     void                setVolume ( const int input );
@@ -94,6 +96,8 @@ private:
             bool        b_isLyricsWindowShown;
     const   QString     key_LYRICSWINDOW_lyricsFont                 { "lyricsFont" };
             QFont       lyricsFont;
+    const   QString     key_LYRICSWINDOW_jumpingTimeOffset_ms       { "jumpingTimeOffset" };
+            int         jumpingTimeOffset_ms;
 
     // ************************************************************************************
     const   QString             group_PLAYBACK                      { "PLAYBACK" };

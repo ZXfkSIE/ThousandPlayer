@@ -78,7 +78,7 @@ TP_AudioInfoLabel::paintEvent ( QPaintEvent *event )
             painter.drawText( x, y + height() + offsetY, vec_Qstr[ nextIdx ] );
 
             // if the lower text has been moved to the initial position
-            if( y + height() == initialMiddleY )
+            if( y + height() <= initialMiddleY )
             {
                 b_isScrolling = false;
                 timer->start( TP::config().getAudioInfoScrollingInterval() * 1000 );

@@ -53,6 +53,18 @@ TP_FileListWidget::unsetCurrentItemBold()
 }
 
 
+void
+TP_FileListWidget::refreshFont()
+{
+    setFont( TP::config().getPlaylistFont() );
+
+    for( unsigned i {}; i < count(); i++ )
+        item( i )->setFont( TP::config().getPlaylistFont() );
+
+    setCurrentItemBold();
+}
+
+
 QListWidgetItem *
 TP_FileListWidget::getCurrentItem()
 {
@@ -232,7 +244,7 @@ TP_FileListWidget::refreshShowingTitle( int I_minIdx, int I_maxIdx )
         I_minIdx++;
 
     for ( int i { I_minIdx }; i <= I_maxIdx; i++ )
-        item(i)->setText(
+        item( i )->setText(
                     QString("%1. ").arg( i + 1 )
                     +
                     item( i )->data( TP::role_Description ).toString() );

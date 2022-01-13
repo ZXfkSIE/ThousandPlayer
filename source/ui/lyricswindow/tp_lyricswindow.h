@@ -35,7 +35,7 @@ signals:
 public slots:
     void slot_activateWindow();
 
-    void slot_changeFont();
+    void slot_refreshFont();
 
 private slots:
     void slot_titleBarMoved( const QRect &I_geometry );

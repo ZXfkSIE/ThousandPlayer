@@ -53,7 +53,7 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
         addItem( tr( "No lyrics" ) );
         item( 0 )->setData( TP::role_TimeStampInMs, -1 );
         item( 0 )->setTextAlignment( Qt::AlignCenter );
-        changeFont( TP::config().getLyricsFont() );
+        refreshFont();
         return;
     }
 
@@ -159,7 +159,7 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
         if( b_hasLrcFile )
         {
             sortByTimestamp();
-            changeFont( TP::config().getLyricsFont() );
+            refreshFont();
             setSelectionMode( QAbstractItemView::SingleSelection );
             setFocusPolicy( Qt::StrongFocus );
             return;
@@ -170,18 +170,21 @@ TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
     addItem( tr( "No lyrics" ) );
     item( 0 )->setData( TP::role_TimeStampInMs, -1 );
     item( 0 )->setTextAlignment( Qt::AlignCenter );
-    changeFont( TP::config().getLyricsFont() );
+    refreshFont();
     return;
 }
 
 
 void
-TP_LyricsViewer::changeFont( const QFont &I_font )
+TP_LyricsViewer::refreshFont()
 {
-    setFont( I_font );
-    auto height { I_font.pointSize() << 1 };   // I_font.pointSize() * 2
+    setFont( TP::config().getLyricsFont() );
+    auto height { font().pointSize() << 1 };   // I_font.pointSize() * 2
     for( unsigned i {}; i < count(); i++ )
+    {
+        item( i )->setFont( TP::config().getLyricsFont() );
         item( i )->setSizeHint( { 0, height } );
+    }
 }
 
 // *****************************************************************
@@ -201,9 +204,13 @@ TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
     {
         auto *clickedItem = itemAt ( event->pos() );
         if( clickedItem )
-            emit signal_lyricsDoubleClicked(
-                    clickedItem->data( TP::role_TimeStampInMs ).value< qint64 >()
-                    );
+        {
+            auto position { clickedItem->data( TP::role_TimeStampInMs ).value< qint64 >() };
+            position += TP::config().getJumpingTimeOffset_ms();
+            if( position < 0 )
+                position = 0;
+            emit signal_lyricsDoubleClicked( position );
+        }
     }
     else
         event->ignore();

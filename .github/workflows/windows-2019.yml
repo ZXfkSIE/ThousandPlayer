@@ -1,0 +1,63 @@
+name: windows-2019
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.yml'
+      - '**.cpp'
+      - '**.h'
+      - '**CMakeLists.txt'
+      - '**.ts'
+    
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.yml'
+      - '**.cpp'
+      - '**.h'
+      - '**CMakeLists.txt'
+      - '**.ts'
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+        
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+      
+      - name: Install Qt
+        env:
+          TP_QT_VERSION: 6.2.2
+          TP_AQT_VERSION: '>=2.0.5'
+        uses: jurplel/install-qt-action@v2.14.0
+        with:
+          version: ${{ env.TP_QT_VERSION }}
+          modules: qtmultimedia
+          aqtversion: ${{ env.TP_AQT_VERSION }}
+        
+      - name: Checkout
+        uses: actions/checkout@v2
+    
+      - name: Setup path for MSVC's cl.exe
+        uses: ilammy/msvc-dev-cmd@v1
+          
+      - name: Conan installation
+        run: |
+          mkdir build
+          conan install --install-folder build `
+          -s "build_type=Debug" "--build=missing" `
+          conanfile.txt --profile conan_debug_windows_x64.txt
+      
+      - name: CMake configuration
+        run: |
+          cmake -S . -B build -G Ninja `
+          -D MSVC_TOOLSET_VERSION=142 -D CMAKE_C_COMPILER="cl.exe" -D CMAKE_CXX_COMPILER="cl.exe" `
+          -D CMAKE_BUILD_TYPE=Debug -D CMAKE_PREFIX_PATH=${{ env.Qt6_DIR }}
+          
+      - name: Build
+        run: cmake --build build --target all

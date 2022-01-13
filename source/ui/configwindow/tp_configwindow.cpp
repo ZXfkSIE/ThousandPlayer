@@ -175,6 +175,13 @@ TP_ConfigWindow::on_pushButton_ChangeLyricsFont_clicked()
     }
 }
 
+
+void
+TP_ConfigWindow::on_spinBox_JumpingTimeOffset_valueChanged( int I_ms )
+{
+    TP::config().setJumpingTimeOffset_ms( I_ms );
+}
+
 // *****************************************************************
 // private
 // *****************************************************************

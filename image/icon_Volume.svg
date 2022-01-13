@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="8.2153101mm"
+   height="11.369201mm"
+   viewBox="0 0 8.2153101 11.369201"
+   version="1.1"
+   id="svg908"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="icon_Volume.svg">
+  <defs
+     id="defs902" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.2"
+     inkscape:cx="22.122098"
+     inkscape:cy="25.902733"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="976"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata905">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-104.74949,-100.14874)">
+    <path
+       d="m 112.63936,100.18059 a 0.3175,0.3175 0 0 0 -0.19579,0.0794 l -3.38667,2.91041 h -3.36021 c -0.26458,0 -0.48418,0.13229 -0.65087,0.29634 a 0.91810417,0.91810417 0 0 0 -0.29633,0.65087 v 3.46604 c 0,0.26723 0.13229,0.48684 0.29633,0.65352 a 0.91810417,0.91810417 0 0 0 0.65087,0.29634 h 3.36021 l 3.38667,2.91041 a 0.3175,0.3175 0 0 0 0.52123,-0.23812 v -10.7421 a 0.3175,0.3175 0 0 0 -0.32544,-0.31486 z"
+       id="path4"
+       inkscape:label="Volume 0%"
+       style="stroke-width:0.264583;fill:#ffffff" />
+  </g>
+</svg>

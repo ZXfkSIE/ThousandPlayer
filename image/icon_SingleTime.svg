@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="0"
+   sodipodi:docname="icon_SingleTime.svg"
+   viewBox="0 0 152.02985 130.55068"
+   version="1.0"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   width="152.02985"
+   height="130.55067">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview5"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     guidetolerance="10"
+     pagecolor="#000000"
+     gridtolerance="10"
+     inkscape:window-maximized="1"
+     inkscape:zoom="5.12"
+     objecttolerance="10"
+     borderopacity="1"
+     inkscape:current-layer="1"
+     inkscape:cx="78.343382"
+     inkscape:cy="56.765466"
+     inkscape:window-y="-8"
+     inkscape:window-x="1912"
+     inkscape:window-width="1920"
+     showgrid="false"
+     inkscape:pageopacity="0"
+     inkscape:window-height="976"
+     inkscape:document-rotation="0"
+     inkscape:pagecheckerboard="true" />
+  <g
+     id="1"
+     transform="matrix(0.0065968,0,0,0.0065968,0,0.00197904)"
+     style="fill:#ffffff"
+     inkscape:label="1">
+    <path
+       id="2"
+       style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:153.64px;stroke-linecap:round;stroke-linejoin:round"
+       d="m 0,14522 h 14135 v 5267.7 L 23046,9823.2 14135,-0.3 V 5125 H 0 Z" />
+  </g>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Arrow Right Black Outline</dc:title>
+        <dc:date>2010-04-12T20:21:06</dc:date>
+        <dc:description>Arrow Right Black Outline - Flèche droite contour noir - Pfeil Rechts schwarz Umriss - Freccia destra contorno nero</dc:description>
+        <dc:source>https://openclipart.org/detail/46429/arrow-right-black-outline-by-palomaironique</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>palomaironique</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>Pfeil</rdf:li>
+            <rdf:li>Rechts</rdf:li>
+            <rdf:li>Umriss</rdf:li>
+            <rdf:li>arrow</rdf:li>
+            <rdf:li>black</rdf:li>
+            <rdf:li>contorno</rdf:li>
+            <rdf:li>contour</rdf:li>
+            <rdf:li>destra</rdf:li>
+            <rdf:li>droite</rdf:li>
+            <rdf:li>flèche</rdf:li>
+            <rdf:li>nero</rdf:li>
+            <rdf:li>noir</rdf:li>
+            <rdf:li>outline</rdf:li>
+            <rdf:li>reccia</rdf:li>
+            <rdf:li>right</rdf:li>
+            <rdf:li>schwarz</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

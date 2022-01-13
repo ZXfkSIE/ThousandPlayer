@@ -17,6 +17,8 @@ public:
 
     void setCurrentItemBold();
     void unsetCurrentItemBold();
+    void refreshFont();
+
     QListWidgetItem * getCurrentItem();
     QListWidgetItem * getNextItem();
     QListWidgetItem * getPreviousItem();
