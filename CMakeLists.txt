@@ -19,12 +19,12 @@ set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS true)
 
 if(WIN32)
     if(${CMAKE_SYSTEM_VERSION} VERSION_LESS 10.0.17763)
-        message(FATAL_ERROR "[ThousandPlayer] Sorry, Qt 6 only supports Windows 10 1809 (10.0.17763) and above,"
-            " while your OS version is ${CMAKE_SYSTEM_VERSION}.")
+        message(FATAL_ERROR "[ThousandPlayer] Sorry, Qt 6 only supports Windows 10 1809 (10.0.17763) and above, \
+        while you are trying to use SDK version ${CMAKE_SYSTEM_VERSION}.")
     endif()
 
 # In Windows, use Conan to setup 3rd party packages
-    message(STATUS "[ThousandPlayer] Windows build environment detected.")
+    message(STATUS "[ThousandPlayer] Windows build environment detected. The SDK version to be used is ${CMAKE_SYSTEM_VERSION}.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
     message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")

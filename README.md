@@ -8,6 +8,7 @@
 ---
 -->
 
+[![windows-2019](https://github.com/ZXfkSIE/ThousandPlayer/actions/workflows/windows-2019.yml/badge.svg)](https://github.com/ZXfkSIE/ThousandPlayer/actions/workflows/windows-2019.yml)
 [![ubuntu-latest](https://github.com/ZXfkSIE/ThousandPlayer/actions/workflows/ubuntu-latest.yml/badge.svg)](https://github.com/ZXfkSIE/ThousandPlayer/actions/workflows/ubuntu-latest.yml)
 
 # ThousandPlayer
