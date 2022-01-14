@@ -42,7 +42,7 @@ but already has fundamental functions that a local audio player should have. Fee
 - A cover viewer for viewing album covers.
 - Rich finding and sorting functions.
 - Standard ReplayGain support with pre-amplification and default ReplayGain.
-- Customizable fonts of audio infomation label and playlist.
+- Customizable fonts of various widgets.
 - Playlist persistence and multi-playlist support.
 - Multi-threaded file loading.
 - CMake-based automatic compilation.
