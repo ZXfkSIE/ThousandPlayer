@@ -4,8 +4,9 @@ Although contributors should do their best to follow this manual, giving suggest
 
 ## If it is not referencing, do not `const` it
 
-C++ provides a convenient qualifier `const` to protect the modification of an object.
-Unfortunately, too many `const`s will cause chaos in code since most objects will not be modified at all after their initialization.
+C++ provides a convenient qualifier `const` to prevent modification of an object.
+Unfortunately,
+too many `const`s will cause chaos in code since most objects will not be modified at all after their initialization.
 In this project,
 for the sake of readability,
 `const` should only be used for reference types (including references and pointers) since local (stack) objects have little necessity of protection.
@@ -30,7 +31,7 @@ QListWidgetItem const*const item1;
 Borrowed from GNOME projects.
 
 ```cpp
-int
+int         // RETURN ↵
 Class::getValue() const
 {
     // ...
@@ -46,7 +47,7 @@ Class::getValue() const
 void
 Class::changeName( QString I_qstr_Name )
 {
-    qstr_Name = I_qstr_Name;                // "qstr_Name" is a private member
+    qstr_Name = I_qstr_Name;                // "qstr_Name" is a private member inside "Class"
     auto str_name { qstr_name.toStdString() };
     // ...
 }
