@@ -1029,10 +1029,10 @@
            <widget class="QWidget" name="container_JumpingTimeOffset" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_12">
              <property name="topMargin">
-              <number>0</number>
+              <number>3</number>
              </property>
              <property name="bottomMargin">
-              <number>0</number>
+              <number>3</number>
              </property>
              <item>
               <widget class="QLabel" name="label_JumpingTimeOffset">
@@ -1042,7 +1042,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Jumping time offset after double-clicking a line:</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Offset of jumping position&lt;/p&gt;&lt;p&gt;when double-clicking a lyric line:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>

@@ -83,6 +83,7 @@ private slots:
     void on_action_sortByPath_triggered();
     void on_action_sortByFilename_triggered();
     void on_action_sortByDescription_triggered();
+    void on_action_sortByLastModified_triggered();
     void on_action_sortByAlbum_triggered();
     void on_action_sortByArtist_triggered();
     void on_action_sortByTitle_triggered();

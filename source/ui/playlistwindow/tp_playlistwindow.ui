@@ -512,7 +512,7 @@ background-color: #777;</string>
   </action>
   <action name="action_sortByDuration">
    <property name="text">
-    <string>By &amp;duration</string>
+    <string>By du&amp;ration</string>
    </property>
   </action>
   <action name="action_sortByPath">
@@ -561,6 +561,11 @@ background-color: #777;</string>
   <action name="action_sortByArtist">
    <property name="text">
     <string>By &amp;artist</string>
+   </property>
+  </action>
+  <action name="action_sortByLastModified">
+   <property name="text">
+    <string>By &amp;last modified time</string>
    </property>
   </action>
  </widget>

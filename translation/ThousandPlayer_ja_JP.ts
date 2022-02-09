@@ -75,16 +75,12 @@
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="412"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation>秒</translation>
     </message>
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1045"/>
-        <source>Jumping time offset after double-clicking a line:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> s</source>
-        <translation type="vanished"> 秒</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Offset of jumping position&lt;/p&gt;&lt;p&gt;when double-clicking a lyric line:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;歌詞の行でのダブルクリックによる&lt;/p&gt;&lt;p&gt;飛ぶ位置のオフセット：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="474"/>
@@ -127,9 +123,13 @@
         <translation>既定のゲイン値：</translation>
     </message>
     <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When double-clicking a lyric line,&lt;/p&gt;&lt;p&gt;jump to the corresponding position by this offset:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When double-clicking a lyric line,&lt;/p&gt;&lt;p&gt;jump to the corresponding position by this offset:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1088"/>
         <source>ms</source>
-        <translation type="unfinished"></translation>
+        <translation>ミリ秒</translation>
     </message>
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1203"/>
@@ -197,36 +197,36 @@
 <context>
     <name>TP_FileListWidget</name>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="318"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="366"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="699"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="319"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="367"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="730"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="319"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="320"/>
         <source>Are you really want to delete&lt;br&gt;%1&lt;br&gt;from the &lt;b&gt;DISK&lt;/b&gt;?&lt;br&gt;NOTE: remote URLs cannot be deleted.&lt;br&gt;They will only be removed from the list.</source>
         <translation>本当に&lt;br&gt;%1&lt;br&gt;を&lt;b&gt;ディスク&lt;/b&gt;から削除しますか？&lt;br&gt;注：リモートURLは削除できません。&lt;br&gt;リストから外されるだけとなります。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="326"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="327"/>
         <source>these %1 items</source>
         <translation>これら %1 個のファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="367"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="368"/>
         <source>Failed to delete %1 items.
 Anyway, they have been removed from the list.</source>
         <translation>%1 個のファイルの削除に失敗しましたが、
 リストからは外されました。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="700"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="731"/>
         <source>No result found.</source>
         <translation>結果は見つかりませんでした。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="858"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="889"/>
         <source>&amp;Remove</source>
         <translation>外す (&amp;R)</translation>
     </message>
@@ -540,8 +540,13 @@ The program will quit now.</source>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="515"/>
-        <source>By &amp;duration</source>
-        <translation>再生時間で (&amp;D)</translation>
+        <source>By du&amp;ration</source>
+        <translation>再生時間で (&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="568"/>
+        <source>By &amp;last modified time</source>
+        <translation>最終更新時刻で (&amp;L)</translation>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="520"/>
@@ -599,69 +604,69 @@ The program will quit now.</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="557"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="573"/>
         <source>List </source>
         <translation>リスト </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="670"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="687"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="698"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="711"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="686"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="703"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="714"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="727"/>
         <source>Playlist Reading Error</source>
         <translation>プレイリスト読み込みエラー</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="671"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="688"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="699"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="712"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="687"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="704"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="715"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="728"/>
         <source>Failed to read playlists from %1.
 </source>
         <translation>%1 からプレイリストを読み込めませんでした。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="673"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="690"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="702"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="714"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="689"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="706"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="718"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="730"/>
         <source>Default playlist will be created instead.</source>
         <translation>既定のプレイリストを生成します。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="689"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="705"/>
         <source>Empty QJsonDocument object returned.
 </source>
         <translation>QJsonDocumentオブジェクトは空いています。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="701"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="717"/>
         <source> (offset: %1)
 </source>
         <translation> （オフセット値：%1）
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="713"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="729"/>
         <source>No valid playlist found.
 </source>
         <translation>有効なプレイリストを読み込めませんでした。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="722"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="738"/>
         <source>Default</source>
         <translation>デフォルト</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="774"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="790"/>
         <source>Playlist Writing Error</source>
         <translation>プレイリスト書き込みエラー</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="775"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="791"/>
         <source>Failed to write playlists to %1.
 </source>
         <translation>%1 にプレイリストを書き込めませんでした。
@@ -673,32 +678,32 @@ The program will quit now.</source>
         <translation>全対応フォーマット</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="241"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="249"/>
         <source>FLAC files</source>
         <translation>FLACファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="242"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="250"/>
         <source>ALAC files</source>
         <translation>ALACファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="243"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="251"/>
         <source>AAC files</source>
         <translation>AACファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="244"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="252"/>
         <source>MP3 files</source>
         <translation>MP3ファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="245"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="253"/>
         <source>WAV files</source>
         <translation>WAVファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="246"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="255"/>
         <source>Vorbis files</source>
         <translation>Vorbisファイル</translation>
     </message>

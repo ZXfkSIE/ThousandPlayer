@@ -21,15 +21,15 @@
 #include <QThreadPool>
 
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
-    QWidget                 { parent }
-  , ui                      { new Ui::TP_PlaylistWindow }
-  , progressDialog          { new TP_ProgressDialog {
-                                tr( "Reading files..." ),   // const QString &labelText
-                                tr( "Abort" ),              // const QString &cancelButtonText
-                                0,                          // int minimum
-                                0,                          // int maximum (will be set in the loop)
-                                this } }                    // QWidget *parent = nullptr
-  , b_isDescending          { false }
+    QWidget         { parent }
+  , ui              { new Ui::TP_PlaylistWindow }
+  , progressDialog  { new TP_ProgressDialog {
+                        tr( "Reading files..." ),   // const QString &labelText
+                        tr( "Abort" ),              // const QString &cancelButtonText
+                        0,                          // int minimum
+                        0,                          // int maximum (will be set in the loop)
+                        this } }                    // QWidget *parent = nullptr
+  , b_isDescending  { false }
 {
     ui->setupUi( this );
     // Qt::Tool is used for getting rid of the window tab in taskbar
@@ -78,7 +78,7 @@ TP_PlaylistWindow::unsetCurrentItemBold()
 void
 TP_PlaylistWindow::refreshItemShowingTitle( QListWidgetItem *I_item )
 {
-    int index {
+    auto index {
         currentFileListWidget()->indexFromItem( TP::currentItem() ).row()
     };
     currentFileListWidget()->refreshShowingTitle( index, index );
@@ -237,13 +237,23 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
 
                     // const QString &filter = QString()
 
-                    tr( "All supported formats" ) + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" } +
-                    tr( "FLAC files" ) + QString{ " (*.flac);;" } +
-                    tr( "ALAC files" ) + QString{ " (*.alac);;" } +
-                    tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" } +
-                    tr( "MP3 files" ) + QString{ " (*.mp3);;" } +
-                    tr( "WAV files" ) + QString{ " (*.wav);;" } +
-                    tr( "Vorbis files" ) + QString{ " (*.ogg)" }
+                    tr( "All supported formats" )
+#ifdef Q_OS_WIN
+// Currently, QtMultimedia does not support Ogg Vorbis files under Windows.
+// See https://bugreports.qt.io/browse/QTBUG-99278
+
+                    + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav);;" }
+#else
+                    + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" }
+#endif
+                    + tr( "FLAC files" ) + QString{ " (*.flac);;" }
+                    + tr( "ALAC files" ) + QString{ " (*.alac);;" }
+                    + tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" }
+                    + tr( "MP3 files" ) + QString{ " (*.mp3);;" }
+                    + tr( "WAV files" ) + QString{ " (*.wav);;" }
+#ifndef Q_OS_WIN
+                    + tr( "Vorbis files" ) + QString{ " (*.ogg)" }
+#endif
                     )};
 
 
@@ -368,6 +378,11 @@ TP_PlaylistWindow::on_action_sortByDescription_triggered()
     currentFileListWidget()->sortByData( TP::role_Description, b_isDescending );
 }
 
+void
+TP_PlaylistWindow::on_action_sortByLastModified_triggered()
+{
+    currentFileListWidget()->sortByData( TP::role_LastModified, b_isDescending );
+}
 
 void TP_PlaylistWindow::on_action_sortByAlbum_triggered()
 {
@@ -491,6 +506,7 @@ TP_PlaylistWindow::initializeMenu()
     menu_Sort->addAction( ui->action_sortByPath );
     menu_Sort->addAction( ui->action_sortByFilename );
     menu_Sort->addAction( ui->action_sortByDescription );
+    menu_Sort->addAction( ui->action_sortByLastModified );
     menu_Sort->addSeparator();
     menu_Sort->addAction( ui->action_sortByAlbum );
     menu_Sort->addAction( ui->action_sortByArtist );
@@ -830,3 +846,4 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
     currentFileListWidget()->refreshShowingTitle( originalCount - 1, count - 1 );
     progressDialog->cancel();
 }
+

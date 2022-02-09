@@ -75,16 +75,12 @@
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="412"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation>秒</translation>
     </message>
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1045"/>
-        <source>Jumping time offset after double-clicking a line:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> s</source>
-        <translation type="vanished"> 秒</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Offset of jumping position&lt;/p&gt;&lt;p&gt;when double-clicking a lyric line:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;雙擊某行歌詞時，&lt;/p&gt;&lt;p&gt;對跳轉位置加上此偏移時間：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="474"/>
@@ -127,9 +123,13 @@
         <translation>預設增益：</translation>
     </message>
     <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When double-clicking a lyric line,&lt;/p&gt;&lt;p&gt;jump to the corresponding position by this offset:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;雙擊某行歌詞跳轉播放位置時，&lt;/p&gt;&lt;p&gt;將該位置時間偏移量&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1088"/>
         <source>ms</source>
-        <translation type="unfinished"></translation>
+        <translation>毫秒</translation>
     </message>
     <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1203"/>
@@ -197,36 +197,36 @@
 <context>
     <name>TP_FileListWidget</name>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="318"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="366"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="699"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="319"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="367"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="730"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="319"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="320"/>
         <source>Are you really want to delete&lt;br&gt;%1&lt;br&gt;from the &lt;b&gt;DISK&lt;/b&gt;?&lt;br&gt;NOTE: remote URLs cannot be deleted.&lt;br&gt;They will only be removed from the list.</source>
         <translation>你真的要從&lt;b&gt;磁碟&lt;/b&gt;刪除&lt;br&gt;%1 嗎？&lt;br&gt;注意：遠端網址指向的檔案無法被刪除，&lt;br&gt;只會從列表中被移除。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="326"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="327"/>
         <source>these %1 items</source>
-        <translation>%1 個项目</translation>
+        <translation>%1 個項目</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="367"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="368"/>
         <source>Failed to delete %1 items.
 Anyway, they have been removed from the list.</source>
-        <translation>%1 個项目無法被刪除，
+        <translation>%1 個項目無法被刪除，
 但已經從列表中被移除。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="700"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="731"/>
         <source>No result found.</source>
-        <translation>無法找到指定项目。</translation>
+        <translation>無法找到指定項目。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="858"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="889"/>
         <source>&amp;Remove</source>
         <translation>移除 (&amp;R)</translation>
     </message>
@@ -497,22 +497,22 @@ The program will quit now.</source>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="475"/>
         <source>&amp;Selected items</source>
-        <translation>選中的项目 (&amp;S)</translation>
+        <translation>選中的項目 (&amp;S)</translation>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="480"/>
         <source>&amp;Unselected items</source>
-        <translation>未選中的项目 (&amp;U)</translation>
+        <translation>未選中的項目 (&amp;U)</translation>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="485"/>
         <source>&amp;Inaccessible items</source>
-        <translation>無法訪問的项目 (&amp;I)</translation>
+        <translation>無法訪問的項目 (&amp;I)</translation>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="490"/>
         <source>&amp;All items</source>
-        <translation>所有项目 (&amp;A)</translation>
+        <translation>所有項目 (&amp;A)</translation>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="495"/>
@@ -536,8 +536,13 @@ The program will quit now.</source>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="515"/>
-        <source>By &amp;duration</source>
-        <translation>按照時長 (&amp;D)</translation>
+        <source>By du&amp;ration</source>
+        <translation>按照時長 (&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="568"/>
+        <source>By &amp;last modified time</source>
+        <translation>按照最後修改時間 (&amp;L)</translation>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.ui" line="520"/>
@@ -595,69 +600,69 @@ The program will quit now.</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="557"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="573"/>
         <source>List </source>
         <translation>列表 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="670"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="687"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="698"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="711"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="686"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="703"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="714"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="727"/>
         <source>Playlist Reading Error</source>
         <translation>播放列表讀取錯誤</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="671"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="688"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="699"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="712"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="687"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="704"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="715"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="728"/>
         <source>Failed to read playlists from %1.
 </source>
         <translation>無法從 %1 讀取播放列表。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="673"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="690"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="702"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="714"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="689"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="706"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="718"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="730"/>
         <source>Default playlist will be created instead.</source>
         <translation>將生成預設的播放列表。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="689"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="705"/>
         <source>Empty QJsonDocument object returned.
 </source>
         <translation>QJsonDocument物件為空。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="701"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="717"/>
         <source> (offset: %1)
 </source>
         <translation> （偏移值：%1）
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="713"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="729"/>
         <source>No valid playlist found.
 </source>
         <translation>未讀取到有效的播放列表。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="722"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="738"/>
         <source>Default</source>
         <translation>預設</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="774"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="790"/>
         <source>Playlist Writing Error</source>
         <translation>播放列表寫入錯誤</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="775"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="791"/>
         <source>Failed to write playlists to %1.
 </source>
         <translation>無法向 %1 寫入播放列表。
@@ -669,32 +674,32 @@ The program will quit now.</source>
         <translation>支援的所有格式</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="241"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="249"/>
         <source>FLAC files</source>
         <translation>FLAC檔案</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="242"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="250"/>
         <source>ALAC files</source>
         <translation>ALAC檔案</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="243"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="251"/>
         <source>AAC files</source>
         <translation>AAC檔案</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="244"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="252"/>
         <source>MP3 files</source>
         <translation>MP3檔案</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="245"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="253"/>
         <source>WAV files</source>
         <translation>WAV檔案</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="246"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="255"/>
         <source>Vorbis files</source>
         <translation>Vorbis檔案</translation>
     </message>
