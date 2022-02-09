@@ -33,7 +33,7 @@ but already has fundamental functions that a local audio player should have. Fee
   - ALAC (`.alac`)
   - FLAC (`.flac`)
   - MP3 (`.mp3`)
-  - Vorbis (`.ogg`)
+  - Vorbis (`.ogg`) (only supported in Linux. see [QTBUG-99278](https://bugreports.qt.io/browse/QTBUG-99278))
   - WAV (`.wav`)
   - For format support details about ReplayGain and cover art reading, see [here](SupportInfo.md).
 - `.lrc` lyrics file viewer.
