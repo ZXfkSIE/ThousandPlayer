@@ -62,6 +62,7 @@ TP::storeInformation( QListWidgetItem *I_item )
     const auto &qstr_localFilePath { url.toLocalFile() };
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
     const auto &qstr_Filename { fileInfo.fileName() };
+    const auto &qdati_LastModified { fileInfo.lastModified() };
 
     TagLib::FileRef fileRef { qstr_localFilePath
 #ifdef Q_OS_WIN
@@ -89,11 +90,12 @@ TP::storeInformation( QListWidgetItem *I_item )
     else if( extension == QString { "wav" } )
         bitDepth = dynamic_cast< TagLib::RIFF::WAV::Properties * >( fileRef.audioProperties() )->bitsPerSample();
 
-    I_item->setData( TP::role_Duration,     duration );             // set duration
-    I_item->setData( TP::role_Bitrate,      bitrate );              // set bitrate
-    I_item->setData( TP::role_SampleRate,   sampleRate );           // set sample rate
-    I_item->setData( TP::role_BitDepth,     bitDepth );             // set bit depth
-    I_item->setData( TP::role_FileName,     qstr_Filename );        // set file name
+    I_item->setData( TP::role_Duration,     duration );             // Set duration
+    I_item->setData( TP::role_Bitrate,      bitrate );              // Set bitrate
+    I_item->setData( TP::role_SampleRate,   sampleRate );           // Set sample rate
+    I_item->setData( TP::role_BitDepth,     bitDepth );             // Set bit depth
+    I_item->setData( TP::role_FileName,     qstr_Filename );        // Set file name
+    I_item->setData( TP::role_LastModified, qdati_LastModified );   // Set last modified time & date
 
     // set descrption, artist, title, album
     if( ! qstr_title.length() )

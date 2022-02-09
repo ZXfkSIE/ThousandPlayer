@@ -7,6 +7,7 @@
 #include "tp_progressdialog.h"
 
 #include <QApplication>
+#include <QDateTime>
 #include <QFile>
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -447,6 +448,21 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
 
 
 
+            case TP::role_LastModified :
+
+                if( ! I_isDescending )
+                    while( low < high &&
+                          item( high )->data( I_role ).toDateTime() >= pivot->data( I_role ).toDateTime() )
+                        high--;
+                else
+                    while( low < high &&
+                          item( high )->data( I_role ).toDateTime() <= pivot->data( I_role ).toDateTime() )
+                        high--;
+
+                break;
+
+
+
             case TP::role_FileName :
             case TP::role_Description :
             case TP::role_URL :
@@ -471,7 +487,7 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
                 break;
 
 
-
+            // These columns may be null
             case TP::role_Album :
             case TP::role_Artist :
             case TP::role_Title :
@@ -534,6 +550,21 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
                 else
                     while( low < high &&
                            item( low )->data( I_role ).toInt() > pivot->data( I_role ).toInt() )
+                        low++;
+
+                break;
+
+
+
+            case TP::role_LastModified :
+
+                if( ! I_isDescending )
+                    while( low < high &&
+                           item( low )->data( I_role ).toDateTime() < pivot->data( I_role ).toDateTime() )
+                        low++;
+                else
+                    while( low < high &&
+                           item( low )->data( I_role ).toDateTime() > pivot->data( I_role ).toDateTime() )
                         low++;
 
                 break;
@@ -620,7 +651,7 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
         else
             delete pivot;
 
-        if( low - 1 - left < right - low - 1 )      // smaller range first
+        if( low - 1 - left < right - (low + 1) )      // smaller range first
         {
             if( low + 1 < right )
                 stack.push( { low + 1, right } );

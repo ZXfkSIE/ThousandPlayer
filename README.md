@@ -60,10 +60,9 @@ but already has fundamental functions that a local audio player should have. Fee
 ### PipeWire 0.3.40, 0.3.42
 - Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441), largely fixed by [version 0.3.43](https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/0.3.43))
 
-### Qt 6.2.2
+### Qt 6.3.0 beta 1
 - [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.
-- [QTBUG-97758](https://bugreports.qt.io/browse/QTBUG-97758): The output device changing function does not work in some Linux distros (e.g. Fedora).
-- [QTBUG-98191](https://bugreports.qt.io/browse/QTBUG-98191): While playing **FLAC** files in Windows, seeking becomes buggy.
+- [QTBUG-100181](https://bugreports.qt.io/browse/QTBUG-100181): Seeking is buggy while playing **FLAC** files in Windows.
 
 # Compilation Tutorial
 
@@ -71,7 +70,7 @@ This page only provides complation steps with Qt Creator. Of course you can also
 
 Before proceeding with the following OS-specific steps, you have to install
 - Latest version of Qt Creator.
-- Latest version of Qt 6.2 (or above versions such as 6.3) along with Qt Multimedia.
+- Latest version of Qt6 along with Qt Multimedia.
 - CMake 3.20 or later.
 - Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), and so on.
 
@@ -81,7 +80,7 @@ Before proceeding with the following OS-specific steps, you have to install
    - For Red Hat distros (RHEL, CentOS, Fedora, etc.), it may be done by `sudo dnf install taglib-devel`.
    - For Debian distros (Debian, Ubuntu, etc.), it may be done by `sudo apt install libtag1-dev`.
 3. Use Qt Creator to open the root `CMakeLists.txt`,
-then configure the project with Qt 6.2 or above.
+then configure the project with latest version of Qt6.
    - If you are using Conan plugin in Qt Creator, you may turn off the plugin or remove the "Conan install" build step in "Projects" tab. Conan is not intended to be used in Linux.
 3. Build.
 
@@ -92,7 +91,7 @@ then configure the project with Qt 6.2 or above.
 ![](figure/ConanPlugin.png)
 
 3. Open the root `CMakeLists.txt` by Qt Creator,
-then configure the project with Qt 6.2 or above. The first attempt of CMake configuration should be failed due to the lack of Conan-related scripts, but it's OK.
+then configure the project with latest version of Qt6. The first attempt of CMake configuration should be failed due to the lack of Conan-related scripts, but it's OK.
 4. Go to "Projects" tab, raise the existing "Conan install" build step to top of the list and add additional argument `--profile /replace/it/with/project/root/directory/conan_debug_windows_x64.txt` to it.
    - If you are making release build, change the filename to `conan_release_windows_x64.txt`.
 
@@ -103,8 +102,8 @@ then configure the project with Qt 6.2 or above. The first attempt of CMake conf
 if(WIN32)
 # In Windows, use Conan to setup 3rd party packages
     message(STATUS "[ThousandPlayer] Windows build environment detected.")
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)     # <-- COMMENT OUT!              
-    conan_basic_setup()                                   # <-- COMMENT OUT!
+    # include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)     # <-- COMMENT OUT!              
+    # conan_basic_setup()                                   # <-- COMMENT OUT!
     message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
 ```
 6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left becomes available. Uncomment the 2 lines mentioned above, then you should be able to build it.

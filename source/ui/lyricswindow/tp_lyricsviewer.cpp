@@ -208,7 +208,7 @@ TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
             auto position { clickedItem->data( TP::role_TimeStampInMs ).value< qint64 >() };
             position += TP::config().getJumpingTimeOffset_ms();
             if( position < 0 )
-                position = 0;
+                position = 0;               // position cannot be negative
             emit signal_lyricsDoubleClicked( position );
         }
     }
@@ -229,7 +229,6 @@ TP_LyricsViewer::initializeUI()
 "border-width: 0px;"
                 );
     setFrameStyle( QFrame::NoFrame );
-    // setResizeMode( QListView::Adjust );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
 }

@@ -25,8 +25,9 @@ static const int role_FileName          = Qt::UserRole + 7;     // QString      
 static const int role_URL               = Qt::UserRole + 8;     // QUrl             must have
 static const int role_SourceType        = Qt::UserRole + 9;     // TP::SourceType   must have
 static const int role_Description       = Qt::UserRole + 10;    // QString          must have
-static const int role_ReplayGainTrack   = Qt::UserRole + 11;    // float
-static const int role_ReplayGainAlbum   = Qt::UserRole + 12;    // float
+static const int role_LastModified      = Qt::UserRole + 11;    // QDateTime        must have
+static const int role_ReplayGainTrack   = Qt::UserRole + 12;    // float
+static const int role_ReplayGainAlbum   = Qt::UserRole + 13;    // float
 
 static const int role_FileListAddress   = Qt::UserRole;         // TP_FileListWidget * (stored as quintptr)
 
