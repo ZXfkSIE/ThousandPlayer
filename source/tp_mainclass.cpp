@@ -1269,7 +1269,7 @@ TP_MainClass::playItem ( QListWidgetItem *I_item )
     if( I_item == nullptr )
         return;
 
-    switch ( I_item->data( TP::role_SourceType ).value<TP::SourceType>() )
+    switch ( I_item->data( TP::role_SourceType ).value< TP::SourceType >() )
     {
     case TP::singleFile :
         playFile( I_item );

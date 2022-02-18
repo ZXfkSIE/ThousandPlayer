@@ -5,6 +5,7 @@
 
 #include <QWidget>
 
+class TP_LyricsEditor;
 class TP_LyricsViewer;
 
 namespace Ui {
@@ -54,6 +55,7 @@ private:
     void initializeUI();
 
     TP_LyricsViewer *lyricsViewer;
+    TP_LyricsEditor *lyricsEditor;
 };
 
 #endif // TP_LYRICSWINDOW_H

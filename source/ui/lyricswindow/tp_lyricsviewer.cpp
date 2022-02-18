@@ -14,6 +14,8 @@ TP_LyricsViewer::TP_LyricsViewer( QWidget *parent ) :
   , b_hasLrcFile    {}
   , currentIdx      {}
 {
+    setMouseTracking( true );
+
     initializeUI();
 }
 
@@ -223,7 +225,6 @@ TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
 void
 TP_LyricsViewer::initializeUI()
 {
-    setMouseTracking( true );
     setStyleSheet(
 "color: #CCC;"
 "border-width: 0px;"

@@ -286,10 +286,64 @@ Anyway, they have been removed from the list.</source>
     </message>
 </context>
 <context>
+    <name>TP_LyricsEditor</name>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.ui" line="182"/>
+        <source> Insert Timestap (F8) </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="85"/>
+        <source>Open Lyrics File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="87"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="127"/>
+        <source>Lyrics files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="53"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="145"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="156"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="54"/>
+        <source>Could not open %1 :
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="125"/>
+        <source>Save Lyrics File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="146"/>
+        <source>Could not write %1 :
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="157"/>
+        <source>Could not open %1 for writing:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TP_LyricsViewer</name>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="53"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="170"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="55"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="172"/>
         <source>No lyrics</source>
         <translation>沒有歌詞</translation>
     </message>
@@ -600,69 +654,69 @@ The program will quit now.</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="573"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="580"/>
         <source>List </source>
         <translation>列表 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="686"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="703"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="714"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="727"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="693"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="710"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="721"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="734"/>
         <source>Playlist Reading Error</source>
         <translation>播放列表讀取錯誤</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="687"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="704"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="715"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="728"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="694"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="711"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="722"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="735"/>
         <source>Failed to read playlists from %1.
 </source>
         <translation>無法從 %1 讀取播放列表。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="689"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="706"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="718"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="730"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="696"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="713"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="725"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="737"/>
         <source>Default playlist will be created instead.</source>
         <translation>將生成預設的播放列表。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="705"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="712"/>
         <source>Empty QJsonDocument object returned.
 </source>
         <translation>QJsonDocument物件為空。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="717"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="724"/>
         <source> (offset: %1)
 </source>
         <translation> （偏移值：%1）
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="729"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="736"/>
         <source>No valid playlist found.
 </source>
         <translation>未讀取到有效的播放列表。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="738"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="745"/>
         <source>Default</source>
         <translation>預設</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="790"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="797"/>
         <source>Playlist Writing Error</source>
         <translation>播放列表寫入錯誤</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="791"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="798"/>
         <source>Failed to write playlists to %1.
 </source>
         <translation>無法向 %1 寫入播放列表。

@@ -144,7 +144,7 @@ TP_PlaylistWindow::slot_refreshFont()
 {
     for( unsigned i {}; i < ui->stackedWidget_FileList->count(); i++ )
     {
-        static_cast< TP_FileListWidget * >( ui->stackedWidget_FileList->widget( i ) )->refreshFont();
+        dynamic_cast< TP_FileListWidget * >( ui->stackedWidget_FileList->widget( i ) )->refreshFont();
     }
 
     ui->playlistsWidget->refreshFont();
@@ -229,7 +229,7 @@ TP_PlaylistWindow::on_pushButton_Close_clicked()
 
 void TP_PlaylistWindow::on_action_addFiles_triggered()
 {
-    QList <QUrl> fileURLs {
+    const auto &fileURLs {
         QFileDialog::getOpenFileUrls(
                     this,                                       // QWidget *parent = nullptr
                     {},                                         // const QString &caption = QString()
@@ -238,20 +238,20 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
                     // const QString &filter = QString()
 
                     tr( "All supported formats" )
-#ifdef Q_OS_WIN
-// Currently, QtMultimedia does not support Ogg Vorbis files under Windows.
-// See https://bugreports.qt.io/browse/QTBUG-99278
+#ifdef Q_OS_LINUX
+                    + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" }
+#else
+                    // Currently, QtMultimedia does not support Ogg Vorbis files under Windows.
+                    // See https://bugreports.qt.io/browse/QTBUG-99278
 
                     + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav);;" }
-#else
-                    + QString{ " (*.flac *alac *.m4a *.aac *.mp3 *.wav *.ogg);;" }
 #endif
                     + tr( "FLAC files" ) + QString{ " (*.flac);;" }
                     + tr( "ALAC files" ) + QString{ " (*.alac);;" }
                     + tr( "AAC files" ) + QString{ " (*.m4a *.aac);;" }
                     + tr( "MP3 files" ) + QString{ " (*.mp3);;" }
                     + tr( "WAV files" ) + QString{ " (*.wav);;" }
-#ifndef Q_OS_WIN
+#ifdef Q_OS_LINUX
                     + tr( "Vorbis files" ) + QString{ " (*.ogg)" }
 #endif
                     )};
@@ -269,12 +269,15 @@ void TP_PlaylistWindow::on_action_addFiles_triggered()
 void
 TP_PlaylistWindow::on_action_addFolder_triggered()
 {
-    QUrl directoryURL {
+    const auto &directoryURL {
         QFileDialog::getExistingDirectoryUrl(
                     this,                                   // QWidget *parent = nullptr
                     {},                                     // const QString &caption = QString()
                     TP::config().getLastOpenedDirectory()   // const QUrl &dir = QUrl()
                     )};
+
+    if( directoryURL.isEmpty() )
+        return;
 
     TP::config().setLastOpenedDirectory( directoryURL );
 
@@ -282,8 +285,12 @@ TP_PlaylistWindow::on_action_addFolder_triggered()
 
     QDirIterator dItr {
         directoryURL.toLocalFile(),                     // const QString &path
-        { "*.flac","*.alac", "*.m4a", "*.aac",
-            "*.mp3", "*.wav", "*.ogg" },                // const QStringList &nameFilters
+        // const QStringList &nameFilters
+#ifdef Q_OS_LINUX
+        { "*.flac","*.alac", "*.m4a", "*.aac", "*.mp3", "*.wav", "*.ogg" },
+#else
+        { "*.flac","*.alac", "*.m4a", "*.aac", "*.mp3", "*.wav" },
+#endif
         QDir::Files,                                    // QDir::Filters filters = QDir::NoFilter
         QDirIterator::FollowSymlinks                    // QDirIterator::IteratorFlags flags = NoIteratorFlags
     };
@@ -677,15 +684,15 @@ TP_PlaylistWindow::initializePlaylist()
 #endif
     ) )
     {
-        QFile jsonFile { TP::playlistFilePath };
-        qDebug() << "[PlaylistWindow] Reading playlists from" << jsonFile.fileName();
-        if( ! jsonFile.open( QFile::ReadOnly ) )
+        QFile qFile { TP::playlistFilePath };
+        qDebug() << "[PlaylistWindow] Reading playlists from" << qFile.fileName();
+        if( ! qFile.open( QFile::ReadOnly ) )
         {
             QMessageBox::critical(
                         this,
                         tr( "Playlist Reading Error" ),
                         tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
-                        + jsonFile.errorString() + "\n"
+                        + qFile.errorString() + "\n"
                         + tr( "Default playlist will be created instead." )
                         );
             goto CREATE_DEFAULT_LISTS;
@@ -693,7 +700,7 @@ TP_PlaylistWindow::initializePlaylist()
 
         QJsonParseError jsonParseError {};
         const auto &jDoc {
-            QJsonDocument::fromJson( jsonFile.readAll(), &jsonParseError ),
+            QJsonDocument::fromJson( qFile.readAll(), &jsonParseError ),
         };
 
         if( jDoc.isNull() )
