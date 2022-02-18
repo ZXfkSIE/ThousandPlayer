@@ -98,9 +98,10 @@ TP::storeInformation( QListWidgetItem *I_item )
     I_item->setData( TP::role_LastModified, qdati_LastModified );   // Set last modified time & date
 
     // set descrption, artist, title, album
+
     if( ! qstr_title.length() )
-    {
         // No title in tag, meaning that no valid tag is contained in the file
+    {
         I_item->setData( TP::role_Description, qstr_Filename );
     }
     else

@@ -4,12 +4,14 @@
 #include "tp_globalconst.h"
 #include "tp_globalvariable.h"
 
+#include "tp_lyricseditor.h"
 #include "tp_lyricsviewer.h"
 
 TP_LyricsWindow::TP_LyricsWindow( QWidget *parent ) :
     QWidget         { parent }
   , ui              { new Ui::TP_LyricsWindow }
   , lyricsViewer    { new TP_LyricsViewer { this } }
+  , lyricsEditor    { new TP_LyricsEditor { this } }
 {
     ui->setupUi( this );
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
@@ -29,9 +31,12 @@ TP_LyricsWindow::~TP_LyricsWindow()
 void
 TP_LyricsWindow::readLrcFileFromCurrentItem()
 {
+    if( TP::currentItem()->data( TP::role_SourceType ).value< TP::SourceType >() != TP::singleFile )
+        return;
+
     auto qstr_localFilePath { TP::currentItem()->data( TP::role_URL ).toUrl().toLocalFile() };
     auto idx_LastPositionOfPoint { qstr_localFilePath.lastIndexOf( '.' ) };
-    auto qstr_lrcPath { qstr_localFilePath.first( ++idx_LastPositionOfPoint ) + QString { "lrc" } };
+    auto qstr_lrcPath { qstr_localFilePath.first( idx_LastPositionOfPoint ) + QString { ".lrc" } };
     lyricsViewer->readLrcFile( qstr_lrcPath );
 }
 
@@ -47,6 +52,7 @@ void
 TP_LyricsWindow::updatePosition( qint64 I_ms )
 {
     lyricsViewer->updatePosition( I_ms );
+    lyricsEditor->setCurrentPosition( I_ms );
 }
 
 // *****************************************************************
