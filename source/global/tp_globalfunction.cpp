@@ -7,8 +7,6 @@
 #include <QFileInfo>
 #include <QUrl>
 
-#include <filesystem>
-
 // Headers of TagLib
 #include <apetag.h>
 #include <fileref.h>
@@ -52,6 +50,22 @@ TP::extension( const QString &I_path )
         extension = QString { "aac" };
 
     return extension;
+}
+
+
+QUrl
+TP::getLyricsURL( QListWidgetItem *I_item )
+{
+    if( ! TP::currentItem()
+            || TP::currentItem()->data( TP::role_SourceType ).value< TP::SourceType >() != TP::singleFile )
+        return {};
+
+    auto qstr_FileName { TP::currentItem()->data( TP::role_FileName ).toString() };
+    qstr_FileName = qstr_FileName.left( qstr_FileName.lastIndexOf( '.' ) ) + QString { ".lrc" };
+    return {
+        TP::currentItem()->data( TP::role_URL ).toUrl().adjusted( QUrl::RemoveFilename ).toString()
+        + qstr_FileName
+    };
 }
 
 

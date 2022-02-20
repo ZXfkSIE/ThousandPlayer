@@ -21,6 +21,8 @@ namespace TP
     TP::CursorPositionType getCursorPositionType( QWidget *I_widget, const QPoint &I_point );
 
     QString extension( const QString &I_path );
+    QUrl    getLyricsURL( QListWidgetItem *I_item );
+
     void storeInformation( QListWidgetItem *I_item );
 
     float getReplayGainTrackFromTag( const TagLib::Ogg::XiphComment *I_xiphComment );

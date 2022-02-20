@@ -872,7 +872,7 @@ TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
 
     setCurrentItem( clickedItem, QItemSelectionModel::Select );
 
-    menu_rightClick->exec( event->globalPos() );
+    rightClickMenu->exec( event->globalPos() );
 }
 
 
@@ -884,12 +884,11 @@ TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
 void
 TP_FileListWidget::initializeMenu()
 {
-    menu_rightClick = new TP_Menu { this };
+    rightClickMenu = new TP_Menu { this };
 
-    action_remove = new QAction { tr( "&Remove" ), this };
-
-    connect( action_remove, &QAction::triggered,
+    action_Remove = new QAction { tr( "&Remove" ), this };
+    connect( action_Remove, &QAction::triggered,
              this,          &TP_FileListWidget::slot_clearSelectedItems );
 
-    menu_rightClick->addAction( action_remove );
+    rightClickMenu->addAction( action_Remove );
 }

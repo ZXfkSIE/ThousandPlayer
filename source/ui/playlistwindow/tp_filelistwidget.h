@@ -57,12 +57,13 @@ private:
     void mouseDoubleClickEvent  ( QMouseEvent *event ) override;
     void mouseMoveEvent         ( QMouseEvent *event ) override;
     void mouseReleaseEvent      ( QMouseEvent *event ) override;
+
     void contextMenuEvent       ( QContextMenuEvent *event ) override;
 
     void initializeMenu();
 
-    TP_Menu *menu_rightClick;
-    QAction *action_remove;
+    TP_Menu *rightClickMenu;
+    QAction *action_Remove;
 
     // previousItem & currentItem are only used in shuffle mode
     QListWidgetItem *previousItem, *nextItem;

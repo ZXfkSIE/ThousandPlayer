@@ -288,52 +288,62 @@ Anyway, they have been removed from the list.</source>
 <context>
     <name>TP_LyricsEditor</name>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.ui" line="14"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.ui" line="17"/>
         <source>Form</source>
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.ui" line="182"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.ui" line="212"/>
         <source> Insert Timestap (F8) </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="85"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="112"/>
         <source>Open Lyrics File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="87"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="127"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="114"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="196"/>
         <source>Lyrics files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="53"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="145"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="156"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="57"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="214"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="225"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="54"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="58"/>
         <source>Could not open %1 :
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="125"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="82"/>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="83"/>
+        <source>Current lyrics file has not been saved. Save it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="194"/>
         <source>Save Lyrics File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="146"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="215"/>
         <source>Could not write %1 :
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="157"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="226"/>
         <source>Could not open %1 for writing:
 </source>
         <translation type="unfinished"></translation>
@@ -342,10 +352,14 @@ Anyway, they have been removed from the list.</source>
 <context>
     <name>TP_LyricsViewer</name>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="55"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="172"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="163"/>
         <source>No lyrics</source>
         <translation>歌詞なし</translation>
+    </message>
+    <message>
+        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="267"/>
+        <source>Lyrics &amp;editor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -355,7 +369,7 @@ Anyway, they have been removed from the list.</source>
         <translation type="obsolete">Form</translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricswindow.ui" line="104"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricswindow.ui" line="101"/>
         <source>Lyrics</source>
         <translation>歌詞</translation>
     </message>
@@ -395,62 +409,62 @@ The program will quit now.</source>
 <context>
     <name>TP_MainWindow</name>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="738"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="735"/>
         <source>Previous</source>
         <translation>前へ</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="772"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="769"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="831"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="828"/>
         <source>Next</source>
         <translation>次へ</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1056"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1052"/>
         <source>Playlist</source>
         <translation>プレイリスト</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1091"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1086"/>
         <source>Lyrics</source>
         <translation>歌詞</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1126"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1120"/>
         <source>Config</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1136"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1130"/>
         <source>Single &amp;Time mode</source>
         <translation>シングルタイムモード (&amp;T)</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1141"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1135"/>
         <source>&amp;Repeat mode</source>
         <translation>繰り返しモード (&amp;R)</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1146"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1140"/>
         <source>Se&amp;quantial mode</source>
         <translation>順番再生モード (&amp;Q)</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1151"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1145"/>
         <source>&amp;Shuffle mode</source>
         <translation>シャッフルモード (&amp;S)</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1156"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1150"/>
         <source>&amp;Exit</source>
         <translation>終了 (&amp;E)</translation>
     </message>
     <message>
-        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1161"/>
+        <location filename="../source/ui/mainwindow/tp_mainwindow.ui" line="1155"/>
         <source>&amp;Restore</source>
         <translation>復元 (&amp;R)</translation>
     </message>
@@ -648,116 +662,116 @@ The program will quit now.</source>
         <translation>アーティスト名で (&amp;A)</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="27"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="26"/>
         <source>Reading files...</source>
         <translation>読み込み中…</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="28"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="27"/>
         <source>Abort</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="580"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="579"/>
         <source>List </source>
         <translation>リスト </translation>
+    </message>
+    <message>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="692"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="709"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="720"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="733"/>
+        <source>Playlist Reading Error</source>
+        <translation>プレイリスト読み込みエラー</translation>
     </message>
     <message>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="693"/>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="710"/>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="721"/>
         <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="734"/>
-        <source>Playlist Reading Error</source>
-        <translation>プレイリスト読み込みエラー</translation>
-    </message>
-    <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="694"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="711"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="722"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="735"/>
         <source>Failed to read playlists from %1.
 </source>
         <translation>%1 からプレイリストを読み込めませんでした。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="696"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="713"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="725"/>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="737"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="695"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="712"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="724"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="736"/>
         <source>Default playlist will be created instead.</source>
         <translation>既定のプレイリストを生成します。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="712"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="711"/>
         <source>Empty QJsonDocument object returned.
 </source>
         <translation>QJsonDocumentオブジェクトは空いています。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="724"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="723"/>
         <source> (offset: %1)
 </source>
         <translation> （オフセット値：%1）
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="736"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="735"/>
         <source>No valid playlist found.
 </source>
         <translation>有効なプレイリストを読み込めませんでした。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="745"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="744"/>
         <source>Default</source>
         <translation>デフォルト</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="797"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="796"/>
         <source>Playlist Writing Error</source>
         <translation>プレイリスト書き込みエラー</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="798"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="797"/>
         <source>Failed to write playlists to %1.
 </source>
         <translation>%1 にプレイリストを書き込めませんでした。
 </translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="240"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="239"/>
         <source>All supported formats</source>
         <translation>全対応フォーマット</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="249"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="248"/>
         <source>FLAC files</source>
         <translation>FLACファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="250"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="249"/>
         <source>ALAC files</source>
         <translation>ALACファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="251"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="250"/>
         <source>AAC files</source>
         <translation>AACファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="252"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="251"/>
         <source>MP3 files</source>
         <translation>MP3ファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="253"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="252"/>
         <source>WAV files</source>
         <translation>WAVファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="255"/>
+        <location filename="../source/ui/playlistwindow/tp_playlistwindow.cpp" line="254"/>
         <source>Vorbis files</source>
         <translation>Vorbisファイル</translation>
     </message>

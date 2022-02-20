@@ -1,4 +1,7 @@
 ﻿set(TP_UI_LYRICSWINDOW_FILES
+    tp_lyricscontainer.h
+    tp_lyricscontainer.cpp
+
     tp_lyricseditor.h
     tp_lyricseditor.cpp
     tp_lyricseditor.ui

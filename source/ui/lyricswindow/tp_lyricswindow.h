@@ -20,8 +20,8 @@ public:
     explicit TP_LyricsWindow( QWidget *parent = nullptr );
     ~TP_LyricsWindow();
 
-    void readLrcFileFromCurrentItem();
-    void clearLrcFile();
+    void readLyricsFileFromCurrentItem();
+    void clearLyricsViewer();
     void updatePosition( qint64 I_ms );
 
 signals:
@@ -44,6 +44,8 @@ private slots:
     void slot_windowChanged();
 
     void slot_lyricsDoubleClicked( qint64 I_ms );
+    void slot_switchToLyricsViewer( const QUrl &I_url );
+    void slot_switchToLyricsEditor( const QUrl &I_url );
 
 private:
     Ui::TP_LyricsWindow *ui;

@@ -10,6 +10,9 @@
     <height>400</height>
    </rect>
   </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -31,6 +34,9 @@
    </property>
    <item>
     <widget class="QFrame" name="frame">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -73,6 +79,9 @@
           <height>32</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="iconSize">
          <size>
           <width>24</width>
@@ -100,6 +109,9 @@
           <width>32</width>
           <height>32</height>
          </size>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
         </property>
         <property name="iconSize">
          <size>
@@ -129,6 +141,9 @@
           <height>32</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="iconSize">
          <size>
           <width>24</width>
@@ -151,11 +166,20 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #AAA</string>
+        </property>
         <property name="frameShape">
          <enum>QFrame::VLine</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>2</number>
         </property>
        </widget>
       </item>
@@ -177,6 +201,12 @@
          <font>
           <pointsize>10</pointsize>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
          <string> Insert Timestap (F8) </string>
@@ -200,7 +230,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QPlainTextEdit" name="plainTextEdit"/>
+    <widget class="QPlainTextEdit" name="plainTextEdit">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="lineWrapMode">
+      <enum>QPlainTextEdit::NoWrap</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

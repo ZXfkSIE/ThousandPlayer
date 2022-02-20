@@ -3,26 +3,34 @@
 #include "tp_globalconst.h"
 #include "tp_globalvariable.h"
 
+#include "tp_menu.h"
+
 #include <QFile>
 #include <QFileInfo>
+#include <QMenu>
 #include <QMouseEvent>
 
 #include <stack>
 
 TP_LyricsViewer::TP_LyricsViewer( QWidget *parent ) :
-    QListWidget     { parent }
-  , b_hasLrcFile    {}
-  , currentIdx      {}
+    QListWidget         { parent }
+  , b_hasLrcFile        {}
+  , currentIdx          {}
+  , currentPosition     {}
+  , currentLyricsURL    {}
 {
     setMouseTracking( true );
 
     initializeUI();
+    initializeMenu();
 }
 
 
 void
 TP_LyricsViewer::updatePosition( qint64 I_ms )
 {
+    currentPosition = I_ms;
+
     if( ! b_hasLrcFile )
         return;
 
@@ -40,140 +48,137 @@ TP_LyricsViewer::updatePosition( qint64 I_ms )
 
 
 void
-TP_LyricsViewer::readLrcFile( const QString &I_qstr_Path )
+TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
 {
-    b_hasLrcFile = false;
-    setSelectionMode( QAbstractItemView::NoSelection );
-    setFocusPolicy( Qt::NoFocus );
     clear();
     scrollToTop();
+    b_hasLrcFile = false;
     currentIdx = -1;
+    currentPosition = 0;
+    const auto &qstr_LocalPath { I_url.toLocalFile() };
+    QFile file { qstr_LocalPath };
 
-    // No audio file being played
-    if( I_qstr_Path.isEmpty() )
+    qDebug() << "[Lyrics Viewer] Reading LRC file from" << qstr_LocalPath;
+
+    if( file.open( QIODeviceBase::ReadOnly ) )
     {
-        addItem( tr( "No lyrics" ) );
-        item( 0 )->setData( TP::role_TimeStampInMs, -1 );
-        item( 0 )->setTextAlignment( Qt::AlignCenter );
+        QTextStream inputStream { &file };
+
+        while( ! inputStream.atEnd() )
+        {
+            const auto &qstr_Line { inputStream.readLine().trimmed() };
+
+            // No ']', no valid timestamp
+            if( qstr_Line.lastIndexOf( ']' ) == -1 )
+                continue;
+
+            // Split the line by ']'
+            auto qstrList_Timestamp { qstr_Line.split( ']', Qt::SkipEmptyParts ) };
+
+            // If the last segmentation began with '['
+            // (such as the line "[00:01.100][00:02.200]"),
+            // the lyrics sentence of this line is empty.
+            // If not
+            // (such as the line "[00:01.100][00:02.200]You're a cat"),
+            // the last segmentation is the lyrics sentence of this line.
+            QString qstr_Sentence {};
+            if( qstrList_Timestamp.last()[0] != '[' )
+                qstr_Sentence = qstrList_Timestamp.takeLast().trimmed();
+
+            for( auto &qstr_Timestamp : qstrList_Timestamp )
+            {
+                // Eliminate all whitespaces
+                qstr_Timestamp = qstr_Timestamp.simplified().replace( " ", "" );
+
+                // The smallest length of the segment should be 6, e.g. "[00:10"
+                if( qstr_Timestamp[ 0 ] != '[' || qstr_Timestamp.size() < 6 )
+                    continue;
+
+                // Remove the initial '['
+                qstr_Timestamp = qstr_Timestamp.last( qstr_Timestamp.size() - 1 );
+
+                int m {}, s {}, ms {};
+                bool b_conversionOK {};
+
+                auto idx_Point { qstr_Timestamp.lastIndexOf( '.' ) };
+                if( idx_Point != -1
+                        && qstr_Timestamp.size() - idx_Point - 1 > 0        // Number of digits of ms > 0
+                        && qstr_Timestamp.size() - idx_Point - 1 <= 3 )     // Number of digits of ms <= 3
+                {
+                    // Extract substring after '.'
+                    auto qstr_ms { qstr_Timestamp.last( qstr_Timestamp.size() - idx_Point - 1 ) };
+
+                    // Pad zeros.
+                    // For example, if there is a timestamp "[00:01.54]",
+                    // the number of ms should be 540 instead of 54.
+                    if( qstr_ms.size() == 2 )
+                        qstr_ms += "0";
+                    else if( qstr_ms.size() == 1 )
+                        qstr_ms += "00";
+
+                    ms = qstr_ms.toInt( &b_conversionOK );
+                    if( ! b_conversionOK || ms < 0 )
+                        continue;
+
+                    // Remove all characters from '.'
+                    qstr_Timestamp = qstr_Timestamp.first( idx_Point );
+                }
+
+                auto idx_Colon { qstr_Timestamp.indexOf( ':' ) };
+
+                auto qstr_s { qstr_Timestamp.last( qstr_Timestamp.size() - idx_Colon - 1 ) };
+                s = qstr_s.toInt( &b_conversionOK );
+                if( ! b_conversionOK || s > 59 || s < 0 )
+                    continue;
+
+                auto qstr_m { qstr_Timestamp.first( idx_Colon ) };
+                m = qstr_m.toInt( &b_conversionOK );
+                if( ! b_conversionOK || m < 0 )
+                    continue;
+
+                m = m * 60000;
+                s = s * 1000;
+                auto total_ms { m + s + ms };
+
+                addItem( qstr_Sentence );
+                item( count() - 1 )->setData( TP::role_TimeStampInMs, total_ms );
+                item( count() - 1 )->setTextAlignment( Qt::AlignCenter );
+                b_hasLrcFile = true;
+            }       // for( auto &qstr : qstrList )
+        }       // while( inputStream.atEnd() )
+    }       // if( file.open( QIODeviceBase::ReadOnly ) )
+
+    if( b_hasLrcFile )
+    {
+        sortByTimestamp();
         refreshFont();
+        setSelectionMode( QAbstractItemView::SingleSelection );
+        setFocusPolicy( Qt::StrongFocus );
+        currentLyricsURL = I_url;
         return;
     }
 
-    qDebug() << "[Lyrics Viewer] Reading LRC file from" << I_qstr_Path;
+    // -------------------- No valid lyrics file --------------------
 
-    if( std::filesystem::exists( I_qstr_Path
-#ifdef Q_OS_WIN
-    .toStdWString().c_str()
-#else
-    .toLocal8Bit().constData()
-#endif
-            ))
-    {
-        QFile file { I_qstr_Path };
-        if( file.open( QIODeviceBase::ReadOnly ) )
-        {
-            QTextStream inputStream { &file };
-
-            while( ! inputStream.atEnd() )
-            {
-                const auto &qstr_Line { inputStream.readLine() };
-
-                // No ']', no valid timestamp
-                if( qstr_Line.lastIndexOf( ']' ) == -1 )
-                    continue;
-
-                // Split the line by ']'
-                auto qstrList_Timestamp { qstr_Line.split( ']', Qt::SkipEmptyParts ) };
-
-                // If the last segmentation began with '['
-                // (such as the line "[00:01.100][00:02.200]"),
-                // the lyrics sentence of this line is empty.
-                // If not
-                // (such as the line "[00:01.100][00:02.200]You're a cat"),
-                // the last segmentation is the lyrics sentence of this line.
-                QString qstr_Sentence {};
-                if( qstrList_Timestamp.last()[0] != '[' )
-                    qstr_Sentence = qstrList_Timestamp.takeLast().trimmed();
-
-                for( auto &qstr_Timestamp : qstrList_Timestamp )
-                {
-                    // Eliminate all whitespaces
-                    qstr_Timestamp = qstr_Timestamp.simplified().replace( " ", "" );
-
-                    // The smallest length of the segment should be 6, e.g. "[00:10"
-                    if( qstr_Timestamp[ 0 ] != '[' || qstr_Timestamp.size() < 6 )
-                        continue;
-
-                    // Remove the initial '['
-                    qstr_Timestamp = qstr_Timestamp.remove( 0, 1 );
-
-                    int m {}, s {}, ms {};
-                    bool b_conversionOK {};
-
-                    auto idx_Point { qstr_Timestamp.lastIndexOf( '.' ) };
-                    if( idx_Point != -1
-                            && qstr_Timestamp.size() - idx_Point - 1 > 0    // Number of digits of ms > 0
-                            && qstr_Timestamp.size() - idx_Point - 1 <= 3 ) // Number of digits of ms <= 3
-                    {
-                        // Extract substring after '.'
-                        auto qstr_ms { qstr_Timestamp.last( qstr_Timestamp.size() - idx_Point - 1 ) };
-
-                        // Pad zeros.
-                        // For example, if there is a timestamp "[00:01.54]",
-                        // the number of ms should be 540 instead of 54.
-                        if( qstr_ms.size() == 2 )
-                            qstr_ms += "0";
-                        else if( qstr_ms.size() == 1 )
-                            qstr_ms += "00";
-
-                        ms = qstr_ms.toInt( &b_conversionOK );
-                        if( ! b_conversionOK || ms < 0 )
-                            continue;
-
-                        // Remove all characters from '.'
-                        qstr_Timestamp = qstr_Timestamp.first( idx_Point );
-                    }
-
-                    auto idx_Colon { qstr_Timestamp.indexOf( ':' ) };
-
-                    auto qstr_s { qstr_Timestamp.last( qstr_Timestamp.size() - idx_Colon - 1 ) };
-                    s = qstr_s.toInt( &b_conversionOK );
-                    if( ! b_conversionOK || s > 59 || s < 0 )
-                        continue;
-
-                    auto qstr_m { qstr_Timestamp.first( idx_Colon ) };
-                    m = qstr_m.toInt( &b_conversionOK );
-                    if( ! b_conversionOK || m < 0 )
-                        continue;
-
-                    m = m * 60000;
-                    s = s * 1000;
-                    auto total_ms { m + s + ms };
-
-                    addItem( qstr_Sentence );
-                    item( count() - 1 )->setData( TP::role_TimeStampInMs, total_ms );
-                    item( count() - 1 )->setTextAlignment( Qt::AlignCenter );
-                    b_hasLrcFile = true;
-                }       // for( auto &qstr : qstrList )
-            }       // while( inputStream.atEnd() )
-        }       // if( file.open( QIODeviceBase::ReadOnly ) )
-
-        if( b_hasLrcFile )
-        {
-            sortByTimestamp();
-            refreshFont();
-            setSelectionMode( QAbstractItemView::SingleSelection );
-            setFocusPolicy( Qt::StrongFocus );
-            return;
-        }
-    }       // std::filesystem::exists
-
-    // No valid LRC file
     addItem( tr( "No lyrics" ) );
     item( 0 )->setData( TP::role_TimeStampInMs, -1 );
     item( 0 )->setTextAlignment( Qt::AlignCenter );
     refreshFont();
+    setSelectionMode( QAbstractItemView::NoSelection );
+    setFocusPolicy( Qt::NoFocus );
+    currentLyricsURL.clear();
     return;
+}
+
+
+void
+TP_LyricsViewer::reloadLyricsFile( const QUrl &I_url )
+{
+    if( I_url == currentLyricsURL )
+    {
+        readLyricsFile( I_url );
+        updatePosition( currentPosition );
+    }
 }
 
 
@@ -190,6 +195,16 @@ TP_LyricsViewer::refreshFont()
 }
 
 // *****************************************************************
+// private slots
+// *****************************************************************
+
+void
+TP_LyricsViewer::slot_switchToLyricsEditor()
+{
+    emit signal_switchToLyricsEditor( currentLyricsURL );
+}
+
+// *****************************************************************
 // private override
 // *****************************************************************
 
@@ -198,6 +213,7 @@ TP_LyricsViewer::mouseMoveEvent( QMouseEvent *event )
 {
     event->ignore();
 }
+
 
 void
 TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
@@ -218,6 +234,13 @@ TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
         event->ignore();
 }
 
+
+void
+TP_LyricsViewer::contextMenuEvent( QContextMenuEvent *event )
+{
+    rightClickMenu->exec( event->globalPos() );
+}
+
 // *****************************************************************
 // private
 // *****************************************************************
@@ -226,6 +249,7 @@ void
 TP_LyricsViewer::initializeUI()
 {
     setStyleSheet(
+"background-color: #777;"
 "color: #CCC;"
 "border-width: 0px;"
                 );
@@ -233,6 +257,20 @@ TP_LyricsViewer::initializeUI()
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
 }
+
+
+void
+TP_LyricsViewer::initializeMenu()
+{
+    rightClickMenu = new TP_Menu { this };
+
+    action_switchToLyricsEditor = new QAction { tr( "Lyrics &editor" ) };
+    connect( action_switchToLyricsEditor,   &QAction::triggered,
+             this,                          &TP_LyricsViewer::slot_switchToLyricsEditor );
+
+    rightClickMenu->addAction( action_switchToLyricsEditor );
+}
+
 
 void
 TP_LyricsViewer::sortByTimestamp()

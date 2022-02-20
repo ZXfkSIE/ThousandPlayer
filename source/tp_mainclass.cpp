@@ -946,7 +946,7 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState I_state )
 
             playlistWindow->unsetCurrentItemBold();
 
-            lyricsWindow->clearLrcFile();
+            lyricsWindow->clearLyricsViewer();
         }
 
         b_isStopInterrupting = false;
@@ -1367,7 +1367,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         playlistWindow->setCurrentItem( I_item );
         playlistWindow->refreshItemShowingTitle( I_item );
 
-        lyricsWindow->readLrcFileFromCurrentItem();
+        lyricsWindow->readLyricsFileFromCurrentItem();
 
         mediaPlayer->setSource( url );
         mediaPlayer->play();
