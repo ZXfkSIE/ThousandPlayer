@@ -17,9 +17,11 @@ public:
     ~TP_LyricsEditor();
 
     void setCurrentPosition( qint64 I_ms );
+    void refreshFont();
+    void readLyricsFile( const QUrl &I_url );
 
-public slots:
-    void slot_readLyricsFile( const QUrl &I_URL );
+signals:
+    void signal_switchToLyricsViewer( const QUrl &url );
 
 private slots:
     void on_pushButton_Return_clicked();
@@ -31,6 +33,9 @@ private:
     Ui::TP_LyricsEditor *ui;
 
     void initializeUI();
+
+    void returnToLyricsViewer( const QUrl &I_url );
+    bool openSaveFileDialog();
 
     QUrl    currentFileURL;
     qint64  currentPosition;

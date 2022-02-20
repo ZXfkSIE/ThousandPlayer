@@ -2,6 +2,7 @@
 #include "ui_tp_lyricseditor.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
 #include <QFileDialog>
@@ -33,19 +34,22 @@ TP_LyricsEditor::setCurrentPosition( qint64 I_ms )
     currentPosition = I_ms;
 }
 
-// *****************************************************************
-// public slots:
-// *****************************************************************
 
 void
-TP_LyricsEditor::slot_readLyricsFile( const QUrl &I_URL )
+TP_LyricsEditor::refreshFont()
 {
-    if( I_URL.isEmpty() )
+    ui->plainTextEdit->setFont( TP::config().getLyricsFont() );
+}
+
+void
+TP_LyricsEditor::readLyricsFile( const QUrl &I_url )
+{
+    if( I_url.isEmpty() )
         return;
 
-    TP::config().setLastOpenedDirectory( I_URL.adjusted( QUrl::RemoveFilename ) );
+    TP::config().setLastOpenedDirectory( I_url.adjusted( QUrl::RemoveFilename ) );
 
-    QFile qFile { I_URL.toLocalFile() };
+    QFile qFile { I_url.toLocalFile() };
     if( ! qFile.open( QIODeviceBase::ReadOnly | QIODeviceBase::Text ) )
     {
         QMessageBox::critical(
@@ -61,7 +65,7 @@ TP_LyricsEditor::slot_readLyricsFile( const QUrl &I_URL )
     ui->plainTextEdit->moveCursor( QTextCursor::Start );
     ui->plainTextEdit->ensureCursorVisible();
 
-    currentFileURL = I_URL;
+    currentFileURL = I_url;
 }
 
 // *****************************************************************
@@ -71,8 +75,31 @@ TP_LyricsEditor::slot_readLyricsFile( const QUrl &I_URL )
 void
 TP_LyricsEditor::on_pushButton_Return_clicked()
 {
+    if( ui->plainTextEdit->document()->isModified() )
+    {
+        switch ( QMessageBox::question(
+                     this,                                                      // QWidget *parent
+                     tr( "Warning" ),                                           // const QString &title
+                     tr( "Current lyrics file has not been saved. Save it?" ),  // const QString &text
+                     QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,  // QMessageBox::StandardButtons buttons
+                     QMessageBox::Cancel                                        // QMessageBox::StandardButton defaultButton
+                     ) )
+        {
+        case QMessageBox::Yes :
+            if( openSaveFileDialog() )
+                returnToLyricsViewer( currentFileURL );
+            break;
 
-    currentFileURL.clear();
+        case QMessageBox::No :
+            returnToLyricsViewer( {} );
+            break;
+
+        default :
+            break;
+        }
+    }
+    else
+        returnToLyricsViewer( {} );
 }
 
 
@@ -88,12 +115,64 @@ TP_LyricsEditor::on_pushButton_Open_clicked()
                     )
     };
 
-    slot_readLyricsFile( fileURL );
+    readLyricsFile( fileURL );
 }
 
 
 void
 TP_LyricsEditor::on_pushButton_Save_clicked()
+{
+    openSaveFileDialog();
+}
+
+
+void
+TP_LyricsEditor::on_pushButton_InsertTimestamp_clicked()
+{
+    if( currentPosition < 0 )
+        return;
+
+    auto m { currentPosition };
+    auto ms { m % 1000 };
+    m /= 1000;
+    auto s { m % 60 };
+    m /= 60;
+
+    ui->plainTextEdit->moveCursor( QTextCursor::StartOfLine );
+    ui->plainTextEdit->insertPlainText(
+                QString { "[%1:%2.%3]" }
+                .arg( m, 2, 10, QLatin1Char { '0' } )
+                .arg( s, 2, 10, QLatin1Char { '0' } )
+                .arg( ms, 3, 10, QLatin1Char { '0' } )
+                );
+    ui->plainTextEdit->moveCursor( QTextCursor::Down );
+    ui->plainTextEdit->moveCursor( QTextCursor::StartOfLine );
+}
+
+// *****************************************************************
+// private
+// *****************************************************************
+
+void
+TP_LyricsEditor::initializeUI()
+{
+    ui->pushButton_Return   ->setIcon( QIcon{ ":/image/icon_ReturnToLyricsViewer.svg" } );
+    ui->pushButton_Open     ->setIcon( QIcon{ ":/image/icon_OpenLyricsFile.svg" } );
+    ui->pushButton_Save     ->setIcon( QIcon{ ":/image/icon_SaveLyricsFile.svg" } );
+}
+
+
+void
+TP_LyricsEditor::returnToLyricsViewer( const QUrl &I_url )
+{
+    currentFileURL.clear();
+    ui->plainTextEdit->clear();
+    emit signal_switchToLyricsViewer( I_url );
+}
+
+
+bool
+TP_LyricsEditor::openSaveFileDialog()
 {
     QUrl savingTargetURL {};
 
@@ -102,21 +181,11 @@ TP_LyricsEditor::on_pushButton_Save_clicked()
     {
         savingTargetURL = currentFileURL;
     }
-    else if( TP::currentItem() &&
-             TP::currentItem()->data( TP::role_SourceType ).value< TP::SourceType >() == TP::singleFile )
-        // currentFileURL does not exist, but there is a file being played
-    {
-        auto qstr_FileName { TP::currentItem()->data( TP::role_FileName ).toString() };
-        qstr_FileName = qstr_FileName.left( qstr_FileName.lastIndexOf( '.' ) ) + QString { ".lrc" };
-        savingTargetURL = {
-            TP::currentItem()->data( TP::role_URL ).toUrl().adjusted( QUrl::RemoveFilename ).toString()
-            + qstr_FileName
-        };
-    }
     else
-        // Cannot get default saving target anywhere
     {
-        savingTargetURL = TP::config().getLastOpenedDirectory();
+        savingTargetURL = TP::getLyricsURL( TP::currentItem() );    // currentFileURL does not exist, but there is a file being played
+        if( savingTargetURL.isEmpty() )                             // Cannot get default saving target anywhere
+            savingTargetURL = TP::config().getLastOpenedDirectory();
     }
 
     const auto &fileURL {
@@ -129,7 +198,7 @@ TP_LyricsEditor::on_pushButton_Save_clicked()
     };
 
     if( fileURL.isEmpty() )
-        return;
+        return false;
 
     TP::config().setLastOpenedDirectory( fileURL.adjusted( QUrl::RemoveFilename ) );
 
@@ -146,7 +215,7 @@ TP_LyricsEditor::on_pushButton_Save_clicked()
                         tr( "Could not write %1 :\n" ).arg( savingFile.fileName() )
                         + savingFile.errorString()
                         );
-            return;
+            return false;
         }
     }
     else
@@ -157,27 +226,9 @@ TP_LyricsEditor::on_pushButton_Save_clicked()
                     tr( "Could not open %1 for writing:\n" ).arg( savingFile.fileName() )
                     + savingFile.errorString()
                     );
-        return;
+        return false;
     }
 
     currentFileURL = fileURL;
-}
-
-
-void
-TP_LyricsEditor::on_pushButton_InsertTimestamp_clicked()
-{
-
-}
-
-// *****************************************************************
-// private
-// *****************************************************************
-
-void
-TP_LyricsEditor::initializeUI()
-{
-    ui->pushButton_Return   ->setIcon( QIcon{ ":/image/icon_ReturnToLyricsViewer.svg" } );
-    ui->pushButton_Open     ->setIcon( QIcon{ ":/image/icon_OpenLyricsFile.svg" } );
-    ui->pushButton_Save     ->setIcon( QIcon{ ":/image/icon_SaveLyricsFile.svg" } );
+    return true;
 }

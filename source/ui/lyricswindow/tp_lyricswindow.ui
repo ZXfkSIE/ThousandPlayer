@@ -19,9 +19,6 @@
   <property name="mouseTracking">
    <bool>true</bool>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-color:#777;</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>0</number>
@@ -98,7 +95,7 @@
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
+         <string notr="true">color: white;</string>
         </property>
         <property name="text">
          <string>Lyrics</string>
@@ -160,19 +157,52 @@
      <property name="mouseTracking">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="page_LyricsViewer">
+     <widget class="TP_LyricsContainer" name="page_LyricsViewer">
       <property name="mouseTracking">
        <bool>true</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">QWidget
+       <string notr="true">TP_LyricsContainer
 {
+	background-color: #777;
 	border-bottom: 5px solid #666;
 	border-left: 5px solid #666;
 	border-right: 4px solid rgb(68, 68, 68);
 }</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3"/>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="leftMargin">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+      </layout>
+     </widget>
+     <widget class="TP_LyricsContainer" name="page_LyricsEditor">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="leftMargin">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>4</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -189,6 +219,12 @@
    <class>TP_LyricsStackedWidget</class>
    <extends>QStackedWidget</extends>
    <header>tp_lyricsstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TP_LyricsContainer</class>
+   <extends>QWidget</extends>
+   <header location="global">tp_lyricscontainer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

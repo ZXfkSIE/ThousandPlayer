@@ -113,7 +113,6 @@ background-color:#777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -620,7 +619,6 @@ background-color:#777;</string>
                  <property name="font">
                   <font>
                    <pointsize>10</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -659,7 +657,6 @@ background-color:#777;</string>
                  <property name="font">
                   <font>
                    <pointsize>10</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -1045,7 +1042,6 @@ background-color:#777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1080,7 +1076,6 @@ background-color:#777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1115,7 +1110,6 @@ background-color:#777;</string>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1170,6 +1164,11 @@ background-color:#777;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>TP_PushButton</class>
+   <extends>QPushButton</extends>
+   <header>tp_pushbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>TP_VolumeIcon</class>
    <extends>QLabel</extends>
    <header>tp_volumeicon.h</header>
@@ -1183,11 +1182,6 @@ background-color:#777;</string>
    <class>TP_CoverLabel</class>
    <extends>QLabel</extends>
    <header>tp_coverlabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TP_PushButton</class>
-   <extends>QPushButton</extends>
-   <header>tp_pushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>TP_AudioInfoLabel</class>

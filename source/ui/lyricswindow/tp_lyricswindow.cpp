@@ -2,6 +2,7 @@
 #include "ui_tp_lyricswindow.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
 #include "tp_lyricseditor.h"
@@ -29,22 +30,16 @@ TP_LyricsWindow::~TP_LyricsWindow()
 
 
 void
-TP_LyricsWindow::readLrcFileFromCurrentItem()
+TP_LyricsWindow::readLyricsFileFromCurrentItem()
 {
-    if( TP::currentItem()->data( TP::role_SourceType ).value< TP::SourceType >() != TP::singleFile )
-        return;
-
-    auto qstr_localFilePath { TP::currentItem()->data( TP::role_URL ).toUrl().toLocalFile() };
-    auto idx_LastPositionOfPoint { qstr_localFilePath.lastIndexOf( '.' ) };
-    auto qstr_lrcPath { qstr_localFilePath.first( idx_LastPositionOfPoint ) + QString { ".lrc" } };
-    lyricsViewer->readLrcFile( qstr_lrcPath );
+    lyricsViewer->readLyricsFile( TP::getLyricsURL( TP::currentItem() ) );
 }
 
 
 void
-TP_LyricsWindow::clearLrcFile()
+TP_LyricsWindow::clearLyricsViewer()
 {
-    lyricsViewer->readLrcFile( {} );
+    lyricsViewer->readLyricsFile( {} );
 }
 
 
@@ -71,6 +66,7 @@ void
 TP_LyricsWindow::slot_refreshFont()
 {
     lyricsViewer->refreshFont();
+    lyricsEditor->refreshFont();
 }
 
 // *****************************************************************
@@ -103,6 +99,23 @@ TP_LyricsWindow::slot_lyricsDoubleClicked( qint64 I_ms )
 {
     emit signal_lyricsDoubleClicked( I_ms );
 }
+
+
+void
+TP_LyricsWindow::slot_switchToLyricsViewer( const QUrl &I_url )
+{
+    lyricsViewer->reloadLyricsFile( I_url );
+    ui->lyricsStackedWidget->setCurrentWidget( ui->page_LyricsViewer );
+}
+
+
+void
+TP_LyricsWindow::slot_switchToLyricsEditor( const QUrl &I_url )
+{
+    lyricsEditor->readLyricsFile( I_url );
+    ui->lyricsStackedWidget->setCurrentWidget( ui->page_LyricsEditor );
+}
+
 
 // *****************************************************************
 // private override
@@ -140,16 +153,24 @@ TP_LyricsWindow::initializeConnection()
     connect( ui->lyricsStackedWidget,   &TP_LyricsStackedWidget::signal_windowChanged,
              this,                      &TP_LyricsWindow::slot_windowChanged );
 
-    // Lyrics viewer related
+    // Lyrics viewer & editor related
     connect( lyricsViewer,  &TP_LyricsViewer::signal_lyricsDoubleClicked,
              this,          &TP_LyricsWindow::slot_lyricsDoubleClicked );
+    connect( lyricsViewer,  &TP_LyricsViewer::signal_switchToLyricsEditor,
+             this,          &TP_LyricsWindow::slot_switchToLyricsEditor );
+    connect( lyricsEditor,  &TP_LyricsEditor::signal_switchToLyricsViewer,
+             this,          &TP_LyricsWindow::slot_switchToLyricsViewer );
 }
 
 void
 TP_LyricsWindow::initializeUI()
 {
-    lyricsViewer->readLrcFile( {} );
+    lyricsViewer->readLyricsFile( {} );
+
     ui->page_LyricsViewer->layout()->addWidget( lyricsViewer );
+    ui->page_LyricsEditor->layout()->addWidget( lyricsEditor );
+
     ui->lyricsStackedWidget->setCurrentWidget( ui->page_LyricsViewer );
+
     slot_refreshFont();
 }

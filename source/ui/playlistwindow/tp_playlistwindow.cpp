@@ -15,7 +15,6 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QThreadPool>
