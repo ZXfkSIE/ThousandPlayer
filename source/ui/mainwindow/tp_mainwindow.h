@@ -34,6 +34,7 @@ public:
     void setCover( const QImage &I_image );
 
 signals:
+    void signal_exitProgram();
     void signal_minimizeWindow();
     void signal_restoreWindow();
     void signal_activateWindow();

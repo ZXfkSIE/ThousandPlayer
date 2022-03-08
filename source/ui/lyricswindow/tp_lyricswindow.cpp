@@ -50,6 +50,13 @@ TP_LyricsWindow::updatePosition( qint64 I_ms )
     lyricsEditor->setCurrentPosition( I_ms );
 }
 
+
+bool
+TP_LyricsWindow::saveLyricsFileBeforeQuit()
+{
+    return lyricsEditor->saveLyricsFileBeforeQuit();
+}
+
 // *****************************************************************
 // public slots
 // *****************************************************************
@@ -115,6 +122,14 @@ TP_LyricsWindow::slot_switchToLyricsEditor( const QUrl &I_url )
     lyricsEditor->readLyricsFile( I_url );
     ui->lyricsStackedWidget->setCurrentWidget( ui->page_LyricsEditor );
 }
+
+
+void
+TP_LyricsWindow::on_pushButton_Close_clicked()
+{
+    hide();
+}
+
 
 
 // *****************************************************************

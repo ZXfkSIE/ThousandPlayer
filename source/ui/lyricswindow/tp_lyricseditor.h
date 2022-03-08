@@ -20,6 +20,8 @@ public:
     void refreshFont();
     void readLyricsFile( const QUrl &I_url );
 
+    bool saveLyricsFileBeforeQuit();
+
 signals:
     void signal_switchToLyricsViewer( const QUrl &url );
 
@@ -39,6 +41,7 @@ private:
 
     QUrl    currentFileURL;
     qint64  currentPosition;
+    QShortcut *shortcut_F8;
 };
 
 #endif // TP_LYRICSEDITOR_H

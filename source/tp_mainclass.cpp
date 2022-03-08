@@ -14,8 +14,6 @@
 #include <QAudioDevice>
 #include <QAudioOutput>
 #include <QListWidgetItem>
-#include <QMediaDevices>
-#include <QMediaMetaData>
 #include <QMessageBox>
 #include <QGuiApplication>
 #include <QScreen>
@@ -171,6 +169,16 @@ TP_MainClass::slot_initializePosition()
 // *****************************************************************
 // private slots:
 // *****************************************************************
+
+void
+TP_MainClass::slot_exitProgram()
+{
+    // Save LRC file
+    if( ! lyricsWindow->saveLyricsFileBeforeQuit() )
+        return;
+
+    QApplication::quit();
+}
 
 void
 TP_MainClass::slot_minimizeWindow()
@@ -1079,7 +1087,9 @@ TP_MainClass::initializeConnection()
     connect( mainWindow,    &TP_MainWindow::signal_volumeSliderValueChanged,
              this,          &TP_MainClass::slot_setVolume );
 
-    // Windows minimizing & restoring
+    // Program exiting, Windows minimizing & restoring
+    connect( mainWindow,        &TP_MainWindow::signal_exitProgram,
+             this,              &TP_MainClass::slot_exitProgram );
     connect( mainWindow,        &TP_MainWindow::signal_minimizeWindow,
              this,              &TP_MainClass::slot_minimizeWindow );
     connect( mainWindow,        &TP_MainWindow::signal_restoreWindow,
@@ -1123,12 +1133,12 @@ TP_MainClass::initializeConnection()
 
     // Showing and hiding LyricsWindow
     connect( lyricsWindow,  &TP_LyricsWindow::signal_hidden,
-             mainWindow,    &TP_MainWindow::slot_playlistWindowHidden );
+             mainWindow,    &TP_MainWindow::slot_lyricsWindowHidden );
     connect( lyricsWindow,  &TP_LyricsWindow::signal_shown,
-             mainWindow,    &TP_MainWindow::slot_playlistWindowShown );
-    connect( mainWindow,    &TP_MainWindow::signal_openPlaylistWindow,
+             mainWindow,    &TP_MainWindow::slot_lyricsWindowShown );
+    connect( mainWindow,    &TP_MainWindow::signal_openLyricsWindow,
              lyricsWindow,  &TP_LyricsWindow::show );
-    connect( mainWindow,    &TP_MainWindow::signal_hidePlaylistWindow,
+    connect( mainWindow,    &TP_MainWindow::signal_hideLyricsWindow,
              lyricsWindow,  &TP_LyricsWindow::hide );
 
     // ConfigWindow related
