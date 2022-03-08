@@ -24,6 +24,8 @@ public:
     void clearLyricsViewer();
     void updatePosition( qint64 I_ms );
 
+    bool saveLyricsFileBeforeQuit();
+
 signals:
     void signal_moveWindow( QWidget *window, const QRect &geometry );
     void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
@@ -46,6 +48,8 @@ private slots:
     void slot_lyricsDoubleClicked( qint64 I_ms );
     void slot_switchToLyricsViewer( const QUrl &I_url );
     void slot_switchToLyricsEditor( const QUrl &I_url );
+
+    void on_pushButton_Close_clicked();
 
 private:
     Ui::TP_LyricsWindow *ui;

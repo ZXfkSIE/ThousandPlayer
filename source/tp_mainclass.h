@@ -43,6 +43,7 @@ public slots:
     void slot_initializePosition();
 
 private slots:
+    void slot_exitProgram();
     void slot_minimizeWindow();
     void slot_restoreWindow();
 

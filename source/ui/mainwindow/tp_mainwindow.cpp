@@ -251,7 +251,7 @@ TP_MainWindow::on_pushButton_Exit_clicked()
         emit signal_minimizeWindow();
     }
     else
-        QApplication::exit();
+        emit signal_exitProgram();
 }
 
 

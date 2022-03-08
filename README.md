@@ -38,6 +38,11 @@ but already has fundamental functions that a local audio player should have. Fee
   - For format support details about ReplayGain and cover art reading, see [here](SupportInfo.md).
 - `.lrc` lyrics file viewer.
   - In order to view lyrics, a `.lrc` file must be put in the same directory of the corresponding music file. Also, their filenames must be identical except for the extension part (for example, the lyrics file to be viewed while playing `song.flac` must be named `song.lrc`).
+- Integrated `.lrc` lyrics file editor with timestap inserting function.
+<p align="center">
+  <img src="figure/lyricsEditor.png">
+</p>
+
 - A horizontally expandable main window. No need to worry about long music informations.
 - A cover viewer for viewing album covers.
 - Rich finding and sorting functions.
@@ -48,7 +53,6 @@ but already has fundamental functions that a local audio player should have. Fee
 - CMake-based automatic compilation.
 
 ## Planned features
-- `.lrc` lyrics file maker.
 - Audio format converting.
 - Music tag editor.
 - Audio description customization.

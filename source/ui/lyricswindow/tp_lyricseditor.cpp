@@ -9,6 +9,7 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QSaveFile>
+#include <QShortcut>
 
 TP_LyricsEditor::TP_LyricsEditor( QWidget *parent ) :
     QWidget         { parent }
@@ -19,6 +20,14 @@ TP_LyricsEditor::TP_LyricsEditor( QWidget *parent ) :
     ui->setupUi( this );
 
     initializeUI();
+
+    shortcut_F8 = new QShortcut {
+            QKeySequence { Qt::Key_F8 },
+            ui->plainTextEdit,
+            ui->pushButton_InsertTimestamp,
+            &QPushButton::click,
+            Qt::WidgetShortcut
+            };
 }
 
 
@@ -40,6 +49,7 @@ TP_LyricsEditor::refreshFont()
 {
     ui->plainTextEdit->setFont( TP::config().getLyricsFont() );
 }
+
 
 void
 TP_LyricsEditor::readLyricsFile( const QUrl &I_url )
@@ -66,6 +76,35 @@ TP_LyricsEditor::readLyricsFile( const QUrl &I_url )
     ui->plainTextEdit->ensureCursorVisible();
 
     currentFileURL = I_url;
+}
+
+
+bool
+TP_LyricsEditor::saveLyricsFileBeforeQuit()
+{
+    if( ui->plainTextEdit->document()->isModified() )
+        switch( QMessageBox::question(
+                    this,                                                      // QWidget *parent
+                    tr( "Warning" ),                                           // const QString &title
+                    tr( "Current lyrics file has not been saved. Save it?" ),  // const QString &text
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,  // QMessageBox::StandardButtons buttons
+                    QMessageBox::Cancel                                        // QMessageBox::StandardButton defaultButton
+                    ) )
+        {
+        case QMessageBox::Yes :
+            if( openSaveFileDialog() )
+                return true;
+            else
+                return false;
+
+        case QMessageBox::Cancel :
+            return false;
+
+        default:
+            return true;
+        }
+    else
+        return true;
 }
 
 // *****************************************************************
@@ -167,6 +206,7 @@ TP_LyricsEditor::returnToLyricsViewer( const QUrl &I_url )
 {
     currentFileURL.clear();
     ui->plainTextEdit->clear();
+    ui->plainTextEdit->document()->setModified( false );
     emit signal_switchToLyricsViewer( I_url );
 }
 

@@ -298,52 +298,54 @@ Anyway, they have been removed from the list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="112"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="151"/>
         <source>Open Lyrics File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="114"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="196"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="153"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="236"/>
         <source>Lyrics files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="57"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="214"/>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="225"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="67"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="254"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="265"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="58"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="68"/>
         <source>Could not open %1 :
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="82"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="88"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="121"/>
         <source>Warning</source>
         <translation type="unfinished">警告</translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="83"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="89"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="122"/>
         <source>Current lyrics file has not been saved. Save it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="194"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="234"/>
         <source>Save Lyrics File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="215"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="255"/>
         <source>Could not write %1 :
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="226"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricseditor.cpp" line="266"/>
         <source>Could not open %1 for writing:
 </source>
         <translation type="unfinished"></translation>
@@ -377,29 +379,29 @@ Anyway, they have been removed from the list.</source>
 <context>
     <name>TP_MainClass</name>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="118"/>
+        <location filename="../source/tp_mainclass.cpp" line="116"/>
         <source>Not Available</source>
         <translation>利用不可</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="119"/>
+        <location filename="../source/tp_mainclass.cpp" line="117"/>
         <source>QMediaPlayer is not supported on this platform.
 The program will quit now.</source>
         <translation>QMediaPlayerはお使いのプラットフォームに対応していません。
 本プログラムは終了します。</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="123"/>
+        <location filename="../source/tp_mainclass.cpp" line="121"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="1010"/>
+        <location filename="../source/tp_mainclass.cpp" line="1018"/>
         <source>Media Player Error</source>
         <translation>メディアプレイヤーエラー</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="1012"/>
+        <location filename="../source/tp_mainclass.cpp" line="1020"/>
         <source>An error of QMediaPlayer has occurred:
 </source>
         <translation>QMediaPlayerのエラーが発生しました：
