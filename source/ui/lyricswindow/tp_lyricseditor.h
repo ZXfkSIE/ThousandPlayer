@@ -8,6 +8,8 @@ namespace Ui {
 class TP_LyricsEditor;
 }
 
+class QShortcut;
+
 class TP_LyricsEditor : public QWidget
 {
     Q_OBJECT
@@ -39,9 +41,9 @@ private:
     void returnToLyricsViewer( const QUrl &I_url );
     bool openSaveFileDialog();
 
-    QUrl    currentFileURL;
-    qint64  currentPosition;
-    QShortcut *shortcut_F8;
+    QUrl        currentFileURL;
+    qint64      currentPosition;
+    QShortcut * shortcut_F8;
 };
 
 #endif // TP_LYRICSEDITOR_H
