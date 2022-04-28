@@ -1001,7 +1001,7 @@ TP_ConfigWindow::initializeUI()
     ui->label_Icon->setPixmap( QIcon{ ":/image/MusicalNote.svg" }
                                .pixmap( ui->label_Icon->size() )
                                );
-    ui->label_SoftName->setText( QString( "ThousandPlayer v" ) + TP_PROJECT_VERSION );
+    ui->label_SoftName->setText( QString( "ThousandPlayer v" ) + TP::projectVersion );
 }
 
 

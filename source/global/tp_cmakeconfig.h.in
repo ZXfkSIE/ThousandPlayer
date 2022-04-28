@@ -1,0 +1,13 @@
+﻿#ifndef TP_CMAKECONFIG_H
+#define TP_CMAKECONFIG_H
+
+#include <QString>
+
+namespace TP
+{
+
+static const QString projectVersion { "@PROJECT_VERSION@" };
+
+}
+
+#endif

@@ -17,11 +17,12 @@
 #include <QMessageBox>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QTimer>
 #include <QWindow>
 
 #include <cmath>
-#include <deque>
 #include <filesystem>
+#include <queue>
 
 // Headers of TagLib
 #include <attachedpictureframe.h>
@@ -51,6 +52,7 @@ TP_MainClass::TP_MainClass() :
   , snapPosition_lyricsWindow   {}
 {
     mediaPlayer->setAudioOutput( audioOutput );
+    qDebug() << "[Audio Output] Default audio device:" << mediaPlayer->audioOutput()->device().description();
     TP::playbackState() = mediaPlayer->playbackState();
 
     initializeConnection();
@@ -902,16 +904,17 @@ TP_MainClass::slot_previousButtonPushed()
 void
 TP_MainClass::slot_interruptingStopTriggered()
 {
-    b_isStopInterrupting = true;
-    mediaPlayer->stop();
+    if( mediaPlayer->playbackState() != QMediaPlayer::StoppedState )
+    {
+        b_isStopInterrupting = true;
+        mediaPlayer->stop();
+    }
 }
 
 void
 TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState I_state )
 {
-    TP::playbackState() = I_state;
-
-    switch ( I_state )
+    switch ( TP::playbackState() = I_state )
     {
     case QMediaPlayer::PlayingState:
         qDebug() << "[Media Player] Playback state changed to PlayingState.";
@@ -1241,21 +1244,20 @@ TP_MainClass::checkAdjacentType( const QRect &I_geometry1, const QRect &I_geomet
 bool
 TP_MainClass::breadthFirstSearch( unsigned I_idx ) const
 {
-    // The search always start from main window.
     unsigned idx_Current {};
-    bool isVisited [ TP::numberOfWindows ] { false };
-    std::deque < unsigned > queue {};
+    bool isVisited [ TP::numberOfWindows ] {};
+    std::queue < unsigned > queue {};
 
     isVisited [ TP::mainWindow ] = true;
-    queue.push_back( TP::mainWindow );
+    // Search always start from main window.
+    queue.push( TP::mainWindow );
 
     while( ! queue.empty() )
     {
         idx_Current = queue.front();
-        queue.pop_front();
+        queue.pop();
 
         for( unsigned i { 1 }; i < TP::numberOfWindows; i++ )
-        {
             if( ! isVisited[ i ] && snapStatus[ idx_Current ][ i ] )
             {
                 if( i == I_idx )
@@ -1263,10 +1265,9 @@ TP_MainClass::breadthFirstSearch( unsigned I_idx ) const
                 else
                 {
                     isVisited[ i ] = true;
-                    queue.push_back( i );
+                    queue.push( i );
                 }
              }
-        }
     }
 
     return false;
@@ -1380,7 +1381,11 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         lyricsWindow->readLyricsFileFromCurrentItem();
 
         mediaPlayer->setSource( url );
+#ifdef Q_OS_WIN
+        QTimer::singleShot( 500, mediaPlayer, &QMediaPlayer::play );
+#else
         mediaPlayer->play();
+#endif
     }       // if( std::filesystem::exists
     else
         slot_interruptingStopTriggered();

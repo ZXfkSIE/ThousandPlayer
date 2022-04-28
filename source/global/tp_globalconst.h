@@ -6,6 +6,7 @@
 
 namespace TP
 {
+
 static const unsigned numberOfWindows   = 3;
 static const unsigned mainWindow        = 0;
 static const unsigned playlistWindow    = 1;

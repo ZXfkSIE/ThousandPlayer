@@ -1,6 +1,0 @@
-﻿#ifndef TP_CMAKECONFIG_H
-#define TP_CMAKECONFIG_H
-
-#define TP_PROJECT_VERSION "@PROJECT_VERSION@"
-
-#endif

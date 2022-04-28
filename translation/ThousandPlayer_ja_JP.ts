@@ -197,36 +197,36 @@
 <context>
     <name>TP_FileListWidget</name>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="319"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="367"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="730"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="317"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="365"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="729"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="320"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="318"/>
         <source>Are you really want to delete&lt;br&gt;%1&lt;br&gt;from the &lt;b&gt;DISK&lt;/b&gt;?&lt;br&gt;NOTE: remote URLs cannot be deleted.&lt;br&gt;They will only be removed from the list.</source>
         <translation>本当に&lt;br&gt;%1&lt;br&gt;を&lt;b&gt;ディスク&lt;/b&gt;から削除しますか？&lt;br&gt;注：リモートURLは削除できません。&lt;br&gt;リストから外されるだけとなります。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="327"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="325"/>
         <source>these %1 items</source>
         <translation>これら %1 個のファイル</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="368"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="366"/>
         <source>Failed to delete %1 items.
 Anyway, they have been removed from the list.</source>
         <translation>%1 個のファイルの削除に失敗しましたが、
 リストからは外されました。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="731"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="730"/>
         <source>No result found.</source>
         <translation>結果は見つかりませんでした。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="889"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="888"/>
         <source>&amp;Remove</source>
         <translation>外す (&amp;R)</translation>
     </message>
@@ -379,29 +379,29 @@ Anyway, they have been removed from the list.</source>
 <context>
     <name>TP_MainClass</name>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="116"/>
+        <location filename="../source/tp_mainclass.cpp" line="118"/>
         <source>Not Available</source>
         <translation>利用不可</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="117"/>
+        <location filename="../source/tp_mainclass.cpp" line="119"/>
         <source>QMediaPlayer is not supported on this platform.
 The program will quit now.</source>
         <translation>QMediaPlayerはお使いのプラットフォームに対応していません。
 本プログラムは終了します。</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="121"/>
+        <location filename="../source/tp_mainclass.cpp" line="123"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="1018"/>
+        <location filename="../source/tp_mainclass.cpp" line="1021"/>
         <source>Media Player Error</source>
         <translation>メディアプレイヤーエラー</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="1020"/>
+        <location filename="../source/tp_mainclass.cpp" line="1023"/>
         <source>An error of QMediaPlayer has occurred:
 </source>
         <translation>QMediaPlayerのエラーが発生しました：

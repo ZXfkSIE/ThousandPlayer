@@ -197,36 +197,36 @@
 <context>
     <name>TP_FileListWidget</name>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="319"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="367"/>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="730"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="317"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="365"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="729"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="320"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="318"/>
         <source>Are you really want to delete&lt;br&gt;%1&lt;br&gt;from the &lt;b&gt;DISK&lt;/b&gt;?&lt;br&gt;NOTE: remote URLs cannot be deleted.&lt;br&gt;They will only be removed from the list.</source>
         <translation>你真的要從&lt;b&gt;磁碟&lt;/b&gt;刪除&lt;br&gt;%1 嗎？&lt;br&gt;注意：遠端網址指向的檔案無法被刪除，&lt;br&gt;只會從列表中被移除。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="327"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="325"/>
         <source>these %1 items</source>
         <translation>%1 個項目</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="368"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="366"/>
         <source>Failed to delete %1 items.
 Anyway, they have been removed from the list.</source>
         <translation>%1 個項目無法被刪除，
 但已經從列表中被移除。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="731"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="730"/>
         <source>No result found.</source>
         <translation>無法找到指定項目。</translation>
     </message>
     <message>
-        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="889"/>
+        <location filename="../source/ui/playlistwindow/tp_filelistwidget.cpp" line="888"/>
         <source>&amp;Remove</source>
         <translation>移除 (&amp;R)</translation>
     </message>
@@ -375,29 +375,29 @@ Anyway, they have been removed from the list.</source>
 <context>
     <name>TP_MainClass</name>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="116"/>
+        <location filename="../source/tp_mainclass.cpp" line="118"/>
         <source>Not Available</source>
         <translation>無法使用</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="117"/>
+        <location filename="../source/tp_mainclass.cpp" line="119"/>
         <source>QMediaPlayer is not supported on this platform.
 The program will quit now.</source>
         <translation>QMediaPlayer 在您的平臺上無法使用。
 本程式將關閉。</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="121"/>
+        <location filename="../source/tp_mainclass.cpp" line="123"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="1018"/>
+        <location filename="../source/tp_mainclass.cpp" line="1021"/>
         <source>Media Player Error</source>
         <translation>播放器錯誤</translation>
     </message>
     <message>
-        <location filename="../source/tp_mainclass.cpp" line="1020"/>
+        <location filename="../source/tp_mainclass.cpp" line="1023"/>
         <source>An error of QMediaPlayer has occurred:
 </source>
         <translation>QMediaPlayer發生了錯誤：
