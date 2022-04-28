@@ -258,9 +258,7 @@ TP_FileListWidget::clearUnselectedItems()
     auto numberOfSelectedItems { selectedItems().size() };
 
     // No item is selected or all items are selected
-    if(     ! numberOfSelectedItems
-        ||
-            numberOfSelectedItems == count() )
+    if( ! numberOfSelectedItems || numberOfSelectedItems == count() )
         return;
 
     reverseSelection();
@@ -347,7 +345,7 @@ TP_FileListWidget::deleteSelectedItems()
                 nextItem = nullptr;
 
             TP::SourceType sourceType {
-                static_cast<TP::SourceType>( selectedItem->data( TP::role_SourceType ).toInt() )
+                static_cast< TP::SourceType >( selectedItem->data( TP::role_SourceType ).toInt() )
             };
 
             if( sourceType == TP::singleFile )
@@ -388,13 +386,15 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
     if( count() <= 1 )
         return;
 
-    int maxIdx { count() - 1 }, r {}, low {}, high {};
+    int maxIdx { count() - 1 };
     std::uniform_int_distribution< int > distribution { 0, maxIdx } ;
 
     // Shuffle whole list to avoid worst situation
-    for( unsigned i {}; i <= maxIdx; i++ )
+    for( int i {}; i <= maxIdx; i++ )
     {
-        r = distribution( TP::randomEngine() );
+        int r { i };
+        while( i == r )
+            r = distribution( TP::randomEngine() );
 
         // swap item( i ) & item( r )
         if( i < r )
@@ -419,13 +419,10 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
 
     QString qstr_Pivot {};
 
-    while( true )
+    while( ! stack.empty() )
     {
-        if( stack.empty() )
-            break;
-
         auto [ left, right ] = stack.top();
-        low = left, high = right;
+        auto low { left }, high { right };
         stack.pop();
         auto *pivot = item( left )->clone();
 
@@ -531,11 +528,12 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
             }
 
             if( low < high )
-            {                                       // item[ low ] = item[ high ]
+            {
+                // item[ low ] = item[ high ]
                 insertItem( low, item( high )->clone() );
                 delete takeItem( low + 1 );
                 // Now it is certain that item[ low ] < pivot (when in ascending order),
-                // thus item[ low ] can be jumped.
+                // thus item[ low ] can be skipped.
                 low++;
             }
 
@@ -634,11 +632,12 @@ TP_FileListWidget::sortByData( int I_role, bool I_isDescending )
             }
 
             if( low < high )
-            {                                       // item[ high ] = item[ low ]
+            {
+                // item[ high ] = item[ low ]
                 delete takeItem( high );
                 insertItem( high, item( low )->clone() );
                 // Now it is certain that item[ high ] >= pivot (when in ascending order),
-                // thus item[ high ] can be jumped.
+                // thus item[ high ] can be skipped.
                 high--;
             }
         }       // while( low < high )

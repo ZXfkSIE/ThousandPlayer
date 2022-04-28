@@ -278,13 +278,15 @@ TP_LyricsViewer::sortByTimestamp()
     if( count() <= 1 )
         return;
 
-    int maxIdx { count() - 1 }, r {}, low {}, high {};
+    int maxIdx { count() - 1 };
     std::uniform_int_distribution< int > distribution { 0, maxIdx } ;
 
     // Shuffle whole list to avoid worst situation
-    for( unsigned i {}; i <= maxIdx; i++ )
+    for( int i {}; i <= maxIdx; i++ )
     {
-        r = distribution( TP::randomEngine() );
+        int r { i };
+        while( i == r )
+            r = distribution( TP::randomEngine() );
 
         // swap item( i ) & item( r )
         if( i < r )
@@ -307,13 +309,10 @@ TP_LyricsViewer::sortByTimestamp()
     std::stack< std::pair< int, int > > stack {};
     stack.push( { 0, maxIdx } );
 
-    while( true )
+    while( ! stack.empty() )
     {
-        if( stack.empty() )
-            break;
-
         auto [ left, right ] = stack.top();
-        low = left, high = right;
+        auto low { left }, high { right };
         stack.pop();
         auto *pivot = item( left )->clone();
 

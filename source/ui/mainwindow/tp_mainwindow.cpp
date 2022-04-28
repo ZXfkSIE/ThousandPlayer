@@ -578,7 +578,7 @@ TP_MainWindow::initializeUI()
     setAudioPropertyLabels();
 
     setWindowIcon( QIcon{ ":/image/MusicalNote.svg" } );
-    ui->label_Title->setText( QString{ "ThousandPlayer v" } + TP_PROJECT_VERSION );
+    ui->label_Title->setText( QString{ "ThousandPlayer v" } + TP::projectVersion );
 
     ui->pushButton_Minimize ->setIcon( QIcon{ ":/image/icon_Minimize.svg" } );
     ui->pushButton_Expand   ->setIcon( QIcon{ ":/image/icon_Expand.svg" } );

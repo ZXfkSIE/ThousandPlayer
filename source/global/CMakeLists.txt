@@ -1,4 +1,4 @@
-﻿configure_file(tp_cmakeconfig.h.cmake tp_cmakeconfig.h @ONLY)
+﻿configure_file(tp_cmakeconfig.h.in tp_cmakeconfig.h @ONLY)
 
 set(TP_GLOBAL_FILES
     tp_cmakeconfig.h
