@@ -45,9 +45,9 @@ Class::getValue() const
 
 ```cpp
 void
-Class::changeName( QString I_qstr_Name )
+Class::changeName( QString I_qstr_name )
 {
-    qstr_Name = I_qstr_Name;                // "qstr_Name" is a private member inside "Class"
+    qstr_name = I_qstr_name;                // "qstr_name" is a private member inside "Class"
     auto str_name { qstr_name.toStdString() };
     // ...
 }

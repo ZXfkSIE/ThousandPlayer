@@ -354,12 +354,12 @@ Anyway, they have been removed from the list.</source>
 <context>
     <name>TP_LyricsViewer</name>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="163"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="161"/>
         <source>No lyrics</source>
         <translation>歌詞なし</translation>
     </message>
     <message>
-        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="267"/>
+        <location filename="../source/ui/lyricswindow/tp_lyricsviewer.cpp" line="265"/>
         <source>Lyrics &amp;editor</source>
         <translation type="unfinished"></translation>
     </message>

@@ -118,7 +118,7 @@ private:
 
     void setAudioInfoLabel( const QListWidgetItem *I_item = nullptr );
     void setAudioPropertyLabels(
-            const QString & I_qstr_Format   = QString { "N/A" },
+            const QString & I_qstr_format   = QString { "N/A" },
             int             I_bitDepth      = -1,
             int             I_sampleRate    = -1,
             int             I_bitRate       = -1,

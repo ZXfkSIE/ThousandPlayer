@@ -55,10 +55,10 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
     b_hasLrcFile = false;
     currentIdx = -1;
     currentPosition = 0;
-    const auto &qstr_LocalPath { I_url.toLocalFile() };
-    QFile file { qstr_LocalPath };
+    const auto &qstr_localPath { I_url.toLocalFile() };
+    QFile file { qstr_localPath };
 
-    qDebug() << "[Lyrics Viewer] Reading LRC file from" << qstr_LocalPath;
+    qDebug() << "[Lyrics Viewer] Reading LRC file from" << qstr_localPath;
 
     if( file.open( QIODeviceBase::ReadOnly ) )
     {
@@ -66,14 +66,14 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
 
         while( ! inputStream.atEnd() )
         {
-            const auto &qstr_Line { inputStream.readLine().trimmed() };
+            const auto &qstr_line { inputStream.readLine().trimmed() };
 
             // No ']', no valid timestamp
-            if( qstr_Line.lastIndexOf( ']' ) == -1 )
+            if( qstr_line.lastIndexOf( ']' ) == -1 )
                 continue;
 
             // Split the line by ']'
-            auto qstrList_Timestamp { qstr_Line.split( ']', Qt::SkipEmptyParts ) };
+            auto qstrList_timestamp { qstr_line.split( ']', Qt::SkipEmptyParts ) };
 
             // If the last segmentation began with '['
             // (such as the line "[00:01.100][00:02.200]"),
@@ -81,32 +81,32 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
             // If not
             // (such as the line "[00:01.100][00:02.200]You're a cat"),
             // the last segmentation is the lyrics sentence of this line.
-            QString qstr_Sentence {};
-            if( qstrList_Timestamp.last()[0] != '[' )
-                qstr_Sentence = qstrList_Timestamp.takeLast().trimmed();
+            QString qstr_sentence {};
+            if( qstrList_timestamp.last()[0] != '[' )
+                qstr_sentence = qstrList_timestamp.takeLast().trimmed();
 
-            for( auto &qstr_Timestamp : qstrList_Timestamp )
+            for( auto &qstr_timestamp : qstrList_timestamp )
             {
                 // Eliminate all whitespaces
-                qstr_Timestamp = qstr_Timestamp.simplified().replace( " ", "" );
+                qstr_timestamp = qstr_timestamp.simplified().replace( " ", "" );
 
-                // The smallest length of the segment should be 6, e.g. "[00:10"
-                if( qstr_Timestamp[ 0 ] != '[' || qstr_Timestamp.size() < 6 )
+                // The smallest length of the segment should be 6, e.g. "[0:10"
+                if( qstr_timestamp[ 0 ] != '[' || qstr_timestamp.size() < 5 )
                     continue;
 
                 // Remove the initial '['
-                qstr_Timestamp = qstr_Timestamp.last( qstr_Timestamp.size() - 1 );
+                qstr_timestamp = qstr_timestamp.last( qstr_timestamp.size() - 1 );
 
                 int m {}, s {}, ms {};
                 bool b_conversionOK {};
 
-                auto idx_Point { qstr_Timestamp.lastIndexOf( '.' ) };
+                auto idx_Point { qstr_timestamp.lastIndexOf( '.' ) };
                 if( idx_Point != -1
-                        && qstr_Timestamp.size() - idx_Point - 1 > 0        // Number of digits of ms > 0
-                        && qstr_Timestamp.size() - idx_Point - 1 <= 3 )     // Number of digits of ms <= 3
+                        && qstr_timestamp.size() - idx_Point - 1 > 0        // Number of digits of ms > 0
+                        && qstr_timestamp.size() - idx_Point - 1 <= 3 )     // Number of digits of ms <= 3
                 {
                     // Extract substring after '.'
-                    auto qstr_ms { qstr_Timestamp.last( qstr_Timestamp.size() - idx_Point - 1 ) };
+                    auto qstr_ms { qstr_timestamp.last( qstr_timestamp.size() - idx_Point - 1 ) };
 
                     // Pad zeros.
                     // For example, if there is a timestamp "[00:01.54]",
@@ -121,26 +121,24 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
                         continue;
 
                     // Remove all characters from '.'
-                    qstr_Timestamp = qstr_Timestamp.first( idx_Point );
+                    qstr_timestamp = qstr_timestamp.first( idx_Point );
                 }
 
-                auto idx_Colon { qstr_Timestamp.indexOf( ':' ) };
+                auto idx_Colon { qstr_timestamp.indexOf( ':' ) };
 
-                auto qstr_s { qstr_Timestamp.last( qstr_Timestamp.size() - idx_Colon - 1 ) };
+                auto qstr_s { qstr_timestamp.last( qstr_timestamp.size() - idx_Colon - 1 ) };
                 s = qstr_s.toInt( &b_conversionOK );
                 if( ! b_conversionOK || s > 59 || s < 0 )
                     continue;
 
-                auto qstr_m { qstr_Timestamp.first( idx_Colon ) };
+                auto qstr_m { qstr_timestamp.first( idx_Colon ) };
                 m = qstr_m.toInt( &b_conversionOK );
                 if( ! b_conversionOK || m < 0 )
                     continue;
 
-                m = m * 60000;
-                s = s * 1000;
-                auto total_ms { m + s + ms };
+                auto total_ms { m * 6000 + s * 1000 + ms };
 
-                addItem( qstr_Sentence );
+                addItem( qstr_sentence );
                 item( count() - 1 )->setData( TP::role_TimeStampInMs, total_ms );
                 item( count() - 1 )->setTextAlignment( Qt::AlignCenter );
                 b_hasLrcFile = true;
