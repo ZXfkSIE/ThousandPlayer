@@ -1014,14 +1014,14 @@ TP_MainClass::slot_deviceChanged() const
 
 
 void
-TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString &I_errorString ) const
+TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString &I_qstr_error ) const
 {
     QMessageBox::critical(
                 nullptr,                                // QWidget *parent
                 tr( "Media Player Error" ),             // const QString &title
                 // const QString &text
                 tr( "An error of QMediaPlayer has occurred:\n" ) +
-                I_errorString );
+                I_qstr_error );
 }
 
 

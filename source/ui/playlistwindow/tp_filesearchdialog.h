@@ -24,7 +24,7 @@ private:
 
     void accept() override;
 
-    QString qstr_Keyword;
+    QString qstr_keyword;
     bool    b_isFilenameSearched;
     bool    b_isAlbumSearched;
     bool    b_isArtistSearched;

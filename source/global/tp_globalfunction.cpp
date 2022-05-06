@@ -60,11 +60,11 @@ TP::getLyricsURL( QListWidgetItem *I_item )
             || TP::currentItem()->data( TP::role_SourceType ).value< TP::SourceType >() != TP::singleFile )
         return {};
 
-    auto qstr_FileName { TP::currentItem()->data( TP::role_FileName ).toString() };
-    qstr_FileName = qstr_FileName.left( qstr_FileName.lastIndexOf( '.' ) ) + QString { ".lrc" };
+    auto qstr_fileName { TP::currentItem()->data( TP::role_FileName ).toString() };
+    qstr_fileName = qstr_fileName.left( qstr_fileName.lastIndexOf( '.' ) ) + QString { ".lrc" };
     return {
         TP::currentItem()->data( TP::role_URL ).toUrl().adjusted( QUrl::RemoveFilename ).toString()
-        + qstr_FileName
+        + qstr_fileName
     };
 }
 
@@ -75,7 +75,7 @@ TP::storeInformation( QListWidgetItem *I_item )
     const auto &url { I_item->data( TP::role_URL ).toUrl() };
     const auto &qstr_localFilePath { url.toLocalFile() };
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
-    const auto &qstr_Filename { fileInfo.fileName() };
+    const auto &qstr_fileName { fileInfo.fileName() };
     const auto &qdati_LastModified { fileInfo.lastModified() };
 
     TagLib::FileRef fileRef { qstr_localFilePath
@@ -108,7 +108,7 @@ TP::storeInformation( QListWidgetItem *I_item )
     I_item->setData( TP::role_Bitrate,      bitrate );              // Set bitrate
     I_item->setData( TP::role_SampleRate,   sampleRate );           // Set sample rate
     I_item->setData( TP::role_BitDepth,     bitDepth );             // Set bit depth
-    I_item->setData( TP::role_FileName,     qstr_Filename );        // Set file name
+    I_item->setData( TP::role_FileName,     qstr_fileName );        // Set file name
     I_item->setData( TP::role_LastModified, qdati_LastModified );   // Set last modified time & date
 
     // set descrption, artist, title, album
@@ -116,7 +116,7 @@ TP::storeInformation( QListWidgetItem *I_item )
     if( ! qstr_title.length() )
         // No title in tag, meaning that no valid tag is contained in the file
     {
-        I_item->setData( TP::role_Description, qstr_Filename );
+        I_item->setData( TP::role_Description, qstr_fileName );
     }
     else
     {

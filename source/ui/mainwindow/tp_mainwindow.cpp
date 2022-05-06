@@ -660,7 +660,7 @@ TP_MainWindow::setAudioInfoLabel( const QListWidgetItem *I_item )
 
 void
 TP_MainWindow::setAudioPropertyLabels(
-        const QString & I_qstr_Format,
+        const QString & I_qstr_format,
         int             I_bitDepth,
         int             I_sampleRate,
         int             I_bitRate,
@@ -669,7 +669,7 @@ TP_MainWindow::setAudioPropertyLabels(
 {
     ui->label_Format->setText(
                 QString{ " " }
-                + I_qstr_Format
+                + I_qstr_format
                 + QString{ " " } );
 
     ui->label_BitDepth->setText(

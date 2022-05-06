@@ -599,20 +599,20 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
             TP::SourceType sourceType {
                 static_cast< TP::SourceType >( jObject_File[ key_sourceType ].toInt() )
             };
-            const auto &qstr_FileURL {
+            const auto &qstr_fileURL {
                 QUrl { jObject_File[ key_url ].toString() }
             };
 
-            if( ! qstr_FileURL.isEmpty() )
+            if( ! qstr_fileURL.isEmpty() )
             {
                 auto *item = new QListWidgetItem { newFileList };
-                item->setData( TP::role_URL, qstr_FileURL );             // set URL
+                item->setData( TP::role_URL, qstr_fileURL );             // set URL
                 item->setData( TP::role_SourceType, sourceType );
 
                 switch( sourceType )
                 {
                 case TP::singleFile :
-                    if( std::filesystem::exists( qstr_FileURL.toLocalFile().
+                    if( std::filesystem::exists( qstr_fileURL.toLocalFile().
 #ifdef Q_OS_WIN
                                                  toStdWString()
 #else

@@ -12,4 +12,4 @@ target_link_libraries(TP_config PRIVATE
     TP::global
 
     Qt${QT_VERSION_MAJOR}::Widgets
-    )
+)
