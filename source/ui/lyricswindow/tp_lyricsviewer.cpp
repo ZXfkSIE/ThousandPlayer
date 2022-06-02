@@ -90,7 +90,7 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
                 // Eliminate all whitespaces
                 qstr_timestamp = qstr_timestamp.simplified().replace( " ", "" );
 
-                // The smallest length of the segment should be 6, e.g. "[0:10"
+                // The smallest length of the segment should be 5, e.g. "[0:10"
                 if( qstr_timestamp[ 0 ] != '[' || qstr_timestamp.size() < 5 )
                     continue;
 
@@ -136,7 +136,7 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
                 if( ! b_conversionOK || m < 0 )
                     continue;
 
-                auto total_ms { m * 6000 + s * 1000 + ms };
+                auto total_ms { m * 60000 + s * 1000 + ms };
 
                 addItem( qstr_sentence );
                 item( count() - 1 )->setData( TP::role_TimeStampInMs, total_ms );

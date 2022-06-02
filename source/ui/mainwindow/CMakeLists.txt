@@ -17,6 +17,9 @@
     tp_timeslider.h
     tp_timeslider.cpp
 
+    tp_timesliderproxystyle.h
+    tp_timesliderproxystyle.cpp
+
     tp_volumeicon.h
     tp_volumeicon.cpp
 )
