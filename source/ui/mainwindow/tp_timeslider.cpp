@@ -1,11 +1,16 @@
 ﻿#include "tp_timeslider.h"
 
+#include "tp_timesliderproxystyle.h"
+
 #include <QMouseEvent>
+#include <QStyle>
 
 TP_TimeSlider::TP_TimeSlider( QWidget *parent ) :
     QSlider             { parent }
 {
     setRange( 0, 0 );
+
+    setStyle( new TP_TimeSliderProxyStyle { style() } );
 }
 
 // *****************************************************************
@@ -16,20 +21,14 @@ TP_TimeSlider::TP_TimeSlider( QWidget *parent ) :
 void
 TP_TimeSlider::mouseReleaseEvent( QMouseEvent *event )
 {
-    if( event->button() == Qt::LeftButton && maximum() )
-    {
-        auto second { static_cast< int >(
-            minimum() + ( ( maximum() - minimum() ) * event->position().x() ) / width()
-        )};
-        setValue( second );
-        emit signal_mouseReleased( second );
-    }
     QSlider::mouseReleaseEvent( event );
+    if( event->button() == Qt::LeftButton && maximum() )
+        emit signal_mouseReleased( value() );
 }
 
 void
 TP_TimeSlider::wheelEvent( QWheelEvent *event )
 {
-    emit signal_mouseReleased( value() );
     QSlider::wheelEvent( event );
+    emit signal_mouseReleased( value() );
 }

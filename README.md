@@ -64,7 +64,7 @@ but already has fundamental functions that a local audio player should have. Fee
 ### PipeWire 0.3.40, 0.3.42
 - Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441), largely fixed by [version 0.3.43](https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/0.3.43))
 
-### Qt 6.3.0
+### Qt 6.4.0
 - [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.
 - [QTBUG-100181](https://bugreports.qt.io/browse/QTBUG-100181): Seeking is buggy while playing **FLAC** files in Windows. This software avoids it by adding a 0.5s delay between file opening and playing.
 
