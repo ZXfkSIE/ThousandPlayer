@@ -40,7 +40,7 @@ signals:
     void signal_activateWindow();
 
     void signal_moveWindow( QWidget *window, const QRect &geometry );
-    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::CursorPositionType resizeType );
     void signal_windowChanged();
 
     void signal_timeSliderPressed( qint64 ms );

@@ -26,18 +26,18 @@ TP::getCursorPositionType( QWidget *I_widget, const QPoint &I_point )
 {
     if ( I_point.x() <= TP::borderSize )
     {
-        return TP::leftBorder;
+        return TP::CursorPositionType::Left;
     }
     else if ( I_widget->width() - I_point.x() <= TP::borderSize )
     {
-        return TP::rightBorder;
+        return TP::CursorPositionType::Right;
     }
     else if ( I_widget->height() - I_point.y() <= TP::borderSize )
     {
-        return TP::bottomBorder;
+        return TP::CursorPositionType::Bottom;
     }
 
-    return TP::notAtBorder;
+    return TP::CursorPositionType::NonBorder;
 }
 
 
@@ -57,7 +57,7 @@ QUrl
 TP::getLyricsURL( QListWidgetItem *I_item )
 {
     if( ! TP::currentItem()
-            || TP::currentItem()->data( TP::role_SourceType ).value< TP::SourceType >() != TP::singleFile )
+            || TP::currentItem()->data( TP::role_SourceType ).value< TP::SourceType >() != TP::SourceType::SingleFile )
         return {};
 
     auto qstr_fileName { TP::currentItem()->data( TP::role_FileName ).toString() };
@@ -345,7 +345,7 @@ TP::getReplayGainFromItem( const QListWidgetItem *I_item )
 {
     auto mode { TP::config().getReplayGainMode() };
 
-    if( mode == TP::RG_disabled )
+    if( mode == TP::ReplayGainMode::Disabled )
         return 0;
 
     auto dB_Track { I_item->data( TP::role_ReplayGainTrack ).toFloat() };
@@ -354,7 +354,7 @@ TP::getReplayGainFromItem( const QListWidgetItem *I_item )
 
     switch ( mode )
     {
-    case TP::RG_track :
+    case TP::ReplayGainMode::Track :
 
         if( dB_Track < 114514 )
         {
@@ -372,7 +372,7 @@ TP::getReplayGainFromItem( const QListWidgetItem *I_item )
             break;
         }
 
-    case TP::RG_album :
+    case TP::ReplayGainMode::Album :
 
         if( dB_Album < 114514 )
         {

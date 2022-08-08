@@ -21,7 +21,7 @@ void
 TP_PlaylistBottomFrame::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton
-         && cursorPositionType != TP::notAtBorder )
+         && cursorPositionType != TP::CursorPositionType::NonBorder )
         b_isBorderBeingPressed = true;
 
     QFrame::mousePressEvent( event );
@@ -36,14 +36,14 @@ TP_PlaylistBottomFrame::mouseMoveEvent( QMouseEvent *event )
     {
         auto newGeometry = window()->geometry();
 
-        if( cursorPositionType == TP::bottomBorder )
+        if( cursorPositionType == TP::CursorPositionType::Bottom )
         {
             newGeometry.setBottom( event->globalPosition().toPoint().y() );
             if( newGeometry.height() < window()->minimumHeight() )
                 newGeometry.setHeight( window()->minimumHeight() );
 
             if( newGeometry != window()->geometry() )
-                emit signal_resizeWindow( newGeometry, TP::atBottom );
+                emit signal_resizeWindow( newGeometry, TP::CursorPositionType::Bottom );
         }
     }
     else
@@ -51,7 +51,7 @@ TP_PlaylistBottomFrame::mouseMoveEvent( QMouseEvent *event )
         cursorPositionType = TP::getCursorPositionType( this, eventPosition );
         switch ( cursorPositionType )
         {
-        case TP::notAtBorder:
+        case TP::CursorPositionType::NonBorder :
             if ( b_isCursorResize )
             {
                 setCursor( QCursor( Qt::ArrowCursor ) );
@@ -59,7 +59,7 @@ TP_PlaylistBottomFrame::mouseMoveEvent( QMouseEvent *event )
             }
             break;
 
-        case TP::bottomBorder:
+        case TP::CursorPositionType::Bottom :
             if ( ! b_isCursorResize )
             {
                 setCursor( QCursor( Qt::SizeVerCursor ) );
@@ -82,7 +82,7 @@ TP_PlaylistBottomFrame::mouseReleaseEvent( QMouseEvent *event )
     if( b_isBorderBeingPressed )
     {
         b_isBorderBeingPressed = false;
-        if( TP::getCursorPositionType( this, event->position().toPoint() ) == TP::notAtBorder
+        if( TP::getCursorPositionType( this, event->position().toPoint() ) == TP::CursorPositionType::NonBorder
                 && b_isCursorResize )
         {
             setCursor( QCursor( Qt::ArrowCursor ) );

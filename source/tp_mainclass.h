@@ -48,7 +48,7 @@ private slots:
     void slot_restoreWindow();
 
     void slot_moveWindow ( QWidget *I_window, QRect I_geometry );
-    void slot_resizeWindow ( QWidget *I_window, QRect I_geometry, TP::ResizeType I_resizeType );
+    void slot_resizeWindow ( QWidget *I_window, QRect I_geometry, TP::CursorPositionType I_resizeType );
     void slot_refreshSnapStatus();
 
     void slot_itemDoubleClicked ( QListWidgetItem *I_item );

@@ -7,7 +7,6 @@
 #include "tp_lyricswindow.h"
 #include "tp_mainwindow.h"
 #include "tp_playlistwindow.h"
-#include "tp_filelistwidget.h"
 
 #include <QAbstractButton>
 #include <QApplication>
@@ -239,27 +238,27 @@ TP_MainClass::slot_moveWindow( QWidget *I_window, QRect I_geometry )
 
         switch( snapType )
         {
-        case TP::toBottom :
+        case TP::SnapType::ToBottom :
             I_geometry.moveTop( mainWindow->geometry().bottom() + 1 );
             isVerticallySnapped = true;
             break;
 
-        case TP::toTop :
+        case TP::SnapType::ToTop :
             I_geometry.moveBottom( mainWindow->geometry().top() - 1 );
             isVerticallySnapped = true;
             break;
 
-        case TP::toRight :
+        case TP::SnapType::ToRight :
             I_geometry.moveLeft( mainWindow->geometry().right() + 1 );
             isHorizontallySnapped = true;
             break;
 
-        case TP::toLeft :
+        case TP::SnapType::ToLeft :
             I_geometry.moveRight( mainWindow->geometry().left() - 1 );
             isHorizontallySnapped = true;
             break;
 
-        case TP::notAdjacent :
+        case TP::SnapType::NonSnap :
             goto MOVE_End_of_snap_to_main_window;
         }
 
@@ -267,8 +266,8 @@ TP_MainClass::slot_moveWindow( QWidget *I_window, QRect I_geometry )
 
         switch( snapType )
         {
-        case TP::toTop :
-        case TP::toBottom :
+        case TP::SnapType::ToTop :
+        case TP::SnapType::ToBottom :
 
             // Left edge alignment
             if( std::abs( I_geometry.left() - mainWindow->geometry().left() )
@@ -290,8 +289,8 @@ TP_MainClass::slot_moveWindow( QWidget *I_window, QRect I_geometry )
 
             break;
 
-        case TP::toLeft :
-        case TP::toRight :
+        case TP::SnapType::ToLeft :
+        case TP::SnapType::ToRight :
 
             // Top edge alignment
             if( std::abs( I_geometry.top() - mainWindow->geometry().top() )
@@ -338,27 +337,27 @@ MOVE_End_of_snap_to_main_window:
 
         switch( snapType )
         {
-        case TP::toBottom :
+        case TP::SnapType::ToBottom :
             I_geometry.moveTop( playlistWindow->geometry().bottom() + 1 );
             isVerticallySnapped = true;
             break;
 
-        case TP::toTop :
+        case TP::SnapType::ToTop :
             I_geometry.moveBottom( playlistWindow->geometry().top() - 1 );
             isVerticallySnapped = true;
             break;
 
-        case TP::toRight :
+        case TP::SnapType::ToRight :
             I_geometry.moveLeft( playlistWindow->geometry().right() + 1 );
             isHorizontallySnapped = true;
             break;
 
-        case TP::toLeft :
+        case TP::SnapType::ToLeft :
             I_geometry.moveRight( playlistWindow->geometry().left() - 1 );
             isHorizontallySnapped = true;
             break;
 
-        case TP::notAdjacent :
+        case TP::SnapType::NonSnap :
             goto MOVE_End_of_snap_to_playlist_window;
         }
 
@@ -366,8 +365,8 @@ MOVE_End_of_snap_to_main_window:
 
         switch( snapType )
         {
-        case TP::toTop :
-        case TP::toBottom :
+        case TP::SnapType::ToTop :
+        case TP::SnapType::ToBottom :
 
             // Left edge alignment
             if( std::abs( I_geometry.left() - playlistWindow->geometry().left() )
@@ -391,8 +390,8 @@ MOVE_End_of_snap_to_main_window:
 
             break;
 
-        case TP::toLeft :
-        case TP::toRight :
+        case TP::SnapType::ToLeft :
+        case TP::SnapType::ToRight :
 
             // Top edge alignment
             if( std::abs( I_geometry.top() - playlistWindow->geometry().top() )
@@ -441,27 +440,27 @@ MOVE_End_of_snap_to_playlist_window:
 
         switch( snapType )
         {
-        case TP::toBottom :
+        case TP::SnapType::ToBottom :
             I_geometry.moveTop( lyricsWindow->geometry().bottom() + 1 );
             isVerticallySnapped = true;
             break;
 
-        case TP::toTop :
+        case TP::SnapType::ToTop :
             I_geometry.moveBottom( lyricsWindow->geometry().top() - 1 );
             isVerticallySnapped = true;
             break;
 
-        case TP::toRight :
+        case TP::SnapType::ToRight :
             I_geometry.moveLeft( lyricsWindow->geometry().right() + 1 );
             isHorizontallySnapped = true;
             break;
 
-        case TP::toLeft :
+        case TP::SnapType::ToLeft :
             I_geometry.moveRight( lyricsWindow->geometry().left() - 1 );
             isHorizontallySnapped = true;
             break;
 
-        case TP::notAdjacent :
+        case TP::SnapType::NonSnap :
             goto MOVE_setGeometry;
         }
 
@@ -469,8 +468,8 @@ MOVE_End_of_snap_to_playlist_window:
 
         switch( snapType )
         {
-        case TP::toTop :
-        case TP::toBottom :
+        case TP::SnapType::ToTop :
+        case TP::SnapType::ToBottom :
 
             // Left edge alignment
             if( std::abs( I_geometry.left() - lyricsWindow->geometry().left() )
@@ -492,8 +491,8 @@ MOVE_End_of_snap_to_playlist_window:
 
             break;
 
-        case TP::toLeft :
-        case TP::toRight :
+        case TP::SnapType::ToLeft :
+        case TP::SnapType::ToRight :
 
             // Top edge alignment
             if( std::abs( I_geometry.top() - lyricsWindow->geometry().top() )
@@ -542,7 +541,7 @@ MOVE_setGeometry:
 
 
 void
-TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::ResizeType I_resizeType )
+TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::CursorPositionType I_resizeType )
 {
     // While resizing, a window can only be snapped (or aligned) once.
 
@@ -552,24 +551,24 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
         switch( checkSnapType( I_geometry, mainWindow->geometry() ) )
         {
-        case TP::toTop :
-            if( I_resizeType == TP::atBottom )
+        case TP::SnapType::ToTop :
+            if( I_resizeType == TP::CursorPositionType::Bottom )
             {
                 I_geometry.setBottom( mainWindow->geometry().top() - 1 );
                 goto RESIZE_setGeometry;
             }
             break;
 
-        case TP::toRight :
-            if( I_resizeType == TP::atLeft )
+        case TP::SnapType::ToRight :
+            if( I_resizeType == TP::CursorPositionType::Left )
             {
                 I_geometry.setLeft( mainWindow->geometry().right() + 1 );
                 goto RESIZE_setGeometry;
             }
             break;
 
-        case TP::toLeft :
-            if( I_resizeType == TP::atRight )
+        case TP::SnapType::ToLeft :
+            if( I_resizeType == TP::CursorPositionType::Right )
             {
                 I_geometry.setRight( mainWindow->geometry().left() - 1 );
                 goto RESIZE_setGeometry;
@@ -584,13 +583,13 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
         switch( checkAdjacentType( I_geometry, mainWindow->geometry() ) )
         {
-        case TP::toTop :
-        case TP::toBottom :
+        case TP::SnapType::ToTop :
+        case TP::SnapType::ToBottom :
 
             // Left edge alignment
             if( std::abs( I_geometry.left() - mainWindow->geometry().left() )
                     <= TP::snapRange
-                    && I_resizeType == TP::atLeft )
+                    && I_resizeType == TP::CursorPositionType::Left )
             {
                 I_geometry.setLeft( mainWindow->geometry().left() );
                 goto RESIZE_setGeometry;
@@ -599,7 +598,7 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
             // Right edge alignment
             if( std::abs( I_geometry.right() - mainWindow->geometry().right() )
                     <= TP::snapRange
-                && I_resizeType == TP::atRight )
+                && I_resizeType == TP::CursorPositionType::Right )
             {
                 I_geometry.setRight( mainWindow->geometry().right() );
                 goto RESIZE_setGeometry;
@@ -607,13 +606,13 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
             break;
 
-        case TP::toLeft :
-        case TP::toRight :
+        case TP::SnapType::ToLeft :
+        case TP::SnapType::ToRight :
 
             // Bottom edge alignment
             if( std::abs( I_geometry.bottom() - mainWindow->geometry().bottom() )
                     <= TP::snapRange
-                && I_resizeType == TP::atBottom )
+                && I_resizeType == TP::CursorPositionType::Bottom )
             {
                 I_geometry.setBottom( mainWindow->geometry().bottom() );
                 goto RESIZE_setGeometry;
@@ -634,24 +633,24 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
         switch( checkSnapType( I_geometry, playlistWindow->geometry() ) )
         {
-        case TP::toTop :
-            if( I_resizeType == TP::atBottom )
+        case TP::SnapType::ToTop :
+            if( I_resizeType == TP::CursorPositionType::Bottom )
             {
                 I_geometry.setBottom( playlistWindow->geometry().top() - 1 );
                 goto RESIZE_setGeometry;
             }
             break;
 
-        case TP::toRight :
-            if( I_resizeType == TP::atLeft )
+        case TP::SnapType::ToRight :
+            if( I_resizeType == TP::CursorPositionType::Left )
             {
                 I_geometry.setLeft( playlistWindow->geometry().right() + 1 );
                 goto RESIZE_setGeometry;
             }
             break;
 
-        case TP::toLeft :
-            if( I_resizeType == TP::atRight )
+        case TP::SnapType::ToLeft :
+            if( I_resizeType == TP::CursorPositionType::Right )
             {
                 I_geometry.setRight( playlistWindow->geometry().left() - 1 );
                 goto RESIZE_setGeometry;
@@ -666,13 +665,13 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
         switch( checkAdjacentType( I_geometry, playlistWindow->geometry() ) )
         {
-        case TP::toTop :
-        case TP::toBottom :
+        case TP::SnapType::ToTop :
+        case TP::SnapType::ToBottom :
 
             // Left edge alignment
             if( std::abs( I_geometry.left() - playlistWindow->geometry().left() )
                     <= TP::snapRange
-                    && I_resizeType == TP::atLeft )
+                    && I_resizeType == TP::CursorPositionType::Left )
             {
                 I_geometry.setLeft( playlistWindow->geometry().left() );
                 goto RESIZE_setGeometry;
@@ -681,7 +680,7 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
             // Right edge alignment
             if( std::abs( I_geometry.right() - playlistWindow->geometry().right() )
                     <= TP::snapRange
-                && I_resizeType == TP::atRight )
+                && I_resizeType == TP::CursorPositionType::Right )
             {
                 I_geometry.setRight( playlistWindow->geometry().right() );
                 goto RESIZE_setGeometry;
@@ -689,13 +688,13 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
             break;
 
-        case TP::toLeft :
-        case TP::toRight :
+        case TP::SnapType::ToLeft :
+        case TP::SnapType::ToRight :
 
             // Bottom edge alignment
             if( std::abs( I_geometry.bottom() - playlistWindow->geometry().bottom() )
                     <= TP::snapRange
-                && I_resizeType == TP::atBottom )
+                && I_resizeType == TP::CursorPositionType::Bottom )
             {
                 I_geometry.setBottom( playlistWindow->geometry().bottom() );
                 goto RESIZE_setGeometry;
@@ -717,24 +716,24 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
         switch( checkSnapType( I_geometry, lyricsWindow->geometry() ) )
         {
-        case TP::toTop :
-            if( I_resizeType == TP::atBottom )
+        case TP::SnapType::ToTop :
+            if( I_resizeType == TP::CursorPositionType::Bottom )
             {
                 I_geometry.setBottom( lyricsWindow->geometry().top() - 1 );
                 goto RESIZE_setGeometry;
             }
             break;
 
-        case TP::toRight :
-            if( I_resizeType == TP::atLeft )
+        case TP::SnapType::ToRight :
+            if( I_resizeType == TP::CursorPositionType::Left )
             {
                 I_geometry.setLeft( lyricsWindow->geometry().right() + 1 );
                 goto RESIZE_setGeometry;
             }
             break;
 
-        case TP::toLeft :
-            if( I_resizeType == TP::atRight )
+        case TP::SnapType::ToLeft :
+            if( I_resizeType == TP::CursorPositionType::Right )
             {
                 I_geometry.setRight( lyricsWindow->geometry().left() - 1 );
                 goto RESIZE_setGeometry;
@@ -749,13 +748,13 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
         switch( checkAdjacentType( I_geometry, lyricsWindow->geometry() ) )
         {
-        case TP::toTop :
-        case TP::toBottom :
+        case TP::SnapType::ToTop :
+        case TP::SnapType::ToBottom :
 
             // Left edge alignment
             if( std::abs( I_geometry.left() - lyricsWindow->geometry().left() )
                     <= TP::snapRange
-                    && I_resizeType == TP::atLeft )
+                    && I_resizeType == TP::CursorPositionType::Left )
             {
                 I_geometry.setLeft( lyricsWindow->geometry().left() );
                 goto RESIZE_setGeometry;
@@ -764,7 +763,7 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
             // Right edge alignment
             if( std::abs( I_geometry.right() - lyricsWindow->geometry().right() )
                     <= TP::snapRange
-                && I_resizeType == TP::atRight )
+                && I_resizeType == TP::CursorPositionType::Right )
             {
                 I_geometry.setRight( lyricsWindow->geometry().right() );
                 goto RESIZE_setGeometry;
@@ -772,13 +771,13 @@ TP_MainClass::slot_resizeWindow( QWidget *I_window, QRect I_geometry, TP::Resize
 
             break;
 
-        case TP::toLeft :
-        case TP::toRight :
+        case TP::SnapType::ToLeft :
+        case TP::SnapType::ToRight :
 
             // Bottom edge alignment
             if( std::abs( I_geometry.bottom() - lyricsWindow->geometry().bottom() )
                     <= TP::snapRange
-                && I_resizeType == TP::atBottom )
+                && I_resizeType == TP::CursorPositionType::Bottom )
             {
                 I_geometry.setBottom( lyricsWindow->geometry().bottom() );
                 goto RESIZE_setGeometry;
@@ -802,7 +801,7 @@ TP_MainClass::slot_refreshSnapStatus()
 {
     // main window <---> playlist window
     if( playlistWindow->isVisible()
-            && checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() ) != TP::notAdjacent )
+            && checkAdjacentType( mainWindow->geometry(), playlistWindow->geometry() ) != TP::SnapType::NonSnap )
     {
         snapStatus [ TP::mainWindow ][ TP::playlistWindow ] = true;
         snapStatus [ TP::playlistWindow ][ TP::mainWindow ] = true;
@@ -815,7 +814,7 @@ TP_MainClass::slot_refreshSnapStatus()
 
     // main window <---> lyrics window
     if( lyricsWindow->isVisible()
-            && checkAdjacentType( mainWindow->geometry(), lyricsWindow->geometry() ) != TP::notAdjacent )
+            && checkAdjacentType( mainWindow->geometry(), lyricsWindow->geometry() ) != TP::SnapType::NonSnap )
     {
         snapStatus [ TP::mainWindow ][ TP::lyricsWindow ] = true;
         snapStatus [ TP::lyricsWindow ][ TP::mainWindow ] = true;
@@ -828,7 +827,7 @@ TP_MainClass::slot_refreshSnapStatus()
 
     // playlist window <---> lyrics window
     if( playlistWindow->isVisible() && lyricsWindow->isVisible()
-            && checkAdjacentType( playlistWindow->geometry(), lyricsWindow->geometry() ) != TP::notAdjacent )
+            && checkAdjacentType( playlistWindow->geometry(), lyricsWindow->geometry() ) != TP::SnapType::NonSnap )
     {
         snapStatus [ TP::playlistWindow ][ TP::lyricsWindow ] = true;
         snapStatus [ TP::lyricsWindow ][ TP::playlistWindow ] = true;
@@ -884,7 +883,7 @@ TP_MainClass::slot_playButtonPushed()
 void
 TP_MainClass::slot_nextButtonPushed()
 {
-    if( TP::config().getPlayMode() == TP::shuffle )
+    if( TP::config().getPlayMode() == TP::PlayMode::Shuffle )
         playItem( playlistWindow->getNextItem_shuffle() );
     else
         playItem( playlistWindow->getNextItem() );
@@ -894,7 +893,7 @@ TP_MainClass::slot_nextButtonPushed()
 void
 TP_MainClass::slot_previousButtonPushed()
 {
-    if( TP::config().getPlayMode() == TP::shuffle )
+    if( TP::config().getPlayMode() == TP::PlayMode::Shuffle )
         playItem( playlistWindow->getPreviousItem_shuffle() );
     else
         playItem( playlistWindow->getPreviousItem() );
@@ -933,15 +932,15 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState I_state )
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
         TP::PlayMode mode { TP::config().getPlayMode() };
 
-        if( ! b_isStopInterrupting && mode != TP::singleTime )
+        if( ! b_isStopInterrupting && mode != TP::PlayMode::SingleTime )
             switch( mode )
             {
-            case TP::repeat :
+            case TP::PlayMode::Repeat :
                 mediaPlayer->play();
                 break;
 
-            case TP::sequential :
-            case TP::shuffle :
+            case TP::PlayMode::Sequential :
+            case TP::PlayMode::Shuffle :
                 slot_nextButtonPushed();
                 break;
 
@@ -1191,10 +1190,10 @@ TP_MainClass::checkSnapType( const QRect &I_geometry1, const QRect &I_geometry2 
             && I_geometry1.left() <= I_geometry2.right() )
     {
         if( std::abs( I_geometry1.top() - I_geometry2.bottom() ) <= TP::snapRange )
-            return TP::toBottom;
+            return TP::SnapType::ToBottom;
 
         if( std::abs( I_geometry1.bottom() - I_geometry2.top() ) <= TP::snapRange )
-            return TP::toTop;
+            return TP::SnapType::ToTop;
     }
 
     // Intersect vertically
@@ -1202,13 +1201,13 @@ TP_MainClass::checkSnapType( const QRect &I_geometry1, const QRect &I_geometry2 
             && I_geometry1.top() <= I_geometry2.bottom() )
     {
         if( std::abs( I_geometry1.right() - I_geometry2.left() ) <= TP::snapRange )
-            return TP::toLeft;
+            return TP::SnapType::ToLeft;
 
         if( std::abs( I_geometry1.left() - I_geometry2.right() ) <= TP::snapRange )
-            return TP::toRight;
+            return TP::SnapType::ToRight;
     }
 
-    return TP::notAdjacent;
+    return TP::SnapType::NonSnap ;
 }
 
 
@@ -1220,10 +1219,10 @@ TP_MainClass::checkAdjacentType( const QRect &I_geometry1, const QRect &I_geomet
             && I_geometry1.left() <= I_geometry2.right() )
     {
         if( I_geometry1.top() - I_geometry2.bottom() == 1 )
-            return TP::toBottom;
+            return TP::SnapType::ToBottom;
 
         if( I_geometry2.top() - I_geometry1.bottom() == 1 )
-            return TP::toTop;
+            return TP::SnapType::ToTop;
     }
 
     // Intersect vertically
@@ -1231,13 +1230,13 @@ TP_MainClass::checkAdjacentType( const QRect &I_geometry1, const QRect &I_geomet
             && I_geometry1.top() <= I_geometry2.bottom() )
     {
         if( I_geometry2.left() - I_geometry1.right() == 1 )
-            return TP::toLeft;
+            return TP::SnapType::ToLeft;
 
         if( I_geometry1.left() - I_geometry2.right() == 1 )
-            return TP::toRight;
+            return TP::SnapType::ToRight;
     }
 
-    return TP::notAdjacent;
+    return TP::SnapType::NonSnap ;
 }
 
 
@@ -1282,7 +1281,7 @@ TP_MainClass::playItem ( QListWidgetItem *I_item )
 
     switch ( I_item->data( TP::role_SourceType ).value< TP::SourceType >() )
     {
-    case TP::singleFile :
+    case TP::SourceType::SingleFile :
         playFile( I_item );
         break;
     default:

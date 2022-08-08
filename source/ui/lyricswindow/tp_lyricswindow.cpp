@@ -81,7 +81,7 @@ TP_LyricsWindow::slot_refreshFont()
 // *****************************************************************
 
 void
-TP_LyricsWindow::slot_resizeWindow( const QRect &I_geometry, TP::ResizeType I_resizeType )
+TP_LyricsWindow::slot_resizeWindow( const QRect &I_geometry, TP::CursorPositionType I_resizeType )
 {
     emit signal_resizeWindow( this, I_geometry, I_resizeType );
 }

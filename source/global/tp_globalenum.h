@@ -5,62 +5,52 @@ namespace TP
 {
 
 // First window snaps at the left/right/bottom/top of second window.
-enum SnapType
+enum class SnapType
 {
-    notAdjacent,
-    toLeft,
-    toRight,
-    toBottom,
-    toTop
+    NonSnap,
+    ToLeft,
+    ToRight,
+    ToBottom,
+    ToTop
 };
 
-enum ResizeType
+/*
+enum class ResizeType
 {
-    atLeft,
-    atRight,
-    atBottom
+    Left,
+    Right,
+    Bottom
+};
+*/
+
+enum class CursorPositionType
+{
+    NonBorder,
+    Left,
+    Right,
+    Bottom
 };
 
-enum CursorPositionType
+enum class SourceType
 {
-    notAtBorder,
-    leftBorder,
-    rightBorder,
-    bottomBorder
+    SingleFile,
+    CueSheet,
+    Network
 };
 
-enum VisualContainerType
+enum class PlayMode
 {
-    albumCover,
-    barVisualizer
+    SingleTime,
+    Repeat,
+    Sequential,
+    Shuffle
 };
 
-enum VolumeStatus
+enum class ReplayGainMode
 {
-    mute,
-    sound
-};
-
-enum SourceType
-{
-    singleFile,
-    cueSheet,
-    network
-};
-
-enum PlayMode
-{
-    singleTime,
-    repeat,
-    sequential,
-    shuffle
-};
-
-enum ReplayGainMode
-{
-    RG_disabled,
-    RG_track,
-    RG_album
+    Disabled,
+    Track,
+    Album
 };
 
 }       //namespace TP

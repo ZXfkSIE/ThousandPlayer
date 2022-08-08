@@ -344,7 +344,7 @@ TP_MainWindow::on_action_setMode_SingleTime_triggered()
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_SingleTime.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_SingleTime, TP::iconSize_SingleTime } );
     ui->pushButton_Mode->setToolTip( tr( "Single time mode" ) );
-    TP::config().setPlayMode( TP::singleTime );
+    TP::config().setPlayMode( TP::PlayMode::SingleTime );
     emit signal_modeIsNotShuffle();
 }
 
@@ -355,7 +355,7 @@ TP_MainWindow::on_action_setMode_Repeat_triggered()
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Repeat.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Repeat, TP::iconSize_Repeat } );
     ui->pushButton_Mode->setToolTip( tr( "Repeat mode" ) );
-    TP::config().setPlayMode( TP::repeat );
+    TP::config().setPlayMode( TP::PlayMode::Repeat );
     emit signal_modeIsNotShuffle();
 }
 
@@ -366,7 +366,7 @@ TP_MainWindow::on_action_setMode_Sequential_triggered()
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Sequential.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Sequential, TP::iconSize_Sequential });
     ui->pushButton_Mode->setToolTip( tr( "Sequential mode" ) );
-    TP::config().setPlayMode( TP::sequential );
+    TP::config().setPlayMode( TP::PlayMode::Sequential );
     emit signal_modeIsNotShuffle();
 }
 
@@ -377,7 +377,7 @@ TP_MainWindow::on_action_setMode_Shuffle_triggered()
     ui->pushButton_Mode->setIcon( QIcon{ ":/image/icon_Shuffle.svg" } );
     ui->pushButton_Mode->setIconSize( QSize{ TP::iconSize_Shuffle, TP::iconSize_Shuffle } );
     ui->pushButton_Mode->setToolTip( tr( "Shuffle mode" ) );
-    TP::config().setPlayMode( TP::shuffle );
+    TP::config().setPlayMode( TP::PlayMode::Shuffle );
 }
 
 // *****************************************************************
@@ -413,7 +413,7 @@ void
 TP_MainWindow::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton
-         && cursorPositionType != TP::notAtBorder )
+         && cursorPositionType != TP::CursorPositionType::NonBorder )
         b_isBorderBeingPressed = true;
 
     QWidget::mousePressEvent( event );
@@ -432,25 +432,25 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
 
         switch ( cursorPositionType )
         {
-        case TP::leftBorder:
+        case TP::CursorPositionType::Left :
 
             newGeometry.setLeft( event->globalPosition().toPoint().x() );
             if ( newGeometry.width() < minimumWidth() )
                 newGeometry.setLeft( newGeometry.right() - minimumWidth() + 1 );
 
             if( newGeometry != window()->geometry() )
-                emit signal_resizeWindow( this, newGeometry, TP::atLeft );
+                emit signal_resizeWindow( this, newGeometry, TP::CursorPositionType::Left );
 
             break;              // case TP_LEFT_BORDER
 
-        case TP::rightBorder:
+        case TP::CursorPositionType::Right :
 
             newGeometry.setRight( event->globalPosition().toPoint().x() );
             if ( newGeometry.width() < minimumWidth() )
                 newGeometry.setWidth( minimumWidth() );
 
             if( newGeometry != window()->geometry() )
-                emit signal_resizeWindow( this, newGeometry, TP::atRight );
+                emit signal_resizeWindow( this, newGeometry, TP::CursorPositionType::Right );
 
             break;              // case TP_RIGHT_BORDER
 
@@ -463,7 +463,7 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
         cursorPositionType = TP::getCursorPositionType( this, eventPosition );
         switch ( cursorPositionType )
         {
-        case TP::notAtBorder:
+        case TP::CursorPositionType::NonBorder :
             if ( b_isCursorResize )
             {
                 setCursor( QCursor ( Qt::ArrowCursor ) );
@@ -471,8 +471,8 @@ TP_MainWindow::mouseMoveEvent( QMouseEvent *event )
             }
             break;
 
-        case TP::leftBorder:
-        case TP::rightBorder:
+        case TP::CursorPositionType::Left :
+        case TP::CursorPositionType::Right :
             if ( ! b_isCursorResize )
             {
                 setCursor( QCursor( Qt::SizeHorCursor ) );
@@ -495,7 +495,7 @@ TP_MainWindow::mouseReleaseEvent( QMouseEvent *event )
     if( b_isBorderBeingPressed )
     {
         b_isBorderBeingPressed = false;
-        if( TP::getCursorPositionType( this, event->position().toPoint() ) == TP::notAtBorder
+        if( TP::getCursorPositionType( this, event->position().toPoint() ) == TP::CursorPositionType::NonBorder
                 && b_isCursorResize )
         {
             setCursor( QCursor( Qt::ArrowCursor ) );
@@ -595,19 +595,19 @@ TP_MainWindow::initializeUI()
 
     switch( TP::config().getPlayMode() )
     {
-    case TP::singleTime :
+    case TP::PlayMode::SingleTime :
         on_action_setMode_SingleTime_triggered();
         break;
 
-    case TP::repeat :
+    case TP::PlayMode::Repeat :
         on_action_setMode_Repeat_triggered();
         break;
 
-    case TP::sequential :
+    case TP::PlayMode::Sequential :
         on_action_setMode_Sequential_triggered();
         break;
 
-    case TP::shuffle :
+    case TP::PlayMode::Shuffle :
         on_action_setMode_Shuffle_triggered();
         break;
     }

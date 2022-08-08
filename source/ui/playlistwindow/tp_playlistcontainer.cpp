@@ -1,6 +1,5 @@
 ﻿#include "tp_playlistcontainer.h"
 
-#include "tp_globalconst.h"
 #include "tp_globalfunction.h"
 
 #include <QMouseEvent>
@@ -21,7 +20,7 @@ void
 TP_PlaylistContainer::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton
-         && cursorPositionType != TP::notAtBorder )
+         && cursorPositionType != TP::CursorPositionType::NonBorder )
         b_isBorderBeingPressed = true;
 
     QWidget::mousePressEvent( event );
@@ -38,25 +37,25 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
 
         switch ( cursorPositionType )
         {
-        case TP::leftBorder:
+        case TP::CursorPositionType::Left :
 
             newGeometry.setLeft( event->globalPosition().toPoint().x() );
             if( newGeometry.width() < window()->minimumWidth() )
                 newGeometry.setLeft( newGeometry.right() - window()->minimumWidth() + 1 );
 
             if( newGeometry != window()->geometry() )
-                emit signal_resizeWindow( newGeometry, TP::atLeft );
+                emit signal_resizeWindow( newGeometry, TP::CursorPositionType::Left );
 
             break;              // case TP_LEFT_BORDER
 
-        case TP::rightBorder:
+        case TP::CursorPositionType::Right :
 
             newGeometry.setRight( event->globalPosition().toPoint().x() );
             if( newGeometry.width() < window()->minimumWidth() )
                 newGeometry.setWidth( window()->minimumWidth() );
 
             if( newGeometry != window()->geometry() )
-                emit signal_resizeWindow( newGeometry, TP::atRight );
+                emit signal_resizeWindow( newGeometry, TP::CursorPositionType::Right );
 
             break;              // case TP_RIGHT_BORDER
 
@@ -69,7 +68,7 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
         cursorPositionType = TP::getCursorPositionType( this, eventPosition );
         switch ( cursorPositionType )
         {
-        case TP::notAtBorder:
+        case TP::CursorPositionType::NonBorder :
             if ( b_isCursorResize )
             {
                 setCursor( QCursor( Qt::ArrowCursor ) );
@@ -77,8 +76,8 @@ TP_PlaylistContainer::mouseMoveEvent( QMouseEvent *event )
             }
             break;
 
-        case TP::leftBorder:
-        case TP::rightBorder:
+        case TP::CursorPositionType::Left :
+        case TP::CursorPositionType::Right :
             if ( ! b_isCursorResize )
             {
                 setCursor( QCursor( Qt::SizeHorCursor ) );
@@ -100,7 +99,7 @@ TP_PlaylistContainer::mouseReleaseEvent( QMouseEvent *event )
     if( b_isBorderBeingPressed )
     {
         b_isBorderBeingPressed = false;
-        if( TP::getCursorPositionType( this, event->position().toPoint() ) == TP::notAtBorder
+        if( TP::getCursorPositionType( this, event->position().toPoint() ) == TP::CursorPositionType::NonBorder
                 && b_isCursorResize )
         {
             setCursor( QCursor( Qt::ArrowCursor ) );

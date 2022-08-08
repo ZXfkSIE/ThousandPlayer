@@ -73,7 +73,7 @@ TP_Config::TP_Config( QObject *parent ) :
             .toFloat();
     replayGainMode = static_cast< TP::ReplayGainMode >(
                 config
-                .value( key_PLAYBACK_replayGainMode, TP::RG_disabled )
+                .value( key_PLAYBACK_replayGainMode, static_cast< int >( TP::ReplayGainMode::Disabled ) )
                 .toInt()
                 );
     defaultGain_dB = config
@@ -81,7 +81,7 @@ TP_Config::TP_Config( QObject *parent ) :
             .toFloat();
     playMode = static_cast<TP::PlayMode>(
                 config
-                .value( key_PLAYBACK_playMode, TP::singleTime )
+                .value( key_PLAYBACK_playMode, static_cast< int >( TP::PlayMode::SingleTime ) )
                 .toInt()
                 );
     config.endGroup();
@@ -113,9 +113,9 @@ TP_Config::~TP_Config()
     config.beginGroup( group_PLAYBACK );
     config.setValue( key_PLAYBACK_volume, volume );
     config.setValue( key_PLAYBACK_preAmp_dB, preAmp_dB );
-    config.setValue( key_PLAYBACK_replayGainMode, replayGainMode );
+    config.setValue( key_PLAYBACK_replayGainMode, static_cast< int >( replayGainMode ) );
     config.setValue( key_PLAYBACK_defaultGain_dB, defaultGain_dB );
-    config.setValue( key_PLAYBACK_playMode, playMode );
+    config.setValue( key_PLAYBACK_playMode, static_cast< int >( playMode ) );
     config.endGroup();
 
     config.sync();

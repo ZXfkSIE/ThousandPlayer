@@ -161,7 +161,7 @@ TP_PlaylistWindow::slot_titleBarMoved( const QRect &I_geometry )
 
 
 void
-TP_PlaylistWindow::slot_resizeWindow( const QRect &I_geometry, TP::ResizeType I_resizeType )
+TP_PlaylistWindow::slot_resizeWindow( const QRect &I_geometry, TP::CursorPositionType I_resizeType )
 {
     emit signal_resizeWindow( this, I_geometry, I_resizeType );
 }
@@ -607,11 +607,11 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
             {
                 auto *item = new QListWidgetItem { newFileList };
                 item->setData( TP::role_URL, qstr_fileURL );             // set URL
-                item->setData( TP::role_SourceType, sourceType );
+                item->setData( TP::role_SourceType, static_cast< int >( sourceType ) );
 
                 switch( sourceType )
                 {
-                case TP::singleFile :
+                case TP::SourceType::SingleFile :
                     if( std::filesystem::exists( qstr_fileURL.toLocalFile().
 #ifdef Q_OS_WIN
                                                  toStdWString()
@@ -817,7 +817,7 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
     {
         auto *item = new QListWidgetItem { currentFileListWidget() };
         item->setData( TP::role_URL, fileURL );         // set URL
-        item->setData( TP::role_SourceType, TP::singleFile );
+        item->setData( TP::role_SourceType, static_cast< int >( TP::SourceType::SingleFile ) );
         currentFileListWidget()->addItem( item );
     }
 

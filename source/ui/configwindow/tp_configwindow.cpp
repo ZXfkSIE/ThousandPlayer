@@ -92,19 +92,19 @@ TP_ConfigWindow::on_comboBox_ReplayGainMode_currentIndexChanged( int I_index )
     case 0:
         ui->slider_PreAmp           ->setEnabled( false );
         ui->slider_DefaultReplayGain->setEnabled( false );
-        TP::config().setReplayGainMode( TP::RG_disabled );
+        TP::config().setReplayGainMode( TP::ReplayGainMode::Disabled );
         break;
 
     case 1:
         ui->slider_PreAmp           ->setEnabled( true );
         ui->slider_DefaultReplayGain->setEnabled( true );
-        TP::config().setReplayGainMode( TP::RG_track );
+        TP::config().setReplayGainMode( TP::ReplayGainMode::Track );
         break;
 
     case 2:
         ui->slider_PreAmp           ->setEnabled( true );
         ui->slider_DefaultReplayGain->setEnabled( true );
-        TP::config().setReplayGainMode( TP::RG_album );
+        TP::config().setReplayGainMode( TP::ReplayGainMode::Album );
         break;
     }
 }
@@ -964,16 +964,16 @@ TP_ConfigWindow::initializeUI()
     // ReplayGain mode ComboBox
     switch( TP::config().getReplayGainMode() )
     {
-    case TP::RG_disabled :
+    case TP::ReplayGainMode::Disabled :
         ui->slider_PreAmp           ->setEnabled( false );
         ui->slider_DefaultReplayGain->setEnabled( false );
         break;
 
-    case TP::RG_track :
+    case TP::ReplayGainMode::Track :
         ui->comboBox_ReplayGainMode->setCurrentIndex( 1 );
         break;
 
-    case TP::RG_album :
+    case TP::ReplayGainMode::Album :
         ui->comboBox_ReplayGainMode->setCurrentIndex( 2 );
         break;
     }

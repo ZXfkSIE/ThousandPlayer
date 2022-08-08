@@ -13,7 +13,7 @@ public:
     explicit TP_LyricsStackedWidget( QWidget *parent = nullptr );
 
 signals:
-    void signal_resizeWindow( const QRect &newGeometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( const QRect &newGeometry, TP::CursorPositionType resizeType );
     void signal_windowChanged();
 
 private:

@@ -89,7 +89,7 @@ TP_FileListWidget::getCurrentItem()
         return TP::currentItem() = selectedItemList [0];
 
     // Return random item when in shuffle mode
-    if( TP::config().getPlayMode() == TP::shuffle )
+    if( TP::config().getPlayMode() == TP::PlayMode::Shuffle )
         return getNextItem_shuffle();
 
     // Return first item in the list
@@ -273,7 +273,7 @@ TP_FileListWidget::clearInaccessibleItems()
     {
         switch ( item( i )->data( TP::role_SourceType ).value< TP::SourceType >() )
         {
-        case TP::singleFile :
+        case TP::SourceType::SingleFile :
             if ( ! std::filesystem::exists(
                      item( i )->data( TP::role_URL ).toUrl().toLocalFile().toStdWString()
                      )
@@ -348,7 +348,7 @@ TP_FileListWidget::deleteSelectedItems()
                 static_cast< TP::SourceType >( selectedItem->data( TP::role_SourceType ).toInt() )
             };
 
-            if( sourceType == TP::singleFile )
+            if( sourceType == TP::SourceType::SingleFile )
             {
                 QFile qFile { selectedItem->data( TP::role_URL ).toUrl().toLocalFile() };
 

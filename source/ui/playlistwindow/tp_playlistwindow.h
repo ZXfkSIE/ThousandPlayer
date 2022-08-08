@@ -35,7 +35,7 @@ public:
 
 signals:
     void signal_moveWindow( QWidget *window, const QRect &geometry );
-    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::CursorPositionType resizeType );
     void signal_windowChanged();
 
     void signal_shown();
@@ -54,7 +54,7 @@ public slots:
 
 private slots:
     void slot_titleBarMoved( const QRect &I_geometry );
-    void slot_resizeWindow( const QRect &I_geometry, TP::ResizeType I_resizeType );
+    void slot_resizeWindow( const QRect &I_geometry, TP::CursorPositionType I_resizeType );
     void slot_windowChanged();
 
     void slot_fileListRemoved( TP_FileListWidget *I_fileListWidget );

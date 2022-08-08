@@ -28,7 +28,7 @@ public:
 
 signals:
     void signal_moveWindow( QWidget *window, const QRect &geometry );
-    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::ResizeType resizeType );
+    void signal_resizeWindow( QWidget *window, const QRect &geometry, TP::CursorPositionType resizeType );
     void signal_windowChanged();
     void signal_lyricsDoubleClicked( qint64 ms );
 
@@ -42,7 +42,7 @@ public slots:
 
 private slots:
     void slot_titleBarMoved( const QRect &I_geometry );
-    void slot_resizeWindow( const QRect &I_geomtry, TP::ResizeType I_resizeType );
+    void slot_resizeWindow( const QRect &I_geomtry, TP::CursorPositionType I_resizeType );
     void slot_windowChanged();
 
     void slot_lyricsDoubleClicked( qint64 I_ms );
