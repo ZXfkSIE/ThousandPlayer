@@ -133,6 +133,20 @@ TP_ConfigWindow::on_slider_DefaultReplayGain_valueChanged( int I_value )
 
 
 void
+TP_ConfigWindow::on_lineEdit_RsgainPath_textChanged( const QString & )
+{
+
+}
+
+
+void
+TP_ConfigWindow::on_pushButton_RsgainPath_clicked()
+{
+
+}
+
+
+void
 TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
 {
     bool ok {};
@@ -884,12 +898,10 @@ R"CREDITS(
 * Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
 
 &nbsp;
-## Translator
+## Internationalization
 
 &nbsp;
-#### ja (Japanese)
-* Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
-#### zh (Chinese)
+#### en (English), ja (Japanese), zh (Chinese)
 * Zhang Xiang   &lt;gbcatmifu@hotmail.com&gt;
 
 &nbsp;
@@ -981,6 +993,13 @@ TP_ConfigWindow::initializeUI()
     // Sliders
     on_slider_PreAmp_valueChanged           ( TP::config().getPreAmp_dB() );
     on_slider_DefaultReplayGain_valueChanged( TP::config().getDefaultGain_dB() );
+
+    // Path of rsgain (https://github.com/complexlogic/rsgain)
+#ifdef Q_OS_WIN
+    ui->pushButton_RsgainPath->setIcon( QIcon{ ":/image/icon_OpenFile.svg" } );
+#else
+    ui->container_RsgainPath->setVisible( false );
+#endif
 
     // ============================== Playlist page ==============================
 

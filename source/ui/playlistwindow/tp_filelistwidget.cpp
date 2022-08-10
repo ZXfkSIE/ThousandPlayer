@@ -4,7 +4,6 @@
 #include "tp_globalvariable.h"
 
 #include "tp_menu.h"
-#include "tp_progressdialog.h"
 
 #include <QApplication>
 #include <QDateTime>
@@ -861,9 +860,9 @@ TP_FileListWidget::mouseReleaseEvent( QMouseEvent *event )
 void
 TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
 {
-    auto *clickedItem = itemAt ( event->pos() );
+    auto *clickedItem = itemAt( event->pos() );
 
-    if ( clickedItem == nullptr )
+    if ( ! clickedItem )
         return;
 
     if ( ! clickedItem->isSelected() )

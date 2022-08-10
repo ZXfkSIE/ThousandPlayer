@@ -196,7 +196,7 @@ void
 TP_LyricsEditor::initializeUI()
 {
     ui->pushButton_Return   ->setIcon( QIcon{ ":/image/icon_ReturnToLyricsViewer.svg" } );
-    ui->pushButton_Open     ->setIcon( QIcon{ ":/image/icon_OpenLyricsFile.svg" } );
+    ui->pushButton_Open     ->setIcon( QIcon{ ":/image/icon_OpenFile.svg" } );
     ui->pushButton_Save     ->setIcon( QIcon{ ":/image/icon_SaveLyricsFile.svg" } );
 }
 

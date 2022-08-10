@@ -1236,7 +1236,7 @@ TP_MainClass::checkAdjacentType( const QRect &I_geometry1, const QRect &I_geomet
             return TP::SnapType::ToRight;
     }
 
-    return TP::SnapType::NonSnap ;
+    return TP::SnapType::NonSnap;
 }
 
 

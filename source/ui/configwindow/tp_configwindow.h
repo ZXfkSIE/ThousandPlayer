@@ -33,6 +33,8 @@ private slots:
     void on_comboBox_ReplayGainMode_currentIndexChanged ( int I_idx );
     void on_slider_PreAmp_valueChanged ( int I_value );
     void on_slider_DefaultReplayGain_valueChanged ( int I_value );
+    void on_lineEdit_RsgainPath_textChanged( const QString & );
+    void on_pushButton_RsgainPath_clicked();
 
     void on_pushButton_ChangePlaylistFont_clicked ();
 
