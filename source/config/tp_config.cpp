@@ -1,7 +1,5 @@
 ﻿#include "tp_config.h"
 
-#include "tp_globalconst.h"
-
 #include <QDir>
 #include <QSettings>
 #include <QWidget>
@@ -84,6 +82,9 @@ TP_Config::TP_Config( QObject *parent ) :
                 .value( key_PLAYBACK_playMode, static_cast< int >( TP::PlayMode::SingleTime ) )
                 .toInt()
                 );
+    rsgainPath = config
+            .value( key_PLAYBACK_RsgainPath, "" )
+            .toString();
     config.endGroup();
 }
 
@@ -116,6 +117,7 @@ TP_Config::~TP_Config()
     config.setValue( key_PLAYBACK_replayGainMode, static_cast< int >( replayGainMode ) );
     config.setValue( key_PLAYBACK_defaultGain_dB, defaultGain_dB );
     config.setValue( key_PLAYBACK_playMode, static_cast< int >( playMode ) );
+    config.setValue( key_PLAYBACK_RsgainPath, rsgainPath );
     config.endGroup();
 
     config.sync();
@@ -331,4 +333,16 @@ TP::PlayMode
 TP_Config::getPlayMode() const
 {
     return playMode;
+}
+
+void
+TP_Config::setRsgainPath ( const QString &input )
+{
+    rsgainPath = input;
+}
+
+const QString &
+TP_Config::getRsgainPath () const
+{
+    return rsgainPath;
 }

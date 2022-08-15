@@ -34,6 +34,7 @@ public:
     bool            isPlaylistWindowShown   () const;
     void            setPlaylistFont ( const QFont &input );
     const QFont &   getPlaylistFont () const;
+
     void            setLastOpenedDirectory ( const QUrl &input );
     const QUrl &    getLastOpenedDirectory () const;
 
@@ -58,6 +59,8 @@ public:
     float               getDefaultGain_dB () const;
     void                setPlayMode ( const TP::PlayMode input );
     TP::PlayMode        getPlayMode () const;
+    void                setRsgainPath ( const QString &input );
+    const QString &     getRsgainPath () const;
 
 private:
     QSettings config;
@@ -84,6 +87,7 @@ private:
             bool        b_isPlaylistWindowShown;
     const   QString     key_PLAYLISTWINDOW_playlistFont             { "playlistFont" };
             QFont       playlistFont;
+
     const   QString     key_PLAYLISTWINDOW_lastOpenedDirectory      { "lastOpenedDirectory" };
             QUrl        lastOpenedDirectory;
 
@@ -112,6 +116,8 @@ private:
             float               defaultGain_dB;
     const   QString             key_PLAYBACK_playMode               { "playMode" };
             TP::PlayMode        playMode;
+    const   QString             key_PLAYBACK_RsgainPath             { "RsgainPath" };
+            QString             rsgainPath;
 
     static constexpr QRect defaultMainWindowGeometry       { 100, 100, 480, 240 };
     static constexpr QRect defaultPlaylistWindowGeometry   { 100, 340, 480, 360 };

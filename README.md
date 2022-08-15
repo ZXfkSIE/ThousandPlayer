@@ -66,7 +66,7 @@ but already has fundamental functions that a local audio player should have. Fee
 
 ### Qt 6.4.0
 - [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.
-- [QTBUG-100181](https://bugreports.qt.io/browse/QTBUG-100181): Seeking is buggy while playing **FLAC** files in Windows. This software avoids it by adding a 0.5s delay between file opening and playing.
+- [QTBUG-100181](https://bugreports.qt.io/browse/QTBUG-100181): Seeking is buggy while playing **FLAC** files in Windows. This software avoids it by adding a 0.5s delay between file opening and playing. In the future, the backend will be changed to FFmpeg to make the software perfectly cross-platform.
 
 # Compilation Tutorial
 

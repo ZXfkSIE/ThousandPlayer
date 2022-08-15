@@ -793,11 +793,32 @@ TP_FileListWidget::slot_clearSelectedItems()
     refreshShowingTitle ( 0, count() - 1 );
 }
 
+// *****************************************************************
+// private slots
+// *****************************************************************
+
+void
+TP_FileListWidget::slot_scanReplayGain()
+{
+    auto numberOfSelectedItems { selectedItems().size() };
+
+    // No item is selected
+    if( ! numberOfSelectedItems )
+        return;
+
+    for( auto *selectedItem : selectedItems() )
+    {
+#ifdef Q_OS_LINUX
+#endif
+#ifdef Q_OS_WIN
+
+#endif
+    }
+}
 
 // *****************************************************************
 // private override
 // *****************************************************************
-
 
 void
 TP_FileListWidget::dropEvent( QDropEvent *event )
@@ -873,20 +894,24 @@ TP_FileListWidget::contextMenuEvent( QContextMenuEvent *event )
     rightClickMenu->exec( event->globalPos() );
 }
 
-
 // *****************************************************************
 // private
 // *****************************************************************
-
 
 void
 TP_FileListWidget::initializeMenu()
 {
     rightClickMenu = new TP_Menu { this };
 
-    action_Remove = new QAction { tr( "&Remove" ), this };
-    connect( action_Remove, &QAction::triggered,
+    action_remove = new QAction { tr( "&Remove" ), this };
+    connect( action_remove, &QAction::triggered,
              this,          &TP_FileListWidget::slot_clearSelectedItems );
 
-    rightClickMenu->addAction( action_Remove );
+    action_scanReplayGain = new QAction{ tr( "Scan Replay&Gain" ), this };
+    connect( action_scanReplayGain, &QAction::triggered,
+             this,                  &TP_FileListWidget::slot_scanReplayGain );
+
+    rightClickMenu->addAction( action_remove );
+    rightClickMenu->addSeparator();
+    rightClickMenu->addAction( action_scanReplayGain );
 }

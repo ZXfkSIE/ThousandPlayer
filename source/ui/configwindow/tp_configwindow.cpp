@@ -5,6 +5,7 @@
 #include "tp_globalvariable.h"
 
 #include <QAudioDevice>
+#include <QFileDialog>
 #include <QFontDialog>
 #include <QMediaDevices>
 
@@ -133,16 +134,26 @@ TP_ConfigWindow::on_slider_DefaultReplayGain_valueChanged( int I_value )
 
 
 void
-TP_ConfigWindow::on_lineEdit_RsgainPath_textChanged( const QString & )
+TP_ConfigWindow::on_lineEdit_RsgainPath_textChanged( const QString & I_path )
 {
-
+    TP::config().setRsgainPath( I_path );
 }
 
 
 void
 TP_ConfigWindow::on_pushButton_RsgainPath_clicked()
 {
+    const auto &path {
+        QFileDialog::getOpenFileName(
+                    this,                                                   // QWidget *parent = nullptr
+                    {},                                                     // const QString &caption = QString()
+                    {},                                                     // const QString &dir = QString()
+                    tr( "Executable files" ) + QString( " (*.exe);;" )      // const QString &filter = QString()
+                    )
+    };
 
+    if( ! path.isEmpty() )
+        ui->lineEdit_RsgainPath->setText( path );
 }
 
 
@@ -996,6 +1007,7 @@ TP_ConfigWindow::initializeUI()
 
     // Path of rsgain (https://github.com/complexlogic/rsgain)
 #ifdef Q_OS_WIN
+    ui->lineEdit_RsgainPath->setText( TP::config().getRsgainPath() );
     ui->pushButton_RsgainPath->setIcon( QIcon{ ":/image/icon_OpenFile.svg" } );
 #else
     ui->container_RsgainPath->setVisible( false );

@@ -51,6 +51,9 @@ signals:
 public slots:
     void slot_clearSelectedItems();
 
+private slots:
+    void slot_scanReplayGain();
+
 private:
     void dropEvent              ( QDropEvent *event ) override;
     void mousePressEvent        ( QMouseEvent *event ) override;
@@ -63,7 +66,8 @@ private:
     void initializeMenu();
 
     TP_Menu *rightClickMenu;
-    QAction *action_Remove;
+    QAction *action_remove;
+    QAction *action_scanReplayGain;
 
     // previousItem & currentItem are only used in shuffle mode
     QListWidgetItem *previousItem, *nextItem;
