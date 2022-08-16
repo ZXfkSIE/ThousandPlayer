@@ -801,6 +801,33 @@ TP_PlaylistWindow::storePlaylist()
 }
 
 
+TP::AudioType
+TP_PlaylistWindow::getAudioType( const QString &I_path )
+{
+    auto extension { QFileInfo { I_path }.suffix().toUpper() };
+
+    if( extension == QString { "FLAC" } )
+        return TP::AudioType::FLAC;
+
+    if( extension == QString { "ALAC" } )
+        return TP::AudioType::ALAC;
+
+    if( extension == QString { "M4A" } || extension == QString { "AAC" } )
+        return TP::AudioType::AAC;
+
+    if( extension == QString { "MP3" } )
+        return TP::AudioType::MP3;
+
+    if( extension == QString { "WAV" } )
+        return TP::AudioType::WAV;
+
+    if( extension == QString { "OGG" } )
+        return TP::AudioType::OGG;
+
+    return TP::AudioType::NotSupported;
+}
+
+
 TP_FileListWidget *
 TP_PlaylistWindow::currentFileListWidget()
 {
@@ -815,30 +842,39 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
 
     for ( const auto &fileURL: I_urlList )
     {
+        auto audioType { getAudioType( fileURL.toLocalFile() ) };
+        if( audioType == TP::AudioType::NotSupported )
+            continue;
+
         auto *item = new QListWidgetItem { currentFileListWidget() };
-        item->setData( TP::role_URL, fileURL );         // set URL
+        item->setData( TP::role_URL, fileURL );
+        item->setData( TP::role_AudioType, static_cast< int >( audioType ) );
         item->setData( TP::role_SourceType, static_cast< int >( TP::SourceType::SingleFile ) );
         currentFileListWidget()->addItem( item );
     }
 
     int nextPercent { percentageStep };
-    auto count { currentFileListWidget()->count() };
+    auto newCount { currentFileListWidget()->count() };
+    if( originalCount == newCount )
+        return;
+
+    // Indexes of the new added items are between [originalCount, newCount - 1]
 
     progressDialog->reset();
     progressDialog->setMaximum( I_urlList.size() );
     progressDialog->setValue( 0 );
     progressDialog->show();
 
-    for ( unsigned i {}; i < count; i++ )
+    for( unsigned i {}; i < newCount - originalCount; i++ )
     {
-        if( i * 100 / count >= nextPercent )
+        if( i * 100 / newCount >= nextPercent )
         {
             nextPercent += percentageStep;
             progressDialog->setValue( i + 1 );
         }
 
         QThreadPool::globalInstance()->start(
-                    new TP_Runnable_FileReader{ currentFileListWidget()->item( i ) }
+                    new TP_Runnable_FileReader{ currentFileListWidget()->item( originalCount + i ) }
                     );
 
         if( progressDialog->wasCanceled() )
@@ -849,7 +885,7 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
     }
 
     QThreadPool::globalInstance()->waitForDone();
-    currentFileListWidget()->refreshShowingTitle( originalCount - 1, count - 1 );
+    currentFileListWidget()->refreshShowingTitle( originalCount, newCount - 1 );
     progressDialog->cancel();
 }
 

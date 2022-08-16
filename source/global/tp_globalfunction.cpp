@@ -41,18 +41,6 @@ TP::getCursorPositionType( QWidget *I_widget, const QPoint &I_point )
 }
 
 
-QString
-TP::extension( const QString &I_path )
-{
-    auto extension { QFileInfo { I_path }.suffix().toLower() };
-
-    if( extension == QString { "m4a" } )
-        extension = QString { "aac" };
-
-    return extension;
-}
-
-
 QUrl
 TP::getLyricsURL( QListWidgetItem *I_item )
 {
@@ -76,7 +64,7 @@ TP::storeInformation( QListWidgetItem *I_item )
     const auto &qstr_localFilePath { url.toLocalFile() };
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
     const auto &qstr_fileName { fileInfo.fileName() };
-    const auto &qdati_LastModified { fileInfo.lastModified() };
+    const auto &lastModifiedDateTime { fileInfo.lastModified() };
 
     TagLib::FileRef fileRef { qstr_localFilePath
 #ifdef Q_OS_WIN
@@ -94,47 +82,15 @@ TP::storeInformation( QListWidgetItem *I_item )
     auto bitrate { fileRef.audioProperties()->bitrate() };
     auto sampleRate { fileRef.audioProperties()->sampleRate() / 1000 };
     auto bitDepth { -1 };
-
-    const auto &extension { TP::extension ( qstr_localFilePath ) };
-
-    if( extension == QString { "flac" } )
-        bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
-    else if( extension == QString { "alac" } || extension == QString { "aac" } )
-        bitDepth = dynamic_cast< TagLib::MP4::Properties * >( fileRef.audioProperties() )->bitsPerSample();
-    else if( extension == QString { "wav" } )
-        bitDepth = dynamic_cast< TagLib::RIFF::WAV::Properties * >( fileRef.audioProperties() )->bitsPerSample();
-
-    I_item->setData( TP::role_Duration,     duration );             // Set duration
-    I_item->setData( TP::role_Bitrate,      bitrate );              // Set bitrate
-    I_item->setData( TP::role_SampleRate,   sampleRate );           // Set sample rate
-    I_item->setData( TP::role_BitDepth,     bitDepth );             // Set bit depth
-    I_item->setData( TP::role_FileName,     qstr_fileName );        // Set file name
-    I_item->setData( TP::role_LastModified, qdati_LastModified );   // Set last modified time & date
-
-    // set descrption, artist, title, album
-
-    if( ! qstr_title.length() )
-        // No title in tag, meaning that no valid tag is contained in the file
-    {
-        I_item->setData( TP::role_Description, qstr_fileName );
-    }
-    else
-    {
-        // will be able to customized in the future
-        I_item->setData( TP::role_Description,  qstr_artist + QString{ " - " } + qstr_title );
-        I_item->setData( TP::role_Artist,       qstr_artist );
-        I_item->setData( TP::role_Title,        qstr_title );
-        I_item->setData( TP::role_Album,        qstr_album );
-    }
-
-    // ------------------------- set ReplayGains -------------------------
-
     auto replayGain_Track { std::numeric_limits< float >::max() };
     auto replayGain_Album { std::numeric_limits< float >::max() };
 
-
-    if( extension == QString { "flac" } )
+    switch( I_item->data( TP::role_AudioType ).value< TP::AudioType >() )
     {
+    case TP::AudioType::FLAC :
+    {
+        bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
+
         // FLAC files may contain Xiph comments and ID3v2 frames.
         auto *flacFile { dynamic_cast< TagLib::FLAC::File * >( fileRef.file() ) };
 
@@ -153,10 +109,15 @@ TP::storeInformation( QListWidgetItem *I_item )
             replayGain_Track = getReplayGainTrackFromTag( id3v2Tag );
             replayGain_Album = getReplayGainAlbumFromTag( id3v2Tag );
         }
+        break;
     }
-    else if( extension == QString { "alac" } || extension == QString { "aac" } )
+
+    case TP::AudioType::ALAC :
+    case TP::AudioType::AAC :
     {
         // MPEG-4 audio files may contain MP4 tags.
+        bitDepth = dynamic_cast< TagLib::MP4::Properties * >( fileRef.audioProperties() )->bitsPerSample();
+
         auto *mp4File { dynamic_cast< TagLib::MP4::File * >( fileRef.file() ) };
 
         if( mp4File->hasMP4Tag() )
@@ -165,16 +126,10 @@ TP::storeInformation( QListWidgetItem *I_item )
             replayGain_Track = getReplayGainTrackFromTag( mp4Tag );
             replayGain_Album = getReplayGainAlbumFromTag( mp4Tag );
         }
+        break;
     }
-    else if( extension == QString { "ogg" } )
-    {
-        // Vorbis audio files may contain Xiph Comments.
-        auto *vorbisFile { dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef.file() ) };
-        auto *xiphComment { vorbisFile->tag() };
-        replayGain_Track = getReplayGainTrackFromTag( xiphComment );
-        replayGain_Album = getReplayGainAlbumFromTag( xiphComment );
-    }
-    else if( extension == QString { "mp3" } )
+
+    case TP::AudioType::MP3 :
     {
         // MP3 audio files may contain APE tags and ID3v2 frames.
         auto *mp3File { dynamic_cast< TagLib::MPEG::File * >( fileRef.file() ) };
@@ -194,10 +149,53 @@ TP::storeInformation( QListWidgetItem *I_item )
             replayGain_Track = getReplayGainTrackFromTag( id3v2Tag );
             replayGain_Album = getReplayGainAlbumFromTag( id3v2Tag );
         }
+        break;
     }
 
-    I_item->setData( TP::role_ReplayGainTrack, replayGain_Track );
-    I_item->setData( TP::role_ReplayGainAlbum, replayGain_Album );
+    case TP::AudioType::WAV :
+    {
+        bitDepth = dynamic_cast< TagLib::RIFF::WAV::Properties * >( fileRef.audioProperties() )->bitsPerSample();
+        break;
+    }
+
+    case TP::AudioType::OGG :
+    {
+        // Vorbis audio files may contain Xiph Comments.
+        auto *vorbisFile { dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef.file() ) };
+        auto *xiphComment { vorbisFile->tag() };
+        replayGain_Track = getReplayGainTrackFromTag( xiphComment );
+        replayGain_Album = getReplayGainAlbumFromTag( xiphComment );
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    I_item->setData( TP::role_Duration,     duration );                 // Set duration
+    I_item->setData( TP::role_Bitrate,      bitrate );                  // Set bitrate
+    I_item->setData( TP::role_SampleRate,   sampleRate );               // Set sample rate
+    I_item->setData( TP::role_BitDepth,     bitDepth );                 // Set bit depth
+    I_item->setData( TP::role_FileName,     qstr_fileName );            // Set file name
+    I_item->setData( TP::role_LastModified, lastModifiedDateTime );     // Set last modified time & date
+    I_item->setData( TP::role_ReplayGainTrack, replayGain_Track );      // Set Track ReplayGain
+    I_item->setData( TP::role_ReplayGainAlbum, replayGain_Album );      // Set Audio ReplayGain
+
+    // -------------------- set descrption, artist, title, album --------------------
+
+    if( ! qstr_title.length() )
+        // No title in tag, meaning that no valid tag is contained in the file
+    {
+        I_item->setData( TP::role_Description, qstr_fileName );
+    }
+    else
+    {
+        // will be able to customized in the future
+        I_item->setData( TP::role_Description,  qstr_artist + QString{ " - " } + qstr_title );
+        I_item->setData( TP::role_Artist,       qstr_artist );
+        I_item->setData( TP::role_Title,        qstr_title );
+        I_item->setData( TP::role_Album,        qstr_album );
+    }
 }
 
 

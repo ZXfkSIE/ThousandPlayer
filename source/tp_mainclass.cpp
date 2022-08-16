@@ -1307,8 +1307,6 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
     {
         slot_interruptingStopTriggered();
 
-        const auto &extension { TP::extension ( qstr_localFilePath ) };
-
         TP::storeInformation( I_item );                                 // Refresh audio info
         mainWindow->setAudioInformation( I_item );
 
@@ -1323,7 +1321,9 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 #endif
                                 } };
 
-        if( extension == QString( "flac" ) )
+        switch( I_item->data( TP::role_AudioType ).value< TP::AudioType >() )
+        {
+        case TP::AudioType::FLAC :
         {
             // FLAC files may store cover in the file itself,
             // or as a part of Xiph comment or ID3v2 frame.
@@ -1338,8 +1338,12 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
             if( flacFile->hasID3v2Tag() && coverArt.isNull() )
                 coverArt = getCoverImage( flacFile->ID3v2Tag() );
+
+            break;
         }
-        else if( extension == QString { "alac" } || extension == QString { "aac" } )
+
+        case TP::AudioType::ALAC :
+        case TP::AudioType::AAC :
         {
             // MPEG-4 audio files may store cover as MP4 tag.
             TagLib::MP4::File *mp4File {
@@ -1348,16 +1352,11 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
             if( mp4File->hasMP4Tag() )
                 coverArt = getCoverImage( mp4File->tag() );
+
+            break;
         }
-        else if( extension == QString { "ogg" } )
-        {
-            // Vorbis audio files may store cover as Xiph comment.
-            TagLib::Ogg::Vorbis::File *vorbisFile {
-                dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef->file() )
-            };
-            coverArt = getCoverImage( vorbisFile->tag() );
-        }
-        else if( extension == QString { "mp3" } )
+
+        case TP::AudioType::MP3 :
         {
             // MP3 audio files may store cover as ID3v2 frame.
             TagLib::MPEG::File *mp3File {
@@ -1366,6 +1365,23 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 
             if( mp3File->hasID3v2Tag() )
                 coverArt = getCoverImage( mp3File->ID3v2Tag() );
+
+            break;
+        }
+
+        case TP::AudioType::OGG :
+        {
+            // Vorbis audio files may store cover as Xiph comment.
+            TagLib::Ogg::Vorbis::File *vorbisFile {
+                dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef->file() )
+            };
+            coverArt = getCoverImage( vorbisFile->tag() );
+
+            break;
+        }
+
+        default:
+            break;
         }
 
         delete fileRef;

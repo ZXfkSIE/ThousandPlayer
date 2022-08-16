@@ -126,7 +126,9 @@ private:
             float           I_replayGain    = 0
             );
 
+
     QString convertTime( qint64 I_second ) const;
+    QString toString_AudioType( TP::AudioType I_type ) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;

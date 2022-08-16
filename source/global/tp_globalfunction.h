@@ -8,20 +8,17 @@
 
 namespace TagLib
 {
-
 namespace APE   { class Tag; }
 namespace ID3v2 { class Tag; }
 namespace MP4   { class Tag; }
 namespace Ogg   { class XiphComment; }
-
 }
 
 namespace TP
 {
     TP::CursorPositionType getCursorPositionType( QWidget *I_widget, const QPoint &I_point );
 
-    QString extension( const QString &I_path );
-    QUrl    getLyricsURL( QListWidgetItem *I_item );
+    QUrl getLyricsURL( QListWidgetItem *I_item );
 
     void storeInformation( QListWidgetItem *I_item );
 

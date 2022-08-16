@@ -4,7 +4,18 @@
 namespace TP
 {
 
-// First window snaps at the left/right/bottom/top of second window.
+enum class AudioType
+{
+    NotSupported,
+    FLAC,
+    ALAC,
+    AAC,
+    MP3,
+    WAV,
+    OGG
+};
+
+// First window snaps to the left/right/bottom/top of second window.
 enum class SnapType
 {
     NonSnap,
@@ -14,14 +25,6 @@ enum class SnapType
     ToTop
 };
 
-/*
-enum class ResizeType
-{
-    Left,
-    Right,
-    Bottom
-};
-*/
 
 enum class CursorPositionType
 {

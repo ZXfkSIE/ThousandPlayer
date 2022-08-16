@@ -87,19 +87,15 @@ void
 TP_MainWindow::setAudioInformation( const QListWidgetItem *I_item )
 {
     if( I_item )
-    {
-        const auto &url { I_item->data( TP::role_URL ).toUrl() };
-
-        QString extension { TP::extension( url.toLocalFile() ) };
-
-        setAudioPropertyLabels( extension.toUpper(),
+        setAudioPropertyLabels( toString_AudioType(
+                                    I_item->data( TP::role_AudioType ).value< TP::AudioType >()
+                                    ),
                                 I_item->data( TP::role_BitDepth ).toInt(),
                                 I_item->data( TP::role_SampleRate ).toInt(),
                                 I_item->data( TP::role_Bitrate ).toInt(),
                                 I_item->data( TP::role_Duration ).toInt(),
                                 TP::getReplayGainFromItem( I_item )
                                 );
-    }
     else
         setAudioPropertyLabels();
 
@@ -711,4 +707,26 @@ TP_MainWindow::convertTime( qint64 I_second ) const
     return QString( "%1:%2" )
             .arg( I_second / 60, 2, 10, QLatin1Char( '0' ) )
             .arg( I_second % 60, 2, 10, QLatin1Char( '0' ) );
+}
+
+QString
+TP_MainWindow::toString_AudioType( TP::AudioType I_type ) const
+{
+    switch( I_type )
+    {
+    case TP::AudioType::FLAC :
+        return { "FLAC" };
+    case TP::AudioType::ALAC :
+        return { "ALAC" };
+    case TP::AudioType::AAC :
+        return { "AAC" };
+    case TP::AudioType::MP3 :
+        return { "MP3" };
+    case TP::AudioType::WAV :
+        return { "WAV" };
+    case TP::AudioType::OGG :
+        return { "OGG" };
+    default:
+        return {};
+    }
 }

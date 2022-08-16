@@ -23,12 +23,13 @@ static const int role_Artist            = Qt::UserRole + 4;     // QString
 static const int role_Title             = Qt::UserRole + 5;     // QString
 static const int role_Album             = Qt::UserRole + 6;     // QString
 static const int role_FileName          = Qt::UserRole + 7;     // QString          must have
-static const int role_URL               = Qt::UserRole + 8;     // QUrl             must have
-static const int role_SourceType        = Qt::UserRole + 9;     // TP::SourceType   must have
-static const int role_Description       = Qt::UserRole + 10;    // QString          must have
-static const int role_LastModified      = Qt::UserRole + 11;    // QDateTime        must have
-static const int role_ReplayGainTrack   = Qt::UserRole + 12;    // float
-static const int role_ReplayGainAlbum   = Qt::UserRole + 13;    // float
+static const int role_AudioType         = Qt::UserRole + 8;     // TP::AudioType    must have
+static const int role_URL               = Qt::UserRole + 9;     // QUrl             must have
+static const int role_SourceType        = Qt::UserRole + 10;    // TP::SourceType   must have
+static const int role_Description       = Qt::UserRole + 11;    // QString          must have
+static const int role_LastModified      = Qt::UserRole + 12;    // QDateTime        must have
+static const int role_ReplayGainTrack   = Qt::UserRole + 13;    // float
+static const int role_ReplayGainAlbum   = Qt::UserRole + 14;    // float
 
 static const int role_FileListAddress   = Qt::UserRole;         // TP_FileListWidget * (stored as quintptr)
 
