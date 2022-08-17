@@ -158,6 +158,25 @@ TP_ConfigWindow::on_pushButton_RsgainPath_clicked()
 
 
 void
+TP_ConfigWindow::on_checkBox_isExistingReplayGainSkipped_stateChanged( int newState )
+{
+    switch( newState )
+    {
+    case Qt::Unchecked :
+        TP::config().setExistingReplayGainSkipped( false );
+        break;
+
+    case Qt::Checked :
+        TP::config().setExistingReplayGainSkipped( true );
+        break;
+
+    default:
+        break;
+    }
+}
+
+
+void
 TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
 {
     bool ok {};
@@ -1013,6 +1032,9 @@ TP_ConfigWindow::initializeUI()
     ui->container_RsgainPath->setVisible( false );
 #endif
 
+    // isExistingReplayGainSkipped
+    ui->checkBox_isExistingReplayGainSkipped->setChecked( TP::config().isExistingReplayGainSkipped() );
+
     // ============================== Playlist page ==============================
 
     const auto &playlistFont { TP::config().getPlaylistFont() };
@@ -1056,3 +1078,4 @@ TP_ConfigWindow::on_buttonBox_OK_accepted()
 {
     close();
 }
+

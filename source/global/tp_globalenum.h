@@ -4,7 +4,7 @@
 namespace TP
 {
 
-enum class AudioType
+enum class AudioFormat
 {
     NotSupported,
     FLAC,

@@ -68,7 +68,7 @@ void
 TP_MainWindow::setStop()
 {
     setIcon_Play();
-    setAudioInformation();
+    setAudioInfomation();
 }
 
 
@@ -84,11 +84,11 @@ TP_MainWindow::updatePosition( qint64 I_ms )
 
 
 void
-TP_MainWindow::setAudioInformation( const QListWidgetItem *I_item )
+TP_MainWindow::setAudioInfomation( const QListWidgetItem *I_item )
 {
     if( I_item )
-        setAudioPropertyLabels( toString_AudioType(
-                                    I_item->data( TP::role_AudioType ).value< TP::AudioType >()
+        setAudioPropertyLabels( toString_AudioFormat(
+                                    I_item->data( TP::role_AudioFormat ).value< TP::AudioFormat >()
                                     ),
                                 I_item->data( TP::role_BitDepth ).toInt(),
                                 I_item->data( TP::role_SampleRate ).toInt(),
@@ -100,6 +100,13 @@ TP_MainWindow::setAudioInformation( const QListWidgetItem *I_item )
         setAudioPropertyLabels();
 
     setAudioInfoLabel( I_item );
+}
+
+
+void
+TP_MainWindow::setAudioInfoLabelTexts( std::vector< QString > &&I_vec_Qstr )
+{
+    ui->label_AudioInfo->setStrings( std::move( I_vec_Qstr ) );
 }
 
 
@@ -710,21 +717,21 @@ TP_MainWindow::convertTime( qint64 I_second ) const
 }
 
 QString
-TP_MainWindow::toString_AudioType( TP::AudioType I_type ) const
+TP_MainWindow::toString_AudioFormat( TP::AudioFormat I_type ) const
 {
     switch( I_type )
     {
-    case TP::AudioType::FLAC :
+    case TP::AudioFormat::FLAC :
         return { "FLAC" };
-    case TP::AudioType::ALAC :
+    case TP::AudioFormat::ALAC :
         return { "ALAC" };
-    case TP::AudioType::AAC :
+    case TP::AudioFormat::AAC :
         return { "AAC" };
-    case TP::AudioType::MP3 :
+    case TP::AudioFormat::MP3 :
         return { "MP3" };
-    case TP::AudioType::WAV :
+    case TP::AudioFormat::WAV :
         return { "WAV" };
-    case TP::AudioType::OGG :
+    case TP::AudioFormat::OGG :
         return { "OGG" };
     default:
         return {};

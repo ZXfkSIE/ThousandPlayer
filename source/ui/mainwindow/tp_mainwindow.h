@@ -28,7 +28,8 @@ public:
 
     void updatePosition( qint64 I_ms );
 
-    void setAudioInformation( const QListWidgetItem *I_item = nullptr );
+    void setAudioInfomation( const QListWidgetItem *I_item = nullptr );
+    void setAudioInfoLabelTexts( std::vector< QString > &&I_vec_Qstr );
     void setFileNotFound();
 
     void setCover( const QImage &I_image );
@@ -128,7 +129,7 @@ private:
 
 
     QString convertTime( qint64 I_second ) const;
-    QString toString_AudioType( TP::AudioType I_type ) const;
+    QString toString_AudioFormat( TP::AudioFormat I_type ) const;
 
     bool b_isBorderBeingPressed;
     bool b_isCursorResize;

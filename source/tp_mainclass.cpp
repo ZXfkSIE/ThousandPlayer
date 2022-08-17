@@ -932,7 +932,8 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState I_state )
         qDebug() << "[Media Player] Playback state changed to StoppedState.";
         TP::PlayMode mode { TP::config().getPlayMode() };
 
-        if( ! b_isStopInterrupting && mode != TP::PlayMode::SingleTime )
+        if( ! b_isStopInterrupting && mode != TP::PlayMode::SingleTime
+                && mediaPlayer->error() == QMediaPlayer::NoError )
             switch( mode )
             {
             case TP::PlayMode::Repeat :
@@ -949,14 +950,19 @@ TP_MainClass::slot_playbackStateChanged( QMediaPlayer::PlaybackState I_state )
             }
         else
         {
-            mediaPlayer->setSource( {} );               // Cease I/O operations of current file
-
             mainWindow->setStop();
             mainWindow->setCover( {} );
 
             playlistWindow->unsetCurrentItemBold();
 
             lyricsWindow->clearLyricsViewer();
+
+            if( mediaPlayer->error() != QMediaPlayer::NoError )
+                mainWindow->setAudioInfoLabelTexts(
+                            { tr( "QMediaPlayer error: " ) + mediaPlayer->errorString() }
+                            );
+
+            mediaPlayer->setSource( {} );               // Cease I/O operations of current file
         }
 
         b_isStopInterrupting = false;
@@ -1011,9 +1017,9 @@ TP_MainClass::slot_deviceChanged() const
     qDebug()<< "[Audio Output] Current audio output device is "<< mediaPlayer->audioOutput()->device().description();
 }
 
-
+/*
 void
-TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString &I_qstr_error ) const
+TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error , const QString &I_qstr_error ) const
 {
     QMessageBox::critical(
                 nullptr,                                // QWidget *parent
@@ -1022,7 +1028,7 @@ TP_MainClass::slot_mediaPlayerError( QMediaPlayer::Error I_error, const QString 
                 tr( "An error of QMediaPlayer has occurred:\n" ) +
                 I_qstr_error );
 }
-
+*/
 
 void
 TP_MainClass::slot_positionChanged( qint64 I_ms )
@@ -1060,8 +1066,8 @@ TP_MainClass::initializeConnection()
              this,          &TP_MainClass::slot_playbackStateChanged );
     connect( mediaPlayer,   &QMediaPlayer::mediaStatusChanged,
              this,          &TP_MainClass::slot_mediaStatusChanged );
-    connect( mediaPlayer,   &QMediaPlayer::errorOccurred,
-             this,          &TP_MainClass::slot_mediaPlayerError );
+    /*connect( mediaPlayer,   &QMediaPlayer::errorOccurred,
+             this,          &TP_MainClass::slot_mediaPlayerError );*/
     connect( audioOutput,   &QAudioOutput::deviceChanged,
              this,          &TP_MainClass::slot_deviceChanged );
 
@@ -1274,7 +1280,7 @@ TP_MainClass::breadthFirstSearch( unsigned I_idx ) const
 
 
 void
-TP_MainClass::playItem ( QListWidgetItem *I_item )
+TP_MainClass::playItem( QListWidgetItem *I_item )
 {
     if( I_item == nullptr )
         return;
@@ -1291,7 +1297,7 @@ TP_MainClass::playItem ( QListWidgetItem *I_item )
 
 
 void
-TP_MainClass::playFile ( QListWidgetItem *I_item )
+TP_MainClass::playFile( QListWidgetItem *I_item )
 {
     const auto &url { I_item->data( TP::role_URL ).toUrl() };
     qDebug() << "[Main Class] playFile() is trying to play local file URL: " << url;
@@ -1308,7 +1314,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
         slot_interruptingStopTriggered();
 
         TP::storeInformation( I_item );                                 // Refresh audio info
-        mainWindow->setAudioInformation( I_item );
+        mainWindow->setAudioInfomation( I_item );
 
         // ------------------------------ Read cover art ------------------------------
         QImage coverArt {};
@@ -1321,9 +1327,9 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 #endif
                                 } };
 
-        switch( I_item->data( TP::role_AudioType ).value< TP::AudioType >() )
+        switch( I_item->data( TP::role_AudioFormat ).value< TP::AudioFormat >() )
         {
-        case TP::AudioType::FLAC :
+        case TP::AudioFormat::FLAC :
         {
             // FLAC files may store cover in the file itself,
             // or as a part of Xiph comment or ID3v2 frame.
@@ -1342,8 +1348,8 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
             break;
         }
 
-        case TP::AudioType::ALAC :
-        case TP::AudioType::AAC :
+        case TP::AudioFormat::ALAC :
+        case TP::AudioFormat::AAC :
         {
             // MPEG-4 audio files may store cover as MP4 tag.
             TagLib::MP4::File *mp4File {
@@ -1356,7 +1362,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
             break;
         }
 
-        case TP::AudioType::MP3 :
+        case TP::AudioFormat::MP3 :
         {
             // MP3 audio files may store cover as ID3v2 frame.
             TagLib::MPEG::File *mp3File {
@@ -1369,7 +1375,7 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
             break;
         }
 
-        case TP::AudioType::OGG :
+        case TP::AudioFormat::OGG :
         {
             // Vorbis audio files may store cover as Xiph comment.
             TagLib::Ogg::Vorbis::File *vorbisFile {
@@ -1403,7 +1409,10 @@ TP_MainClass::playFile ( QListWidgetItem *I_item )
 #endif
     }       // if( std::filesystem::exists
     else
+    {
         slot_interruptingStopTriggered();
+        mainWindow->setAudioInfoLabelTexts( { tr( "File Not Exists" ) } );
+    }
 }
 
 

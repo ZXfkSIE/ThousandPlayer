@@ -17,6 +17,8 @@ TP_Config::TP_Config( QObject *parent ) :
     auto defaultFont { QWidget().font() };
     defaultFont.setPointSize( 10 );
 
+    // ------------------------------ group_MAINWINDOW ------------------------------
+
     config.beginGroup( group_MAINWINDOW );
     mainWindowGeometry = config
             .value( key_MAINWINDOW_mainWindowGeometry, defaultMainWindowGeometry )
@@ -31,6 +33,8 @@ TP_Config::TP_Config( QObject *parent ) :
             .value( key_MAINWINDOW_audioInfoScrollingInterval, 5 )
             .toInt();
     config.endGroup();
+
+    // ------------------------------ group_PLAYLISTWINDOW ------------------------------
 
     config.beginGroup( group_PLAYLISTWINDOW );
     playlistWindowGeometry = config
@@ -47,6 +51,8 @@ TP_Config::TP_Config( QObject *parent ) :
             .toUrl();
     config.endGroup();
 
+    // ------------------------------ group_LYRICSWINDOW ------------------------------
+
     config.beginGroup( group_LYRICSWINDOW );
     lyricsWindowGeometry = config
             .value( key_LYRICSWINDOW_lyricsWindowGeometry, defaultLyricsWindowGeometry )
@@ -61,6 +67,8 @@ TP_Config::TP_Config( QObject *parent ) :
             .value( key_LYRICSWINDOW_jumpingTimeOffset_ms, 0 )
             .toInt();
     config.endGroup();
+
+    // ------------------------------ group_PLAYBACK ------------------------------
 
     config.beginGroup( group_PLAYBACK );
     volume = config
@@ -85,6 +93,9 @@ TP_Config::TP_Config( QObject *parent ) :
     rsgainPath = config
             .value( key_PLAYBACK_RsgainPath, "" )
             .toString();
+    b_isExistingReplayGainSkipped = config
+            .value( key_PLAYBACK_isExistingReplayGainSkipped, true )
+            .toBool();
     config.endGroup();
 }
 
@@ -118,6 +129,7 @@ TP_Config::~TP_Config()
     config.setValue( key_PLAYBACK_defaultGain_dB, defaultGain_dB );
     config.setValue( key_PLAYBACK_playMode, static_cast< int >( playMode ) );
     config.setValue( key_PLAYBACK_RsgainPath, rsgainPath );
+    config.setValue( key_PLAYBACK_isExistingReplayGainSkipped, b_isExistingReplayGainSkipped );
     config.endGroup();
 
     config.sync();
@@ -345,4 +357,16 @@ const QString &
 TP_Config::getRsgainPath () const
 {
     return rsgainPath;
+}
+
+void
+TP_Config::setExistingReplayGainSkipped( const bool input )
+{
+    b_isExistingReplayGainSkipped = input;
+}
+
+bool
+TP_Config::isExistingReplayGainSkipped() const
+{
+    return b_isExistingReplayGainSkipped;
 }

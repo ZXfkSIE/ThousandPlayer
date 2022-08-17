@@ -18,57 +18,59 @@ public:
     ~TP_Config();
 
     // ====================== MAINWINDOW group ======================
-    void            setMainWindowGeometry ( const QRect &input = defaultMainWindowGeometry );
-    const QRect &   getMainWindowGeometry () const;
-    void            setTrayIconEnabled  ( const bool input );
-    bool            isTrayIconEnabled   () const;
-    void            setAudioInfoLabelFont( const QFont &input );
-    const QFont &   getAudioInfoLabelFont() const;
-    void            setAudioInfoScrollingInterval ( const int I_sec );
-    int             getAudioInfoScrollingInterval () const;
+    void            setMainWindowGeometry           ( const QRect &input = defaultMainWindowGeometry );
+    const QRect &   getMainWindowGeometry           () const;
+    void            setTrayIconEnabled              ( const bool input );
+    bool            isTrayIconEnabled               () const;
+    void            setAudioInfoLabelFont           ( const QFont &input );
+    const QFont &   getAudioInfoLabelFont           () const;
+    void            setAudioInfoScrollingInterval   ( const int I_sec );
+    int             getAudioInfoScrollingInterval   () const;
 
     // ==================== PLAYLISTWINDOW group ====================
-    void            setPlaylistWindowGeometry ( const QRect &input = defaultPlaylistWindowGeometry );
-    const QRect &   getPlaylistWindowGeometry () const;
-    void            setPlaylistWindowShown  ( const bool input );
-    bool            isPlaylistWindowShown   () const;
-    void            setPlaylistFont ( const QFont &input );
-    const QFont &   getPlaylistFont () const;
+    void            setPlaylistWindowGeometry   ( const QRect &input = defaultPlaylistWindowGeometry );
+    const QRect &   getPlaylistWindowGeometry   () const;
+    void            setPlaylistWindowShown      ( const bool input );
+    bool            isPlaylistWindowShown       () const;
+    void            setPlaylistFont             ( const QFont &input );
+    const QFont &   getPlaylistFont             () const;
 
-    void            setLastOpenedDirectory ( const QUrl &input );
-    const QUrl &    getLastOpenedDirectory () const;
+    void            setLastOpenedDirectory      ( const QUrl &input );
+    const QUrl &    getLastOpenedDirectory      () const;
 
     // ===================== LYRICSWINDOW group =====================
-    void            setLyricsWindowGeometry ( const QRect &input = defaultLyricsWindowGeometry );
-    const QRect &   getLyricsWindowGeometry () const;
-    void            setLyricsWindowShown  ( const bool input );
-    bool            isLyricsWindowShown   () const;
-    void            setLyricsFont ( const QFont &input );
-    const QFont &   getLyricsFont () const;
-    void            setJumpingTimeOffset_ms ( const int input );
-    int             getJumpingTimeOffset_ms () const;
+    void            setLyricsWindowGeometry     ( const QRect &input = defaultLyricsWindowGeometry );
+    const QRect &   getLyricsWindowGeometry     () const;
+    void            setLyricsWindowShown        ( const bool input );
+    bool            isLyricsWindowShown         () const;
+    void            setLyricsFont               ( const QFont &input );
+    const QFont &   getLyricsFont               () const;
+    void            setJumpingTimeOffset_ms     ( const int input );
+    int             getJumpingTimeOffset_ms     () const;
 
     // ======================= PLAYBACK group =======================
-    void                setVolume ( const int input );
-    int                 getVolume () const;
-    void                setPreAmp_dB ( const float input );
-    float               getPreAmp_dB () const;
-    void                setReplayGainMode ( const TP::ReplayGainMode input );
-    TP::ReplayGainMode  getReplayGainMode () const;
-    void                setDefaultGain_dB ( const float input );
-    float               getDefaultGain_dB () const;
-    void                setPlayMode ( const TP::PlayMode input );
-    TP::PlayMode        getPlayMode () const;
-    void                setRsgainPath ( const QString &input );
-    const QString &     getRsgainPath () const;
+    void                setVolume                       ( const int input );
+    int                 getVolume                       () const;
+    void                setPreAmp_dB                    ( const float input );
+    float               getPreAmp_dB                    () const;
+    void                setReplayGainMode               ( const TP::ReplayGainMode input );
+    TP::ReplayGainMode  getReplayGainMode               () const;
+    void                setDefaultGain_dB               ( const float input );
+    float               getDefaultGain_dB               () const;
+    void                setPlayMode                     ( const TP::PlayMode input );
+    TP::PlayMode        getPlayMode                     () const;
+    void                setRsgainPath                   ( const QString &input );
+    const QString &     getRsgainPath                   () const;
+    void                setExistingReplayGainSkipped    ( const bool input );
+    bool                isExistingReplayGainSkipped     () const;
 
 private:
     QSettings config;
 
 
-    // ************************************************************************************
+    // **********************************************************************************************
     const   QString     group_MAINWINDOW                            { "MAINWINDOW" };
-    // ************************************************************************************
+    // **********************************************************************************************
     const   QString     key_MAINWINDOW_mainWindowGeometry           { "mainWindowGeometry" };
             QRect       mainWindowGeometry;
     const   QString     key_MAINWINDOW_isTrayIconEnabled            { "isTrayIconEnabled" };
@@ -78,9 +80,9 @@ private:
     const   QString     key_MAINWINDOW_audioInfoScrollingInterval   { "audioInfoScrollingInterval" };
             int         audioInfoScrollingInterval_sec;
 
-    // ************************************************************************************
+    // **********************************************************************************************
     const   QString     group_PLAYLISTWINDOW                        { "PLAYLISTWINDOW" };
-    // ************************************************************************************
+    // **********************************************************************************************
     const   QString     key_PLAYLISTWINDOW_playlistWindowGeometry   { "playlistWindowGeometry" };
             QRect       playlistWindowGeometry;
     const   QString     key_PLAYLISTWINDOW_isPlaylistWindowShown    { "isPlaylistWindowShown" };
@@ -91,9 +93,9 @@ private:
     const   QString     key_PLAYLISTWINDOW_lastOpenedDirectory      { "lastOpenedDirectory" };
             QUrl        lastOpenedDirectory;
 
-    // ************************************************************************************
+    // **********************************************************************************************
     const   QString             group_LYRICSWINDOW                  { "LYRICSWINDOW" };
-    // ************************************************************************************
+    // **********************************************************************************************
     const   QString     key_LYRICSWINDOW_lyricsWindowGeometry       { "lyricsWindowGeometry" };
             QRect       lyricsWindowGeometry;
     const   QString     key_LYRICSWINDOW_isLyricsWindowShown        { "isLyricsWindowShown" };
@@ -103,21 +105,23 @@ private:
     const   QString     key_LYRICSWINDOW_jumpingTimeOffset_ms       { "jumpingTimeOffset" };
             int         jumpingTimeOffset_ms;
 
-    // ************************************************************************************
-    const   QString             group_PLAYBACK                      { "PLAYBACK" };
-    // ************************************************************************************
-    const   QString             key_PLAYBACK_volume                 { "volume" };
+    // **********************************************************************************************
+    const   QString             group_PLAYBACK                              { "PLAYBACK" };
+    // **********************************************************************************************
+    const   QString             key_PLAYBACK_volume                         { "volume" };
             int                 volume;
-    const   QString             key_PLAYBACK_preAmp_dB              { "preAmp_dB" };
+    const   QString             key_PLAYBACK_preAmp_dB                      { "preAmp_dB" };
             float               preAmp_dB;
-    const   QString             key_PLAYBACK_replayGainMode         { "replayGainMode" };
+    const   QString             key_PLAYBACK_replayGainMode                 { "replayGainMode" };
             TP::ReplayGainMode  replayGainMode;
-    const   QString             key_PLAYBACK_defaultGain_dB         { "defaultGain_dB" };
+    const   QString             key_PLAYBACK_defaultGain_dB                 { "defaultGain_dB" };
             float               defaultGain_dB;
-    const   QString             key_PLAYBACK_playMode               { "playMode" };
+    const   QString             key_PLAYBACK_playMode                       { "playMode" };
             TP::PlayMode        playMode;
-    const   QString             key_PLAYBACK_RsgainPath             { "RsgainPath" };
+    const   QString             key_PLAYBACK_RsgainPath                     { "RsgainPath" };
             QString             rsgainPath;
+    const   QString             key_PLAYBACK_isExistingReplayGainSkipped    { "isExistingReplayGainSkipped" };
+            bool                b_isExistingReplayGainSkipped;
 
     static constexpr QRect defaultMainWindowGeometry       { 100, 100, 480, 240 };
     static constexpr QRect defaultPlaylistWindowGeometry   { 100, 340, 480, 360 };

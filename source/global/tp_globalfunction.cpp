@@ -64,6 +64,19 @@ TP::storeInformation( QListWidgetItem *I_item )
     const auto &qstr_localFilePath { url.toLocalFile() };
     QFileInfo fileInfo { QFile { qstr_localFilePath } };
     const auto &qstr_fileName { fileInfo.fileName() };
+
+    if( ! std::filesystem::exists( url.toLocalFile().
+#ifdef Q_OS_WIN
+                                 toStdWString()
+#else
+                                 toLocal8Bit().constData()
+#endif
+                                 ) )
+    {
+        I_item->setData( TP::role_Description, qstr_fileName );
+        return;
+    }
+
     const auto &lastModifiedDateTime { fileInfo.lastModified() };
 
     TagLib::FileRef fileRef { qstr_localFilePath
@@ -85,9 +98,9 @@ TP::storeInformation( QListWidgetItem *I_item )
     auto replayGain_Track { std::numeric_limits< float >::max() };
     auto replayGain_Album { std::numeric_limits< float >::max() };
 
-    switch( I_item->data( TP::role_AudioType ).value< TP::AudioType >() )
+    switch( I_item->data( TP::role_AudioFormat ).value< TP::AudioFormat >() )
     {
-    case TP::AudioType::FLAC :
+    case TP::AudioFormat::FLAC :
     {
         bitDepth = dynamic_cast< TagLib::FLAC::Properties * >( fileRef.audioProperties() )->bitsPerSample();
 
@@ -112,8 +125,8 @@ TP::storeInformation( QListWidgetItem *I_item )
         break;
     }
 
-    case TP::AudioType::ALAC :
-    case TP::AudioType::AAC :
+    case TP::AudioFormat::ALAC :
+    case TP::AudioFormat::AAC :
     {
         // MPEG-4 audio files may contain MP4 tags.
         bitDepth = dynamic_cast< TagLib::MP4::Properties * >( fileRef.audioProperties() )->bitsPerSample();
@@ -129,7 +142,7 @@ TP::storeInformation( QListWidgetItem *I_item )
         break;
     }
 
-    case TP::AudioType::MP3 :
+    case TP::AudioFormat::MP3 :
     {
         // MP3 audio files may contain APE tags and ID3v2 frames.
         auto *mp3File { dynamic_cast< TagLib::MPEG::File * >( fileRef.file() ) };
@@ -152,13 +165,13 @@ TP::storeInformation( QListWidgetItem *I_item )
         break;
     }
 
-    case TP::AudioType::WAV :
+    case TP::AudioFormat::WAV :
     {
         bitDepth = dynamic_cast< TagLib::RIFF::WAV::Properties * >( fileRef.audioProperties() )->bitsPerSample();
         break;
     }
 
-    case TP::AudioType::OGG :
+    case TP::AudioFormat::OGG :
     {
         // Vorbis audio files may contain Xiph Comments.
         auto *vorbisFile { dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileRef.file() ) };

@@ -3,6 +3,10 @@
     tp_filelistwidget.h
     tp_filelistwidget.cpp
 
+    tp_replaygainscanprogress.h
+    tp_replaygainscanprogress.cpp
+    tp_replaygainscanprogress.ui
+
     tp_runnable_filereader.h
     tp_runnable_filereader.cpp
 

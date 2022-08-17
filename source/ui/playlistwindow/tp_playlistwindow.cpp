@@ -564,7 +564,7 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
 {
     // The braces {} should not be used here
     // since they will trigger std::initializer_list constructor.
-    const auto &jArray_Root ( I_jDoc.array() );
+    const auto &jArray_Root( I_jDoc.array() );
 
     bool isPlaylistCreated { false };
 
@@ -599,38 +599,17 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
             TP::SourceType sourceType {
                 static_cast< TP::SourceType >( jObject_File[ key_sourceType ].toInt() )
             };
-            const auto &qstr_fileURL {
-                QUrl { jObject_File[ key_url ].toString() }
-            };
+            QUrl fileURL {  jObject_File[ key_url ].toString() };
+            auto AudioFormat { getAudioFormat( fileURL.toLocalFile() ) };
 
-            if( ! qstr_fileURL.isEmpty() )
+            if( ! fileURL.isEmpty() && AudioFormat != TP::AudioFormat::NotSupported )
             {
                 auto *item = new QListWidgetItem { newFileList };
-                item->setData( TP::role_URL, qstr_fileURL );             // set URL
+                item->setData( TP::role_URL, fileURL );             // set URL
+                item->setData( TP::role_AudioFormat, static_cast< int >( AudioFormat ) );
                 item->setData( TP::role_SourceType, static_cast< int >( sourceType ) );
-
-                switch( sourceType )
-                {
-                case TP::SourceType::SingleFile :
-                    if( std::filesystem::exists( qstr_fileURL.toLocalFile().
-#ifdef Q_OS_WIN
-                                                 toStdWString()
-#else
-                                                 toLocal8Bit().constData()
-#endif
-                                                 ) )
-                        newFileList->addItem( item );
-                else
-                    delete item;
-
-                    break;
-
-                default:
-                    delete item;
-                }
+                newFileList->addItem( item );
             }
-            else
-                jArray_FileList.removeAt( i-- );
         }       // for( int i {}; i < jArray_FileList.count(); i++ )
 
         auto count { newFileList->count() };
@@ -644,16 +623,18 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         progressDialog->setValue( 0 );
         progressDialog->show();
 
-        for ( unsigned i {}; i < count; i++ )
+        for ( unsigned i { 1 }; i <= count; i++ )
         {
-            if( i * 100 / count >= nextPercent )
+            auto currentPercentage { i * 100 / count };
+            if( currentPercentage >= nextPercent )
             {
-                nextPercent += percentageStep;
-                progressDialog->setValue( i + 1 );
+                while( currentPercentage >= nextPercent )
+                    nextPercent += percentageStep;
+                progressDialog->setValue( i );
             }
 
             QThreadPool::globalInstance()->start(
-                        new TP_Runnable_FileReader{ newFileList->item( i ) }
+                        new TP_Runnable_FileReader{ newFileList->item( i - 1 ) }
                         );
 
             if( progressDialog->wasCanceled() )
@@ -801,30 +782,30 @@ TP_PlaylistWindow::storePlaylist()
 }
 
 
-TP::AudioType
-TP_PlaylistWindow::getAudioType( const QString &I_path )
+TP::AudioFormat
+TP_PlaylistWindow::getAudioFormat( const QString &I_path )
 {
     auto extension { QFileInfo { I_path }.suffix().toUpper() };
 
     if( extension == QString { "FLAC" } )
-        return TP::AudioType::FLAC;
+        return TP::AudioFormat::FLAC;
 
     if( extension == QString { "ALAC" } )
-        return TP::AudioType::ALAC;
+        return TP::AudioFormat::ALAC;
 
     if( extension == QString { "M4A" } || extension == QString { "AAC" } )
-        return TP::AudioType::AAC;
+        return TP::AudioFormat::AAC;
 
     if( extension == QString { "MP3" } )
-        return TP::AudioType::MP3;
+        return TP::AudioFormat::MP3;
 
     if( extension == QString { "WAV" } )
-        return TP::AudioType::WAV;
+        return TP::AudioFormat::WAV;
 
     if( extension == QString { "OGG" } )
-        return TP::AudioType::OGG;
+        return TP::AudioFormat::OGG;
 
-    return TP::AudioType::NotSupported;
+    return TP::AudioFormat::NotSupported;
 }
 
 
@@ -842,21 +823,23 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
 
     for ( const auto &fileURL: I_urlList )
     {
-        auto audioType { getAudioType( fileURL.toLocalFile() ) };
-        if( audioType == TP::AudioType::NotSupported )
+        auto AudioFormat { getAudioFormat( fileURL.toLocalFile() ) };
+        if( AudioFormat == TP::AudioFormat::NotSupported )
             continue;
 
         auto *item = new QListWidgetItem { currentFileListWidget() };
         item->setData( TP::role_URL, fileURL );
-        item->setData( TP::role_AudioType, static_cast< int >( audioType ) );
+        item->setData( TP::role_AudioFormat, static_cast< int >( AudioFormat ) );
         item->setData( TP::role_SourceType, static_cast< int >( TP::SourceType::SingleFile ) );
         currentFileListWidget()->addItem( item );
     }
 
-    int nextPercent { percentageStep };
     auto newCount { currentFileListWidget()->count() };
-    if( originalCount == newCount )
+    auto increasedCount { newCount - originalCount };
+    if( ! increasedCount )
         return;
+
+    int nextPercentage { percentageStep };
 
     // Indexes of the new added items are between [originalCount, newCount - 1]
 
@@ -865,16 +848,18 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
     progressDialog->setValue( 0 );
     progressDialog->show();
 
-    for( unsigned i {}; i < newCount - originalCount; i++ )
+    for( unsigned i { 1 }; i <= increasedCount; i++ )
     {
-        if( i * 100 / newCount >= nextPercent )
+        auto currentPercentage { i * 100 / increasedCount };
+        if( currentPercentage >= nextPercentage )
         {
-            nextPercent += percentageStep;
-            progressDialog->setValue( i + 1 );
+            while( currentPercentage >= nextPercentage )
+                nextPercentage += percentageStep;
+            progressDialog->setValue( i );
         }
 
         QThreadPool::globalInstance()->start(
-                    new TP_Runnable_FileReader{ currentFileListWidget()->item( originalCount + i ) }
+                    new TP_Runnable_FileReader{ currentFileListWidget()->item( originalCount + i - 1 ) }
                     );
 
         if( progressDialog->wasCanceled() )

@@ -104,7 +104,7 @@ private:
 
     bool createPlaylistFromJSON( const QJsonDocument &I_jDoc );
     void storePlaylist();
-    TP::AudioType getAudioType( const QString &I_path );
+    TP::AudioFormat getAudioFormat( const QString &I_path );
 
     TP_FileListWidget * currentFileListWidget();
     void                addFilesToCurrentList( const QList< QUrl > &I_urlList );
