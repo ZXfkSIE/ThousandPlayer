@@ -27,6 +27,13 @@ qt6_add_resources(${PROJECT_NAME} "image"
     FILES ${TP_IMAGE_FILES}
     )
 
+# integrate markdown files
+qt6_add_resources(${PROJECT_NAME} "markdown"
+    PREFIX "/markdown"
+    BASE "${PROJECT_SOURCE_DIR}/markdown"
+    FILES ${TP_MARKDOWN_FILES}
+    )
+
 # Integrate translation files
 list(GET TP_QM_FILES 0 TP_FIRST_QM_FILE)
 cmake_path(GET TP_FIRST_QM_FILE PARENT_PATH TP_QM_PATH)

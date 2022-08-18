@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QProcess>
 
 #include <stack>
 
@@ -806,14 +807,53 @@ TP_FileListWidget::slot_scanReplayGain()
     if( ! numberOfSelectedItems )
         return;
 
+#ifdef Q_OS_WIN
+    if( TP::config().getRsgainPath().isEmpty() )
+    {
+        QMessageBox::critical(
+                    this,               // QWidget *parent
+                    tr( "Error" ),      // const QString &title
+                    tr( R"STR(
+<html><head/><body>
+<p>The path of rsgain.exe has not been set. You can download it from<br>
+<a href="https://github.com/complexlogic/rsgain"><span style="text-decoration:underline;color:#0000ff;">https://github.com/complexlogic/rsgain</span></a>
+.</p></body></html>
+)STR" )                                 // const QString &text
+                    );
+        return;
+    }
+
+    if( ! std::filesystem::exists( TP::config().getRsgainPath().toStdWString() ) )
+    {
+        QMessageBox::critical(
+                    this,               // QWidget *parent
+                    tr( "Error" ),      // const QString &title
+                    tr( "The path of rsgain.exe is invalid." )
+                    );
+        return;
+    }
+
+    QProcess qProcess;
+    qProcess.start( TP::config().getRsgainPath(), { "-v" }, QIODeviceBase::ReadOnly );
+    qProcess.waitForFinished( 2000 );
+    QString qstr_version { qProcess.readAll() };
+    qDebug() << "Output result of rsgain -v:" << qstr_version;
+    if( ! qstr_version.contains( QString { "rsgain" } ) )
+    {
+        QMessageBox::critical(
+                    this,               // QWidget *parent
+                    tr( "Error" ),      // const QString &title
+                    tr( "The path of rsgain.exe is invalid." )
+                    );
+        return;
+    }
+
+/*
     for( auto *selectedItem : selectedItems() )
     {
-#ifdef Q_OS_LINUX
-#endif
-#ifdef Q_OS_WIN
 
+    }*/
 #endif
-    }
 }
 
 // *****************************************************************

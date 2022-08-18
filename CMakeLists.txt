@@ -49,8 +49,8 @@ set(TP_TS_FILES
     ${PROJECT_SOURCE_DIR}/translation/ThousandPlayer_zh_TW.ts
     )
 
-file(GLOB TP_IMAGE_FILES
-    ${PROJECT_SOURCE_DIR}/image/*.svg
-    )
+file(GLOB TP_IMAGE_FILES ${PROJECT_SOURCE_DIR}/image/*.svg)
+
+file(GLOB TP_MARKDOWN_FILES ${PROJECT_SOURCE_DIR}/markdown/*.md)
 
 add_subdirectory(source)

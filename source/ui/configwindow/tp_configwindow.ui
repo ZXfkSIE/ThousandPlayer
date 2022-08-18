@@ -863,7 +863,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Path of &lt;a href=&quot;https://github.com/complexlogic/rsgain&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;rsgain&lt;/span&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Path of &lt;a href=&quot;https://github.com/complexlogic/rsgain&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;rsgain&lt;/span&gt;&lt;/a&gt;.exe:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -915,7 +915,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>Skip scanning if ReplayGain already exists</string>
+                   <string>Skip scanning if ReplayGain tag already exists</string>
                   </property>
                  </widget>
                 </item>

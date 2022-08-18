@@ -53,8 +53,8 @@ private:
     void initializeStrings();
     void initializeUI();
 
-    std::string str_GPL;
-    std::string str_Credits;
+    QString qstr_GPL;
+    QString qstr_Credits;
 };
 
 #endif // TP_CONFIGWINDOW_H
