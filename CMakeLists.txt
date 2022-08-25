@@ -39,6 +39,7 @@ endif()
 find_package(Qt6 6.4.0...6.114.514 COMPONENTS
     Widgets
     Multimedia
+    Concurrent
     LinguistTools
     REQUIRED
     )

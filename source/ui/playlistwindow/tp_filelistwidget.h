@@ -1,8 +1,6 @@
 ﻿#ifndef TP_FILELISTWIDGET_H
 #define TP_FILELISTWIDGET_H
 
-#include "tp_globalenum.h"
-
 #include <QListWidget>
 
 class TP_Menu;
@@ -74,11 +72,11 @@ private:
 
     bool    b_isLeftButtonPressed;
 
-    QString         qstr_keyword;
-    bool            b_isFilenameSearched;
-    bool            b_isAlbumSearched;
-    bool            b_isArtistSearched;
-    bool            b_isTitleSearched;
+    QString qstr_keyword;
+    bool    b_isFilenameSearched;
+    bool    b_isAlbumSearched;
+    bool    b_isArtistSearched;
+    bool    b_isTitleSearched;
 };
 
 #endif // TP_FILELISTWIDGET_H

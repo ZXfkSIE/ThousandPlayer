@@ -2,12 +2,14 @@
 #include "ui_tp_playlistwindow.h"
 
 #include "tp_globalconst.h"
+#include "tp_globalfunction.h"
 #include "tp_globalvariable.h"
 
 #include "tp_filelistwidget.h"
 #include "tp_filesearchdialog.h"
 #include "tp_menu.h"
 #include "tp_progressdialog.h"
+#include "tp_replaygainscanprogress.h"
 #include "tp_runnable_filereader.h"
 
 #include <QDirIterator>
@@ -20,15 +22,16 @@
 #include <QThreadPool>
 
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
-    QWidget         { parent }
-  , ui              { new Ui::TP_PlaylistWindow }
-  , progressDialog  { new TP_ProgressDialog {
-                        tr( "Reading files..." ),   // const QString &labelText
-                        tr( "Abort" ),              // const QString &cancelButtonText
-                        0,                          // int minimum
-                        0,                          // int maximum (will be set in the loop)
-                        this } }                    // QWidget *parent = nullptr
-  , b_isDescending  { false }
+    QWidget                 { parent }
+  , ui                      { new Ui::TP_PlaylistWindow }
+  , progressDialog          { new TP_ProgressDialog {
+                                tr( "Reading files..." ),   // const QString &labelText
+                                tr( "Abort" ),              // const QString &cancelButtonText
+                                0,                          // int minimum
+                                0,                          // int maximum (will be set in the loop)
+                                this } }                    // QWidget *parent = nullptr
+  , replayGainScanProgress  { new TP_ReplayGainScanProgress }
+  , b_isDescending          { false }
 {
     ui->setupUi( this );
     // Qt::Tool is used for getting rid of the window tab in taskbar
@@ -600,7 +603,7 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
                 static_cast< TP::SourceType >( jObject_File[ key_sourceType ].toInt() )
             };
             QUrl fileURL {  jObject_File[ key_url ].toString() };
-            auto AudioFormat { getAudioFormat( fileURL.toLocalFile() ) };
+            auto AudioFormat { TP::getAudioFormat( fileURL ) };
 
             if( ! fileURL.isEmpty() && AudioFormat != TP::AudioFormat::NotSupported )
             {
@@ -623,30 +626,27 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         progressDialog->setValue( 0 );
         progressDialog->show();
 
-        for ( unsigned i { 1 }; i <= count; i++ )
+        for ( unsigned i {}; i < count; i++ )
+            QThreadPool::globalInstance()->start(
+                        new TP_Runnable_FileReader { newFileList->item( i ) }
+                        );
+
+        while( auto n_activeThread = QThreadPool::globalInstance()->activeThreadCount() )
         {
-            auto currentPercentage { i * 100 / count };
+            auto countFinished { count - n_activeThread };
+            auto currentPercentage { countFinished * 100 / count };
             if( currentPercentage >= nextPercent )
             {
                 while( currentPercentage >= nextPercent )
                     nextPercent += percentageStep;
-                progressDialog->setValue( i );
-            }
-
-            QThreadPool::globalInstance()->start(
-                        new TP_Runnable_FileReader{ newFileList->item( i - 1 ) }
-                        );
-
-            if( progressDialog->wasCanceled() )
-            {
-                progressDialog->cancel();
-                break;
+                progressDialog->setValue( countFinished );
             }
         }
 
         QThreadPool::globalInstance()->waitForDone();
-        newFileList->refreshShowingTitle( 0, count - 1 );
         progressDialog->cancel();
+
+        newFileList->refreshShowingTitle( 0, count - 1 );
     }       // for( const auto &jValue_Playlist : jArray_Root )
 
     return isPlaylistCreated;
@@ -782,33 +782,6 @@ TP_PlaylistWindow::storePlaylist()
 }
 
 
-TP::AudioFormat
-TP_PlaylistWindow::getAudioFormat( const QString &I_path )
-{
-    auto extension { QFileInfo { I_path }.suffix().toUpper() };
-
-    if( extension == QString { "FLAC" } )
-        return TP::AudioFormat::FLAC;
-
-    if( extension == QString { "ALAC" } )
-        return TP::AudioFormat::ALAC;
-
-    if( extension == QString { "M4A" } || extension == QString { "AAC" } )
-        return TP::AudioFormat::AAC;
-
-    if( extension == QString { "MP3" } )
-        return TP::AudioFormat::MP3;
-
-    if( extension == QString { "WAV" } )
-        return TP::AudioFormat::WAV;
-
-    if( extension == QString { "OGG" } )
-        return TP::AudioFormat::OGG;
-
-    return TP::AudioFormat::NotSupported;
-}
-
-
 TP_FileListWidget *
 TP_PlaylistWindow::currentFileListWidget()
 {
@@ -823,7 +796,7 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
 
     for ( const auto &fileURL: I_urlList )
     {
-        auto AudioFormat { getAudioFormat( fileURL.toLocalFile() ) };
+        auto AudioFormat { TP::getAudioFormat( fileURL ) };
         if( AudioFormat == TP::AudioFormat::NotSupported )
             continue;
 
@@ -848,29 +821,26 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
     progressDialog->setValue( 0 );
     progressDialog->show();
 
-    for( unsigned i { 1 }; i <= increasedCount; i++ )
+    for( unsigned i {}; i < increasedCount; i++ )
+        QThreadPool::globalInstance()->start(
+                    new TP_Runnable_FileReader{ currentFileListWidget()->item( originalCount + i ) }
+                    );
+
+    while( auto n_activeThread = QThreadPool::globalInstance()->activeThreadCount() )
     {
-        auto currentPercentage { i * 100 / increasedCount };
+        auto countFinished { increasedCount - n_activeThread };
+        auto currentPercentage { countFinished * 100 / increasedCount };
         if( currentPercentage >= nextPercentage )
         {
             while( currentPercentage >= nextPercentage )
                 nextPercentage += percentageStep;
-            progressDialog->setValue( i );
-        }
-
-        QThreadPool::globalInstance()->start(
-                    new TP_Runnable_FileReader{ currentFileListWidget()->item( originalCount + i - 1 ) }
-                    );
-
-        if( progressDialog->wasCanceled() )
-        {
-            progressDialog->cancel();
-            break;
+            progressDialog->setValue( countFinished );
         }
     }
 
     QThreadPool::globalInstance()->waitForDone();
-    currentFileListWidget()->refreshShowingTitle( originalCount, newCount - 1 );
     progressDialog->cancel();
+
+    currentFileListWidget()->refreshShowingTitle( originalCount, newCount - 1 );
 }
 

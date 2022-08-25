@@ -19,6 +19,8 @@ namespace TP
     TP::CursorPositionType getCursorPositionType( QWidget *I_widget, const QPoint &I_point );
 
     QUrl getLyricsURL( QListWidgetItem *I_item );
+    TP::AudioFormat getAudioFormat( const QUrl &I_url );
+    TP::AudioFormat getAudioFormat( const QString &I_path );
 
     void storeInformation( QListWidgetItem *I_item );
 

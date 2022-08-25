@@ -10,6 +10,9 @@
     tp_runnable_filereader.h
     tp_runnable_filereader.cpp
 
+    tp_runnable_replaygainscanner.h
+    tp_runnable_replaygainscanner.cpp
+
     tp_filesearchdialog.h
     tp_filesearchdialog.cpp
     tp_filesearchdialog.ui
@@ -38,6 +41,7 @@ target_include_directories(TP_ui_playlistwindow PUBLIC ${CMAKE_CURRENT_SOURCE_DI
 
 target_link_libraries(TP_ui_playlistwindow PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Concurrent
 
     TP::ui
     )

@@ -199,7 +199,7 @@ background-color: #777;</string>
           <bool>true</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: rgb(255, 255, 255);</string>
+          <string notr="true">color: white;</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::Panel</enum>

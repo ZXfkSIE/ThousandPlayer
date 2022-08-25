@@ -91,6 +91,19 @@ background-color: white;</string>
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox::indicator
+{
+	border: 1px solid black;
+	background-color: white;
+    width: 12px;
+    height: 12px;
+}
+QCheckBox::indicator:checked
+{
+    image: url(:/image/icon_Check.svg);
+}</string>
+     </property>
      <property name="title">
       <string>Search options</string>
      </property>

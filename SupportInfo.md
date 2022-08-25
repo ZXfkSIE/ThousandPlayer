@@ -33,7 +33,7 @@ are supported.
 ```
 are supported. 
 
-- **ID3v2 tag**: There are too many ways to store ReplayGain values inside ID3v2. This program only supports ReplayGain values stored in `RVA2` frame as specified by [ID3v2 2.4.0](https://id3.org/id3v2.4.0-frames), the latest version of ID3v2.
+- **ID3v2 tag**: There are too many ways to store ReplayGain values inside ID3v2. This program only supports ReplayGain values stored in `RVA2` frame as specified by [ID3 version 2.4.0](https://id3.org/id3v2.4.0-frames), the latest version of ID3v2.
 
 ## See also
 - [ReplayGain - hydrogenaudio](https://wiki.hydrogenaud.io/index.php/ReplayGain)

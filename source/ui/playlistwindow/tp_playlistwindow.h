@@ -9,6 +9,7 @@
 class TP_FileListWidget;
 class TP_Menu;
 class TP_ProgressDialog;
+class TP_ReplayGainScanProgress;
 
 class QJsonDocument;
 
@@ -104,7 +105,6 @@ private:
 
     bool createPlaylistFromJSON( const QJsonDocument &I_jDoc );
     void storePlaylist();
-    TP::AudioFormat getAudioFormat( const QString &I_path );
 
     TP_FileListWidget * currentFileListWidget();
     void                addFilesToCurrentList( const QList< QUrl > &I_urlList );
@@ -115,11 +115,12 @@ private:
     TP_Menu *menu_Sort;
     TP_Menu *menu_Find;
 
-    TP_ProgressDialog *progressDialog;
+    TP_ProgressDialog           *progressDialog;
+    TP_ReplayGainScanProgress   *replayGainScanProgress;
 
     bool b_isDescending;
 
-    const int percentageStep { 10 };
+    const int percentageStep { 1 };
 
     const QString key_listName      { "listName" };
     const QString key_fileList      { "fileList" };

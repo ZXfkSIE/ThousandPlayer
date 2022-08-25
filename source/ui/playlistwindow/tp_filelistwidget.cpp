@@ -4,6 +4,7 @@
 #include "tp_globalvariable.h"
 
 #include "tp_menu.h"
+#include "tp_replaygainscanprogress.h"
 
 #include <QApplication>
 #include <QDateTime>
@@ -275,7 +276,13 @@ TP_FileListWidget::clearInaccessibleItems()
         {
         case TP::SourceType::SingleFile :
             if ( ! std::filesystem::exists(
-                     item( i )->data( TP::role_URL ).toUrl().toLocalFile().toStdWString()
+                     item( i )->data( TP::role_URL ).toUrl().toLocalFile().
+         #ifdef Q_OS_LINUX
+                     toLocal8Bit().constData()
+         #endif
+         #ifdef Q_OS_WIN
+                     toStdWString()
+         #endif
                      )
                  )
                 delete takeItem( i-- );
@@ -807,53 +814,77 @@ TP_FileListWidget::slot_scanReplayGain()
     if( ! numberOfSelectedItems )
         return;
 
-#ifdef Q_OS_WIN
-    if( TP::config().getRsgainPath().isEmpty() )
+    // -------------------- Check if loudgain (Linux) or rsgain (Windows) exists --------------------
     {
-        QMessageBox::critical(
-                    this,               // QWidget *parent
-                    tr( "Error" ),      // const QString &title
-                    tr( R"STR(
+        QProcess qProcess;
+
+#ifdef Q_OS_LINUX
+        qProcess.start( "loudgain", { "-v" }, QIODeviceBase::ReadOnly );
+        qProcess.waitForFinished( 500 );
+        QString qstr_stdOut { qProcess.readAllStandardOutput() };
+        if( ! qstr_stdOut.contains( "loudgain" ) )
+        {
+            QMessageBox::critical(
+                        this,               // QWidget *parent
+                        tr( "Error" ),      // const QString &title
+                        tr( R"STR(
 <html><head/><body>
-<p>The path of rsgain.exe has not been set. You can download it from<br>
-<a href="https://github.com/complexlogic/rsgain"><span style="text-decoration:underline;color:#0000ff;">https://github.com/complexlogic/rsgain</span></a>
-.</p></body></html>
-)STR" )                                 // const QString &text
-                    );
-        return;
-    }
-
-    if( ! std::filesystem::exists( TP::config().getRsgainPath().toStdWString() ) )
-    {
-        QMessageBox::critical(
-                    this,               // QWidget *parent
-                    tr( "Error" ),      // const QString &title
-                    tr( "The path of rsgain.exe is invalid." )
-                    );
-        return;
-    }
-
-    QProcess qProcess;
-    qProcess.start( TP::config().getRsgainPath(), { "-v" }, QIODeviceBase::ReadOnly );
-    qProcess.waitForFinished( 2000 );
-    QString qstr_version { qProcess.readAll() };
-    qDebug() << "Output result of rsgain -v:" << qstr_version;
-    if( ! qstr_version.contains( QString { "rsgain" } ) )
-    {
-        QMessageBox::critical(
-                    this,               // QWidget *parent
-                    tr( "Error" ),      // const QString &title
-                    tr( "The path of rsgain.exe is invalid." )
-                    );
-        return;
-    }
-
-/*
-    for( auto *selectedItem : selectedItems() )
-    {
-
-    }*/
+<p>Cannot detect <b>loudgain</b>. <br>Install it through your package manager, or build it from<br>
+<a href="https://github.com/Moonbase59/loudgain"><span style="text-decoration:underline;color:#0000ff;">https://github.com/Moonbase59/loudgain</span></a>
+,<br>then add the main program to the PATH environment variable.</p></body></html>
+)STR" ) );
+            return;
+        }
 #endif
+#ifdef Q_OS_WIN
+        if( TP::config().getRsgainPath().isEmpty() )
+        {
+            QMessageBox::critical(
+                        this,               // QWidget *parent
+                        tr( "Error" ),      // const QString &title
+                        tr( R"STR(
+<html><head/><body>
+<p>The path of rsgain.exe has not been set.<br>You can download it from<br>
+<a href="https://github.com/complexlogic/rsgain"><span style="text-decoration:underline;color:#0000ff;">https://github.com/complexlogic/rsgain</span></a>
+ .</p></body></html>
+)STR" )                                 // const QString &text
+                        );
+            return;
+        }
+
+        if( ! std::filesystem::exists( TP::config().getRsgainPath().toStdWString() ) )
+        {
+            QMessageBox::critical(
+                        this,               // QWidget *parent
+                        tr( "Error" ),      // const QString &title
+                        tr( "The path of rsgain.exe is invalid." )
+                        );
+            return;
+        }
+
+        qProcess.start( TP::config().getRsgainPath(), { "-v" }, QIODeviceBase::ReadOnly );
+        qProcess.waitForFinished( 2000 );
+        QString qstr_version { qProcess.readAll() };
+        qDebug() << "Output result of rsgain -v:" << qstr_version;
+        if( ! qstr_version.contains( QString { "rsgain" } ) )
+        {
+            QMessageBox::critical(
+                        this,               // QWidget *parent
+                        tr( "Error" ),      // const QString &title
+                        tr( "The path of rsgain.exe is invalid." )
+                        );
+            return;
+        }
+#endif
+    }
+
+    TP_ReplayGainScanProgress replayGainScanProgress { this };
+
+    for( auto *selectedItem : selectedItems() )
+        if( selectedItem->data( TP::role_SourceType ).value< TP::SourceType >() == TP::SourceType::SingleFile )
+            replayGainScanProgress.addFile( selectedItem );
+
+    replayGainScanProgress.exec();
 }
 
 // *****************************************************************
@@ -947,7 +978,7 @@ TP_FileListWidget::initializeMenu()
     connect( action_remove, &QAction::triggered,
              this,          &TP_FileListWidget::slot_clearSelectedItems );
 
-    action_scanReplayGain = new QAction{ tr( "Scan Replay&Gain" ), this };
+    action_scanReplayGain = new QAction { tr( "Scan Replay&Gain" ), this };
     connect( action_scanReplayGain, &QAction::triggered,
              this,                  &TP_FileListWidget::slot_scanReplayGain );
 

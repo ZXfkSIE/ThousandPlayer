@@ -12,6 +12,7 @@ TP_ProgressDialog::TP_ProgressDialog(
         ) :
     QProgressDialog { labelText, cancelButtonText, minimum, maximum, parent, f }
 {
+    setCancelButton( nullptr );
     setMinimumDuration( 0 );
     setAutoClose( false );
     setModal( true );

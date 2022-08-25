@@ -57,6 +57,65 @@ TP::getLyricsURL( QListWidgetItem *I_item )
 }
 
 
+TP::AudioFormat
+TP::getAudioFormat( const QUrl &I_url )
+{
+    auto qstr_url { I_url.toString() };
+    auto extension { qstr_url.right( qstr_url.size() - qstr_url.lastIndexOf( '.' ) - 1 ).toUpper() };
+    if( extension.size() <= 2 || extension.size() >= 5 )
+        return TP::AudioFormat::NotSupported;
+
+    if( extension == QString { "FLAC" } )
+        return TP::AudioFormat::FLAC;
+
+    if( extension == QString { "ALAC" } )
+        return TP::AudioFormat::ALAC;
+
+    if( extension == QString { "M4A" } || extension == QString { "AAC" } )
+        return TP::AudioFormat::AAC;
+
+    if( extension == QString { "MP3" } )
+        return TP::AudioFormat::MP3;
+
+    if( extension == QString { "WAV" } )
+        return TP::AudioFormat::WAV;
+
+    if( extension == QString { "OGG" } )
+        return TP::AudioFormat::OGG;
+
+    return TP::AudioFormat::NotSupported;
+}
+
+
+TP::AudioFormat
+TP::getAudioFormat( const QString &I_path )
+{
+    auto extension { QFileInfo { I_path }.suffix().toUpper() };
+    if( extension.size() <= 2 || extension.size() >= 5 )
+        return TP::AudioFormat::NotSupported;
+
+    if( extension == QString { "FLAC" } )
+        return TP::AudioFormat::FLAC;
+
+    if( extension == QString { "ALAC" } )
+        return TP::AudioFormat::ALAC;
+
+    if( extension == QString { "M4A" } || extension == QString { "AAC" } )
+        return TP::AudioFormat::AAC;
+
+    if( extension == QString { "MP3" } )
+        return TP::AudioFormat::MP3;
+
+    if( extension == QString { "WAV" } )
+        return TP::AudioFormat::WAV;
+
+    if( extension == QString { "OGG" } )
+        return TP::AudioFormat::OGG;
+
+    return TP::AudioFormat::NotSupported;
+}
+
+
 void
 TP::storeInformation( QListWidgetItem *I_item )
 {
