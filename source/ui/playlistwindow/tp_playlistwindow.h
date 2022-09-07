@@ -12,6 +12,7 @@ class TP_ProgressDialog;
 class TP_ReplayGainScanProgress;
 
 class QJsonDocument;
+class QThreadPool;
 
 namespace Ui { class TP_PlaylistWindow; }
 
@@ -22,6 +23,8 @@ class TP_PlaylistWindow : public QWidget
 public:
     explicit TP_PlaylistWindow( QWidget *parent = nullptr );
     ~TP_PlaylistWindow();
+
+    void initializePlaylist();
 
     void setCurrentItem( QListWidgetItem *I_item );
     void setCurrentItemBold();
@@ -65,6 +68,8 @@ private slots:
     void slot_currentItemRemoved();
     void slot_itemDoubleClicked( QListWidgetItem *I_item );
 
+    void slot_refreshShowingTitle( int I_idx_min, int I_idx_max );
+
     void on_pushButton_Close_clicked();
 
     void on_action_addFiles_triggered();
@@ -101,7 +106,6 @@ private:
 
     void initializeMenu();
     void initializeConnection();
-    void initializePlaylist();
 
     bool createPlaylistFromJSON( const QJsonDocument &I_jDoc );
     void storePlaylist();
@@ -115,12 +119,11 @@ private:
     TP_Menu *menu_Sort;
     TP_Menu *menu_Find;
 
+    QThreadPool                 *threadPool;
     TP_ProgressDialog           *progressDialog;
     TP_ReplayGainScanProgress   *replayGainScanProgress;
 
     bool b_isDescending;
-
-    const int percentageStep { 1 };
 
     const QString key_listName      { "listName" };
     const QString key_fileList      { "fileList" };

@@ -31,6 +31,12 @@ background-color: #EEE;</string>
 background-color:white;
 }</string>
      </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustIgnored</enum>
+     </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
@@ -40,7 +46,7 @@ background-color:white;
      <property name="gridStyle">
       <enum>Qt::DotLine</enum>
      </property>
-     <attribute name="horizontalHeaderStretchLastSection">
+     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
       <bool>true</bool>
      </attribute>
      <attribute name="verticalHeaderVisible">

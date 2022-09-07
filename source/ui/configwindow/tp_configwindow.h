@@ -35,7 +35,6 @@ private slots:
     void on_slider_DefaultReplayGain_valueChanged ( int I_value );
     void on_lineEdit_RsgainPath_textChanged( const QString & );
     void on_pushButton_RsgainPath_clicked();
-    void on_checkBox_isExistingReplayGainSkipped_stateChanged( int newState );
 
     void on_pushButton_ChangePlaylistFont_clicked();
 

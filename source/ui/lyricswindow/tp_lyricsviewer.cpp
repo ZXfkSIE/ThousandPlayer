@@ -139,7 +139,7 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
                 auto total_ms { m * 60000 + s * 1000 + ms };
 
                 addItem( qstr_sentence );
-                item( count() - 1 )->setData( TP::role_TimeStampInMs, total_ms );
+                item( count() - 1 )->setData( role_TimeStampInMs, total_ms );
                 item( count() - 1 )->setTextAlignment( Qt::AlignCenter );
                 b_hasLrcFile = true;
             }       // for( auto &qstr : qstrList )
@@ -159,7 +159,7 @@ TP_LyricsViewer::readLyricsFile( const QUrl &I_url )
     // -------------------- No valid lyrics file --------------------
 
     addItem( tr( "No lyrics" ) );
-    item( 0 )->setData( TP::role_TimeStampInMs, -1 );
+    item( 0 )->setData( role_TimeStampInMs, -1 );
     item( 0 )->setTextAlignment( Qt::AlignCenter );
     refreshFont();
     setSelectionMode( QAbstractItemView::NoSelection );
@@ -221,7 +221,7 @@ TP_LyricsViewer::mouseDoubleClickEvent( QMouseEvent *event )
         auto *clickedItem = itemAt ( event->pos() );
         if( clickedItem )
         {
-            auto position { clickedItem->data( TP::role_TimeStampInMs ).value< qint64 >() };
+            auto position { clickedItem->data( role_TimeStampInMs ).value< qint64 >() };
             position += TP::config().getJumpingTimeOffset_ms();
             if( position < 0 )
                 position = 0;               // position cannot be negative
@@ -317,8 +317,8 @@ TP_LyricsViewer::sortByTimestamp()
         while( low < high )
         {
             while( low < high &&
-                   item( high )->data( TP::role_TimeStampInMs ).value< qint64 >()
-                   >= pivot->data( TP::role_TimeStampInMs ).value< qint64 >() )
+                   item( high )->data( role_TimeStampInMs ).value< qint64 >()
+                   >= pivot->data( role_TimeStampInMs ).value< qint64 >() )
                 high--;
 
             if( low < high )
@@ -331,8 +331,8 @@ TP_LyricsViewer::sortByTimestamp()
             }
 
             while( low < high &&
-                   item( low )->data( TP::role_TimeStampInMs ).value< qint64 >()
-                   < pivot->data( TP::role_TimeStampInMs ).value< qint64 >() )
+                   item( low )->data( role_TimeStampInMs ).value< qint64 >()
+                   < pivot->data( role_TimeStampInMs ).value< qint64 >() )
                 low++;
 
             if( low < high )
@@ -373,10 +373,10 @@ TP_LyricsViewer::sortByTimestamp()
 int
 TP_LyricsViewer::findItemByTimestamp( qint64 I_ms )
 {
-    if( I_ms < item( 0 )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+    if( I_ms < item( 0 )->data( role_TimeStampInMs ).value< qint64 >() )
         return -1;
 
-    if( I_ms >= item( count() - 1 )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+    if( I_ms >= item( count() - 1 )->data( role_TimeStampInMs ).value< qint64 >() )
         return count() - 1;
 
     int left {}, right { count() - 2 };
@@ -388,10 +388,10 @@ TP_LyricsViewer::findItemByTimestamp( qint64 I_ms )
         auto middle { ( left + right ) >> 1 };
 
         // I_ms >= time[ i + 1 ]
-        if( I_ms >= item( middle + 1 )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+        if( I_ms >= item( middle + 1 )->data( role_TimeStampInMs ).value< qint64 >() )
             left = middle + 1;
         // I_ms < time[ i ]
-        else if( I_ms < item( middle )->data( TP::role_TimeStampInMs ).value< qint64 >() )
+        else if( I_ms < item( middle )->data( role_TimeStampInMs ).value< qint64 >() )
             right = middle - 1;
         else
             return middle;

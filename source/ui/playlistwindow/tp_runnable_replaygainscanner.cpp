@@ -22,27 +22,27 @@ TP_Runnable_ReplayGainScanner::run()
     emit signal_onStart( index );
 
     QProcess qProcess {};
-    QStringList arguments { { "-s" }, { "i" } };
-    if( TP::getAudioFormat( qstr_path ) == TP::AudioFormat::MP3 )
-        arguments << "-I" << "4" << "-S";
-    arguments << qstr_path;
-
-    // qDebug() << "RG scan args:" << arguments;
-
     QString qstr_exe {};
+    QStringList arguments {};
 
+#ifdef Q_OS_WIN
+    qstr_exe = TP::config().getRsgainPath();
+    arguments << "custom" ;
+#endif
 #ifdef Q_OS_LINUX
     qstr_exe = QString { "loudgain" };
 #endif
-#ifdef Q_OS_WIN
-    qstr_exe = TP::config().getRsgainPath();
-#endif
+
+    arguments << "-s" << "i";
+    if( TP::getAudioFormat( qstr_path ) == TP::AudioFormat::MP3 )
+        arguments << "-I" << "4" << "-S";
+    arguments << qstr_path;
 
     qProcess.start( qstr_exe, arguments );
     qProcess.waitForFinished();
     if( qProcess.exitStatus() != QProcess::NormalExit || qProcess.exitCode() )
     {
-        qDebug() << "RGScan error:" << qProcess.errorString()
+        qDebug() << "[ReplayGainScan] error:" << qProcess.errorString()
                  << ", stdout:" << QString { qProcess.readAllStandardOutput() }
                  << ", stderr:" << QString { qProcess.readAllStandardError() };
         emit signal_onFinish( index, false );

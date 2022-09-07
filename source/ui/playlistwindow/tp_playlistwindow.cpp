@@ -23,27 +23,30 @@
 
 TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
     QWidget                 { parent }
+  , threadPool              { new QThreadPool { this } }
   , ui                      { new Ui::TP_PlaylistWindow }
   , progressDialog          { new TP_ProgressDialog {
-                                tr( "Reading files..." ),   // const QString &labelText
-                                tr( "Abort" ),              // const QString &cancelButtonText
-                                0,                          // int minimum
-                                0,                          // int maximum (will be set in the loop)
-                                this } }                    // QWidget *parent = nullptr
-  , replayGainScanProgress  { new TP_ReplayGainScanProgress }
+                                tr( "Reading files..." ),       // const QString &labelText
+                                {},                             // const QString &cancelButtonTex
+                                0,                              // int minimum
+                                0,                              // int maximum (will be set later)
+                                this } }                        // QWidget *parent = nullptr }
+  , replayGainScanProgress  { new TP_ReplayGainScanProgress { this }  }
   , b_isDescending          { false }
 {
     ui->setupUi( this );
     // Qt::Tool is used for getting rid of the window tab in taskbar
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint | Qt::Tool | Qt::NoDropShadowWindowHint );
 
-    ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
-
     initializeMenu();
     initializeConnection();
-    initializePlaylist();
 
     slot_refreshFont();
+
+    ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
+
+    qDebug() << "[PlaylistWindow] Max thread count of local thread pool is" << QThread::idealThreadCount() - 1;
+    threadPool->setMaxThreadCount( QThread::idealThreadCount() - 1 );
 }
 
 
@@ -52,6 +55,82 @@ TP_PlaylistWindow::~TP_PlaylistWindow()
     storePlaylist();
 
     delete ui;
+}
+
+
+void
+TP_PlaylistWindow::initializePlaylist()
+{
+    if( std::filesystem::exists( TP::playlistFilePath.
+#ifdef Q_OS_WIN
+    toStdWString()
+#else
+    toLocal8Bit().constData()
+#endif
+    ) )
+    {
+        QFile qFile { TP::playlistFilePath };
+        qDebug() << "[PlaylistWindow] Reading playlists from" << qFile.fileName();
+        if( ! qFile.open( QFile::ReadOnly ) )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
+                        + qFile.errorString() + "\n"
+                        + tr( "Default playlist will be created instead." )
+                        );
+            goto CREATE_DEFAULT_LISTS;
+        }
+
+        QJsonParseError jsonParseError {};
+        const auto &jDoc {
+            QJsonDocument::fromJson( qFile.readAll(), &jsonParseError ),
+        };
+
+        if( jDoc.isNull() )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
+                        + tr( "Empty QJsonDocument object returned.\n" )
+                        + tr( "Default playlist will be created instead." )
+                        );
+            goto CREATE_DEFAULT_LISTS;
+        }
+        else if( jsonParseError.error != QJsonParseError::NoError )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
+                        + jsonParseError.errorString()
+                        + tr( " (offset: %1)\n" ).arg( jsonParseError.offset )
+                        + tr( "Default playlist will be created instead." )
+                        );
+            goto CREATE_DEFAULT_LISTS;
+        }
+
+        if( ! createPlaylistFromJSON( jDoc ) )
+        {
+            QMessageBox::critical(
+                        this,
+                        tr( "Playlist Reading Error" ),
+                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
+                        + tr( "No valid playlist found.\n" )
+                        + tr( "Default playlist will be created instead." )
+                        );
+            goto CREATE_DEFAULT_LISTS;
+        }
+    }
+    else
+    {
+CREATE_DEFAULT_LISTS:
+        ui->playlistsWidget->addNewList( tr( "Default" ) );
+    }
+
+    ui->splitter->setSizes( { ui->playlistContainer->width() / 5, ui->playlistContainer->width() / 5 * 4 } );
 }
 
 
@@ -83,8 +162,7 @@ TP_PlaylistWindow::refreshItemShowingTitle( QListWidgetItem *I_item )
     auto index {
         currentFileListWidget()->indexFromItem( TP::currentItem() ).row()
     };
-    currentFileListWidget()->refreshShowingTitle( index, index );
-
+    slot_refreshShowingTitle( index, index );
 }
 
 
@@ -219,6 +297,14 @@ void
 TP_PlaylistWindow::slot_itemDoubleClicked( QListWidgetItem *I_item )
 {
     emit signal_itemDoubleClicked( I_item );
+}
+
+
+void
+TP_PlaylistWindow::slot_refreshShowingTitle( int I_idx_min, int I_idx_max )
+{
+    qDebug() << "[PlaylistWindow] slot_refreshShowingTitle(" << I_idx_min << "," << I_idx_max << ")";
+    currentFileListWidget()->refreshShowingTitle( I_idx_min, I_idx_max );
 }
 
 
@@ -387,11 +473,13 @@ TP_PlaylistWindow::on_action_sortByDescription_triggered()
     currentFileListWidget()->sortByData( TP::role_Description, b_isDescending );
 }
 
+
 void
 TP_PlaylistWindow::on_action_sortByLastModified_triggered()
 {
     currentFileListWidget()->sortByData( TP::role_LastModified, b_isDescending );
 }
+
 
 void TP_PlaylistWindow::on_action_sortByAlbum_triggered()
 {
@@ -559,6 +647,10 @@ TP_PlaylistWindow::initializeConnection()
              this,                  &TP_PlaylistWindow::slot_fileListRemoved );
     connect( ui->playlistsWidget,   &TP_PlaylistsWidget::signal_fileListSwitched,
              this,                  &TP_PlaylistWindow::slot_fileListSwitched );
+
+    // ProgressDialog related
+    connect( progressDialog,    &TP_ProgressDialog::signal_onComplete,
+             this,              &TP_PlaylistWindow::slot_refreshShowingTitle );
 }
 
 
@@ -619,111 +711,19 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         if( ! count )
             continue;
 
-        int nextPercent { percentageStep };
-
-        progressDialog->reset();
-        progressDialog->setMaximum( ! newFileList->count() );
-        progressDialog->setValue( 0 );
+        progressDialog->initialize( newFileList->count(), 0, count - 1 );
         progressDialog->show();
 
         for ( unsigned i {}; i < count; i++ )
-            QThreadPool::globalInstance()->start(
-                        new TP_Runnable_FileReader { newFileList->item( i ) }
-                        );
-
-        while( auto n_activeThread = QThreadPool::globalInstance()->activeThreadCount() )
         {
-            auto countFinished { count - n_activeThread };
-            auto currentPercentage { countFinished * 100 / count };
-            if( currentPercentage >= nextPercent )
-            {
-                while( currentPercentage >= nextPercent )
-                    nextPercent += percentageStep;
-                progressDialog->setValue( countFinished );
-            }
+            auto fileReader { new TP_Runnable_FileReader { newFileList->item( i ) } };
+            connect( fileReader,        &TP_Runnable_FileReader::signal_onFinish,
+                     progressDialog,    &TP_ProgressDialog::slot_addCount );
+            threadPool->start( fileReader );
         }
-
-        QThreadPool::globalInstance()->waitForDone();
-        progressDialog->cancel();
-
-        newFileList->refreshShowingTitle( 0, count - 1 );
     }       // for( const auto &jValue_Playlist : jArray_Root )
 
     return isPlaylistCreated;
-}
-
-
-void
-TP_PlaylistWindow::initializePlaylist()
-{
-    if( std::filesystem::exists( TP::playlistFilePath.
-#ifdef Q_OS_WIN
-    toStdWString()
-#else
-    toLocal8Bit().constData()
-#endif
-    ) )
-    {
-        QFile qFile { TP::playlistFilePath };
-        qDebug() << "[PlaylistWindow] Reading playlists from" << qFile.fileName();
-        if( ! qFile.open( QFile::ReadOnly ) )
-        {
-            QMessageBox::critical(
-                        this,
-                        tr( "Playlist Reading Error" ),
-                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
-                        + qFile.errorString() + "\n"
-                        + tr( "Default playlist will be created instead." )
-                        );
-            goto CREATE_DEFAULT_LISTS;
-        }
-
-        QJsonParseError jsonParseError {};
-        const auto &jDoc {
-            QJsonDocument::fromJson( qFile.readAll(), &jsonParseError ),
-        };
-
-        if( jDoc.isNull() )
-        {
-            QMessageBox::critical(
-                        this,
-                        tr( "Playlist Reading Error" ),
-                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
-                        + tr( "Empty QJsonDocument object returned.\n" )
-                        + tr( "Default playlist will be created instead." )
-                        );
-            goto CREATE_DEFAULT_LISTS;
-        }
-        else if( jsonParseError.error != QJsonParseError::NoError )
-        {
-            QMessageBox::critical(
-                        this,
-                        tr( "Playlist Reading Error" ),
-                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
-                        + jsonParseError.errorString()
-                        + tr( " (offset: %1)\n" ).arg( jsonParseError.offset )
-                        + tr( "Default playlist will be created instead." )
-                        );
-            goto CREATE_DEFAULT_LISTS;
-        }
-
-        if( ! createPlaylistFromJSON( jDoc ) )
-        {
-            QMessageBox::critical(
-                        this,
-                        tr( "Playlist Reading Error" ),
-                        tr( "Failed to read playlists from %1.\n" ).arg( TP::playlistFilePath )
-                        + tr( "No valid playlist found.\n" )
-                        + tr( "Default playlist will be created instead." )
-                        );
-            goto CREATE_DEFAULT_LISTS;
-        }
-    }
-    else
-    {
-CREATE_DEFAULT_LISTS:
-        ui->playlistsWidget->addNewList( tr( "Default" ) );
-    }
 }
 
 
@@ -768,16 +768,16 @@ TP_PlaylistWindow::storePlaylist()
     QFile jsonFile { TP::playlistFilePath };
     qDebug() << "[PlaylistWindow] Saving playlists to" << TP::playlistFilePath;
 
-    if( jsonFile.open( QIODevice::WriteOnly )
-            && jsonFile.write( jDoc.toJson( QJsonDocument::Compact ) ) != -1 )
-    {}
-    else
-        QMessageBox::critical(
-                    this,
-                    tr( "Playlist Writing Error" ),
-                    tr( "Failed to write playlists to %1.\n" ).arg( TP::playlistFilePath )
-                    + jsonFile.errorString()
-                    );
+    if( jsonFile.open( QIODevice::WriteOnly ) )
+        if( jsonFile.write( jDoc.toJson( QJsonDocument::Compact ) ) != -1 )
+            return;
+
+    QMessageBox::critical(
+                this,
+                tr( "Playlist Writing Error" ),
+                tr( "Failed to write playlists to %1.\n" ).arg( TP::playlistFilePath )
+                + jsonFile.errorString()
+                );
 
 }
 
@@ -812,35 +812,16 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
     if( ! increasedCount )
         return;
 
-    int nextPercentage { percentageStep };
-
     // Indexes of the new added items are between [originalCount, newCount - 1]
 
-    progressDialog->reset();
-    progressDialog->setMaximum( I_urlList.size() );
-    progressDialog->setValue( 0 );
+    progressDialog->initialize( I_urlList.size(), originalCount, newCount - 1 );
     progressDialog->show();
 
     for( unsigned i {}; i < increasedCount; i++ )
-        QThreadPool::globalInstance()->start(
-                    new TP_Runnable_FileReader{ currentFileListWidget()->item( originalCount + i ) }
-                    );
-
-    while( auto n_activeThread = QThreadPool::globalInstance()->activeThreadCount() )
     {
-        auto countFinished { increasedCount - n_activeThread };
-        auto currentPercentage { countFinished * 100 / increasedCount };
-        if( currentPercentage >= nextPercentage )
-        {
-            while( currentPercentage >= nextPercentage )
-                nextPercentage += percentageStep;
-            progressDialog->setValue( countFinished );
-        }
+        auto fileReader { new TP_Runnable_FileReader { currentFileListWidget()->item( originalCount + i ) } };
+        connect( fileReader,        &TP_Runnable_FileReader::signal_onFinish,
+                 progressDialog,    &TP_ProgressDialog::slot_addCount );
+        threadPool->start( fileReader );
     }
-
-    QThreadPool::globalInstance()->waitForDone();
-    progressDialog->cancel();
-
-    currentFileListWidget()->refreshShowingTitle( originalCount, newCount - 1 );
 }
-

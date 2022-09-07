@@ -11,10 +11,13 @@ TP_ProgressDialog::TP_ProgressDialog(
         Qt::WindowFlags f
         ) :
     QProgressDialog { labelText, cancelButtonText, minimum, maximum, parent, f }
+  , nextPercentage { percentageStep }
+  , n_finished {}
+  , idx_min {}
+  , idx_max {}
 {
     setCancelButton( nullptr );
     setMinimumDuration( 0 );
-    setAutoClose( false );
     setModal( true );
 
     setWindowFlags( windowFlags() | Qt::FramelessWindowHint );
@@ -30,12 +33,43 @@ TP_ProgressDialog::TP_ProgressDialog(
 "       );"
 "}"
 "QLabel { color: white; background-color: rgba( 0, 0, 0, 0 ); }"
-"QPushButton { color: white; }"
-"QProgressBar { color: black; }"
+"QProgressBar { color: white; }"
 );
 
     setFixedSize( 480, height() );
+}
 
-    show();
-    cancel();
+void
+TP_ProgressDialog::initialize( int I_max, int I_idx_min, int I_idx_max )
+{
+    reset();
+    setMaximum( I_max );
+    nextPercentage = percentageStep;
+    n_finished = 0;
+    idx_min = I_idx_min;
+    idx_max = I_idx_max;
+}
+
+// *****************************************************************
+// public slots:
+// *****************************************************************
+
+void
+TP_ProgressDialog::slot_addCount()
+{
+    n_finished++;
+    auto currentPercentage { n_finished * 100 / maximum() };
+
+    if( n_finished == maximum() )
+    {
+        setValue( n_finished );
+        emit signal_onComplete( idx_min, idx_max );
+    }
+    else if( currentPercentage >= nextPercentage )
+    {
+        while( currentPercentage >= nextPercentage )
+            nextPercentage += percentageStep;
+
+        setValue( n_finished );
+    }
 }

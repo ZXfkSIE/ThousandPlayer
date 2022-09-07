@@ -61,8 +61,6 @@ public:
     TP::PlayMode        getPlayMode                     () const;
     void                setRsgainPath                   ( const QString &input );
     const QString &     getRsgainPath                   () const;
-    void                setExistingReplayGainSkipped    ( const bool input );
-    bool                isExistingReplayGainSkipped     () const;
 
 private:
     QSettings config;
@@ -120,8 +118,6 @@ private:
             TP::PlayMode        playMode;
     const   QString             key_PLAYBACK_RsgainPath                     { "RsgainPath" };
             QString             rsgainPath;
-    const   QString             key_PLAYBACK_isExistingReplayGainSkipped    { "isExistingReplayGainSkipped" };
-            bool                b_isExistingReplayGainSkipped;
 
     static constexpr QRect defaultMainWindowGeometry       { 100, 100, 480, 240 };
     static constexpr QRect defaultPlaylistWindowGeometry   { 100, 340, 480, 360 };

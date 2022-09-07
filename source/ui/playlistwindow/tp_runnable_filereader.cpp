@@ -11,4 +11,6 @@ void
 TP_Runnable_FileReader::run()
 {
     TP::storeInformation( item );
+
+    emit signal_onFinish();
 }

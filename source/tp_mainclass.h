@@ -67,12 +67,22 @@ private slots:
 
     void slot_setVolume( float I_linearVolume );
 
-private:    
+private:
+    // First window snaps to the left/right/bottom/top of second window.
+    enum class SnapType
+    {
+        NonSnap,
+        ToLeft,
+        ToRight,
+        ToBottom,
+        ToTop
+    };
+
     void initializeConnection();
 
     void unsnapInvisibleWindows();
-    TP::SnapType checkSnapType      ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
-    TP::SnapType checkAdjacentType  ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
+    SnapType checkSnapType      ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
+    SnapType checkAdjacentType  ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
     bool breadthFirstSearch ( unsigned I_idx ) const;
 
     void playItem ( QListWidgetItem *I_item );

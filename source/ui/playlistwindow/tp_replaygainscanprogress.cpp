@@ -13,10 +13,17 @@
 TP_ReplayGainScanProgress::TP_ReplayGainScanProgress( QWidget *parent ) :
     QDialog         { parent }
   , ui              { new Ui::TP_ReplayGainScanProgress }
+  , threadPool      { new QThreadPool { this } }
   , b_isFinished    {}
   , b_isAborted     {}
 {
     ui->setupUi( this );
+
+    threadPool->setMaxThreadCount( QThread::idealThreadCount() - 1 );
+
+    ui->tableWidget->setColumnWidth( 1, 80 );
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Fixed );
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
 }
 
 
@@ -43,8 +50,6 @@ TP_ReplayGainScanProgress::addFile( QListWidgetItem *I_item )
 int
 TP_ReplayGainScanProgress::exec()
 {
-    ui->tableWidget->resizeColumnsToContents();
-
     return QDialog::exec();
 }
 
@@ -64,10 +69,10 @@ TP_ReplayGainScanProgress::showEvent( QShowEvent *event )
         connect( runnable,  &TP_Runnable_ReplayGainScanner::signal_onFinish,
                  this,      &TP_ReplayGainScanProgress::slot_onFinish );
 
-        QThreadPool::globalInstance()->start( runnable );
+        threadPool->start( runnable );
     }
 
-    auto qFuture { QtConcurrent::run( &TP_ReplayGainScanProgress::startDaemon, this ) };
+    auto qFuture { QtConcurrent::run( &TP_ReplayGainScanProgress::daemon, this ) };
 }
 
 
@@ -121,13 +126,18 @@ TP_ReplayGainScanProgress::on_pushButton_clicked()
 // *****************************************************************
 
 void
-TP_ReplayGainScanProgress::startDaemon()
+TP_ReplayGainScanProgress::daemon()
 {
-    // The startDaemon() itself also runs whthin QThreadPool::globalInstance()
-    while( QThreadPool::globalInstance()->activeThreadCount() > 1 )
+    while( threadPool->activeThreadCount() )
         if( b_isAborted )
-            QThreadPool::globalInstance()->clear();
+        {
+            ui->pushButton->setText( tr( "Aborting..." ) );
+            ui->pushButton->setEnabled( false );
+            threadPool->clear();
+            threadPool->waitForDone();
+        }
 
     b_isFinished = true;
     ui->pushButton->setText( tr( "&Close" ) );
+    ui->pushButton->setEnabled( true );
 }

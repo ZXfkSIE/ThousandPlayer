@@ -6,8 +6,6 @@
 #include <QTimer>
 #include <QTranslator>
 
-#include "tp_coverviewer.h"
-
 int main( int argc, char *argv[] )
 {
     qDebug() << "[Main Function] the files integrated by developer are:";

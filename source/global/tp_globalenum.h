@@ -15,16 +15,6 @@ enum class AudioFormat
     OGG
 };
 
-// First window snaps to the left/right/bottom/top of second window.
-enum class SnapType
-{
-    NonSnap,
-    ToLeft,
-    ToRight,
-    ToBottom,
-    ToTop
-};
-
 
 enum class CursorPositionType
 {

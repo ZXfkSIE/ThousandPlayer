@@ -6,6 +6,7 @@
 namespace Ui { class TP_ReplayGainScanProgress; }
 
 class QListWidgetItem;
+class QThreadPool;
 
 class TP_ReplayGainScanProgress : public QDialog
 {
@@ -30,7 +31,9 @@ private slots:
 private:
     Ui::TP_ReplayGainScanProgress *ui;
 
-    void startDaemon();
+    QThreadPool *threadPool;
+
+    void daemon();
 
     bool b_isFinished;
     bool b_isAborted;

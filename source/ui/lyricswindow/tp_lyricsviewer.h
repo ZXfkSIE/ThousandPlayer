@@ -26,6 +26,8 @@ private slots:
     void slot_switchToLyricsEditor();
 
 private:
+    static const int role_TimeStampInMs { Qt::UserRole };
+
     void mouseMoveEvent         ( QMouseEvent *event ) override;
     void mouseDoubleClickEvent  ( QMouseEvent *event ) override;
 

@@ -158,25 +158,6 @@ TP_ConfigWindow::on_pushButton_RsgainPath_clicked()
 
 
 void
-TP_ConfigWindow::on_checkBox_isExistingReplayGainSkipped_stateChanged( int newState )
-{
-    switch( newState )
-    {
-    case Qt::Unchecked :
-        TP::config().setExistingReplayGainSkipped( false );
-        break;
-
-    case Qt::Checked :
-        TP::config().setExistingReplayGainSkipped( true );
-        break;
-
-    default:
-        break;
-    }
-}
-
-
-void
 TP_ConfigWindow::on_pushButton_ChangePlaylistFont_clicked()
 {
     bool ok {};
@@ -268,34 +249,33 @@ TP_ConfigWindow::initializeUI()
     // Audio information label font
     const auto &audioInfoLabelFont { TP::config().getAudioInfoLabelFont() };
     ui->label_CurrentAudioInfoLabelFontExample->setText(
-                QString( "%1, %2 pt" ).arg( audioInfoLabelFont.family() ).arg( audioInfoLabelFont.pointSize() ) );
+                QString { "%1, %2 pt" }.arg( audioInfoLabelFont.family() ).arg( audioInfoLabelFont.pointSize() ) );
     ui->label_CurrentAudioInfoLabelFontExample->setFont( audioInfoLabelFont );
 
     // Audio information label font scrolling interval
-    ui->spinBox_AudioInfoLabelScrollingInterval->setValue( TP::config().getAudioInfoScrollingInterval() );
+    on_spinBox_AudioInfoLabelScrollingInterval_valueChanged( TP::config().getAudioInfoScrollingInterval() );
 
     // ============================== Playback page ==============================
 
     // List of audio output device
-    ui->comboBox_AudioDevice->addItem( tr( "Default device" ), QVariant::fromValue( QAudioDevice() ) );
+    ui->comboBox_AudioDevice->addItem( tr( "Default device" ), QVariant::fromValue( QAudioDevice {} ) );
     for ( const auto &deviceInfo: QMediaDevices::audioOutputs() )
         ui->comboBox_AudioDevice->addItem( deviceInfo.description(), QVariant::fromValue( deviceInfo ) );
-    ui->comboBox_AudioDevice->setCurrentIndex( 0 );
+    on_comboBox_AudioDevice_currentIndexChanged( 0 );
 
     // ReplayGain mode ComboBox
     switch( TP::config().getReplayGainMode() )
     {
     case TP::ReplayGainMode::Disabled :
-        ui->slider_PreAmp           ->setEnabled( false );
-        ui->slider_DefaultReplayGain->setEnabled( false );
+        on_comboBox_ReplayGainMode_currentIndexChanged( 0 );
         break;
 
     case TP::ReplayGainMode::Track :
-        ui->comboBox_ReplayGainMode->setCurrentIndex( 1 );
+        on_comboBox_ReplayGainMode_currentIndexChanged( 1 );
         break;
 
     case TP::ReplayGainMode::Album :
-        ui->comboBox_ReplayGainMode->setCurrentIndex( 2 );
+        on_comboBox_ReplayGainMode_currentIndexChanged( 2 );
         break;
     }
 
@@ -310,9 +290,6 @@ TP_ConfigWindow::initializeUI()
 #else
     ui->container_RsgainPath->setVisible( false );
 #endif
-
-    // isExistingReplayGainSkipped
-    ui->checkBox_isExistingReplayGainSkipped->setChecked( TP::config().isExistingReplayGainSkipped() );
 
     // ============================== Playlist page ==============================
 
@@ -335,7 +312,6 @@ TP_ConfigWindow::initializeUI()
                                );
     ui->label_SoftName->setText( QString( "ThousandPlayer v" ) + TP::projectVersion );
 }
-
 
 
 void

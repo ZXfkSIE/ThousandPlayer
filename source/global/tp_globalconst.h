@@ -33,8 +33,6 @@ static const int role_ReplayGainAlbum   = Qt::UserRole + 14;    // float
 
 static const int role_FileListAddress   = Qt::UserRole;         // TP_FileListWidget * (stored as quintptr)
 
-static const int role_TimeStampInMs     = Qt::UserRole;
-
 static const int iconSize_Play          = 20;
 static const int iconSize_Pause         = 18;
 

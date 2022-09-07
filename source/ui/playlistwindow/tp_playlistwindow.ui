@@ -190,7 +190,7 @@ background-color: #777;</string>
         </property>
         <widget class="TP_PlaylistsWidget" name="playlistsWidget">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -213,7 +213,7 @@ background-color: #777;</string>
         </widget>
         <widget class="QStackedWidget" name="stackedWidget_FileList">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>4</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

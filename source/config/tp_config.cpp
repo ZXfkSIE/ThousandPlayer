@@ -93,9 +93,6 @@ TP_Config::TP_Config( QObject *parent ) :
     rsgainPath = config
             .value( key_PLAYBACK_RsgainPath, "" )
             .toString();
-    b_isExistingReplayGainSkipped = config
-            .value( key_PLAYBACK_isExistingReplayGainSkipped, true )
-            .toBool();
     config.endGroup();
 }
 
@@ -129,7 +126,6 @@ TP_Config::~TP_Config()
     config.setValue( key_PLAYBACK_defaultGain_dB, defaultGain_dB );
     config.setValue( key_PLAYBACK_playMode, static_cast< int >( playMode ) );
     config.setValue( key_PLAYBACK_RsgainPath, rsgainPath );
-    config.setValue( key_PLAYBACK_isExistingReplayGainSkipped, b_isExistingReplayGainSkipped );
     config.endGroup();
 
     config.sync();
@@ -357,16 +353,4 @@ const QString &
 TP_Config::getRsgainPath () const
 {
     return rsgainPath;
-}
-
-void
-TP_Config::setExistingReplayGainSkipped( const bool input )
-{
-    b_isExistingReplayGainSkipped = input;
-}
-
-bool
-TP_Config::isExistingReplayGainSkipped() const
-{
-    return b_isExistingReplayGainSkipped;
 }
