@@ -47,13 +47,6 @@ TP_ReplayGainScanProgress::addFile( QListWidgetItem *I_item )
 }
 
 
-int
-TP_ReplayGainScanProgress::exec()
-{
-    return QDialog::exec();
-}
-
-
 void
 TP_ReplayGainScanProgress::showEvent( QShowEvent *event )
 {

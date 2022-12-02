@@ -1,5 +1,5 @@
 <!--
-# Page Languages
+# Languages of this Page
 
 - **English**
 - [日本語](README_ja.md)
@@ -75,29 +75,26 @@ This page only provides complation steps with Qt Creator. Of course you can also
 Before proceeding with the following OS-specific steps, you have to install
 - Latest version of Qt Creator.
 - Latest version of Qt6 along with Qt Multimedia.
+- Latest version of [Conan](https://conan.io/).
 - CMake 3.20 or later.
-- Other required compilation tools, such as GCC-C++ (for Linux), MSVC (for Windows), and so on.
+- Other required compilation tools, such as GCC-C++ for Linux, MSVC 2019 for Microsoft Windows, and so on.
+- **【Linux】** development packages required by Qt (e.g. libOpenGL) and Qt Multimedia (e.g. libGStreamer).
 
-## Linux
-1. Install those packages required by Qt (e.g. libOpenGL) and Qt Multimedia (e.g. libGStreamer).
-2. Install the project's required development package (currently there is only one, i.e. [TagLib](https://taglib.org/)) in your system.
-   - For Red Hat distros (RHEL, CentOS, Fedora, etc.), it may be done by `sudo dnf install taglib-devel`.
-   - For Debian distros (Debian, Ubuntu, etc.), it may be done by `sudo apt install libtag1-dev`.
-3. Use Qt Creator to open the root `CMakeLists.txt`,
-then configure the project with latest version of Qt6.
-   - If you are using Conan plugin in Qt Creator, you may turn off the plugin or remove the "Conan install" build step in "Projects" tab. Conan is not intended to be used in Linux.
-3. Build.
+## Steps
+1. Generate Conan profile for the project by running following commands:
+```shell
+conan profile new thousandplayer --detect
+conan profile update settings.compiler.libcxx=libstdc++11 thousandplayer    # Run on Linux
+```
 
-## Windows
-1. Install Conan from Qt Maintenance Tool or [official website](https://conan.io/downloads.html).
 2. Turn on Conan plugin in Qt Creator.
 
 ![](figure/ConanPlugin.png)
 
 3. Open the root `CMakeLists.txt` by Qt Creator,
-then configure the project with latest version of Qt6. The first attempt of CMake configuration should be failed due to the lack of Conan-related scripts, but it's OK.
-4. Go to "Projects" tab, raise the existing "Conan install" build step to top of the list and add additional argument `--profile /replace/it/with/project/root/directory/conan_debug_windows_x64.txt` to it.
-   - If you are making release build, change the filename to `conan_release_windows_x64.txt`.
+then configure the project with latest version of Qt6.
+The first attempt of CMake configuration should be failed due to the lack of Conan-related scripts, but it's OK.
+4. Go to "Projects" tab, raise the existing "Conan install" build step to top of the list, then add the addition argument `--profile thousandplayer` .
 
 ![](figure/ConanInstallBuildStep.png)
 

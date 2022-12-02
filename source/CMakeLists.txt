@@ -42,12 +42,6 @@ qt6_add_resources(${PROJECT_NAME} "i18n"
     BASE ${TP_QM_PATH}
     FILES ${TP_QM_FILES})
 
-if(UNIX)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${TAGLIB_INCLUDE_DIRS})
-    target_link_directories(${PROJECT_NAME} PRIVATE ${TAGLIB_LIBRARY_DIRS})
-    target_compile_options(${PROJECT_NAME} PRIVATE ${TAGLIB_CFLAGS_OTHER})
-endif()
-
 # For release build for Windows, it is necessary to set WIN32_EXECUTABLE to true
 # in order to get rid of the console window.
 if( WIN32 AND (CMAKE_BUILD_TYPE STREQUAL "Release") )
@@ -64,7 +58,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     TP::ui::playlistwindow
 
     ${CONAN_LIBS}
-    ${TAGLIB_LIBRARIES}
 
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Multimedia

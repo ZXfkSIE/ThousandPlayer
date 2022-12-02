@@ -18,7 +18,6 @@ public:
 
     void addFile( QListWidgetItem *I_item );
 
-    int exec() override;
     void showEvent( QShowEvent *event ) override;
     void reject() override;
 

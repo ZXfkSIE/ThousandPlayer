@@ -526,8 +526,9 @@ MOVE_End_of_snap_to_playlist_window:
 MOVE_setGeometry:
 
     I_window->setGeometry( I_geometry );
+
+    // If window is main window, move the snapped window(s) as well
     if( I_window == mainWindow )
-        // If window is main window, move the snapped window(s) as well
     {
         unsnapInvisibleWindows();
 

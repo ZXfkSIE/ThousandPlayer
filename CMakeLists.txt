@@ -17,24 +17,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS true)
 
-if(WIN32)
-    if(${CMAKE_SYSTEM_VERSION} VERSION_LESS 10.0.17763)
-        message(FATAL_ERROR "[ThousandPlayer] Sorry, Qt 6 only supports Windows 10 1809 (10.0.17763) and above, \
-        while you are trying to use SDK version ${CMAKE_SYSTEM_VERSION}.")
-    endif()
-
-# In Windows, use Conan to setup 3rd party packages
-    message(STATUS "[ThousandPlayer] Windows build environment detected. The SDK version to be used is ${CMAKE_SYSTEM_VERSION}.")
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
-    message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
-
-elseif(UNIX)
-# In *nix, just try to find it
-    message(STATUS "[ThousandPlayer] *nix build environment detected.")
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(TAGLIB REQUIRED taglib)
+if(WIN32 AND (${CMAKE_SYSTEM_VERSION} VERSION_LESS 10.0.17763) )
+    message(FATAL_ERROR "[ThousandPlayer] Sorry, Qt 6 only supports Windows 10 1809 (10.0.17763) and above, \
+    while you are trying to use SDK version ${CMAKE_SYSTEM_VERSION}.")
 endif()
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
 
 find_package(Qt6 6.4.0...6.114.514 COMPONENTS
     Widgets
