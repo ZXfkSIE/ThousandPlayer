@@ -23,7 +23,7 @@ TP_PlaylistsWidget::refreshFont()
 {
     setFont( TP::config().getPlaylistFont() );
 
-    for( unsigned i {}; i < count(); i++ )
+    for( int i {}; i < count(); i++ )
     {
         if( item( i ) == currentVisibleItem )
             setItemBold( item( i ) );

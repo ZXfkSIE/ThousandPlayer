@@ -60,7 +60,7 @@ TP_FileListWidget::refreshFont()
 {
     setFont( TP::config().getPlaylistFont() );
 
-    for( unsigned i {}; i < count(); i++ )
+    for( int i {}; i < count(); i++ )
         item( i )->setFont( TP::config().getPlaylistFont() );
 
     setCurrentItemBold();
@@ -337,7 +337,7 @@ TP_FileListWidget::deleteSelectedItems()
 
     if( messageBox.exec() == QMessageBox::Yes )
     {
-        unsigned failureCount {};
+        int failureCount {};
 
         for( QListWidgetItem *selectedItem : selectedItems() )
         {
@@ -382,7 +382,7 @@ TP_FileListWidget::deleteSelectedItems()
 void
 TP_FileListWidget::reverseSelection()
 {
-    for( unsigned i {}; i < count(); i++ )
+    for( int i {}; i < count(); i++ )
         item( i )->setSelected( ! item( i )->isSelected() );
 }
 

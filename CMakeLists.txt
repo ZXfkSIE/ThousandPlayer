@@ -22,11 +22,9 @@ if(WIN32 AND (${CMAKE_SYSTEM_VERSION} VERSION_LESS 10.0.17763) )
     while you are trying to use SDK version ${CMAKE_SYSTEM_VERSION}.")
 endif()
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
+find_package(taglib REQUIRED)
 
-find_package(Qt6 6.4.0...6.114.514 COMPONENTS
+find_package(Qt6 6.5.0...6.114.514 COMPONENTS
     Widgets
     Multimedia
     Concurrent
@@ -41,7 +39,6 @@ set(TP_TS_FILES
     )
 
 file(GLOB TP_IMAGE_FILES ${PROJECT_SOURCE_DIR}/image/*.svg)
-
 file(GLOB TP_MARKDOWN_FILES ${PROJECT_SOURCE_DIR}/markdown/*.md)
 
 add_subdirectory(source)

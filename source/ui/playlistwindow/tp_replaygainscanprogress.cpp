@@ -53,7 +53,7 @@ TP_ReplayGainScanProgress::showEvent( QShowEvent *event )
     QDialog::showEvent( event );
 
     auto count { ui->tableWidget->rowCount() };
-    for( unsigned i {}; i < count; i++ )
+    for( int i {}; i < count; i++ )
     {
         auto runnable { new TP_Runnable_ReplayGainScanner { ui->tableWidget->item( i, 0 )->text(), i } };
 
@@ -83,7 +83,7 @@ TP_ReplayGainScanProgress::reject()
 // *****************************************************************
 
 void
-TP_ReplayGainScanProgress::slot_onStart( unsigned I_index )
+TP_ReplayGainScanProgress::slot_onStart( int I_index )
 {
     ui->tableWidget->item( I_index, 1 )
             ->setText( tr( "Running..." ) );
@@ -91,7 +91,7 @@ TP_ReplayGainScanProgress::slot_onStart( unsigned I_index )
 
 
 void
-TP_ReplayGainScanProgress::slot_onFinish( unsigned I_index, bool I_isSuccessful )
+TP_ReplayGainScanProgress::slot_onFinish( int I_index, bool I_isSuccessful )
 {
     if( I_isSuccessful )
         ui->tableWidget->item( I_index, 1 )

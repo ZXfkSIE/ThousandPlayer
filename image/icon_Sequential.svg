@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg14350"
+   sodipodi:docname="icon_Sequential.svg"
+   viewBox="0 0 65.190402 83.272205"
+   sodipodi:version="0.32"
+   version="1.0"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   width="65.190399"
+   height="83.272202"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:window-y="0"
+     pagecolor="#000000"
+     inkscape:window-height="1047"
+     inkscape:zoom="1.979899"
+     inkscape:window-x="0"
+     borderopacity="1.0"
+     inkscape:current-layer="g3602"
+     inkscape:cx="-63.63961"
+     inkscape:cy="93.186572"
+     inkscape:window-width="1920"
+     inkscape:pageopacity="1"
+     inkscape:document-units="mm"
+     inkscape:pagecheckerboard="true"
+     showgrid="false"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-309.7706,-485.2078)">
+    <g
+       id="g3602"
+       transform="translate(-63.039,-191.48)">
+      <path
+         id="path5063"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.74973px"
+         d="m 399.2196,759.9578 c 21.72,0.21 25.41,-14.65 25.35,-22.55 0,-0.21 -0.04,-0.41 -0.06,-0.6 h 0.06 v -8.68 c 0,0 7.06,2.82 10.41,2.77 3.36,-0.05 3.01,-3.01 3.01,-3.01 l -21.1,-31.57 -20.95,30.16 c 0,0 -1.45,5.21 1.62,4.53 3.66,-0.82 11.88,-2.71 11.88,-2.71 v 8.3 h 0.22 c -0.06,0.02 -0.24,0.1 -0.24,0.1 0,0 -0.52,8.58 -11.03,8.58 -10.5,0 -11.33,-10.28 -11.33,-10.28 v -58.31 h -14.25 v 61.46 c 0,1.8 4.7,21.6 26.41,21.81 z" />
+    </g>
+  </g>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>caution_u turn</dc:title>
+        <dc:date>2007-10-20T00:02:43</dc:date>
+        <dc:description />
+        <dc:source>https://openclipart.org/detail/7240/caution_u-turn-by-leomarc</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Leomarc</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>roadsign</rdf:li>
+            <rdf:li>sign</rdf:li>
+            <rdf:li>traffic</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

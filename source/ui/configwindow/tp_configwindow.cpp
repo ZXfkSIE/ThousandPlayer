@@ -235,7 +235,7 @@ TP_ConfigWindow::initializeUI()
     ui->stackedWidget->setCurrentIndex( 0 );
 
     // Expand height of list items
-    for( unsigned i {}; i < ui->listWidget_Tab->count(); i++ )
+    for( int i {}; i < ui->listWidget_Tab->count(); i++ )
         ui->listWidget_Tab->item( i )->setSizeHint( { 0, 40 } );
 
     // ============================== Main Page ==============================

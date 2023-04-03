@@ -7,27 +7,27 @@
 namespace TP
 {
 
-static const unsigned numberOfWindows   = 3;
-static const unsigned mainWindow        = 0;
-static const unsigned playlistWindow    = 1;
-static const unsigned lyricsWindow      = 2;
+static const int numberOfWindows   = 3;
+static const int mainWindow        = 0;
+static const int playlistWindow    = 1;
+static const int lyricsWindow      = 2;
 
 static const int borderSize = 5;
 static const int snapRange  = 8;
 
-static const int role_Duration          = Qt::UserRole;         // int              must have
+static const int role_Duration          = Qt::UserRole;         // int                  must have
 static const int role_Bitrate           = Qt::UserRole + 1;     // int
 static const int role_SampleRate        = Qt::UserRole + 2;     // int
 static const int role_BitDepth          = Qt::UserRole + 3;     // int
 static const int role_Artist            = Qt::UserRole + 4;     // QString
 static const int role_Title             = Qt::UserRole + 5;     // QString
 static const int role_Album             = Qt::UserRole + 6;     // QString
-static const int role_FileName          = Qt::UserRole + 7;     // QString          must have
-static const int role_AudioFormat         = Qt::UserRole + 8;     // TP::AudioFormat    must have
-static const int role_URL               = Qt::UserRole + 9;     // QUrl             must have
-static const int role_SourceType        = Qt::UserRole + 10;    // TP::SourceType   must have
-static const int role_Description       = Qt::UserRole + 11;    // QString          must have
-static const int role_LastModified      = Qt::UserRole + 12;    // QDateTime        must have
+static const int role_FileName          = Qt::UserRole + 7;     // QString              must have
+static const int role_AudioFormat       = Qt::UserRole + 8;     // TP::AudioFormat      must have
+static const int role_URL               = Qt::UserRole + 9;     // QUrl                 must have
+static const int role_SourceType        = Qt::UserRole + 10;    // TP::SourceType       must have
+static const int role_Description       = Qt::UserRole + 11;    // QString              must have
+static const int role_LastModified      = Qt::UserRole + 12;    // QDateTime            must have
 static const int role_ReplayGainTrack   = Qt::UserRole + 13;    // float
 static const int role_ReplayGainAlbum   = Qt::UserRole + 14;    // float
 

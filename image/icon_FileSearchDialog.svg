@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg2"
+   sodipodi:docname="icon_FileSearchDialog.svg"
+   inkscape:export-filename="C:\Users\Joshua\Documents\Visual Studio 2005\Projects\Flash-cards_share_code\Flash-Cards Wpf\Flash-Cards Wpf\Svg Package\Search-Find-Zoom.png"
+   viewBox="0 0 205.65309 205.65309"
+   sodipodi:version="0.32"
+   inkscape:export-xdpi="26.276688"
+   version="1.0"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-ydpi="26.276688"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   width="205.65309"
+   height="205.65309"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient4711"
+       y2="336.45001"
+       gradientUnits="userSpaceOnUse"
+       x2="-1192.2"
+       gradientTransform="matrix(0.66046152,0,0,0.66046152,-420.88769,-264.92107)"
+       y1="333.09"
+       x1="-1152.7"
+       inkscape:collect="always">
+      <stop
+         id="stop4693"
+         style="stop-color:#ffdf98"
+         offset="0" />
+      <stop
+         id="stop4695"
+         style="stop-color:#c6512b"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       id="radialGradient4713"
+       gradientUnits="userSpaceOnUse"
+       cy="814.77002"
+       cx="-883.77002"
+       gradientTransform="matrix(0.28634,-0.87716,0.78983,0.25784,-1269.9,-168.25)"
+       r="45.234001"
+       inkscape:collect="always">
+      <stop
+         id="stop4253"
+         style="stop-color:#f9f9f9"
+         offset="0" />
+      <stop
+         id="stop4255"
+         style="stop-color:#92e9f3"
+         offset="1" />
+    </radialGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     guidetolerance="10"
+     pagecolor="#ffffff"
+     gridtolerance="10000"
+     inkscape:window-height="976"
+     inkscape:zoom="1.8101934"
+     objecttolerance="10"
+     showgrid="false"
+     borderopacity="1.0"
+     inkscape:current-layer="g4707"
+     inkscape:cx="44.470387"
+     inkscape:cy="140.86893"
+     inkscape:window-y="85"
+     inkscape:window-x="-8"
+     inkscape:window-width="1920"
+     inkscape:pageopacity="0.0"
+     inkscape:document-units="px"
+     inkscape:pagecheckerboard="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-page="true"
+     inkscape:window-maximized="1" />
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-215.49305,-479.01155)">
+    <g
+       id="g4707"
+       transform="matrix(2.013,0,0,2.013,2103.6,-1036.8)">
+      <rect
+         id="rect2463"
+         ry="12.040214"
+         style="fill:url(#linearGradient4711);fill-rule:evenodd;stroke-width:0.660462"
+         transform="rotate(-45.814825)"
+         height="67.135918"
+         width="24.080427"
+         y="-75.43882"
+         x="-1207.5668" />
+      <circle
+         id="path2461"
+         style="fill:url(#radialGradient4713);fill-rule:evenodd;stroke:#b2b2e3;stroke-width:6.5"
+         cx="-892.72229"
+         cy="798.24567"
+         r="41.984467" />
+    </g>
+  </g>
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Search Find Zoom</dc:title>
+        <dc:date>2010-04-07T19:44:11</dc:date>
+        <dc:description />
+        <dc:source>https://openclipart.org/detail/38965/search-find-zoom-by-mightyman</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>mightyman</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>button icon</rdf:li>
+            <rdf:li>find</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>magnification</rdf:li>
+            <rdf:li>magnify</rdf:li>
+            <rdf:li>magnifying glass</rdf:li>
+            <rdf:li>search</rdf:li>
+            <rdf:li>toolbar</rdf:li>
+            <rdf:li>toolbar icon</rdf:li>
+            <rdf:li>zoom</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

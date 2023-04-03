@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg1468"
+   sodipodi:docname="icon_ZoomOut.svg"
+   viewBox="0 0 65.066918 65.066886"
+   sodipodi:version="0.32"
+   version="1.0"
+   y="0"
+   x="0"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   width="65.066917"
+   height="65.066887"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     pagecolor="#ffffff"
+     inkscape:zoom="5.1892211"
+     borderopacity="1.0"
+     inkscape:current-layer="g2549"
+     inkscape:cx="23.221211"
+     inkscape:cy="67.832916"
+     inkscape:window-height="976"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:window-x="-8"
+     inkscape:window-y="85"
+     inkscape:window-maximized="1" />
+  <g
+     id="layer1"
+     transform="translate(-66.185351,-34.68998)">
+    <g
+       id="g2549"
+       transform="translate(-138.89,-679.52)">
+      <path
+         id="path2482"
+         style="fill:#ffffff;stroke:#000000;stroke-width:4.501;stroke-linecap:round;stroke-linejoin:round"
+         transform="matrix(0.75221,0,0,0.75221,-109.16,292.89)"
+         d="m 502,603.36 a 41,41 0 1 1 -82,0 41,41 0 1 1 82,0 z" />
+      <path
+         id="text2467"
+         style="fill:#000000"
+         d="m 227.77,751.58 v -4.24 h 18.97 v 4.24 h -18.97" />
+    </g>
+  </g>
+  <metadata
+     id="metadata9">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Magnify 2</dc:title>
+        <dc:date>2006-12-26T00:00:00</dc:date>
+        <dc:description />
+        <dc:source>https://openclipart.org/detail/24600/-by--24600</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Anonymous</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

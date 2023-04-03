@@ -59,8 +59,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
     ${CONAN_LIBS}
 
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt6::Widgets
+    Qt6::Multimedia
     )
 
 #[[

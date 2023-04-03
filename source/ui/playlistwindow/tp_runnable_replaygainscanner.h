@@ -10,17 +10,17 @@ class TP_Runnable_ReplayGainScanner : public QObject, public QRunnable
 
 public:
     explicit TP_Runnable_ReplayGainScanner( const QString   &I_qstr_path,
-                                            unsigned        I_index );
+                                            int        I_index );
 
     void run() override;
 
 signals:
-    void signal_onStart( unsigned I_index );
-    void signal_onFinish( unsigned I_index, bool I_isSuccessful );
+    void signal_onStart( int I_index );
+    void signal_onFinish( int I_index, bool I_isSuccessful );
 
 private:
     QString qstr_path;
-    unsigned index;
+    int index;
 };
 
 #endif // TP_RUNNABLE_REPLAYGAINSCANNER_H

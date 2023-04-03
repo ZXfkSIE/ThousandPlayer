@@ -21,13 +21,11 @@ class QListWidgetItem;
 
 namespace TagLib
 {
-
 namespace APE   { class Tag; }
 namespace FLAC  { class File; }
 namespace ID3v2 { class Tag; }
 namespace MP4   { class Tag; }
 namespace Ogg   { class XiphComment; }
-
 }
 
 class TP_MainClass : public QObject
@@ -83,7 +81,7 @@ private:
     void unsnapInvisibleWindows();
     SnapType checkSnapType      ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
     SnapType checkAdjacentType  ( const QRect &I_geometry1, const QRect &I_geometry2 ) const;
-    bool breadthFirstSearch ( unsigned I_idx ) const;
+    bool breadthFirstSearch ( int I_idx ) const;
 
     void playItem ( QListWidgetItem *I_item );
     void playFile ( QListWidgetItem *I_item );
@@ -95,8 +93,8 @@ private:
 
     TP_MainWindow       *   mainWindow;
     TP_PlaylistWindow   *   playlistWindow;
-    TP_ConfigWindow     *   configWindow;
     TP_LyricsWindow     *   lyricsWindow;
+    TP_ConfigWindow     *   configWindow;
     bool                    b_isPlaylistWindowVisible;
     bool                    b_isLyricsWindowVisible;
 

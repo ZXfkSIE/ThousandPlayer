@@ -34,7 +34,7 @@ private:
     static const int percentageStep { 1 };
 
     int nextPercentage;
-    unsigned n_finished;
+    int n_finished;
     int idx_min;
     int idx_max;
 };

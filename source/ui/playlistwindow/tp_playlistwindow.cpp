@@ -222,7 +222,7 @@ TP_PlaylistWindow::slot_activateWindow()
 void
 TP_PlaylistWindow::slot_refreshFont()
 {
-    for( unsigned i {}; i < ui->stackedWidget_FileList->count(); i++ )
+    for( int i {}; i < ui->stackedWidget_FileList->count(); i++ )
     {
         dynamic_cast< TP_FileListWidget * >( ui->stackedWidget_FileList->widget( i ) )->refreshFont();
     }
@@ -714,7 +714,7 @@ TP_PlaylistWindow::createPlaylistFromJSON( const QJsonDocument &I_jDoc )
         progressDialog->initialize( newFileList->count(), 0, count - 1 );
         progressDialog->show();
 
-        for ( unsigned i {}; i < count; i++ )
+        for ( int i {}; i < count; i++ )
         {
             auto fileReader { new TP_Runnable_FileReader { newFileList->item( i ) } };
             connect( fileReader,        &TP_Runnable_FileReader::signal_onFinish,
@@ -733,7 +733,7 @@ TP_PlaylistWindow::storePlaylist()
     QJsonArray jArray_Root {};
     auto playlistsCount { ui->playlistsWidget->count() };
 
-    for( unsigned i {}; i < playlistsCount; i++ )
+    for( int i {}; i < playlistsCount; i++ )
     {
         auto *currentPlaylistItem { ui->playlistsWidget->item( i ) };
         QJsonObject jObject_Playlist {};
@@ -747,7 +747,7 @@ TP_PlaylistWindow::storePlaylist()
         };
         auto filesCount { currentFileList->count() };
 
-        for( unsigned j {}; j < filesCount; j++ )
+        for( int j {}; j < filesCount; j++ )
         {
             QJsonObject jObject_File {};
             auto *currentFile { currentFileList->item( j ) };
@@ -817,7 +817,7 @@ TP_PlaylistWindow::addFilesToCurrentList( const QList< QUrl > &I_urlList )
     progressDialog->initialize( I_urlList.size(), originalCount, newCount - 1 );
     progressDialog->show();
 
-    for( unsigned i {}; i < increasedCount; i++ )
+    for( int i {}; i < increasedCount; i++ )
     {
         auto fileReader { new TP_Runnable_FileReader { currentFileListWidget()->item( originalCount + i ) } };
         connect( fileReader,        &TP_Runnable_FileReader::signal_onFinish,

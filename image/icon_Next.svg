@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="11.29753mm"
+   height="11.336841mm"
+   viewBox="0 0 11.29753 11.336841"
+   version="1.1"
+   id="svg113"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="icon_Next.svg">
+  <defs
+     id="defs107" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.2"
+     inkscape:cx="27.469731"
+     inkscape:cy="16.627065"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="976"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata110">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-86.577425,-23.814108)">
+    <path
+       d="m 97.202827,23.836065 a 0.66145833,0.66145833 0 0 0 -0.650874,0.672041 v 4.021667 l 0.507999,0.447146 5.29e-4,5.29e-4 c 0.309563,0.272521 0.309563,0.769937 -5.29e-4,1.042458 l -0.507999,0.447146 v 4.021667 a 0.66145845,0.66145845 0 1 0 1.322916,0 v -9.974792 a 0.66145833,0.66145833 0 0 0 -0.672042,-0.672042 z m -6.667499,0.0036 c -0.167482,-0.0049 -0.306917,0.129382 -0.306917,0.296334 v 2.029354 l 3.175,2.804583 c 0.309562,0.272521 0.309562,0.769938 0,1.042459 l -3.175,2.804583 v 2.029354 c -2.65e-4,0.256382 0.301625,0.39423 0.494771,0.223838 l 6.085416,-5.344584 c 0.134673,-0.118533 0.134673,-0.328083 0,-0.447146 l -6.085416,-5.344583 c -0.05212,-0.04577 -0.118798,-0.07197 -0.188119,-0.07382 z m -3.65125,2.36e-4 c 0.06932,0.0019 0.135995,0.02805 0.188118,0.07382 l 6.085417,5.344583 c 0.134673,0.118533 0.134673,0.328083 0,0.447146 l -6.085417,5.344583 c -0.192352,0.169598 -0.494771,0.03281 -0.494771,-0.223837 V 24.110594 c 2.36e-4,-0.167746 0.138907,-0.301625 0.306917,-0.296334 z"
+       id="path56"
+       inkscape:label="Skip Forward"
+       style="stroke-width:0.264583;fill:#ffffff" />
+  </g>
+</svg>

@@ -1,6 +1,5 @@
 ﻿#include "tp_lyricsviewer.h"
 
-#include "tp_globalconst.h"
 #include "tp_globalvariable.h"
 
 #include "tp_menu.h"
@@ -185,7 +184,7 @@ TP_LyricsViewer::refreshFont()
 {
     setFont( TP::config().getLyricsFont() );
     auto height { font().pointSize() << 1 };   // I_font.pointSize() * 2
-    for( unsigned i {}; i < count(); i++ )
+    for( int i {}; i < count(); i++ )
     {
         item( i )->setFont( TP::config().getLyricsFont() );
         item( i )->setSizeHint( { 0, height } );

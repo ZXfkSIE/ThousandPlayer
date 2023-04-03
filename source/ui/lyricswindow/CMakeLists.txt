@@ -27,6 +27,7 @@ target_link_libraries(TP_ui_lyricswindow PRIVATE
 
     Qt${QT_VERSION_MAJOR}::Widgets
     )
+
 target_link_libraries(TP_ui_lyricswindow PUBLIC
     TP::global
     )

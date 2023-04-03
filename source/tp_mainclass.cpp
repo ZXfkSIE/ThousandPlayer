@@ -1176,14 +1176,14 @@ void
 TP_MainClass::unsnapInvisibleWindows()
 {
     if( ! playlistWindow->isVisible() )
-        for( unsigned i {}; i < TP::numberOfWindows; i++ )
+        for( int i {}; i < TP::numberOfWindows; i++ )
         {
             snapStatus [ i ][ TP::playlistWindow ] = false;
             snapStatus [ TP::playlistWindow ][ i ] = false;
         }
 
     if( ! lyricsWindow->isVisible() )
-        for( unsigned i {}; i < TP::numberOfWindows; i++ )
+        for( int i {}; i < TP::numberOfWindows; i++ )
         {
             snapStatus [ i ][ TP::lyricsWindow ] = false;
             snapStatus [ TP::lyricsWindow ][ i ] = false;
@@ -1250,11 +1250,11 @@ TP_MainClass::checkAdjacentType( const QRect &I_geometry1, const QRect &I_geomet
 
 
 bool
-TP_MainClass::breadthFirstSearch( unsigned I_idx ) const
+TP_MainClass::breadthFirstSearch( int I_idx ) const
 {
-    unsigned idx_Current {};
+    int idx_Current {};
     bool isVisited [ TP::numberOfWindows ] {};
-    std::queue < unsigned > queue {};
+    std::queue < int > queue {};
 
     isVisited [ TP::mainWindow ] = true;
     // Search always start from main window.
@@ -1265,7 +1265,7 @@ TP_MainClass::breadthFirstSearch( unsigned I_idx ) const
         idx_Current = queue.front();
         queue.pop();
 
-        for( unsigned i { 1 }; i < TP::numberOfWindows; i++ )
+        for( int i { 1 }; i < TP::numberOfWindows; i++ )
             if( ! isVisited[ i ] && snapStatus[ idx_Current ][ i ] )
             {
                 if( i == I_idx )

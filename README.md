@@ -64,9 +64,8 @@ but already has fundamental functions that a local audio player should have. Fee
 ### PipeWire 0.3.40, 0.3.42
 - Broken sound after moving playhead in GStreamer applications (including Qt Multimedia, Rhythmbox, etc.). ([report link](https://bugzilla.redhat.com/show_bug.cgi?id=2031441), largely fixed by [version 0.3.43](https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/0.3.43))
 
-### Qt 6.4.0
+### Qt
 - [QTBUG-96248](https://bugreports.qt.io/browse/QTBUG-96248): For `QListWidget`, drag & drop function does not work properly when an item is dropped at an inappropriate position.
-- [QTBUG-100181](https://bugreports.qt.io/browse/QTBUG-100181): Seeking is buggy while playing **FLAC** files in Windows. This software avoids it by adding a 0.5s delay between file opening and playing. In the future, the backend will be changed to FFmpeg to make the software perfectly cross-platform.
 
 # Compilation Tutorial
 
@@ -75,36 +74,25 @@ This page only provides complation steps with Qt Creator. Of course you can also
 Before proceeding with the following OS-specific steps, you have to install
 - Latest version of Qt Creator.
 - Latest version of Qt6 along with Qt Multimedia.
-- Latest version of [Conan](https://conan.io/).
-- CMake 3.20 or later.
+- Latest version of [Conan C/C++ Package Manager](https://conan.io/).
+- CMake version 3.20 or later.
 - Other required compilation tools, such as GCC-C++ for Linux, MSVC 2019 for Microsoft Windows, and so on.
-- **【Linux】** development packages required by Qt (e.g. libOpenGL) and Qt Multimedia (e.g. libGStreamer).
+- **【Linux】** development packages required by Qt (e.g. libOpenGL) and Qt Multimedia.
+
+In a word, you should compile and run some example project of Qt Multimedia successfully before trying to build this project.
 
 ## Steps
-1. Generate Conan profile for the project by running following commands:
-```shell
-conan profile new thousandplayer --detect
-conan profile update settings.compiler.libcxx=libstdc++11 thousandplayer    # Run on Linux
-```
-
-2. Turn on Conan plugin in Qt Creator.
+1. Turn on Conan plugin in Qt Creator.
 
 ![](figure/ConanPlugin.png)
 
+2. In Qt Creator, Go to `Edit` → `Preferences` → `Cmake` → `General`, turn on "Package manager auto setup".
+
 3. Open the root `CMakeLists.txt` by Qt Creator,
 then configure the project with latest version of Qt6.
-The first attempt of CMake configuration should be failed due to the lack of Conan-related scripts, but it's OK.
-4. Go to "Projects" tab, raise the existing "Conan install" build step to top of the list, then add the addition argument `--profile thousandplayer` .
+
+4. After the completion of configuration, Go to "Projects" tab, remove "Conan install" build step.
 
 ![](figure/ConanInstallBuildStep.png)
 
-5.  Open the root `CMakeLists.txt` in your editor, comment out the 2 Conan-related lines, and save it by CTRL+S to trigger CMake configuration again.
-```cmake
-if(WIN32)
-# In Windows, use Conan to setup 3rd party packages
-    message(STATUS "[ThousandPlayer] Windows build environment detected.")
-    # include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)     # <-- COMMENT OUT!              
-    # conan_basic_setup()                                   # <-- COMMENT OUT!
-    message(STATUS "[ThousandPlayer] Conan packages loaded: ${CONAN_LIBS}")
-```
-6. After the end of CMake configuration, the "Build" button with a hammer icon on the bottom left becomes available. Uncomment the 2 lines mentioned above, then you should be able to build it.
+5. Built it!

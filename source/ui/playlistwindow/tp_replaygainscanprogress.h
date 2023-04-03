@@ -22,8 +22,8 @@ public:
     void reject() override;
 
 private slots:
-    void slot_onStart( unsigned I_index );
-    void slot_onFinish( unsigned I_index, bool I_isSuccessful );
+    void slot_onStart( int I_index );
+    void slot_onFinish( int I_index, bool I_isSuccessful );
 
     void on_pushButton_clicked();
 

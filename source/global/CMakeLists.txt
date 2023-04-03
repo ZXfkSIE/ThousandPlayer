@@ -21,18 +21,12 @@ target_include_directories(TP_global PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
-if(UNIX)
-    target_include_directories(TP_global PRIVATE ${TAGLIB_INCLUDE_DIRS})
-    target_link_directories(TP_global PRIVATE ${TAGLIB_LIBRARY_DIRS})
-    target_compile_options(TP_global PRIVATE ${TAGLIB_CFLAGS_OTHER})
-endif()
 
 target_link_libraries(TP_global PUBLIC
     TP::config
 
-    ${CONAN_LIBS}
-    ${TAGLIB_LIBRARIES}
+    taglib::taglib
 
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt6::Widgets
+    Qt6::Multimedia
 )

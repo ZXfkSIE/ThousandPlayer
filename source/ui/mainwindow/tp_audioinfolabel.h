@@ -34,7 +34,7 @@ private:
 
     int initialX, initialMiddleY;
     int x, y;
-    unsigned currentIdx;
+    int currentIdx;
 };
 
 #endif // TP_AUDIOINFOLABEL_H

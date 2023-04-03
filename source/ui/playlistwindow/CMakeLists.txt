@@ -40,10 +40,11 @@ add_library(TP::ui::playlistwindow ALIAS TP_ui_playlistwindow)
 target_include_directories(TP_ui_playlistwindow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(TP_ui_playlistwindow PRIVATE
+    TP::ui
+
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Concurrent
 
-    TP::ui
     )
 
 target_link_libraries(TP_ui_playlistwindow PUBLIC

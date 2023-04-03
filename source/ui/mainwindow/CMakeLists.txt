@@ -39,10 +39,8 @@ target_link_libraries(TP_ui_mainwindow PRIVATE
 
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Multimedia
-
-    ${CONAN_LIBS}
-    ${TAGLIB_LIBRARIES}
     )
+
 target_link_libraries(TP_ui_mainwindow PUBLIC
     TP::global
     )

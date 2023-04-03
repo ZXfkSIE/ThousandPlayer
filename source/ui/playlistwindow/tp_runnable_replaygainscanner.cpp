@@ -8,7 +8,7 @@
 #include <QProcess>
 
 TP_Runnable_ReplayGainScanner::TP_Runnable_ReplayGainScanner( const QString &I_qstr_path,
-                                                              unsigned I_index ) :
+                                                              int I_index ) :
     QObject     { nullptr }
   , qstr_path   { I_qstr_path }
   , index       { I_index }

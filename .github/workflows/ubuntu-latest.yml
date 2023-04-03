@@ -1,0 +1,59 @@
+name: ubuntu-latest
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.yml'
+      - '**.cpp'
+      - '**.h'
+      - '**CMakeLists.txt'
+      - '**.ts'
+  
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.yml'
+      - '**.cpp'
+      - '**.h'
+      - '**CMakeLists.txt'
+      - '**.ts'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies by apt
+        run: |
+          sudo apt --fix-broken install
+          sudo apt update -y
+          sudo apt install -y cmake ninja-build
+          pip install conan
+          
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.5.0
+          modules: qtmultimedia
+          aqtversion: >=3.1.0
+          
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Conan installation
+        run: |
+          conan profile new thousandplayer --detect
+          conan profile update settings.compiler.libcxx=libstdc++11 thousandplayer
+          mkdir build
+          conan install . \
+          --install-folder build \
+          -s "build_type=Debug" \
+          --build missing \
+          --profile thousandplayer
+
+      - name: CMake configuration
+        run: |
+          cmake -S . -B build -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_PREFIX_PATH=${{ env.Qt6_DIR }}
+          
+      - name: Build
+        run: cmake --build build --target all
