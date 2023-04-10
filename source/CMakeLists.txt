@@ -1,5 +1,4 @@
-﻿add_subdirectory(config)
-add_subdirectory(global)
+﻿add_subdirectory(global)
 add_subdirectory(ui)
 
 set(TP_SOURCE_FILES
@@ -52,15 +51,11 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     TP::global
+
     TP::ui::configwindow
     TP::ui::lyricswindow
     TP::ui::mainwindow
     TP::ui::playlistwindow
-
-    ${CONAN_LIBS}
-
-    Qt6::Widgets
-    Qt6::Multimedia
     )
 
 #[[

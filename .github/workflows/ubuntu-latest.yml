@@ -56,7 +56,7 @@ jobs:
           cd build
           
           cmake .. Ninja \
-          -D CMAKE_BUILD_TYPE=Debug \
+          -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_PREFIX_PATH=${{ env.Qt6_DIR }} \
           -D CMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
           

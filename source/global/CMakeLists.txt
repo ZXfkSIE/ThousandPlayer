@@ -3,6 +3,9 @@
 set(TP_GLOBAL_FILES
     tp_cmakeconfig.h
 
+    tp_config.h
+    tp_config.cpp
+
     tp_globalconst.h
 
     tp_globalenum.h
@@ -20,13 +23,10 @@ add_library(TP::global ALIAS TP_global)
 target_include_directories(TP_global PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${taglib_INCLUDE_DIRS}
 )
 
-target_include_directories(TP_global PRIVATE ${taglib_INCLUDE_DIRS})
-
 target_link_libraries(TP_global PUBLIC
-    TP::config
-
     taglib::taglib
 
     Qt6::Widgets

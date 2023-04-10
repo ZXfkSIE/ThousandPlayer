@@ -28,19 +28,9 @@ add_library(TP_ui_mainwindow ${TP_UI_MAINWINDOW_FILES})
 add_library(TP::ui::mainwindow ALIAS TP_ui_mainwindow)
 
 target_include_directories(TP_ui_mainwindow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-if(UNIX)
-    target_include_directories(TP_ui_mainwindow PRIVATE ${TAGLIB_INCLUDE_DIRS})
-    target_link_directories(TP_ui_mainwindow PRIVATE ${TAGLIB_LIBRARY_DIRS})
-    target_compile_options(TP_ui_mainwindow PRIVATE ${TAGLIB_CFLAGS_OTHER})
-endif()
 
 target_link_libraries(TP_ui_mainwindow PRIVATE
-    TP::ui
-
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Multimedia
-    )
-
-target_link_libraries(TP_ui_mainwindow PUBLIC
     TP::global
+
+    TP::ui
     )
