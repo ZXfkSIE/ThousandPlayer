@@ -22,6 +22,8 @@ target_include_directories(TP_global PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+target_include_directories(TP_global PRIVATE ${taglib_INCLUDE_DIRS})
+
 target_link_libraries(TP_global PUBLIC
     TP::config
 

@@ -23,37 +23,42 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies by apt
+      - name: Install dependencies by apt and pip
         run: |
           sudo apt --fix-broken install
           sudo apt update -y
-          sudo apt install -y cmake ninja-build
-          pip install conan
+          sudo apt install -y ninja-build
+          pip install conan cmake
           
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.5.0
           modules: qtmultimedia
-          aqtversion: >=3.1.0
+          aqtversion: '>=3.1.0'
+          py7zrversion: '>=0.20.2'
           
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Conan installation
         run: |
-          conan profile new thousandplayer --detect
-          conan profile update settings.compiler.libcxx=libstdc++11 thousandplayer
+          conan profile detect --force
+          
           mkdir build
-          conan install . \
-          --install-folder build \
-          -s "build_type=Debug" \
-          --build missing \
-          --profile thousandplayer
+          
+          conan install ./conanfile_ci.txt  \
+          -of build                         \
+          --build=missing
 
       - name: CMake configuration
         run: |
-          cmake -S . -B build -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_PREFIX_PATH=${{ env.Qt6_DIR }}
+          cd build
+          
+          cmake .. Ninja \
+          -D CMAKE_BUILD_TYPE=Debug \
+          -D CMAKE_PREFIX_PATH=${{ env.Qt6_DIR }} \
+          -D CMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
           
       - name: Build
-        run: cmake --build build --target all
+        run: cmake --build build

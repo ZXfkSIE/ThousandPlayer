@@ -1,0 +1,6 @@
+[requires]
+taglib/[>=1.13]
+
+[generators]
+CMakeDeps
+CMakeToolchain

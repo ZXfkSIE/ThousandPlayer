@@ -35,29 +35,32 @@ jobs:
         with:
           version: 6.5.0
           modules: qtmultimedia
-          aqtversion: >=3.1.0
-        
+          aqtversion: '>=3.1.0'
+          py7zrversion: '>=0.20.2'
+
       - name: Checkout
         uses: actions/checkout@v2
-    
+
       - name: Setup path for MSVC's cl.exe
         uses: ilammy/msvc-dev-cmd@v1
           
       - name: Conan installation
         run: |
-          conan profile new thousandplayer --detect
+          conan profile detect --force
+          
           mkdir build
-          conan install . `
-          --install-folder build `
-          -s "build_type=Debug" `
+          
+          conan install ./conanfile_ci.txt `
+          -of build `
           --build missing `
-          --profile thousandplayer
       
       - name: CMake configuration
         run: |
-          cmake -S . -B build -G Ninja `
-          -D MSVC_TOOLSET_VERSION=142 -D CMAKE_C_COMPILER="cl.exe" -D CMAKE_CXX_COMPILER="cl.exe" `
-          -D CMAKE_BUILD_TYPE=Debug -D CMAKE_PREFIX_PATH=${{ env.Qt6_DIR }}
+          cd build
+          
+          cmake .. -G Ninja `
+          -D CMAKE_PREFIX_PATH=${{ env.Qt6_DIR }} `
+          -D CMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
           
       - name: Build
-        run: cmake --build build --target all
+        run: cmake --build build
