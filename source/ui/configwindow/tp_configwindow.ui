@@ -161,7 +161,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="page_Main">
          <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1259,18 +1259,6 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_Copyright">
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string notr="true">© 2021 Zhang Xiang</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QLabel" name="label_OtherInfo">
                   <property name="font">
                    <font>
@@ -1292,18 +1280,6 @@
            <widget class="QWidget" name="container_Buttons" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
-              <widget class="QPushButton" name="pushButton_GPL">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>GPLv3 text</string>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QPushButton" name="pushButton_Credits">
                <property name="font">
                 <font>
@@ -1312,6 +1288,18 @@
                </property>
                <property name="text">
                 <string>Credits</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_Licenses">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Licenses</string>
                </property>
               </widget>
              </item>

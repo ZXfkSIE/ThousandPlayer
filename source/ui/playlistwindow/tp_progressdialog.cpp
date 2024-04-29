@@ -39,6 +39,7 @@ TP_ProgressDialog::TP_ProgressDialog(
     setFixedSize( 480, height() );
 }
 
+
 void
 TP_ProgressDialog::initialize( int I_max, int I_idx_min, int I_idx_max )
 {

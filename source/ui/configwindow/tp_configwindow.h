@@ -41,10 +41,11 @@ private slots:
     void on_pushButton_ChangeLyricsFont_clicked();
     void on_spinBox_JumpingTimeOffset_valueChanged( int I_ms );
 
-    void on_pushButton_GPL_clicked();
     void on_pushButton_Credits_clicked();
+    void on_pushButton_Licenses_clicked();
 
     void on_buttonBox_OK_accepted();
+
 
 private:
     Ui::TP_ConfigWindow *ui;
@@ -52,8 +53,8 @@ private:
     void initializeStrings();
     void initializeUI();
 
-    QString qstr_GPL;
     QString qstr_Credits;
+    QString qstr_Licenses;
 };
 
 #endif // TP_CONFIGWINDOW_H

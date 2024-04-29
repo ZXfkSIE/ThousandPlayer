@@ -45,7 +45,7 @@ TP_PlaylistWindow::TP_PlaylistWindow( QWidget *parent ) :
 
     ui->pushButton_Close->setIcon( QIcon { ":/image/icon_Exit.svg" } );
 
-    qDebug() << "[PlaylistWindow] Max thread count of local thread pool is" << QThread::idealThreadCount() - 1;
+    qDebug() << "[PlaylistWindow] Max thread count of the local thread pool is" << QThread::idealThreadCount() - 1;
     threadPool->setMaxThreadCount( QThread::idealThreadCount() - 1 );
 }
 

@@ -1,5 +1,5 @@
 [requires]
-taglib/[>=1.13]
+taglib/[>=2.0]
 
 [generators]
 CMakeDeps

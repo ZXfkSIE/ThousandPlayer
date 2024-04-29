@@ -88,6 +88,11 @@
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;歌詞の行でのダブルクリックによる&lt;/p&gt;&lt;p&gt;飛ぶ位置のオフセット：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1302"/>
+        <source>Licenses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../source/ui/configwindow/tp_configwindow.ui" line="474"/>
         <source>Audio output device:</source>
         <translation>オーディオ出力デバイス：</translation>
@@ -137,17 +142,16 @@
         <translation>ミリ秒</translation>
     </message>
     <message>
-        <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1281"/>
+        <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1269"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Released under &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Github page: &lt;/span&gt;&lt;a href=&quot;https://github.com/ZXfkSIE/ThousandPlayer&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/ZXfkSIE/ThousandPlayer&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;の元で配布される。&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Githubページ: &lt;/span&gt;&lt;a href=&quot;https://github.com/ZXfkSIE/ThousandPlayer&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/ZXfkSIE/ThousandPlayer&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1302"/>
         <source>GPLv3 text</source>
-        <translation>GPLv3の正文</translation>
+        <translation type="vanished">GPLv3の正文</translation>
     </message>
     <message>
-        <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1314"/>
+        <location filename="../source/ui/configwindow/tp_configwindow.ui" line="1290"/>
         <source>Credits</source>
         <translation>クレジット</translation>
     </message>

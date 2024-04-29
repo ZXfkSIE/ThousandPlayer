@@ -8,7 +8,7 @@
 
 int main( int argc, char *argv[] )
 {
-    qDebug() << "[Main Function] the files integrated by developer are:";
+    qDebug() << "[Main Function] the files integrated by the executable file are:";
     QDirIterator it { ":", QDirIterator::Subdirectories };
     while ( it.hasNext() )
     {

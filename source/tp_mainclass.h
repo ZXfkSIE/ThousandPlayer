@@ -8,8 +8,6 @@
 #include <QMediaPlayer>
 #include <QObject>
 
-#include <array>
-
 class TP_ConfigWindow;
 class TP_FileListWidget;
 class TP_LyricsWindow;

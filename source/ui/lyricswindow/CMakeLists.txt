@@ -23,11 +23,7 @@ add_library(TP::ui::lyricswindow ALIAS TP_ui_lyricswindow)
 target_include_directories(TP_ui_lyricswindow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(TP_ui_lyricswindow PRIVATE
-    TP::ui
-
-    Qt${QT_VERSION_MAJOR}::Widgets
-    )
-
-target_link_libraries(TP_ui_lyricswindow PUBLIC
     TP::global
+
+    TP::ui
     )

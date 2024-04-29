@@ -214,13 +214,13 @@ TP_ConfigWindow::on_spinBox_JumpingTimeOffset_valueChanged( int I_ms )
 void
 TP_ConfigWindow::initializeStrings()
 {
-    QFile qFile_GPL { ":/markdown/gpl-3.0.md" };
-    if( qFile_GPL.open( QIODeviceBase::ReadOnly | QIODeviceBase::Text ) )
-        qstr_GPL = QTextStream { &qFile_GPL }.readAll();
-
     QFile qFile_Credits { ":/markdown/credits.md" };
     if( qFile_Credits.open( QIODeviceBase::ReadOnly | QIODeviceBase::Text ) )
         qstr_Credits = QTextStream { &qFile_Credits }.readAll();
+
+    QFile qFile_Licenses { ":/markdown/gpl-3.0.md" };
+    if( qFile_Licenses.open( QIODeviceBase::ReadOnly | QIODeviceBase::Text ) )
+        qstr_Licenses = QTextStream { &qFile_Licenses }.readAll();
 }
 
 
@@ -315,16 +315,16 @@ TP_ConfigWindow::initializeUI()
 
 
 void
-TP_ConfigWindow::on_pushButton_GPL_clicked()
+TP_ConfigWindow::on_pushButton_Credits_clicked()
 {
-    ui->textBrowser->document()->setMarkdown( qstr_GPL );
+    ui->textBrowser->document()->setMarkdown( qstr_Credits );
 }
 
 
 void
-TP_ConfigWindow::on_pushButton_Credits_clicked()
+TP_ConfigWindow::on_pushButton_Licenses_clicked()
 {
-    ui->textBrowser->document()->setMarkdown( qstr_Credits );
+    ui->textBrowser->document()->setMarkdown( qstr_Licenses );
 }
 
 
@@ -333,4 +333,3 @@ TP_ConfigWindow::on_buttonBox_OK_accepted()
 {
     close();
 }
-
